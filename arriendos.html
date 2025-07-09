@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arriendos - Casa Nuvera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 0.8rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #666;
+            mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>') no-repeat center;
+            mask-size: contain;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 400;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #333;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: #f5f5f5;
+            padding: 3rem 2rem;
+        }
+
+        .filters-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-select {
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            background: white;
+            color: #333;
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #666;
+        }
+
+        .search-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #555;
+            transform: translateY(-1px);
+        }
+
+        /* Loading */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #333;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Results Header */
+        .results-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-count {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sort-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            background: white;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        /* Properties Grid */
+        .properties-section {
+            padding: 3rem 2rem;
+            background: white;
+        }
+
+        .properties-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .property-card {
+            background: #fafafa;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .property-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Property Status Badge */
+        .property-status {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(51, 51, 51, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2px;
+            font-size: 0.8rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 10;
+        }
+
+        .property-status.featured {
+            background: rgba(231, 76, 60, 0.9);
+        }
+
+        .property-image {
+            height: 250px;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .property-card:hover .property-image img {
+            transform: scale(1.05);
+        }
+
+        .property-info {
+            padding: 2rem;
+        }
+
+        .property-title {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #333;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+
+        .property-location {
+            color: #999;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .property-details {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        .property-price {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .property-expenses {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 0.3rem;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: #f5f5f5;
+            padding: 6rem 2rem;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-title {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #333;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .contact-description {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 3rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .contact-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-btn {
+            background: #333;
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .contact-btn:hover {
+            background: #555;
+            transform: translateY(-2px);
+        }
+
+        .contact-btn.secondary {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+        }
+
+        .contact-btn.secondary:hover {
+            background: #f5f5f5;
+            border-color: #333;
+        }
+
+        /* No Properties */
+        .no-properties {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+
+        .no-properties h3 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            color: white;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #555;
+            padding-top: 1rem;
+            text-align: center;
+            color: #ccc;
+            font-size: 0.8rem;
+            font-weight: 300;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .page-title {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .results-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .contact-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .page-header,
+            .filters-section,
+            .properties-section {
+                padding: 3rem 1rem;
+            }
+
+            .contact-section {
+                padding: 4rem 1rem;
+            }
+        }
+    </style>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon"></div>
+                <span class="logo-text">Casa Nuvera</span>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="compras.html">Compra</a></li>
+                    <li><a href="arriendos.html" class="active">Arriendo</a></li>
+                    <li><a href="servicios.html">Servicios</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1 class="page-title">Arriendos</h1>
+        <p class="page-subtitle">Descubre espacios únicos para hacer tuyo temporalmente. Propiedades cuidadosamente seleccionadas para tu nuevo hogar.</p>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters-section">
+        <div class="filters-container">
+            <div class="filters-grid">
+                <select class="filter-select" id="communeFilter">
+                    <option value="">Comuna</option>
+                    <option value="Las Condes">Las Condes</option>
+                    <option value="Providencia">Providencia</option>
+                    <option value="Ñuñoa">Ñuñoa</option>
+                    <option value="Vitacura">Vitacura</option>
+                    <option value="La Reina">La Reina</option>
+                    <option value="Santiago">Santiago Centro</option>
+                    <option value="Maipú">Maipú</option>
+                    <option value="Lo Barnechea">Lo Barnechea</option>
+                </select>
+                
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">Tipo de propiedad</option>
+                    <option value="casa">Casa</option>
+                    <option value="departamento">Departamento</option>
+                    <option value="oficina">Oficina</option>
+                    <option value="local-comercial">Local Comercial</option>
+                </select>
+                
+                <select class="filter-select" id="bedroomsFilter">
+                    <option value="">Dormitorios</option>
+                    <option value="0">Studio</option>
+                    <option value="1">1 Dormitorio</option>
+                    <option value="2">2 Dormitorios</option>
+                    <option value="3">3 Dormitorios</option>
+                    <option value="4">4+ Dormitorios</option>
+                </select>
+                
+                <select class="filter-select" id="priceFilter">
+                    <option value="">Rango de precio</option>
+                    <option value="0-500000">Hasta $500.000</option>
+                    <option value="500000-800000">$500.000 - $800.000</option>
+                    <option value="800000-1200000">$800.000 - $1.200.000</option>
+                    <option value="1200000-999999999">Más de $1.200.000</option>
+                </select>
+                
+                <button class="search-btn" id="searchBtn">Buscar</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Header -->
+    <div class="results-header" id="resultsHeader" style="display: none;">
+        <div class="results-count" id="resultsCount">
+            Cargando propiedades...
+        </div>
+        <select class="sort-select" id="sortSelect">
+            <option value="newest">Más recientes</option>
+            <option value="price_low">Precio: menor a mayor</option>
+            <option value="price_high">Precio: mayor a menor</option>
+            <option value="featured">Destacadas primero</option>
+        </select>
+    </div>
+
+    <!-- Loading -->
+    <div id="loadingContainer" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Cargando propiedades en arriendo...</p>
+    </div>
+
+    <!-- Properties Grid -->
+    <section class="properties-section" id="propertiesSection" style="display: none;">
+        <div class="properties-container">
+            <div class="properties-grid" id="propertiesGrid">
+                <!-- Las propiedades se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="contact-container">
+            <h2 class="contact-title">¿No encuentras lo que buscas?</h2>
+            <p class="contact-description">Nuestro equipo puede ayudarte a encontrar la propiedad perfecta según tus necesidades específicas y presupuesto.</p>
+            <div class="contact-buttons">
+                <a href="contacto.html" class="contact-btn">Contactar Asesor</a>
+                <a href="#" class="contact-btn secondary" onclick="scheduleVisit()">Agendar Visita</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Casa Nuvera</h4>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="servicios.html">Servicios</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Servicios</h4>
+                    <ul>
+                        <li><a href="compras.html">Compra</a></li>
+                        <li><a href="arriendos.html">Arriendo</a></li>
+                        <li><a href="servicios.html">Asesoría</a></li>
+                        <li><a href="contacto.html">Consultas</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Términos y condiciones</a></li>
+                        <li><a href="#">Política de privacidad</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></li>
+                        <li><a href="tel:+56XXXXXXXXX">+56 9 XXXX XXXX</a></li>
+                        <li>Ciudad, Chile</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Casa Nuvera. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="supabase.js"></script>
+    <script src="property-handler.js"></script>
+    
+    <script>
+        let allProperties = [];
+        let filteredProperties = [];
+
+        // Variables de estado
+        let isLoading = false;
+        let hasError = false;
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏠 Iniciando página de arriendos...');
+            
+            // Esperar a que Supabase esté listo
+            if (window.supabase) {
+                initializePage();
+            } else {
+                window.addEventListener('supabaseReady', initializePage);
+                
+                // Timeout de seguridad
+                setTimeout(() => {
+                    if (!window.supabase) {
+                        showError('No se pudo conectar con la base de datos');
+                    }
+                }, 5000);
+            }
+        });
+
+        async function initializePage() {
+            console.log('🚀 Configurando página de arriendos...');
+            
+            // Configurar event listeners
+            setupEventListeners();
+            
+            // Cargar propiedades de arriendo
+            await loadProperties();
+        }
+
+        function setupEventListeners() {
+            // Botón de búsqueda
+            document.getElementById('searchBtn').addEventListener('click', applyFilters);
+            
+            // Ordenamiento
+            document.getElementById('sortSelect').addEventListener('change', (e) => {
+                sortProperties(e.target.value);
+            });
+        }
+
+        async function loadProperties() {
+            try {
+                showLoading(true);
+                
+                console.log('📥 Cargando propiedades en arriendo...');
+                
+                // Obtener propiedades de arriendo desde Supabase
+                const { data, error } = await window.supabase
+                    .from('properties')
+                    .select(`
+                        *,
+                        property_images (
+                            image_url,
+                            image_order,
+                            is_main
+                        )
+                    `)
+                    .eq('published', true)
+                    .in('property_type', ['arriendo', 'arriendo-temporal'])
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('❌ Error al cargar propiedades:', error);
+                    throw error;
+                }
+
+                allProperties = data || [];
+                filteredProperties = [...allProperties];
+                
+                showLoading(false);
+                displayProperties(filteredProperties);
+                updateResultsCount(filteredProperties.length);
+                
+                console.log(`✅ ${allProperties.length} propiedades cargadas`);
+                
+            } catch (error) {
+                console.error('💥 Error al cargar propiedades:', error);
+                showError('No se pudieron cargar las propiedades de arriendo');
+                showLoading(false);
+            }
+        }
+
+        function displayProperties(properties) {
+            const grid = document.getElementById('propertiesGrid');
+            const section = document.getElementById('propertiesSection');
+            const resultsHeader = document.getElementById('resultsHeader');
+            
+            if (properties.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-properties">
+                        <h3>🏠 No hay arriendos disponibles</h3>
+                        <p>Actualmente no tenemos propiedades en arriendo que coincidan con tu búsqueda.</p>
+                    </div>
+                `;
+                resultsHeader.style.display = 'none';
+            } else {
+                grid.innerHTML = properties.map(property => createPropertyCard(property)).join('');
+                resultsHeader.style.display = 'flex';
+            }
+            
+            section.style.display = 'block';
+        }
+
+        function createPropertyCard(property) {
+            // Obtener imagen principal
+            const mainImage = property.property_images?.find(img => img.is_main) || 
+                             property.property_images?.[0];
+            
+            // Formatear precio
+            const formattedPrice = formatPrice(property.price, property.currency);
+            
+            // Características principales
+            const features = [];
+            if (property.bedrooms !== null && property.bedrooms !== undefined) {
+                features.push(`${property.bedrooms === 0 ? 'Studio' : property.bedrooms + ' dorm'}`);
+            }
+            if (property.bathrooms) features.push(`${property.bathrooms} baños`);
+            if (property.total_area) features.push(`${property.total_area}m²`);
+            if (property.parking_spaces > 0) features.push(`${property.parking_spaces} est`);
+
+            return `
+                <div class="property-card" onclick="viewPropertyDetails('${property.id}')">
+                    ${property.featured ? '<div class="property-status featured">Destacada</div>' : 
+                      '<div class="property-status">Disponible</div>'}
+                    
+                    <div class="property-image">
+                        ${mainImage?.image_url ? 
+                            `<img src="${mainImage.image_url}" alt="${property.title}" loading="lazy">` : 
+                            'Imagen de propiedad'
+                        }
+                    </div>
+                    
+                    <div class="property-info">
+                        <h3 class="property-title">${property.title}</h3>
+                        <p class="property-location">📍 ${property.commune}</p>
+                        <p class="property-details">${features.join(' • ')}</p>
+                        <div class="property-price">${formattedPrice} / mes</div>
+                        ${property.expenses > 0 ? 
+                            `<div class="property-expenses">+ $${property.expenses.toLocaleString()} gastos comunes</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatPrice(price, currency) {
+            const numPrice = parseFloat(price);
+            
+            switch(currency) {
+                case 'CLP':
+                    return `$${numPrice.toLocaleString('es-CL')}`;
+                case 'UF':
+                    return `UF ${numPrice.toLocaleString('es-CL')}`;
+                case 'USD':
+                    return `US$ ${numPrice.toLocaleString('en-US')}`;
+                default:
+                    return `${currency || '$'} ${numPrice.toLocaleString()}`;
+            }
+        }
+
+        async function applyFilters() {
+            try {
+                showLoading(true);
+                
+                const filters = {
+                    commune: document.getElementById('communeFilter').value,
+                    category: document.getElementById('categoryFilter').value,
+                    bedrooms: document.getElementById('bedroomsFilter').value,
+                    priceRange: document.getElementById('priceFilter').value
+                };
+                
+                console.log('🔍 Aplicando filtros:', filters);
+                
+                let query = window.supabase
+                    .from('properties')
+                    .select(`
+                        *,
+                        property_images (
+                            image_url,
+                            image_order,
+                            is_main
+                        )
+                    `)
+                    .eq('published', true)
+                    .in('property_type', ['arriendo', 'arriendo-temporal']);
+
+                // Aplicar filtros
+                if (filters.commune) {
+                    query = query.eq('commune', filters.commune);
+                }
+                
+                if (filters.category) {
+                    query = query.eq('category', filters.category);
+                }
+                
+                if (filters.bedrooms) {
+                    const bedrooms = parseInt(filters.bedrooms);
+                    if (bedrooms === 4) {
+                        query = query.gte('bedrooms', 4);
+                    } else {
+                        query = query.eq('bedrooms', bedrooms);
+                    }
+                }
+                
+                if (filters.priceRange) {
+                    const [min, max] = filters.priceRange.split('-').map(Number);
+                    query = query.gte('price', min);
+                    if (max < 999999999) {
+                        query = query.lte('price', max);
+                    }
+                }
+
+                const { data, error } = await query.order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                filteredProperties = data || [];
+                
+                showLoading(false);
+                displayProperties(filteredProperties);
+                updateResultsCount(filteredProperties.length);
+                
+            } catch (error) {
+                console.error('💥 Error al aplicar filtros:', error);
+                showError('Error al filtrar propiedades');
+                showLoading(false);
+            }
+        }
+
+        function sortProperties(sortBy) {
+            console.log(`📊 Ordenando por: ${sortBy}`);
+            
+            let sorted = [...filteredProperties];
+            
+            switch(sortBy) {
+                case 'newest':
+                    sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    break;
+                case 'price_low':
+                    sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+                    break;
+                case 'price_high':
+                    sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+                    break;
+                case 'featured':
+                    sorted.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+                    break;
+            }
+            
+            filteredProperties = sorted;
+            displayProperties(filteredProperties);
+        }
+
+        function updateResultsCount(count) {
+            const countElement = document.getElementById('resultsCount');
+            const text = count === 1 ? '1 propiedad disponible' : `${count} propiedades disponibles`;
+            countElement.textContent = text;
+        }
+
+        function showLoading(show) {
+            const loadingContainer = document.getElementById('loadingContainer');
+            const propertiesSection = document.getElementById('propertiesSection');
+            
+            if (show) {
+                loadingContainer.style.display = 'flex';
+                propertiesSection.style.display = 'none';
+                isLoading = true;
+            } else {
+                loadingContainer.style.display = 'none';
+                propertiesSection.style.display = 'block';
+                isLoading = false;
+            }
+        }
+
+        function showError(message) {
+            const loadingContainer = document.getElementById('loadingContainer');
+            loadingContainer.innerHTML = `
+                <div style="text-align: center; color: #e74c3c;">
+                    <h3>❌ Error</h3>
+                    <p>${message}</p>
+                    <button class="search-btn" onclick="location.reload()" style="margin-top: 1rem;">
+                        🔄 Reintentar
+                    </button>
+                </div>
+            `;
+            hasError = true;
+        }
+
+        // Función global para ver detalles de propiedad
+        function viewPropertyDetails(propertyId) {
+            console.log(`👀 Viendo detalles de propiedad: ${propertyId}`);
+            
+            const property = allProperties.find(p => p.id === propertyId) || 
+                            filteredProperties.find(p => p.id === propertyId);
+            
+            if (property) {
+                const features = [];
+                if (property.bedrooms !== null && property.bedrooms !== undefined) {
+                    features.push(`${property.bedrooms === 0 ? 'Studio' : property.bedrooms + ' dormitorios'}`);
+                }
+                if (property.bathrooms) features.push(`${property.bathrooms} baños`);
+                if (property.total_area) features.push(`${property.total_area}m²`);
+                if (property.parking_spaces > 0) features.push(`${property.parking_spaces} estacionamientos`);
+
+                alert(`
+🏠 ${property.title}
+
+📍 ${property.address}, ${property.commune}
+💰 ${formatPrice(property.price, property.currency)} / mes
+${property.expenses > 0 ? `💸 + $${property.expenses.toLocaleString()} gastos comunes\n` : ''}
+🏠 ${features.join(', ')}
+
+📞 Contacto: ${property.contact_phone}
+✉️ Email: ${property.contact_email}
+
+${property.description || 'Sin descripción adicional'}
+
+¡Contáctanos para más información o agendar una visita!
+                `);
+            }
+        }
+
+        function scheduleVisit() {
+            const when = prompt('¿Cuándo te gustaría agendar una visita?\n\nIngresa tu preferencia de fecha y hora:');
+            if (when) {
+                const contact = prompt('Para confirmar la visita, ingresa tu nombre y teléfono:');
+                if (contact) {
+                    alert(`✅ Visita agendada\n\nFecha: ${when}\nContacto: ${contact}\n\nTe contactaremos para confirmar los detalles.\n\n¡Gracias por elegir Casa Nuvera!`);
+                }
+            }
+        }
+    </script>
+<!-- AGREGA esto al final de arriendos.html antes del </body> -->
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Nuestros scripts -->
+    <script src="supabase.js"></script>
+    <script src="property-handler.js"></script>
+    <script src="property-loader.js"></script>
+    
+    <!-- Estilos para propiedades -->
+    <link rel="stylesheet" href="property-styles.css">
+
+    <!-- Contenedor donde se mostrarán las propiedades - AGREGA esto donde quieras mostrar las propiedades -->
+    <div id="arriendoProperties" class="properties-grid"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏠 Cargando página de arriendos...');
+            
+            // Esperar a que Supabase esté listo
+            if (window.supabase) {
+                initializeArriendosPage();
+            } else {
+                window.addEventListener('supabaseReady', initializeArriendosPage);
+                
+                // Fallback
+                setTimeout(() => {
+                    if (!window.supabase) {
+                        showArriendosFallback();
+                    }
+                }, 3000);
+            }
+        });
+
+        function initializeArriendosPage() {
+            console.log('✅ Cargando propiedades de arriendo...');
+            
+            setTimeout(async () => {
+                if (window.propertyLoader) {
+                    await window.propertyLoader.renderProperties('arriendoProperties', 'arriendo');
+                }
+            }, 500);
+        }
+
+        function showArriendosFallback() {
+            const container = document.getElementById('arriendoProperties');
+            if (container) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: #666;">
+                        <h3>🏠 Propiedades en Arriendo</h3>
+                        <p>Las propiedades en arriendo aparecerán aquí automáticamente.</p>
+                        <p style="margin-top: 1rem;">
+                            <a href="subir-propiedades.html" style="color: #e74c3c; text-decoration: underline; font-weight: bold;">
+                                ➕ Agregar Nueva Propiedad
+                            </a>
+                        </p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
