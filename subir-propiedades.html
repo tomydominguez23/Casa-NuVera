@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Propiedad - Casa Nuvera</title>
+<link rel="stylesheet" href="property-styles.css">
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 1rem;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTggMzJoMjRWMjBMMjAgOEw4IDIwdjEyeiIgZmlsbD0iIzZjNzU3ZCIvPgo8cGF0aCBkPSJNMTIgMzJoMTZWMjRMMjAgMTZMMTIgMjR2OHoiIGZpbGw9IiM5NTk1YTUiLz4KPHJlY3QgeD0iMTYiIHk9IjI0IiB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjNWE2MjY4Ii8+Cjwvc3ZnPgo=') center/contain no-repeat;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #2c3e50;
+            font-style: italic;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #7f8c8d;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #2c3e50;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .page-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            color: #2c3e50;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group.required label::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        .form-control {
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            transform: translateY(-1px);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Checkbox Groups */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3498db;
+        }
+
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: #f8f9fa;
+        }
+
+        .file-upload-area:hover {
+            border-color: #3498db;
+            background: #f0f8ff;
+        }
+
+        .file-upload-area.dragover {
+            border-color: #3498db;
+            background: #e3f2fd;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #bdc3c7;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .file-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            border: 1px solid #ddd;
+            transition: transform 0.3s;
+        }
+
+        .file-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .file-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-name {
+            font-size: 0.8rem;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .remove-file {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .remove-file:hover {
+            transform: scale(1.1);
+        }
+
+        /* Price Input */
+        .price-group {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .currency-select {
+            flex: 0 0 120px;
+        }
+
+        .price-input {
+            flex: 1;
+        }
+
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #7f8c8d;
+            border: 2px solid #7f8c8d;
+        }
+
+        .btn-outline:hover {
+            background: #7f8c8d;
+            color: white;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #c3e6cb;
+            margin-bottom: 2rem;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Auth Warning */
+        .auth-warning {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-warning h2 {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .auth-warning p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Session Info */
+        .session-info {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border: 1px solid #c3e6cb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error styling */
+        .field-error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .main-container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-grid,
+            .form-grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .price-group {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .file-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-img"></div>
+                <span class="logo-text">Casa Nuvera</span>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#compra">Compra</a></li>
+                    <li><a href="index.html#arriendo">Arriendo</a></li>
+                    <li><a href="index.html#vende">Vende tu propiedad</a></li>
+                    <li><a href="subir-propiedad.html" class="active">Panel Admin</a></li>
+                    <li><a href="#" id="logoutBtn">Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Panel de Administración</h1>
+            <p id="welcomeMessage">Modo prueba - Casa Nuvera</p>
+        </div>
+
+        <!-- Auth Check -->
+        <div class="auth-warning" id="authWarning" style="display: none;">
+            <h2>🔐 Acceso Restringido</h2>
+            <p>Esta página requiere autenticación de administrador.</p>
+            <a href="admin-login.html" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
+
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage">
+            ✅ ¡Propiedad publicada exitosamente! Será visible en el sitio web inmediatamente.
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container" id="formContainer">
+            <form id="propertyForm">
+                <!-- Información Básica -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">🏠</span>
+                        Información Básica
+                    </h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group required">
+                            <label for="propertyTitle">Título de la Propiedad</label>
+                            <input type="text" id="propertyTitle" class="form-control" 
+                                   placeholder="Ej: Casa moderna en Las Condes" required>
+                        </div>
+                        
+                        <div class="form-group required">
+                            <label for="propertyType">Tipo de Operación</label>
+                            <select id="propertyType" class="form-control" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="venta">Venta</option>
+                                <option value="arriendo">Arriendo</option>
+                                <option value="arriendo-temporal">Arriendo Temporal</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-3">
+                        <div class="form-group required">
+                            <label for="category">Categoría</label>
+                            <select id="category" class="form-control" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="casa">Casa</option>
+                                <option value="departamento">Departamento</option>
+                                <option value="oficina">Oficina</option>
+                                <option value="local-comercial">Local Comercial</option>
+                                <option value="terreno">Terreno</option>
+                                <option value="bodega">Bodega</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group required">
+                            <label for="bedrooms">Dormitorios</label>
+                            <select id="bedrooms" class="form-control" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="0">Studio</option>
+                                <option value="1">1 Dormitorio</option>
+                                <option value="2">2 Dormitorios</option>
+                                <option value="3">3 Dormitorios</option>
+                                <option value="4">4 Dormitorios</option>
+                                <option value="5">5+ Dormitorios</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group required">
+                            <label for="bathrooms">Baños</label>
+                            <select id="bathrooms" class="form-control" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="1">1 Baño</option>
+                                <option value="2">2 Baños</option>
+                                <option value="3">3 Baños</option>
+                                <option value="4">4 Baños</option>
+                                <option value="5">5+ Baños</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Descripción</label>
+                        <textarea id="description" class="form-control" 
+                                  placeholder="Describa las características principales de la propiedad..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">📍</span>
+                        Ubicación
+                    </h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group required">
+                            <label for="region">Región</label>
+                            <select id="region" class="form-control" required>
+                                <option value="">Seleccionar región...</option>
+                                <option value="Región Metropolitana">Región Metropolitana</option>
+                                <option value="Valparaíso">Valparaíso</option>
+                                <option value="Biobío">Biobío</option>
+                                <option value="La Araucanía">La Araucanía</option>
+                                <option value="Maule">Maule</option>
+                                <option value="O'Higgins">O'Higgins</option>
+                                <option value="Coquimbo">Coquimbo</option>
+                                <option value="Atacama">Atacama</option>
+                                <option value="Antofagasta">Antofagasta</option>
+                                <option value="Tarapacá">Tarapacá</option>
+                                <option value="Arica y Parinacota">Arica y Parinacota</option>
+                                <option value="Los Ríos">Los Ríos</option>
+                                <option value="Los Lagos">Los Lagos</option>
+                                <option value="Aysén">Aysén</option>
+                                <option value="Magallanes">Magallanes</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group required">
+                            <label for="commune">Comuna</label>
+                            <select id="commune" class="form-control" required>
+                                <option value="">Seleccionar comuna...</option>
+                                <option value="Las Condes">Las Condes</option>
+                                <option value="Providencia">Providencia</option>
+                                <option value="Vitacura">Vitacura</option>
+                                <option value="Ñuñoa">Ñuñoa</option>
+                                <option value="Santiago">Santiago Centro</option>
+                                <option value="La Reina">La Reina</option>
+                                <option value="Lo Barnechea">Lo Barnechea</option>
+                                <option value="Huechuraba">Huechuraba</option>
+                                <option value="Quilicura">Quilicura</option>
+                                <option value="Maipú">Maipú</option>
+                                <option value="Pudahuel">Pudahuel</option>
+                                <option value="Estación Central">Estación Central</option>
+                                <option value="San Miguel">San Miguel</option>
+                                <option value="La Florida">La Florida</option>
+                                <option value="Peñalolén">Peñalolén</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group required">
+                            <label for="address">Dirección</label>
+                            <input type="text" id="address" class="form-control" 
+                                   placeholder="Ej: Av. Apoquindo 1234" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="neighborhood">Barrio/Sector</label>
+                            <input type="text" id="neighborhood" class="form-control" 
+                                   placeholder="Ej: El Golf, Sector Oriente">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalles y Medidas -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">📐</span>
+                        Detalles y Medidas
+                    </h2>
+                    
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label for="totalArea">Superficie Total (m²)</label>
+                            <input type="number" id="totalArea" class="form-control" 
+                                   placeholder="Ej: 120" min="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="builtArea">Superficie Construida (m²)</label>
+                            <input type="number" id="builtArea" class="form-control" 
+                                   placeholder="Ej: 100" min="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="parkingSpaces">Estacionamientos</label>
+                            <select id="parkingSpaces" class="form-control">
+                                <option value="">Seleccionar...</option>
+                                <option value="0">Sin estacionamiento</option>
+                                <option value="1">1 Estacionamiento</option>
+                                <option value="2">2 Estacionamientos</option>
+                                <option value="3">3 Estacionamientos</option>
+                                <option value="4">4+ Estacionamientos</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Características Adicionales</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="bodega" name="features" value="bodega">
+                                <label for="bodega">Bodega</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="terraza" name="features" value="terraza">
+                                <label for="terraza">Terraza</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="jardin" name="features" value="jardin">
+                                <label for="jardin">Jardín</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="piscina" name="features" value="piscina">
+                                <label for="piscina">Piscina</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="amoblado" name="features" value="amoblado">
+                                <label for="amoblado">Amoblado</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ascensor" name="features" value="ascensor">
+                                <label for="ascensor">Ascensor</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="porteria" name="features" value="porteria">
+                                <label for="porteria">Portería</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="gym" name="features" value="gym">
+                                <label for="gym">Gimnasio</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="destacada" name="features" value="destacada">
+                                <label for="destacada"><strong>Propiedad Destacada</strong></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Precio -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">💰</span>
+                        Precio
+                    </h2>
+                    
+                    <div class="price-group">
+                        <div class="form-group currency-select required">
+                            <label for="currency">Moneda</label>
+                            <select id="currency" class="form-control" required>
+                                <option value="CLP">CLP (Pesos)</option>
+                                <option value="UF">UF</option>
+                                <option value="USD">USD</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group price-input required">
+                            <label for="price">Precio</label>
+                            <input type="number" id="price" class="form-control" 
+                                   placeholder="Ej: 5500" min="1" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="expenses">Gastos Comunes (CLP)</label>
+                            <input type="number" id="expenses" class="form-control" 
+                                   placeholder="Ej: 85000" min="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="availability">Disponibilidad</label>
+                            <select id="availability" class="form-control">
+                                <option value="inmediata">Inmediata</option>
+                                <option value="a-convenir">A convenir</option>
+                                <option value="fecha-especifica">Fecha específica</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Imágenes -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">📸</span>
+                        Imágenes
+                    </h2>
+                    
+                    <div class="file-upload-area" onclick="document.getElementById('imageInput').click()">
+                        <div class="upload-icon">📎</div>
+                        <div class="upload-text">Sube las imágenes de tu propiedad</div>
+                        <div class="upload-subtext">Haz clic aquí o arrastra y suelta • JPG, PNG, WebP • Máximo 10MB cada una</div>
+                        <input type="file" id="imageInput" class="file-input" multiple accept="image/*">
+                    </div>
+                    
+                    <div class="file-list" id="fileList"></div>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">📞</span>
+                        Información de Contacto
+                    </h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group required">
+                            <label for="contactName">Nombre de Contacto</label>
+                            <input type="text" id="contactName" class="form-control" 
+                                   placeholder="Nombre completo" required>
+                        </div>
+                        
+                        <div class="form-group required">
+                            <label for="contactPhone">Teléfono</label>
+                            <input type="tel" id="contactPhone" class="form-control" 
+                                   placeholder="+56 9 1234 5678" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label for="contactEmail">Email</label>
+                        <input type="email" id="contactEmail" class="form-control" 
+                               placeholder="correo@ejemplo.com" required>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div class="loading" id="loadingDiv">
+                    <div class="spinner"></div>
+                    <p>Publicando propiedad...</p>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="window.location.href='index.html'">
+                        ← Volver al Inicio
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="previewBtn">
+                        👁️ Vista Previa
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        🚀 Publicar Propiedad
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+   <!-- Reemplaza la sección de scripts al final de tu HTML con esto: -->
+
+    <!-- Scripts -->
+    <!-- 1. Primero cargar Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- 2. Luego cargar configuración -->
+    <script src="supabase.js"></script>
+    
+    <!-- 3. Después cargar property-handler -->
+    <script src="property-handler.js"></script>
+            <!-- 4. Script del formulario -->
+<script src="form-script.js"></script>
+</body>
+</html>
