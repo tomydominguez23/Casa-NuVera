@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Roberto Reyes Propiedades</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #2c3e50;
+            text-decoration: none;
+            font-style: italic;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #7f8c8d;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #2c3e50;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Blog Categories */
+        .categories-section {
+            background: white;
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .categories-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .categories-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #e0e6ed;
+            background: white;
+            color: #7f8c8d;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: #8e44ad;
+            color: white;
+            border-color: #8e44ad;
+            transform: translateY(-2px);
+        }
+
+        /* Featured Article */
+        .featured-section {
+            padding: 3rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .featured-article {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .featured-image {
+            height: 400px;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            opacity: 0.3;
+        }
+
+        .featured-content {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-tag {
+            background: #8e44ad;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            align-self: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .featured-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .featured-excerpt {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .featured-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .read-more-btn {
+            background: #8e44ad;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-self: flex-start;
+        }
+
+        .read-more-btn:hover {
+            background: #7d3c98;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+        }
+
+        /* Blog Grid */
+        .blog-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .blog-image {
+            height: 200px;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            opacity: 0.3;
+            position: relative;
+        }
+
+        .blog-tag {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: #8e44ad;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .blog-excerpt {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #7f8c8d;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .blog-read-btn {
+            background: transparent;
+            color: #8e44ad;
+            border: 2px solid #8e44ad;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .blog-read-btn:hover {
+            background: #8e44ad;
+            color: white;
+        }
+
+        /* Newsletter Section */
+        .newsletter-section {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .newsletter-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .newsletter-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .newsletter-description {
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+        }
+
+        .newsletter-btn {
+            background: #8e44ad;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .newsletter-btn:hover {
+            background: #7d3c98;
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .categories-nav {
+                gap: 1rem;
+            }
+
+            .featured-article {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-content {
+                padding: 2rem;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Roberto Reyes</a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="compras.html">Compra</a></li>
+                    <li><a href="arriendos.html">Arriendo</a></li>
+                    <li><a href="servicios.html">Servicios</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                    <li><a href="blog.html" class="active">Blog</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Blog Inmobiliario</h1>
+        <p>Consejos, tendencias y análisis del mercado inmobiliario para tomar las mejores decisiones</p>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories-section">
+        <div class="categories-container">
+            <nav class="categories-nav">
+                <button class="category-btn active" data-category="all">Todos</button>
+                <button class="category-btn" data-category="mercado">Mercado</button>
+                <button class="category-btn" data-category="inversion">Inversión</button>
+                <button class="category-btn" data-category="consejos">Consejos</button>
+                <button class="category-btn" data-category="tendencias">Tendencias</button>
+                <button class="category-btn" data-category="legal">Legal</button>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Featured Article -->
+    <section class="featured-section">
+        <article class="featured-article">
+            <div class="featured-image">📈</div>
+            <div class="featured-content">
+                <span class="featured-tag">Artículo Destacado</span>
+                <h2 class="featured-title">Tendencias del Mercado Inmobiliario 2025</h2>
+                <p class="featured-excerpt">Un análisis completo de las principales tendencias que marcarán el mercado inmobiliario este año: desde la evolución de precios hasta las nuevas preferencias de los compradores post-pandemia.</p>
+                <div class="featured-meta">
+                    <span>📅 15 Enero 2025</span>
+                    <span>👤 Roberto Reyes</span>
+                    <span>⏱️ 8 min lectura</span>
+                </div>
+                <button class="read-more-btn" onclick="readFeaturedArticle()">Leer Artículo Completo</button>
+            </div>
+        </article>
+    </section>
+
+    <!-- Blog Grid -->
+    <section class="blog-section">
+        <h2 class="section-title">Últimos Artículos</h2>
+        <div class="blog-grid" id="blogGrid">
+            <!-- Blog articles will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="newsletter-container">
+            <h2 class="newsletter-title">Suscríbete a nuestro Newsletter</h2>
+            <p class="newsletter-description">Recibe semanalmente los mejores consejos inmobiliarios y análisis de mercado</p>
+            <form class="newsletter-form" id="newsletterForm">
+                <input type="email" class="newsletter-input" placeholder="Tu email" required>
+                <button type="submit" class="newsletter-btn">Suscribirse</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        // Blog articles data
+        const blogArticles = [
+            {
+                id: 1,
+                title: "5 Consejos para Comprar tu Primera Casa",
+                excerpt: "Guía práctica para primerizos en el mercado inmobiliario. Desde el ahorro inicial hasta la firma del contrato.",
+                category: "consejos",
+                date: "10 Enero 2025",
+                author: "María González",
+                readTime: "5 min",
+                icon: "🏠"
+            },
+            {
+                id: 2,
+                title: "Inversión en Departamentos: ¿Rentable en 2025?",
+                excerpt: "Análisis de rentabilidad de inversiones en departamentos considerando las nuevas regulaciones y tendencias del mercado.",
+                category: "inversion",
+                date: "8 Enero 2025",
+                author: "Roberto Reyes",
+                readTime: "7 min",
+                icon: "💰"
+            },
+            {
+                id: 3,
+                title: "Nueva Ley de Copropiedad: Lo que Debes Saber",
+                excerpt: "Explicación detallada de los cambios en la ley de copropiedad y cómo afectan a propietarios e inquilinos.",
+                category: "legal",
+                date: "5 Enero 2025",
+                author: "Ana Morales",
+                readTime: "6 min",
+                icon: "⚖️"
+            },
+            {
+                id: 4,
+                title: "Las Comunas más Cotizadas de Santiago",
+                excerpt: "Ranking actualizado de las comunas con mayor valorización y mejores proyecciones de crecimiento.",
+                category: "mercado",
+                date: "3 Enero 2025",
+                author: "Carlos Pérez",
+                readTime: "4 min",
+                icon: "📍"
+            },
+            {
+                id: 5,
+                title: "Home Office: Cómo Elegir el Espacio Perfecto",
+                excerpt: "La pandemia cambió nuestras necesidades. Te ayudamos a encontrar la propiedad ideal para trabajar desde casa.",
+                category: "tendencias",
+                date: "28 Diciembre 2024",
+                author: "María González",
+                readTime: "5 min",
+                icon: "💻"
+            },
+            {
+                id: 6,
+                title: "Crédito Hipotecario: Guía Completa 2025",
+                excerpt: "Todo lo que necesitas saber sobre créditos hipotecarios: requisitos, tasas y mejores estrategias de negociación.",
+                category: "consejos",
+                date: "25 Diciembre 2024",
+                author: "Roberto Reyes",
+                readTime: "9 min",
+                icon: "🏦"
+            },
+            {
+                id: 7,
+                title: "Propiedades Sustentables: El Futuro es Verde",
+                excerpt: "Las construcciones sustentables no son solo una moda. Descubre por qué son una excelente inversión a largo plazo.",
+                category: "tendencias",
+                date: "22 Diciembre 2024",
+                author: "Ana Morales",
+                readTime: "6 min",
+                icon: "🌱"
+            },
+            {
+                id: 8,
+                title: "Análisis del Mercado de Arriendos Post-Pandemia",
+                excerpt: "Cómo ha evolucionado el mercado de arriendos y qué esperar para los próximos meses.",
+                category: "mercado",
+                date: "20 Diciembre 2024",
+                author: "Carlos Pérez",
+                readTime: "7 min",
+                icon: "📊"
+            }
+        ];
+
+        let currentCategory = 'all';
+
+        // Initialize blog
+        document.addEventListener('DOMContentLoaded', function() {
+            renderBlogArticles();
+            setupCategoryFilters();
+            setupNewsletter();
+        });
+
+        function renderBlogArticles() {
+            const blogGrid = document.getElementById('blogGrid');
+            const filteredArticles = currentCategory === 'all' 
+                ? blogArticles 
+                : blogArticles.filter(article => article.category === currentCategory);
+
+            blogGrid.innerHTML = filteredArticles.map(article => `
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <span class="blog-tag">${getCategoryName(article.category)}</span>
+                        ${article.icon}
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">${article.title}</h3>
+                        <p class="blog-excerpt">${article.excerpt}</p>
+                        <div class="blog-meta">
+                            <span>📅 ${article.date}</span>
+                            <span>👤 ${article.author}</span>
+                            <span>⏱️ ${article.readTime}</span>
+                        </div>
+                        <button class="blog-read-btn" onclick="readArticle(${article.id})">
+                            Leer Más
+                        </button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function getCategoryName(category) {
+            const categories = {
+                'mercado': 'Mercado',
+                'inversion': 'Inversión',
+                'consejos': 'Consejos',
+                'tendencias': 'Tendencias',
+                'legal': 'Legal'
+            };
+            return categories[category] || 'General';
+        }
+
+        function setupCategoryFilters() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            
+            categoryButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(b => b.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Update current category
+                    currentCategory = this.dataset.category;
+                    
+                    // Re-render articles
+                    renderBlogArticles();
+                });
+            });
+        }
+
+        function setupNewsletter() {
+            const newsletterForm = document.getElementById('newsletterForm');
+            
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = this.querySelector('.newsletter-input').value;
+                const btn = this.querySelector('.newsletter-btn');
+                const originalText = btn.textContent;
+                
+                // Show loading
+                btn.textContent = 'Suscribiendo...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    alert(`🎉 ¡Suscripción exitosa!\n\nGracias por suscribirte con: ${email}\n\nRecibirás nuestro newsletter semanal con:\n• Análisis de mercado\n• Consejos de inversión\n• Nuevas propiedades\n• Tendencias inmobiliarias\n\n¡Revisa tu email para confirmar la suscripción!`);
+                    
+                    this.reset();
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }, 1500);
+            });
+        }
+
+        function readFeaturedArticle() {
+            const article = `
+📈 TENDENCIAS DEL MERCADO INMOBILIARIO 2025
+
+Por Roberto Reyes | 15 Enero 2025 | 8 min lectura
+
+El mercado inmobiliario chileno está experimentando transformaciones significativas que definirán las oportunidades de inversión en 2025.
+
+🔍 PRINCIPALES TENDENCIAS:
+
+1. DIGITALIZACIÓN TOTAL
+• Tours virtuales se vuelven estándar
+• Firma digital de contratos
+• Plataformas de gestión integral
+
+2. PREFERENCIAS POST-PANDEMIA
+• Mayor demanda por espacios de trabajo en casa
+• Patios y terrazas como prioridad
+• Edificios con amenities de salud
+
+3. SUSTENTABILIDAD
+• Certificaciones verdes aumentan valor
+• Sistemas de ahorro energético
+• Materiales ecológicos
+
+4. UBICACIONES EMERGENTES
+• Comunas periféricas ganan atractivo
+• Conectividad digital vs física
+• Calidad de vida sobre cercanía al trabajo
+
+5. NUEVOS FORMATOS DE INVERSIÓN
+• Co-living para jóvenes profesionales
+• Propiedades de renta corta
+• Espacios flex para empresas
+
+💰 PROYECCIONES DE PRECIOS:
+• Crecimiento moderado del 3-5% anual
+• Mayor diferenciación por ubicación
+• Premium en propiedades sustentables
+
+¿Quieres conocer más detalles?
+            `;
+            
+            const action = confirm(article + "\n\n¿Te gustaría recibir el análisis completo por email?");
+            
+            if (action) {
+                const email = prompt("Ingresa tu email para recibir el análisis completo:");
+                if (email) {
+                    alert(`📧 ¡Enviado!\n\nEl análisis completo "Tendencias del Mercado Inmobiliario 2025" ha sido enviado a: ${email}\n\nIncluye:\n• Gráficos detallados\n• Proyecciones por comuna\n• Recomendaciones de inversión\n• Entrevistas con expertos\n\nRevisa tu bandeja de entrada en los próximos minutos.`);
+                }
+            }
+        }
+
+        function readArticle(articleId) {
+            const article = blogArticles.find(a => a.id === articleId);
+            
+            let fullContent = '';
+            
+            switch(articleId) {
+                case 1:
+                    fullContent = `
+🏠 5 CONSEJOS PARA COMPRAR TU PRIMERA CASA
+
+Por María González | 10 Enero 2025
+
+Comprar tu primera casa es una decisión emocionante pero compleja. Aquí tienes una guía práctica:
+
+1. 💰 DEFINE TU PRESUPUESTO REAL
+• Calcula el 20-30% del valor como pie
+• Considera gastos adicionales (notaría, tasación, etc.)
+• No comprometas más del 25% de tus ingresos
+
+2. 📍 INVESTIGA LA UBICACIÓN
+• Proyección de valorización
+• Servicios y conectividad
+• Calidad de vida del sector
+
+3. 🏦 PRE-APRUEBA TU CRÉDITO
+• Compara diferentes bancos
+• Negocia tasas y condiciones
+• Ten todos los documentos listos
+
+4. 🔍 INSPECCIÓN PROFESIONAL
+• Estado estructural
+• Instalaciones eléctricas y sanitarias
+• Posibles reparaciones necesarias
+
+5. ⚖️ ASESORÍA LEGAL
+• Revisión de títulos
+• Verificación de deudas
+• Condiciones del contrato
+
+¿Necesitas asesoría personalizada?
+                    `;
+                    break;
+                case 2:
+                    fullContent = `
+💰 INVERSIÓN EN DEPARTAMENTOS: ¿RENTABLE EN 2025?
+
+Por Roberto Reyes | 8 Enero 2025
+
+El mercado de departamentos sigue siendo atractivo para inversores. Análisis actualizado:
+
+📊 RENTABILIDAD ESPERADA:
+• Rental yield promedio: 4-6% anual
+• Valorización proyectada: 3-5% anual
+• ROI total esperado: 7-11% anual
+
+🎯 MEJORES SECTORES:
+• Providencia: Alta demanda ejecutiva
+• Ñuñoa: Público joven, precios accesibles
+• Las Condes: Mercado premium estable
+
+⚠️ FACTORES A CONSIDERAR:
+• Nueva ley de arriendos
+• Costos de administración crecientes
+• Competencia de plataformas digitales
+
+💡 ESTRATEGIAS GANADORAS:
+• Departamentos 1-2 dormitorios
+• Cerca de metro y universidades
+• Amenities atractivos para millennials
+
+¿Quieres evaluar una inversión específica?
+                    `;
+                    break;
+                default:
+                    fullContent = `
+${article.icon} ${article.title.toUpperCase()}
+
+Por ${article.author} | ${article.date}
+
+${article.excerpt}
+
+Este artículo contiene análisis detallado, casos prácticos y recomendaciones específicas para el mercado inmobiliario actual.
+
+Para acceder al contenido completo, por favor contacta a nuestro equipo:
+
+📧 blog@robertoreyespropiedades.cl
+📱 +56 9 1234 5678
+
+¡Estaremos encantados de ayudarte!
+                    `;
+            }
+            
+            const action = confirm(fullContent + "\n\n¿Te gustaría contactar a nuestro equipo para más información?");
+            
+            if (action) {
+                const contact = confirm("¿Cómo prefieres que te contactemos?\n\nOK = WhatsApp\nCancelar = Email");
+                
+                if (contact) {
+                    window.open(`https://wa.me/56912345678?text=Hola, leí el artículo "${article.title}" y me gustaría más información`, '_blank');
+                } else {
+                    window.location.href = `mailto:blog@robertoreyespropiedades.cl?subject=Consulta sobre: ${article.title}`;
+                }
+            }
+        }
+
+        // Add smooth scroll animation for category changes
+        function smoothScroll() {
+            window.scrollTo({
+                top: document.querySelector('.blog-section').offsetTop - 100,
+                behavior: 'smooth'
+            });
+        }
+
+        // Add loading animation when filtering
+        function addLoadingEffect() {
+            const blogGrid = document.getElementById('blogGrid');
+            blogGrid.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                blogGrid.style.opacity = '1';
+            }, 300);
+        }
+
+        // Update category filter to include loading effect
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            
+            categoryButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    addLoadingEffect();
+                    smoothScroll();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
