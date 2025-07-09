@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Administrador - Casa Nuvera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            min-height: 500px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+        }
+
+        .login-image {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .login-image::before {
+            content: '🏠';
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .login-image h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-image p {
+            opacity: 0.8;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .login-form {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .form-header p {
+            color: #7f8c8d;
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 3px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+            font-weight: 300;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #333;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #7f8c8d;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.2rem;
+        }
+
+        .password-toggle:hover {
+            color: #333;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #333;
+        }
+
+        .remember-me label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin: 0;
+            font-weight: 300;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .forgot-password {
+            color: #333;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            font-weight: 300;
+        }
+
+        .forgot-password:hover {
+            color: #666;
+        }
+
+        .login-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 3px;
+            font-size: 1rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-btn:hover {
+            background: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(51, 51, 51, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .back-link a {
+            color: #7f8c8d;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            font-weight: 300;
+        }
+
+        .back-link a:hover {
+            color: #333;
+        }
+
+        .error-message {
+            background: #e74c3c;
+            color: white;
+            padding: 1rem;
+            border-radius: 3px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+            font-weight: 300;
+        }
+
+        .success-message {
+            background: #27ae60;
+            color: white;
+            padding: 1rem;
+            border-radius: 3px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+            font-weight: 300;
+        }
+
+        @keyframes shake {
+            0%, 20%, 40%, 60%, 80% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-10px);
+            }
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Demo Credentials Box */
+        .demo-credentials {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 3px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .demo-credentials:hover {
+            background: #e9ecef;
+        }
+
+        .demo-credentials h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .demo-credentials p {
+            color: #666;
+            font-size: 0.8rem;
+            margin: 0.2rem 0;
+            font-weight: 300;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .login-image {
+                display: none;
+            }
+
+            .login-form {
+                padding: 2rem;
+            }
+
+            body {
+                padding: 1rem;
+            }
+        }
+
+        /* Security Features Visual */
+        .security-features {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #7f8c8d;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .security-icon {
+            color: #27ae60;
+        }
+
+        /* Casa Nuvera Brand Colors */
+        .brand-accent {
+            color: #333;
+        }
+
+        /* Additional animations */
+        .login-container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-image">
+            <h2>Casa Nuvera</h2>
+            <p>Panel de Administración</p>
+            <p>Gestiona propiedades y contenido de tu inmobiliaria de manera segura y eficiente</p>
+        </div>
+        
+        <div class="login-form">
+            <div class="form-header">
+                <h1>Iniciar Sesión</h1>
+                <p>Accede al panel de administración</p>
+            </div>
+
+            <!-- Demo Credentials -->
+            <div class="demo-credentials" title="Click para auto-completar">
+                <h4>🔑 Credenciales de Acceso</h4>
+                <p><strong>Usuario:</strong> admin</p>
+                <p><strong>Contraseña:</strong> admin123</p>
+                <p style="font-size: 0.7rem; opacity: 0.7; margin-top: 0.5rem;">Click aquí para auto-completar</p>
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                ❌ Credenciales incorrectas. Inténtelo nuevamente.
+            </div>
+
+            <div class="success-message" id="successMessage">
+                ✅ Inicio de sesión exitoso. Redirigiendo al panel...
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <div class="input-container">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="username" class="form-control" 
+                               placeholder="Ingrese su usuario" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-container">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" class="form-control" 
+                               placeholder="Ingrese su contraseña" required>
+                        <button type="button" class="password-toggle" id="togglePassword">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Recordarme</label>
+                    </div>
+                    <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="loading-spinner" id="loadingSpinner"></span>
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="back-link">
+                <a href="index.html">← Volver a Casa Nuvera</a>
+            </div>
+
+            <div class="security-features">
+                <div class="security-item">
+                    <span class="security-icon">🔐</span>
+                    <span>Conexión segura SSL</span>
+                </div>
+                <div class="security-item">
+                    <span class="security-icon">⏰</span>
+                    <span>Sesión con tiempo límite (8 horas)</span>
+                </div>
+                <div class="security-item">
+                    <span class="security-icon">🛡️</span>
+                    <span>Acceso restringido a administradores</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Credenciales de administrador para Casa Nuvera
+        const adminCredentials = {
+            'admin': 'admin123',
+            'casanuvera': 'nuvera2025',
+            'administrador': 'casanuvera123'
+        };
+
+        // Elementos del DOM
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const rememberMe = document.getElementById('rememberMe');
+
+        // Verificar si ya está logueado al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔐 Verificando sesión de administrador...');
+            
+            if (isLoggedIn()) {
+                console.log('✅ Sesión válida encontrada, redirigiendo...');
+                window.location.href = 'subir-propiedades.html';
+                return;
+            }
+
+            // Llenar campos si están guardados
+            const savedUsername = localStorage.getItem('casaNuveraUsername');
+            if (savedUsername) {
+                usernameInput.value = savedUsername;
+                rememberMe.checked = true;
+            }
+
+            console.log('🏠 Página de login de Casa Nuvera cargada');
+        });
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleLogin();
+        });
+
+        // Enter key support
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !loginBtn.disabled) {
+                handleLogin();
+            }
+        });
+
+        function handleLogin() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            console.log('🔍 Intentando login para usuario:', username);
+
+            // Validation
+            if (!username || !password) {
+                showError('Por favor complete todos los campos');
+                return;
+            }
+
+            // Show loading
+            setLoading(true);
+            hideMessages();
+
+            // Simulate server request (en producción esto sería una llamada real al servidor)
+            setTimeout(() => {
+                if (validateCredentials(username, password)) {
+                    console.log('✅ Credenciales válidas para:', username);
+                    
+                    // Save login state
+                    const sessionData = {
+                        username: username,
+                        loginTime: new Date().toISOString(),
+                        isAdmin: true,
+                        company: 'Casa Nuvera'
+                    };
+                    
+                    sessionStorage.setItem('casaNuveraAdminSession', JSON.stringify(sessionData));
+                    
+                    // Save username if remember me is checked
+                    if (rememberMe.checked) {
+                        localStorage.setItem('casaNuveraUsername', username);
+                    } else {
+                        localStorage.removeItem('casaNuveraUsername');
+                    }
+
+                    showSuccess('¡Bienvenido a Casa Nuvera! Redirigiendo al panel...');
+                    
+                    // Redirect after success
+                    setTimeout(() => {
+                        console.log('🚀 Redirigiendo al panel de administración...');
+                        window.location.href = 'subir-propiedades.html';
+                    }, 2000);
+                } else {
+                    console.log('❌ Credenciales inválidas para:', username);
+                    showError('Credenciales incorrectas. Verifique usuario y contraseña.');
+                    // Clear password on error
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+                
+                setLoading(false);
+            }, 1500);
+        }
+
+        function validateCredentials(username, password) {
+            return adminCredentials[username] === password;
+        }
+
+        function setLoading(loading) {
+            loginBtn.disabled = loading;
+            loadingSpinner.style.display = loading ? 'inline-block' : 'none';
+            loginBtn.textContent = loading ? ' Iniciando sesión...' : 'Iniciar Sesión';
+            
+            if (loading) {
+                loginBtn.insertBefore(loadingSpinner, loginBtn.firstChild);
+            }
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        function isLoggedIn() {
+            const session = sessionStorage.getItem('casaNuveraAdminSession');
+            if (!session) return false;
+
+            try {
+                const sessionData = JSON.parse(session);
+                const loginTime = new Date(sessionData.loginTime);
+                const now = new Date();
+                const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+
+                // Session expires after 8 hours
+                if (hoursDiff > 8) {
+                    console.log('⏰ Sesión expirada, limpiando...');
+                    sessionStorage.removeItem('casaNuveraAdminSession');
+                    return false;
+                }
+
+                return sessionData.isAdmin === true && sessionData.company === 'Casa Nuvera';
+            } catch (e) {
+                console.error('❌ Error al verificar sesión:', e);
+                sessionStorage.removeItem('casaNuveraAdminSession');
+                return false;
+            }
+        }
+
+        // Auto-complete demo credentials
+        document.querySelector('.demo-credentials').addEventListener('click', function() {
+            usernameInput.value = 'admin';
+            passwordInput.value = 'admin123';
+            usernameInput.focus();
+            
+            // Pequeña animación visual
+            this.style.background = '#d4edda';
+            setTimeout(() => {
+                this.style.background = '#f8f9fa';
+            }, 300);
+        });
+
+        // Forgot password handler
+        document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Para recuperar su contraseña, contacte al administrador del sistema:\n\n📧 Email: admin@casanuvera.cl\n📱 WhatsApp: +56 9 1234 5678\n\nEquipo Casa Nuvera');
+        });
+
+        // Security: Clear sensitive data on page unload
+        window.addEventListener('beforeunload', function() {
+            passwordInput.value = '';
+        });
+
+        // Prevent form autocomplete for security
+        loginForm.setAttribute('autocomplete', 'off');
+        passwordInput.setAttribute('autocomplete', 'new-password');
+
+        // Función global para verificar sesión (usada por otras páginas)
+        window.checkAdminSession = function() {
+            return isLoggedIn();
+        };
+
+        // Función global para cerrar sesión
+        window.logoutAdmin = function() {
+            sessionStorage.removeItem('casaNuveraAdminSession');
+            localStorage.removeItem('casaNuveraUsername');
+            window.location.href = 'admin-login.html';
+        };
+
+        console.log('🏠 Sistema de login de Casa Nuvera inicializado');
+    </script>
+</body>
+</html>
