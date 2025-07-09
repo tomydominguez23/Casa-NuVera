@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Imágenes - Casa Nuvera</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .upload-area {
+            border: 3px dashed #3498db;
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .upload-area.dragover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtitle {
+            font-size: 14px;
+            color: #999;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .preview-item {
+            position: relative;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .preview-info {
+            padding: 10px;
+        }
+
+        .preview-name {
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+
+        .preview-url {
+            font-size: 12px;
+            color: #7f8c8d;
+            background: #ecf0f1;
+            padding: 5px;
+            border-radius: 3px;
+            word-break: break-all;
+            cursor: pointer;
+        }
+
+        .copy-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        .copy-btn:hover {
+            background: #219a52;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .uploaded-images {
+            margin-top: 40px;
+        }
+
+        .uploaded-images h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: #7f8c8d;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .instructions {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3498db;
+        }
+
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .instructions code {
+            background: #f1f2f6;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .preview {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Volver al sitio</a>
+        
+        <div class="header">
+            <h1>📸 Subir Imágenes</h1>
+            <p>Sube imágenes para usar en tu página web</p>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Cómo usar:</h3>
+            <p>1. <strong>Arrastra imágenes</strong> o haz click para seleccionarlas</p>
+            <p>2. <strong>Copia la URL</strong> de la imagen que aparece abajo</p>
+            <p>3. <strong>Pega la URL</strong> en tu código HTML donde dice: <code>src="URL_AQUI"</code></p>
+            <p>4. <strong>Actualiza tu página</strong> y ¡listo! 🎉</p>
+        </div>
+
+        <div id="mensaje"></div>
+
+        <!-- Área de subida -->
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text">Arrastra imágenes aquí o haz click para seleccionar</div>
+            <div class="upload-subtitle">Soporta: JPG, PNG, WebP (máx. 5MB cada una)</div>
+            <input type="file" id="fileInput" multiple accept="image/*">
+        </div>
+
+        <button id="uploadBtn" class="btn" style="display: none;">Subir Imágenes Seleccionadas</button>
+
+        <!-- Preview de imágenes seleccionadas -->
+        <div id="previewContainer"></div>
+
+        <!-- Imágenes ya subidas -->
+        <div class="uploaded-images">
+            <h3>🖼️ Imágenes Subidas</h3>
+            <div id="uploadedImages">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Cargando imágenes...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let selectedFiles = [];
+        let uploadedImagesList = [];
+
+        // Elementos DOM
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const previewContainer = document.getElementById('previewContainer');
+        const mensaje = document.getElementById('mensaje');
+        const uploadedImages = document.getElementById('uploadedImages');
+
+        // Event listeners
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('drop', handleDrop);
+        fileInput.addEventListener('change', handleFileSelect);
+        uploadBtn.addEventListener('click', uploadFiles);
+
+        // Drag & Drop
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+            addFiles(files);
+        }
+
+        // Selección de archivos
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            addFiles(files);
+        }
+
+        // Agregar archivos
+        function addFiles(files) {
+            files.forEach(file => {
+                if (file.type.startsWith('image/') && file.size <= 5 * 1024 * 1024) { // 5MB max
+                    selectedFiles.push(file);
+                } else {
+                    mostrarMensaje(`Archivo ${file.name} no válido (debe ser imagen menor a 5MB)`, 'error');
+                }
+            });
+
+            updatePreview();
+            uploadBtn.style.display = selectedFiles.length > 0 ? 'block' : 'none';
+        }
+
+        // Actualizar preview
+        function updatePreview() {
+            previewContainer.innerHTML = '';
+            
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.className = 'preview-item';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" alt="${file.name}">
+                        <div class="preview-info">
+                            <div class="preview-name">${file.name}</div>
+                            <button onclick="removeFile(${index})" style="background: #e74c3c; color: white; border: none; padding: 5px; border-radius: 3px; cursor: pointer; width: 100%;">
+                                🗑️ Eliminar
+                            </button>
+                        </div>
+                    `;
+                    previewContainer.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Eliminar archivo
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updatePreview();
+            uploadBtn.style.display = selectedFiles.length > 0 ? 'block' : 'none';
+        }
+
+        // Subir archivos
+        async function uploadFiles() {
+            if (selectedFiles.length === 0) return;
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Subiendo...';
+
+            try {
+                const urls = [];
+                
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    const file = selectedFiles[i];
+                    const fileName = `imagen_${Date.now()}_${i}.${file.name.split('.').pop()}`;
+                    
+                    const { data, error } = await supabase.storage
+                        .from('imagenes-sitio')
+                        .upload(fileName, file);
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    const { data: urlData } = supabase.storage
+                        .from('imagenes-sitio')
+                        .getPublicUrl(fileName);
+
+                    urls.push({
+                        name: file.name,
+                        url: urlData.publicUrl
+                    });
+                }
+
+                mostrarMensaje(`✅ ${urls.length} imagen(es) subida(s) exitosamente!`, 'success');
+                
+                // Limpiar
+                selectedFiles = [];
+                fileInput.value = '';
+                previewContainer.innerHTML = '';
+                uploadBtn.style.display = 'none';
+                
+                // Recargar lista de imágenes
+                await loadUploadedImages();
+
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarMensaje('❌ Error al subir imágenes: ' + error.message, 'error');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Subir Imágenes Seleccionadas';
+            }
+        }
+
+        // Cargar imágenes subidas
+        async function loadUploadedImages() {
+            try {
+                const { data: files, error } = await supabase.storage
+                    .from('imagenes-sitio')
+                    .list();
+
+                if (error) {
+                    throw error;
+                }
+
+                if (files && files.length > 0) {
+                    uploadedImages.innerHTML = '';
+                    
+                    files.forEach(file => {
+                        if (file.name !== '.emptyFolderPlaceholder') {
+                            const { data: urlData } = supabase.storage
+                                .from('imagenes-sitio')
+                                .getPublicUrl(file.name);
+
+                            const div = document.createElement('div');
+                            div.className = 'preview-item';
+                            div.innerHTML = `
+                                <img src="${urlData.publicUrl}" alt="${file.name}">
+                                <div class="preview-info">
+                                    <div class="preview-name">${file.name}</div>
+                                    <div class="preview-url" onclick="copyToClipboard('${urlData.publicUrl}')">${urlData.publicUrl}</div>
+                                    <button class="copy-btn" onclick="copyToClipboard('${urlData.publicUrl}')">
+                                        📋 Copiar URL
+                                    </button>
+                                </div>
+                            `;
+                            uploadedImages.appendChild(div);
+                        }
+                    });
+                } else {
+                    uploadedImages.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No hay imágenes subidas aún</p>';
+                }
+
+            } catch (error) {
+                console.error('Error cargando imágenes:', error);
+                uploadedImages.innerHTML = '<p style="text-align: center; color: #e74c3c; padding: 20px;">Error cargando imágenes</p>';
+            }
+        }
+
+        // Copiar URL al portapapeles
+        function copyToClipboard(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                mostrarMensaje('📋 URL copiada al portapapeles!', 'success');
+            }).catch(err => {
+                // Fallback para navegadores que no soportan clipboard API
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                mostrarMensaje('📋 URL copiada al portapapeles!', 'success');
+            });
+        }
+
+        // Mostrar mensajes
+        function mostrarMensaje(texto, tipo) {
+            mensaje.innerHTML = `<div class="${tipo}">${texto}</div>`;
+            setTimeout(() => {
+                mensaje.innerHTML = '';
+            }, 5000);
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar conexión a Supabase
+            if (!window.supabase) {
+                mostrarMensaje('❌ Error: No se pudo conectar a Supabase. Verifica tu configuración.', 'error');
+                return;
+            }
+
+            // Cargar imágenes existentes
+            loadUploadedImages();
+        });
+    </script>
+</body>
+</html>
