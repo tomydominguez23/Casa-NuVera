@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Roberto Reyes Propiedades</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #2c3e50;
+            text-decoration: none;
+            font-style: italic;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #7f8c8d;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #2c3e50;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-text {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Contact Methods */
+        .contact-methods {
+            background: white;
+            padding: 3rem 0;
+            margin-top: -2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .methods-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .method-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .method-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .method-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .method-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .method-action {
+            background: #e74c3c;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .method-action:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        /* Contact Form */
+        .contact-form-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .form-subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group.required label::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-submit {
+            background: #e74c3c;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .form-submit:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        /* Contact Info */
+        .contact-info-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .contact-item:hover {
+            background: #e9ecef;
+        }
+
+        .contact-icon {
+            font-size: 1.5rem;
+            min-width: 2rem;
+            color: #e74c3c;
+        }
+
+        .contact-details h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .contact-details p {
+            color: #666;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .contact-details a {
+            color: #e74c3c;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-details a:hover {
+            color: #c0392b;
+        }
+
+        /* Office Hours */
+        .office-hours {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .hours-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #ecf0f1;
+        }
+
+        .hours-list {
+            list-style: none;
+        }
+
+        .hours-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .hours-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .faq-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #e9ecef;
+        }
+
+        .faq-question h3 {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            transition: transform 0.3s;
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .faq-answer.active {
+            max-height: 200px;
+            padding: 1.5rem;
+        }
+
+        .faq-answer p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .methods-container {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem 1rem;
+            }
+
+            .contact-form-section,
+            .contact-info-section {
+                padding: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Roberto Reyes</a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="compras.html">Compra</a></li>
+                    <li><a href="arriendos.html">Arriendo</a></li>
+                    <li><a href="servicios.html">Servicios</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contacto.html" class="active">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Contáctanos</h1>
+        <p>Estamos aquí para ayudarte a encontrar tu hogar ideal o hacer la mejor inversión inmobiliaria</p>
+        
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="stat-icon">📞</div>
+                <div class="stat-text">Respuesta en menos de 2 horas</div>
+            </div>
+            <div class="hero-stat">
+                <div class="stat-icon">🕒</div>
+                <div class="stat-text">Atención 7 días a la semana</div>
+            </div>
+            <div class="hero-stat">
+                <div class="stat-icon">✅</div>
+                <div class="stat-text">Asesoría gratuita personalizada</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Methods -->
+    <section class="contact-methods">
+        <div class="methods-container">
+            <div class="method-card" onclick="contactWhatsApp()">
+                <div class="method-icon">📱</div>
+                <h3 class="method-title">WhatsApp</h3>
+                <p class="method-description">Respuesta inmediata para consultas rápidas y coordinación de visitas</p>
+                <button class="method-action">Escribir por WhatsApp</button>
+            </div>
+
+            <div class="method-card" onclick="contactPhone()">
+                <div class="method-icon">📞</div>
+                <h3 class="method-title">Llamada Directa</h3>
+                <p class="method-description">Habla directamente con nuestros especialistas para asesoría personalizada</p>
+                <button class="method-action">Llamar Ahora</button>
+            </div>
+
+            <div class="method-card" onclick="contactEmail()">
+                <div class="method-icon">📧</div>
+                <h3 class="method-title">Email</h3>
+                <p class="method-description">Envía tu consulta detallada y te responderemos con toda la información</p>
+                <button class="method-action">Enviar Email</button>
+            </div>
+
+            <div class="method-card" onclick="scheduleVisit()">
+                <div class="method-icon">📅</div>
+                <h3 class="method-title">Agendar Cita</h3>
+                <p class="method-description">Programa una reunión presencial en nuestra oficina o en la propiedad</p>
+                <button class="method-action">Agendar Reunión</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Contact Form -->
+        <section class="contact-form-section">
+            <h2 class="form-title">Envíanos tu Consulta</h2>
+            <p class="form-subtitle">Complete el formulario y nos pondremos en contacto contigo en las próximas 2 horas</p>
+            
+            <div class="success-message" id="successMessage">
+                ✅ ¡Mensaje enviado exitosamente! Te contactaremos pronto.
+            </div>
+
+            <form id="contactForm">
+                <div class="form-row">
+                    <div class="form-group required">
+                        <label for="firstName">Nombre</label>
+                        <input type="text" id="firstName" class="form-control" required>
+                    </div>
+                    <div class="form-group required">
+                        <label for="lastName">Apellido</label>
+                        <input type="text" id="lastName" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group required">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="form-group required">
+                        <label for="phone">Teléfono</label>
+                        <input type="tel" id="phone" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group required">
+                    <label for="subject">Tipo de Consulta</label>
+                    <select id="subject" class="form-control" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="compra">Quiero comprar una propiedad</option>
+                        <option value="venta">Quiero vender mi propiedad</option>
+                        <option value="arriendo-buscar">Busco propiedad en arriendo</option>
+                        <option value="arriendo-ofrecer">Quiero arrendar mi propiedad</option>
+                        <option value="inversion">Asesoría de inversión</option>
+                        <option value="tasacion">Tasación de propiedad</option>
+                        <option value="legal">Consulta legal</option>
+                        <option value="otro">Otra consulta</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">Presupuesto (opcional)</label>
+                    <select id="budget" class="form-control">
+                        <option value="">Seleccionar rango...</option>
+                        <option value="hasta-3000">Hasta UF 3.000</option>
+                        <option value="3000-5000">UF 3.000 - 5.000</option>
+                        <option value="5000-8000">UF 5.000 - 8.000</option>
+                        <option value="8000-12000">UF 8.000 - 12.000</option>
+                        <option value="12000-mas">Más de UF 12.000</option>
+                    </select>
+                </div>
+
+                <div class="form-group required">
+                    <label for="message">Mensaje</label>
+                    <textarea id="message" class="form-control" 
+                              placeholder="Cuéntanos sobre tu proyecto inmobiliario, ubicación preferida, características deseadas, etc." 
+                              required></textarea>
+                </div>
+
+                <button type="submit" class="form-submit">Enviar Consulta</button>
+            </form>
+        </section>
+
+        <!-- Contact Info -->
+        <section class="contact-info-section">
+            <h2 class="info-title">Información de Contacto</h2>
+
+            <div class="contact-item">
+                <div class="contact-icon">📧</div>
+                <div class="contact-details">
+                    <h4>Email Principal</h4>
+                    <p><a href="mailto:info@robertoreyespropiedades.cl">info@robertoreyespropiedades.cl</a></p>
+                    <p>Consultas generales y solicitudes de información</p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">📱</div>
+                <div class="contact-details">
+                    <h4>Teléfono / WhatsApp</h4>
+                    <p><a href="tel:+56912345678">+56 9 1234 5678</a></p>
+                    <p>Disponible de lunes a domingo de 8:00 a 22:00 hrs</p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">🏢</div>
+                <div class="contact-details">
+                    <h4>Oficina Principal</h4>
+                    <p>Av. Providencia 1234, Oficina 567<br>Providencia, Santiago</p>
+                    <p>Metro Tobalaba - Línea 1 y 4</p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">🚗</div>
+                <div class="contact-details">
+                    <h4>Estacionamiento</h4>
+                    <p>Disponible para clientes</p>
+                    <p>Validación gratuita por 2 horas</p>
+                </div>
+            </div>
+
+            <div class="office-hours">
+                <h4 class="hours-title">Horarios de Atención</h4>
+                <ul class="hours-list">
+                    <li><span>Lunes - Viernes</span><span>9:00 - 19:00</span></li>
+                    <li><span>Sábados</span><span>10:00 - 16:00</span></li>
+                    <li><span>Domingos</span><span>11:00 - 15:00</span></li>
+                    <li><span>Feriados</span><span>Solo emergencias</span></li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="faq-container">
+            <h2 class="faq-title">Preguntas Frecuentes</h2>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(0)">
+                    <h3>¿Cobran por la asesoría inicial?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>No, nuestra asesoría inicial es completamente gratuita. Incluye evaluación de necesidades, análisis de mercado y recomendaciones personalizadas.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(1)">
+                    <h3>¿En cuánto tiempo responden las consultas?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Nos comprometemos a responder todas las consultas en menos de 2 horas durante días hábiles, y dentro de 4 horas los fines de semana.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(2)">
+                    <h3>¿Hacen visitas fuera de Santiago?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Sí, atendemos clientes en toda la Región Metropolitana y principales ciudades del país. Para lugares más alejados, coordinamos visitas con agenda previa.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(3)">
+                    <h3>¿Qué documentos necesito para comprar?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Necesitas cédula de identidad, certificado de ingresos, pre-aprobación bancaria (si usas crédito) y poder notarial si actúas por terceros. Te asesoramos en todo el proceso.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(4)">
+                    <h3>¿Ofrecen garantía en sus servicios?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Sí, todos nuestros servicios tienen garantía. Si no estás satisfecho con nuestra gestión, te devolvemos el 100% de lo pagado en comisiones.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Contact methods
+        function contactWhatsApp() {
+            const message = "Hola, me gustaría recibir información sobre sus servicios inmobiliarios. ¿Podrían ayudarme?";
+            window.open(`https://wa.me/56912345678?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function contactPhone() {
+            window.location.href = 'tel:+56912345678';
+        }
+
+        function contactEmail() {
+            window.location.href = 'mailto:info@robertoreyespropiedades.cl?subject=Consulta desde página web';
+        }
+
+        function scheduleVisit() {
+            const when = prompt(`📅 AGENDAR REUNIÓN
+
+¿Cuándo te gustaría reunirte con nosotros?
+
+Opciones disponibles:
+• Hoy en la tarde
+• Mañana
+• Esta semana
+• Próxima semana
+
+Ingresa tu preferencia:`);
+
+            if (when) {
+                const contact = prompt('¿Cómo prefieres que te contactemos para confirmar?\n\nIngresa tu teléfono o email:');
+                if (contact) {
+                    alert(`✅ ¡REUNIÓN SOLICITADA!
+
+📅 Preferencia: ${when}
+📞 Contacto: ${contact}
+
+Te llamaremos dentro de las próximas 2 horas para confirmar fecha, hora y lugar.
+
+¡Gracias por confiar en Roberto Reyes Propiedades!`);
+                }
+            }
+        }
+
+        // Form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                subject: document.getElementById('subject').value,
+                budget: document.getElementById('budget').value,
+                message: document.getElementById('message').value
+            };
+
+            // Validate required fields
+            if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone || !formData.subject || !formData.message) {
+                alert('❌ Por favor complete todos los campos obligatorios (*)');
+                return;
+            }
+
+            // Show loading
+            const submitBtn = this.querySelector('.form-submit');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Enviando...';
+            submitBtn.disabled = true;
+
+            // Simulate form submission
+            setTimeout(() => {
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                
+                // Show detailed confirmation
+                const confirmation = `
+✅ ¡CONSULTA ENVIADA EXITOSAMENTE!
+
+📝 Resumen de tu consulta:
+• Nombre: ${formData.firstName} ${formData.lastName}
+• Email: ${formData.email}
+• Teléfono: ${formData.phone}
+• Tipo: ${getSubjectText(formData.subject)}
+${formData.budget ? '• Presupuesto: ' + getBudgetText(formData.budget) : ''}
+
+📞 Próximos pasos:
+1. Te contactaremos en las próximas 2 horas
+2. Agendaremos una reunión si es necesario
+3. Te enviaremos propuestas personalizadas
+
+¡Gracias por confiar en Roberto Reyes Propiedades!
+                `;
+                
+                alert(confirmation);
+
+                // Reset form
+                this.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'none';
+                }, 5000);
+
+            }, 1500);
+        });
+
+        function getSubjectText(value) {
+            const subjects = {
+                'compra': 'Comprar propiedad',
+                'venta': 'Vender propiedad',
+                'arriendo-buscar': 'Buscar arriendo',
+                'arriendo-ofrecer': 'Arrendar propiedad',
+                'inversion': 'Asesoría de inversión',
+                'tasacion': 'Tasación',
+                'legal': 'Consulta legal',
+                'otro': 'Otra consulta'
+            };
+            return subjects[value] || value;
+        }
+
+        function getBudgetText(value) {
+            const budgets = {
+                'hasta-3000': 'Hasta UF 3.000',
+                '3000-5000': 'UF 3.000 - 5.000',
+                '5000-8000': 'UF 5.000 - 8.000',
+                '8000-12000': 'UF 8.000 - 12.000',
+                '12000-mas': 'Más de UF 12.000'
+            };
+            return budgets[value] || value;
+        }
+
+        // FAQ Toggle
+        function toggleFAQ(index) {
+            const faqItems = document.querySelectorAll('.faq-item');
+            const currentItem = faqItems[index];
+            const answer = currentItem.querySelector('.faq-answer');
+            const toggle = currentItem.querySelector('.faq-toggle');
+
+            // Close all other FAQs
+            faqItems.forEach((item, i) => {
+                if (i !== index) {
+                    const otherAnswer = item.querySelector('.faq-answer');
+                    const otherToggle = item.querySelector('.faq-toggle');
+                    otherAnswer.classList.remove('active');
+                    otherToggle.textContent = '+';
+                    otherToggle.style.transform = 'rotate(0deg)';
+                }
+            });
+
+            // Toggle current FAQ
+            if (answer.classList.contains('active')) {
+                answer.classList.remove('active');
+                toggle.textContent = '+';
+                toggle.style.transform = 'rotate(0deg)';
+            } else {
+                answer.classList.add('active');
+                toggle.textContent = '−';
+                toggle.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Phone number formatting
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.startsWith('56')) {
+                value = '+' + value;
+            } else if (value.startsWith('9') && value.length === 9) {
+                value = '+56 ' + value;
+            }
+            
+            // Format: +56 9 1234 5678
+            if (value.startsWith('+56')) {
+                value = value.replace(/(\+56)(\d{1})(\d{4})(\d{4})/, '$1 $2 $3 $4');
+            }
+            
+            e.target.value = value;
+        });
+
+        // Auto-scroll to form on page load if coming from another page
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('action') === 'contact') {
+                document.getElementById('contactForm').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start' 
+                });
+            }
+        });
+
+        // Add click tracking for contact methods
+        document.querySelectorAll('.method-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Add visual feedback
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-5px)';
+                }, 150);
+            });
+        });
+
+        // Add hover effects to contact items
+        document.querySelectorAll('.contact-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const link = this.querySelector('a');
+                if (link) {
+                    link.click();
+                }
+            });
+        });
+
+        // Enhanced form validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePhone(phone) {
+            const cleanPhone = phone.replace(/\D/g, '');
+            return cleanPhone.length >= 8;
+        }
+
+        // Real-time validation
+        document.getElementById('email').addEventListener('blur', function() {
+            if (this.value && !validateEmail(this.value)) {
+                this.style.borderColor = '#e74c3c';
+                showFieldError(this, 'Por favor ingresa un email válido');
+            } else {
+                this.style.borderColor = '#e0e6ed';
+                clearFieldError(this);
+            }
+        });
+
+        document.getElementById('phone').addEventListener('blur', function() {
+            if (this.value && !validatePhone(this.value)) {
+                this.style.borderColor = '#e74c3c';
+                showFieldError(this, 'Por favor ingresa un teléfono válido');
+            } else {
+                this.style.borderColor = '#e0e6ed';
+                clearFieldError(this);
+            }
+        });
+
+        function showFieldError(field, message) {
+            clearFieldError(field);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'field-error';
+            errorDiv.style.color = '#e74c3c';
+            errorDiv.style.fontSize = '0.9rem';
+            errorDiv.style.marginTop = '0.5rem';
+            errorDiv.textContent = message;
+            field.parentNode.appendChild(errorDiv);
+        }
+
+        function clearFieldError(field) {
+            const errorDiv = field.parentNode.querySelector('.field-error');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+    </script>
+</body>
+</html>
