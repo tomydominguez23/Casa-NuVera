@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servicios - Roberto Reyes Propiedades</title>
+    <title>Servicios Inmobiliarios - Casa Nuvera | Innovative Real Estate // Est. 2019</title>
+    <link rel="stylesheet" href="property-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -11,409 +15,588 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f8f9fa;
+        :root {
+            --primary-black: #0a0a0a;
+            --secondary-gray: #666666;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --background-gray: #7a7a7a;
+            --white: #ffffff;
+            --accent-orange: #ff6b35;
+            --text-muted: #999999;
+            --border-color: #ddd;
+            --overlay-dark: rgba(0, 0, 0, 0.6);
+            --overlay-medium: rgba(0, 0, 0, 0.4);
+            --overlay-light: rgba(0, 0, 0, 0.2);
+            --overlay-white: rgba(255, 255, 255, 0.9);
         }
 
-        /* Header */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.5;
+            color: var(--white);
+            background-color: var(--background-gray);
+            font-weight: 400;
+            overflow-x: hidden;
+        }
+
+        /* Header flotante */
         .header {
-            background: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
+            position: fixed;
             top: 0;
-            z-index: 100;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 2rem;
+            padding: 1rem 2rem;
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: 300;
-            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
             text-decoration: none;
-            font-style: italic;
+            color: var(--primary-black);
+        }
+
+        .logo-image {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
 
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 3rem;
+            align-items: center;
         }
 
         .nav-menu a {
             text-decoration: none;
-            color: #7f8c8d;
+            color: var(--secondary-gray);
             font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
             text-transform: uppercase;
-            font-size: 0.9rem;
-            transition: color 0.3s;
+            letter-spacing: 0.5px;
         }
 
         .nav-menu a:hover,
         .nav-menu a.active {
-            color: #2c3e50;
+            color: var(--primary-black);
+        }
+
+        .nav-cta {
+            background: var(--primary-black);
+            color: white !important;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+
+        .nav-cta:hover {
+            background: var(--secondary-gray);
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            height: 70vh;
+            background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
+                        url('https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1920&h=1080&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             color: white;
-            padding: 5rem 0;
-            text-align: center;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+            margin-top: 80px;
         }
 
-        .hero-container {
-            max-width: 800px;
-            margin: 0 auto;
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
             padding: 0 2rem;
+            z-index: 2;
+        }
+
+        .hero-tagline {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            font-weight: 500;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 300;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            opacity: 0.9;
+            line-height: 1.1;
             margin-bottom: 2rem;
+            letter-spacing: -2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        .hero-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .hero-feature {
-            text-align: center;
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-text {
-            font-size: 1rem;
+        .hero-description {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
             opacity: 0.9;
         }
 
         /* Services Grid */
         .services-section {
-            padding: 4rem 0;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 0;
+            background: transparent;
         }
 
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 3rem;
-            font-weight: 300;
+        .services-container {
+            max-width: 100%;
+            margin: 0;
+            width: 100%;
         }
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            min-height: 600px;
         }
 
         .service-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2.5rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            cursor: pointer;
+            background: transparent;
+            border: none;
+            transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
-        }
-
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            cursor: pointer;
+            height: 100%;
+            min-height: 600px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            transform: scale(1.02);
+            z-index: 10;
         }
 
-        .service-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            color: #3498db;
+        .service-card:hover .service-image {
+            filter: saturate(1.0) contrast(1.2) brightness(1.2) sepia(0.4) hue-rotate(15deg);
+        }
+
+        .service-card:hover .service-info {
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+        }
+
+        .service-card:nth-child(1) {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+        }
+
+        .service-card:nth-child(2) {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+        }
+
+        .service-card:nth-child(3) {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            border-right: none;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+        }
+
+        .service-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 3rem;
+            color: white;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            transition: all 0.4s ease;
+        }
+
+        .service-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            font-weight: 500;
         }
 
         .service-title {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin-bottom: 1rem;
+            font-size: 2rem;
             font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
         }
 
         .service-description {
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .service-link {
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            border-bottom: 2px solid white;
+            padding-bottom: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .service-link:hover {
+            opacity: 0.8;
+        }
+
+        /* Detailed Services Section */
+        .detailed-services {
+            background: var(--background-gray);
+            padding: 6rem 2rem;
+            color: white;
+        }
+
+        .detailed-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .detailed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+        }
+
+        .detailed-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 3rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .detailed-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-10px);
+        }
+
+        .detailed-icon {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .detailed-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .detailed-description {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
             margin-bottom: 2rem;
         }
 
-        .service-features {
+        .detailed-features {
             list-style: none;
             margin-bottom: 2rem;
         }
 
-        .service-features li {
-            padding: 0.5rem 0;
-            color: #555;
+        .detailed-features li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
         }
 
-        .service-features li::before {
+        .detailed-features li::before {
             content: '✓';
-            color: #27ae60;
+            color: var(--accent-orange);
             font-weight: bold;
-        }
-
-        .service-price {
             font-size: 1.2rem;
-            font-weight: 600;
-            color: #3498db;
-            margin-bottom: 1rem;
         }
 
-        .service-btn {
-            background: #3498db;
+        .detailed-price {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--accent-orange);
+            margin-bottom: 2rem;
+        }
+
+        .detailed-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
             color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 1.2rem 2rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             width: 100%;
-            font-size: 1rem;
         }
 
-        .service-btn:hover {
-            background: #2980b9;
+        .detailed-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
 
         /* Process Section */
         .process-section {
-            background: white;
-            padding: 4rem 0;
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752025283665_0.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 6rem 2rem;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
         .process-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
         }
 
         .process-steps {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            gap: 3rem;
+            margin-top: 4rem;
         }
 
         .process-step {
             text-align: center;
-            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 3rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .step-number {
-            width: 60px;
-            height: 60px;
-            background: #3498db;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 2rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .step-title {
-            font-size: 1.2rem;
-            color: #2c3e50;
+            font-size: 1.3rem;
+            color: white;
             margin-bottom: 1rem;
             font-weight: 600;
         }
 
         .step-description {
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
         }
 
-        /* Testimonials Section */
-        .testimonials-section {
-            background: #f8f9fa;
-            padding: 4rem 0;
+        /* Contact Section */
+        .contact-section {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1920&h=1080&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 6rem 2rem;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        .testimonials-container {
+        .contact-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .testimonial-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        .testimonial-quote {
-            font-style: italic;
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .author-avatar {
-            width: 50px;
-            height: 50px;
-            background: #3498db;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .author-info h4 {
-            color: #2c3e50;
-            margin-bottom: 0.2rem;
-        }
-
-        .author-info p {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-
-        .quote-icon {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 2rem;
-            color: #3498db;
-            opacity: 0.3;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: white;
-            padding: 4rem 0;
             text-align: center;
         }
 
-        .cta-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .cta-title {
-            font-size: 2.5rem;
+        .contact-container h2 {
+            font-size: 3rem;
             font-weight: 300;
-            margin-bottom: 1rem;
-        }
-
-        .cta-description {
-            font-size: 1.2rem;
-            opacity: 0.9;
             margin-bottom: 2rem;
+            color: white;
         }
 
-        .cta-buttons {
+        .contact-container p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-buttons {
             display: flex;
-            gap: 1rem;
             justify-content: center;
+            gap: 2rem;
             flex-wrap: wrap;
         }
 
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
+        .contact-btn {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            transition: all 0.3s ease;
             cursor: pointer;
-            transition: all 0.3s;
+            display: inline-block;
+            color: white;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
         }
 
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #2980b9;
+        .contact-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
 
-        .btn-outline {
-            background: transparent;
+        .contact-btn.primary {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-btn.primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Footer con fondo de imagen */
+        .footer {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752027032204_0.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 4rem 2rem 2rem;
             color: white;
-            border: 2px solid white;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        .btn-outline:hover {
-            background: white;
-            color: #2c3e50;
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-tagline {
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* Mobile Responsive */
@@ -426,12 +609,17 @@
                 font-size: 2.5rem;
             }
 
-            .hero-features {
+            .services-grid {
                 grid-template-columns: 1fr;
-                gap: 1rem;
             }
 
-            .services-grid {
+            .service-card {
+                min-height: 500px;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .detailed-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -439,260 +627,314 @@
                 grid-template-columns: 1fr;
             }
 
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .cta-buttons {
+            .contact-buttons {
                 flex-direction: column;
                 align-items: center;
             }
 
-            .btn {
-                width: 250px;
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
             }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero,
+            .process-section,
+            .contact-section {
+                background-attachment: scroll;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Parallax effect */
+        .parallax {
+            background-attachment: fixed;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header flotante -->
     <header class="header">
         <div class="nav-container">
-            <a href="index.html" class="logo">Roberto Reyes</a>
+            <a href="index.html" class="logo">
+                <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752020935606_0.png" 
+                     alt="Casa Nuvera Logo" 
+                     class="logo-image">
+                <span class="logo-text">Casa Nuvera</span>
+            </a>
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.html">Inicio</a></li>
-                    <li><a href="compras.html">Compra</a></li>
-                    <li><a href="arriendos.html">Arriendo</a></li>
+                    <li><a href="compras.html">Comprar</a></li>
+                    <li><a href="arriendos.html">Arrendar</a></li>
                     <li><a href="servicios.html" class="active">Servicios</a></li>
                     <li><a href="nosotros.html">Nosotros</a></li>
-                    <li><a href="blog.html">Blog</a></li>
                     <li><a href="contacto.html">Contacto</a></li>
+                    <li><a href="subir-imagenes.html" class="nav-cta">Gestionar</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <h1>Nuestros Servicios</h1>
-            <p>Soluciones integrales para todas tus necesidades inmobiliarias con la mejor asesoría del mercado</p>
-            
-            <div class="hero-features">
-                <div class="hero-feature">
-                    <div class="feature-icon">🎯</div>
-                    <div class="feature-text">Asesoría Personalizada</div>
+    <section class="hero parallax">
+        <div class="hero-content fade-in">
+            <div class="hero-tagline">Casa Nuvera | Premium Real Estate Services</div>
+            <h1>Innovative solutions for every real estate need</h1>
+            <p class="hero-description">Transformamos tu experiencia inmobiliaria con servicios integrales de vanguardia. Desde asesoría personalizada hasta soluciones tecnológicas avanzadas.</p>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="services-section">
+        <div class="services-container">
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-info">
+                        <div class="service-label">Compra & Venta</div>
+                        <h3 class="service-title">Transacciones Premium</h3>
+                        <p class="service-description">Asesoría integral para compra y venta de propiedades con tecnología de vanguardia y análisis de mercado profundo.</p>
+                        <a href="compras.html" class="service-link">Explorar Servicios →</a>
+                    </div>
                 </div>
-                <div class="hero-feature">
-                    <div class="feature-icon">⚡</div>
-                    <div class="feature-text">Procesos Ágiles</div>
+
+                <div class="service-card">
+                    <div class="service-info">
+                        <div class="service-label">Gestión & Arriendos</div>
+                        <h3 class="service-title">Administración Inteligente</h3>
+                        <p class="service-description">Gestión completa de arriendos con tecnología IoT, automatización de procesos y garantías extendidas.</p>
+                        <a href="arriendos.html" class="service-link">Ver Arriendos →</a>
+                    </div>
                 </div>
-                <div class="hero-feature">
-                    <div class="feature-icon">🛡️</div>
-                    <div class="feature-text">Respaldo Legal</div>
-                </div>
-                <div class="hero-feature">
-                    <div class="feature-icon">📈</div>
-                    <div class="feature-text">Mejores Resultados</div>
+
+                <div class="service-card">
+                    <div class="service-info">
+                        <div class="service-label">Inversiones & Análisis</div>
+                        <h3 class="service-title">Consultoría Estratégica</h3>
+                        <p class="service-description">Análisis de inversiones con inteligencia artificial, proyecciones avanzadas y estrategias de portafolio optimizadas.</p>
+                        <a href="contacto.html" class="service-link">Consultar Ahora →</a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section class="services-section">
-        <h2 class="section-title">Servicios Especializados</h2>
-        <div class="services-grid">
-            <!-- Compra de Propiedades -->
-            <div class="service-card" onclick="selectService('compra')">
-                <div class="service-icon">🏠</div>
-                <h3 class="service-title">Compra de Propiedades</h3>
-                <p class="service-description">Te ayudamos a encontrar y comprar la propiedad perfecta con asesoría integral desde la búsqueda hasta la escrituración.</p>
-                <ul class="service-features">
-                    <li>Búsqueda personalizada de propiedades</li>
-                    <li>Análisis de mercado y precios</li>
-                    <li>Gestión de crédito hipotecario</li>
-                    <li>Inspección técnica profesional</li>
-                    <li>Negociación y cierre de la operación</li>
-                    <li>Acompañamiento legal completo</li>
-                </ul>
-                <div class="service-price">Comisión desde 1%</div>
-                <button class="service-btn">Quiero Comprar</button>
-            </div>
+    <!-- Detailed Services Section -->
+    <section class="detailed-services">
+        <div class="detailed-container">
+            <h2 class="section-title">Servicios Especializados</h2>
+            
+            <div class="detailed-grid">
+                <div class="detailed-card" onclick="selectService('compra')">
+                    <span class="detailed-icon">🏠</span>
+                    <h3 class="detailed-title">Compra de Propiedades</h3>
+                    <p class="detailed-description">Servicio integral de compra con análisis de mercado, gestión financiera y acompañamiento legal completo.</p>
+                    <ul class="detailed-features">
+                        <li>Búsqueda personalizada con IA</li>
+                        <li>Análisis de mercado y precios</li>
+                        <li>Gestión de crédito hipotecario</li>
+                        <li>Inspección técnica profesional</li>
+                        <li>Negociación especializada</li>
+                        <li>Acompañamiento legal</li>
+                    </ul>
+                    <div class="detailed-price">Comisión desde 1%</div>
+                    <button class="detailed-btn">Quiero Comprar</button>
+                </div>
 
-            <!-- Venta de Propiedades -->
-            <div class="service-card" onclick="selectService('venta')">
-                <div class="service-icon">💰</div>
-                <h3 class="service-title">Venta de Propiedades</h3>
-                <p class="service-description">Vendemos tu propiedad al mejor precio del mercado con estrategias de marketing digital y red de contactos exclusiva.</p>
-                <ul class="service-features">
-                    <li>Tasación profesional gratuita</li>
-                    <li>Plan de marketing personalizado</li>
-                    <li>Fotografía y videos profesionales</li>
-                    <li>Publicación en portales premium</li>
-                    <li>Calificación de compradores</li>
-                    <li>Negociación especializada</li>
-                </ul>
-                <div class="service-price">Comisión desde 2%</div>
-                <button class="service-btn">Quiero Vender</button>
-            </div>
+                <div class="detailed-card" onclick="selectService('venta')">
+                    <span class="detailed-icon">💰</span>
+                    <h3 class="detailed-title">Venta de Propiedades</h3>
+                    <p class="detailed-description">Marketing premium con tecnología 360°, fotografía profesional y estrategias digitales avanzadas.</p>
+                    <ul class="detailed-features">
+                        <li>Tasación con algoritmos avanzados</li>
+                        <li>Marketing digital premium</li>
+                        <li>Tours virtuales 360°</li>
+                        <li>Fotografía y video 4K</li>
+                        <li>Calificación inteligente de compradores</li>
+                        <li>Negociación especializada</li>
+                    </ul>
+                    <div class="detailed-price">Comisión desde 2%</div>
+                    <button class="detailed-btn">Quiero Vender</button>
+                </div>
 
-            <!-- Arriendos -->
-            <div class="service-card" onclick="selectService('arriendo')">
-                <div class="service-icon">🔑</div>
-                <h3 class="service-title">Gestión de Arriendos</h3>
-                <p class="service-description">Servicio completo de arriendos con administración profesional y garantías para propietarios e inquilinos.</p>
-                <ul class="service-features">
-                    <li>Búsqueda de inquilinos calificados</li>
-                    <li>Evaluación crediticia y laboral</li>
-                    <li>Contratos con respaldo legal</li>
-                    <li>Administración de pagos</li>
-                    <li>Mantención y reparaciones</li>
-                    <li>Renovaciones automáticas</li>
-                </ul>
-                <div class="service-price">1 mes de arriendo</div>
-                <button class="service-btn">Gestionar Arriendo</button>
-            </div>
+                <div class="detailed-card" onclick="selectService('arriendo')">
+                    <span class="detailed-icon">🔑</span>
+                    <h3 class="detailed-title">Gestión de Arriendos</h3>
+                    <p class="detailed-description">Administración inteligente con IoT, automatización de pagos y mantenimiento predictivo.</p>
+                    <ul class="detailed-features">
+                        <li>Selección de inquilinos con IA</li>
+                        <li>Contratos digitales inteligentes</li>
+                        <li>Cobranza automatizada</li>
+                        <li>Mantenimiento predictivo IoT</li>
+                        <li>Seguros y garantías extendidas</li>
+                        <li>Dashboard en tiempo real</li>
+                    </ul>
+                    <div class="detailed-price">1 mes de arriendo</div>
+                    <button class="detailed-btn">Gestionar Arriendo</button>
+                </div>
 
-            <!-- Inversiones -->
-            <div class="service-card" onclick="selectService('inversion')">
-                <div class="service-icon">📊</div>
-                <h3 class="service-title">Asesoría en Inversiones</h3>
-                <p class="service-description">Consultoría especializada para inversores con análisis de rentabilidad y oportunidades de mercado.</p>
-                <ul class="service-features">
-                    <li>Análisis de rentabilidad detallado</li>
-                    <li>Identificación de oportunidades</li>
-                    <li>Proyecciones financieras</li>
-                    <li>Diversificación de portafolio</li>
-                    <li>Seguimiento post-inversión</li>
-                    <li>Reportes mensuales</li>
-                </ul>
-                <div class="service-price">Desde UF 50</div>
-                <button class="service-btn">Quiero Invertir</button>
-            </div>
+                <div class="detailed-card" onclick="selectService('inversion')">
+                    <span class="detailed-icon">📊</span>
+                    <h3 class="detailed-title">Asesoría en Inversiones</h3>
+                    <p class="detailed-description">Análisis cuantitativo con machine learning, modelado de riesgos y optimización de portafolios.</p>
+                    <ul class="detailed-features">
+                        <li>Análisis predictivo con ML</li>
+                        <li>Modelado de riesgos avanzado</li>
+                        <li>Optimización de portafolio</li>
+                        <li>ROI y proyecciones 10 años</li>
+                        <li>Diversificación inteligente</li>
+                        <li>Reportes automatizados</li>
+                    </ul>
+                    <div class="detailed-price">Desde UF 50</div>
+                    <button class="detailed-btn">Quiero Invertir</button>
+                </div>
 
-            <!-- Tasaciones -->
-            <div class="service-card" onclick="selectService('tasacion')">
-                <div class="service-icon">📋</div>
-                <h3 class="service-title">Tasaciones Profesionales</h3>
-                <p class="service-description">Tasaciones certificadas para compra, venta, herencias, divorcios y fines tributarios con respaldo técnico.</p>
-                <ul class="service-features">
-                    <li>Tasador certificado SEREMI</li>
-                    <li>Metodología técnica actualizada</li>
-                    <li>Informe detallado con fotos</li>
-                    <li>Validez legal y tributaria</li>
-                    <li>Entrega en 24-48 horas</li>
-                    <li>Revisión y actualización</li>
-                </ul>
-                <div class="service-price">Desde UF 3</div>
-                <button class="service-btn">Solicitar Tasación</button>
-            </div>
+                <div class="detailed-card" onclick="selectService('tasacion')">
+                    <span class="detailed-icon">📋</span>
+                    <h3 class="detailed-title">Tasaciones Inteligentes</h3>
+                    <p class="detailed-description">Valuaciones precisas con algoritmos avanzados, comparables automatizados y certificación digital.</p>
+                    <ul class="detailed-features">
+                        <li>Algoritmos de valuación IA</li>
+                        <li>Comparables automatizados</li>
+                        <li>Certificación digital</li>
+                        <li>Informes interactivos</li>
+                        <li>Actualización automática</li>
+                        <li>Validez legal completa</li>
+                    </ul>
+                    <div class="detailed-price">Desde UF 3</div>
+                    <button class="detailed-btn">Solicitar Tasación</button>
+                </div>
 
-            <!-- Asesoría Legal -->
-            <div class="service-card" onclick="selectService('legal')">
-                <div class="service-icon">⚖️</div>
-                <h3 class="service-title">Asesoría Legal</h3>
-                <p class="service-description">Respaldo jurídico especializado en derecho inmobiliario para todas tus operaciones y consultas legales.</p>
-                <ul class="service-features">
-                    <li>Revisión de contratos</li>
-                    <li>Due diligence de propiedades</li>
-                    <li>Resolución de conflictos</li>
-                    <li>Regularización de títulos</li>
-                    <li>Constitución de sociedades</li>
-                    <li>Planificación tributaria</li>
-                </ul>
-                <div class="service-price">Desde UF 10</div>
-                <button class="service-btn">Consulta Legal</button>
+                <div class="detailed-card" onclick="selectService('legal')">
+                    <span class="detailed-icon">⚖️</span>
+                    <h3 class="detailed-title">Asesoría Legal Tech</h3>
+                    <p class="detailed-description">Servicios jurídicos especializados con automatización de contratos y due diligence digital.</p>
+                    <ul class="detailed-features">
+                        <li>Due diligence automatizado</li>
+                        <li>Contratos inteligentes</li>
+                        <li>Verificación blockchain</li>
+                        <li>Resolución de conflictos</li>
+                        <li>Cumplimiento normativo</li>
+                        <li>Consultas 24/7</li>
+                    </ul>
+                    <div class="detailed-price">Desde UF 10</div>
+                    <button class="detailed-btn">Consulta Legal</button>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Process Section -->
-    <section class="process-section">
+    <section class="process-section parallax">
         <div class="process-container">
-            <h2 class="section-title">Nuestro Proceso de Trabajo</h2>
+            <h2 class="section-title">Nuestro Proceso Innovador</h2>
             <div class="process-steps">
                 <div class="process-step">
                     <div class="step-number">1</div>
-                    <h3 class="step-title">Consulta Inicial</h3>
-                    <p class="step-description">Reunión gratuita para entender tus necesidades, objetivos y presupuesto. Definimos la estrategia ideal para tu caso.</p>
+                    <h3 class="step-title">Análisis Inteligente</h3>
+                    <p class="step-description">Evaluación inicial con IA, análisis de necesidades y definición de estrategia personalizada con métricas predictivas.</p>
                 </div>
                 <div class="process-step">
                     <div class="step-number">2</div>
-                    <h3 class="step-title">Análisis y Propuesta</h3>
-                    <p class="step-description">Evaluamos el mercado, analizamos opciones y te presentamos una propuesta personalizada con timeline y costos claros.</p>
+                    <h3 class="step-title">Propuesta Premium</h3>
+                    <p class="step-description">Desarrollo de solución integral con tecnología avanzada, timeline optimizado y ROI proyectado.</p>
                 </div>
                 <div class="process-step">
                     <div class="step-number">3</div>
-                    <h3 class="step-title">Ejecución</h3>
-                    <p class="step-description">Implementamos la estrategia con comunicación constante, reportes de avance y ajustes según evolución del mercado.</p>
+                    <h3 class="step-title">Ejecución Digital</h3>
+                    <p class="step-description">Implementación con herramientas digitales, monitoreo en tiempo real y ajustes automatizados.</p>
                 </div>
                 <div class="process-step">
                     <div class="step-number">4</div>
-                    <h3 class="step-title">Cierre Exitoso</h3>
-                    <p class="step-description">Completamos la operación con todos los respaldos legales y seguimiento post-venta para tu tranquilidad total.</p>
+                    <h3 class="step-title">Resultado Garantizado</h3>
+                    <p class="step-description">Cierre exitoso con certificación digital, seguimiento post-venta y garantías extendidas.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="testimonials-section">
-        <div class="testimonials-container">
-            <h2 class="section-title">Lo que Dicen Nuestros Clientes</h2>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <div class="quote-icon">"</div>
-                    <p class="testimonial-quote">Excelente servicio en la venta de mi departamento. El equipo fue profesional, transparente y lograron vender en tiempo récord al precio que esperaba.</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">MG</div>
-                        <div class="author-info">
-                            <h4>María González</h4>
-                            <p>Venta Departamento, Providencia</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="testimonial-card">
-                    <div class="quote-icon">"</div>
-                    <p class="testimonial-quote">Roberto me ayudó a encontrar la casa perfecta para mi familia. Su conocimiento del mercado y paciencia fueron clave para tomar la mejor decisión.</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">CP</div>
-                        <div class="author-info">
-                            <h4>Carlos Pérez</h4>
-                            <p>Compra Casa, Las Condes</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="testimonial-card">
-                    <div class="quote-icon">"</div>
-                    <p class="testimonial-quote">La asesoría en inversiones superó mis expectativas. Los análisis fueron precisos y las proyecciones se cumplieron exactamente como se estimó.</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">AM</div>
-                        <div class="author-info">
-                            <h4>Ana Morales</h4>
-                            <p>Asesoría Inversiones</p>
-                        </div>
-                    </div>
-                </div>
+    <!-- Contact Section -->
+    <section class="contact-section parallax">
+        <div class="contact-container">
+            <h2>¿Listo para experimentar el futuro inmobiliario?</h2>
+            <p>Contacta a nuestros especialistas y descubre cómo la tecnología puede transformar tu experiencia inmobiliaria con resultados superiores y procesos optimizados.</p>
+            
+            <div class="contact-buttons">
+                <a href="contacto.html" class="contact-btn primary">Consulta Gratuita</a>
+                <a href="#" class="contact-btn" onclick="scheduleDemo()">Demo Tecnológico</a>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="cta-container">
-            <h2 class="cta-title">¿Listo para Comenzar?</h2>
-            <p class="cta-description">Contáctanos hoy mismo y recibe una consulta gratuita personalizada para tu proyecto inmobiliario</p>
-            <div class="cta-buttons">
-                <a href="contacto.html" class="btn btn-primary">📞 Contactar Ahora</a>
-                <a href="#" class="btn btn-outline" onclick="scheduleConsultation()">📅 Agendar Consulta</a>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Servicios</h4>
+                    <ul>
+                        <li><a href="compras.html">Comprar</a></li>
+                        <li><a href="arriendos.html">Arrendar</a></li>
+                        <li><a href="servicios.html">Consultoría</a></li>
+                        <li><a href="servicios.html">Inversiones</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Tecnología</h4>
+                    <ul>
+                        <li><a href="servicios.html">IA & Analytics</a></li>
+                        <li><a href="servicios.html">Tours Virtuales</a></li>
+                        <li><a href="servicios.html">IoT & Smart Homes</a></li>
+                        <li><a href="servicios.html">Blockchain</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Soporte</h4>
+                    <ul>
+                        <li><a href="contacto.html">Contacto</a></li>
+                        <li><a href="blog.html">Centro de Ayuda</a></li>
+                        <li><a href="subir-imagenes.html">Portal Clientes</a></li>
+                        <li><a href="nosotros.html">Documentación</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></li>
+                        <li><a href="tel:+56912345678">+56 9 1234 5678</a></li>
+                        <li>Av. Apoquindo 1234</li>
+                        <li>Las Condes, Santiago</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-tagline">Casa Nuvera | Innovative Real Estate // Est. 2019</div>
+                <div>&copy; 2025 Casa Nuvera. Todos los derechos reservados.</div>
             </div>
         </div>
-    </section>
+    </footer>
 
+    <!-- Scripts -->
     <script>
         // Service selection
         function selectService(serviceType) {
@@ -702,299 +944,229 @@
             switch(serviceType) {
                 case 'compra':
                     serviceInfo = `
-🏠 SERVICIO DE COMPRA
+🏠 SERVICIO DE COMPRA PREMIUM
 
-✅ Lo que incluye:
-• Consulta inicial gratuita
-• Búsqueda personalizada de propiedades
-• Análisis de mercado y precios comparativos
-• Gestión de crédito hipotecario
-• Inspección técnica profesional
-• Negociación especializada
-• Acompañamiento legal completo
-• Seguimiento post-compra
+✅ Incluye tecnología avanzada:
+• Búsqueda personalizada con IA
+• Análisis predictivo de mercado
+• Gestión digital de crédito hipotecario
+• Inspección con drones y IoT
+• Negociación asistida por algoritmos
+• Due diligence automatizado
+• Contratos inteligentes
+• App móvil exclusiva
 
-💰 Comisión: Desde 1% del valor de la propiedad
-⏱️ Tiempo promedio: 30-60 días
-🛡️ Garantía: 100% de satisfacción
+💰 Comisión: Desde 1% del valor
+⏱️ Tiempo promedio: 30-45 días
+🤖 IA: Análisis 24/7 del mercado
+🛡️ Garantía: Satisfacción total
 
-¿Te gustaría iniciar tu búsqueda?
+¿Te gustaría experimentar el futuro de la compra inmobiliaria?
                     `;
-                    contactMessage = "Hola, estoy interesado en el servicio de compra de propiedades. ¿Podrían contactarme para una consulta inicial?";
+                    contactMessage = "Hola, estoy interesado en el servicio premium de compra con IA. ¿Podrían contactarme para una demo?";
                     break;
 
                 case 'venta':
                     serviceInfo = `
-💰 SERVICIO DE VENTA
+💰 SERVICIO DE VENTA PREMIUM
 
-✅ Lo que incluye:
-• Tasación profesional gratuita
-• Plan de marketing digital personalizado
-• Fotografía y videos profesionales 4K
-• Publicación en portales premium
-• Home staging y preparación
-• Calificación rigurosa de compradores
-• Negociación especializada
-• Gestión legal completa
+✅ Marketing digital avanzado:
+• Tasación con algoritmos IA
+• Tours virtuales 360° + VR
+• Fotografía y video 4K/8K
+• Marketing en redes sociales IA
+• Targeting inteligente de compradores
+• Análisis de comportamiento web
+• Optimización de precio dinámica
+• Dashboard en tiempo real
 
-💰 Comisión: Desde 2% del valor de venta
-⏱️ Tiempo promedio: 45-90 días
-📈 Resultados: 95% de satisfacción
+💰 Comisión: Desde 2% del valor
+📈 Resultados: +25% precio promedio
+⚡ Venta: 60% más rápido
+🎯 Targeting: 95% efectividad
 
-¿Quieres saber cuánto vale tu propiedad?
+¿Quieres maximizar el valor de tu propiedad?
                     `;
-                    contactMessage = "Hola, me gustaría vender mi propiedad. ¿Podrían hacer una tasación gratuita y explicarme el proceso?";
+                    contactMessage = "Hola, me gustaría vender mi propiedad con su tecnología premium. ¿Podrían hacer una tasación con IA?";
                     break;
 
                 case 'arriendo':
                     serviceInfo = `
-🔑 GESTIÓN DE ARRIENDOS
+🔑 GESTIÓN INTELIGENTE DE ARRIENDOS
 
-✅ Para propietarios:
-• Búsqueda de inquilinos calificados
-• Evaluación crediticia y laboral completa
-• Contratos con respaldo legal
-• Cobranza y administración
-• Mantención y reparaciones
-• Renovaciones automáticas
-
-✅ Para arrendatarios:
-• Búsqueda personalizada
-• Negociación de condiciones
-• Revisión de contratos
-• Gestión de garantías
+✅ Tecnología IoT integrada:
+• Selección de inquilinos con IA
+• Verificación biométrica
+• Contratos digitales inteligentes
+• Cobranza automatizada
+• Mantenimiento predictivo IoT
+• Monitoreo de propiedad 24/7
+• Seguros paramétricos
+• App para inquilinos
 
 💰 Comisión: 1 mes de arriendo
-⏱️ Ocupación: 15-30 días promedio
+📊 Ocupación: 98% promedio
+🔧 Mantenimiento: Predictivo
+📱 Control: Total desde app
 
-¿Buscas arrendar o necesitas inquilinos?
+¿Quieres automatizar completamente tu arriendo?
                     `;
-                    contactMessage = "Hola, necesito ayuda con arriendo de propiedades. ¿Podrían contactarme para explicarme sus servicios?";
+                    contactMessage = "Hola, necesito gestión inteligente de arriendos con IoT. ¿Podrían explicarme el sistema?";
                     break;
 
                 case 'inversion':
                     serviceInfo = `
-📊 ASESORÍA EN INVERSIONES
+📊 ASESORÍA DE INVERSIONES CON IA
 
-✅ Servicios incluidos:
-• Análisis de rentabilidad detallado
-• Identificación de oportunidades
-• Proyecciones financieras 5-10 años
-• Diversificación de portafolio
-• Due diligence completo
-• Seguimiento trimestral
-• Reportes de performance
+✅ Análisis cuantitativo avanzado:
+• Machine Learning predictivo
+• Modelado de riesgos Monte Carlo
+• Optimización de portafolio
+• Análisis de sentiment del mercado
+• Proyecciones 10-20 años
+• Diversificación inteligente
+• ROI optimizado con IA
+• Rebalanceo automático
 
-📈 Rentabilidades objetivo:
-• Rental yield: 4-8% anual
-• Apreciación: 3-6% anual
-• ROI total: 7-14% anual
+📈 ROI objetivo: 12-18% anual
+🤖 IA: Análisis 24/7
+📊 Precisión: 87% en predicciones
+💼 Mínimo: UF 3.000
 
-💰 Inversión mínima: UF 3.000
-📋 Fee: Desde UF 50
-
-¿Quieres invertir en bienes raíces?
+¿Quieres que la IA optimice tus inversiones?
                     `;
-                    contactMessage = "Hola, estoy interesado en invertir en propiedades. ¿Podrían asesorarme sobre las mejores oportunidades actuales?";
+                    contactMessage = "Hola, estoy interesado en inversiones con IA. ¿Podrían analizar las mejores oportunidades actuales?";
                     break;
 
                 case 'tasacion':
                     serviceInfo = `
-📋 TASACIONES PROFESIONALES
+📋 TASACIONES INTELIGENTES
 
-✅ Tipos de tasación:
-• Compra/Venta
-• Herencias y sucesiones
-• Divorcios y liquidaciones
-• Fines tributarios
-• Seguros y garantías
-• Inversión y desarrollo
+✅ Tecnología de valuación:
+• Algoritmos de IA propietarios
+• Comparables automatizados
+• Análisis de big data inmobiliario
+• Certificación digital blockchain
+• Informes interactivos 3D
+• Actualización automática
+• Validez legal completa
+• API para integraciones
 
-📄 Incluye:
-• Informe técnico detallado
-• Metodología certificada SEREMI
-• Fotografías profesionales
-• Respaldo legal
-• Entrega 24-48 horas
+💰 Desde UF 3 (básica)
+⚡ Entrega: 2-24 horas
+🎯 Precisión: 95%+
+🔗 Blockchain: Certificación inmutable
 
-💰 Desde UF 3 (según complejidad)
-⚡ Servicio express disponible
-
-¿Necesitas tasar una propiedad?
+¿Necesitas una tasación del futuro?
                     `;
-                    contactMessage = "Hola, necesito una tasación profesional para mi propiedad. ¿Podrían enviarme información sobre el proceso y costos?";
+                    contactMessage = "Hola, necesito una tasación inteligente con IA. ¿Podrían explicarme el proceso tecnológico?";
                     break;
 
                 case 'legal':
                     serviceInfo = `
-⚖️ ASESORÍA LEGAL INMOBILIARIA
+⚖️ ASESORÍA LEGAL TECH
 
-✅ Servicios disponibles:
-• Revisión de contratos de compra/venta
-• Due diligence de propiedades
-• Resolución de conflictos
-• Regularización de títulos
-• Constitución de sociedades inmobiliarias
-• Planificación tributaria
-• Gestión de permisos y patentes
-
-👩‍⚖️ Equipo especializado:
-• Abogados expertos en inmobiliario
-• Experiencia en grandes operaciones
-• Red de notarios y conservadores
+✅ Servicios jurídicos digitales:
+• Due diligence automatizado
+• Contratos inteligentes
+• Verificación blockchain
+• IA para análisis de riesgos
+• Resolución de conflictos online
+• Cumplimiento normativo automático
+• Consultas por chatbot 24/7
+• Documentación digital
 
 💰 Consulta: Desde UF 10
-📞 Urgencias: Disponible 24/7
+🤖 IA Jurídica: 24/7
+📄 Contratos: Automatizados
+🔒 Blockchain: Inmutable
 
-¿Tienes una consulta legal inmobiliaria?
+¿Quieres revolucionar tus procesos legales?
                     `;
-                    contactMessage = "Hola, necesito asesoría legal inmobiliaria. ¿Podrían contactarme para explicarme sus servicios jurídicos?";
+                    contactMessage = "Hola, necesito asesoría legal tech con IA. ¿Podrían explicarme sus servicios digitales?";
                     break;
             }
 
-            const action = confirm(serviceInfo + "\n\n¿Te gustaría que te contactemos para más información?");
+            const action = confirm(serviceInfo + "\n\n¿Te gustaría agendar una demo personalizada?");
             
             if (action) {
-                const contactMethod = confirm("¿Cómo prefieres que te contactemos?\n\nOK = WhatsApp (inmediato)\nCancelar = Teléfono/Email");
+                const contactMethod = confirm("¿Cómo prefieres que te contactemos?\n\nOK = WhatsApp (inmediato)\nCancelar = Agendar videollamada");
                 
                 if (contactMethod) {
                     window.open(`https://wa.me/56912345678?text=${encodeURIComponent(contactMessage)}`, '_blank');
                 } else {
-                    window.location.href = `contacto.html?service=${serviceType}`;
+                    scheduleDemo();
                 }
             }
         }
 
-        // Schedule consultation
-        function scheduleConsultation() {
-            const consultationInfo = `
-📅 AGENDAR CONSULTA GRATUITA
+        // Schedule demo
+        function scheduleDemo() {
+            const demoInfo = `
+📅 DEMO TECNOLÓGICO PERSONALIZADO
 
-¿Qué incluye tu consulta?
-✅ Análisis de tu situación actual
-✅ Definición de objetivos y presupuesto
-✅ Estrategia personalizada
-✅ Plan de acción con timeline
-✅ Respuesta a todas tus preguntas
+¿Qué verás en la demo?
+🤖 IA aplicada a bienes raíces
+📱 Apps móviles exclusivas
+🏠 Tours virtuales inmersivos
+📊 Dashboards en tiempo real
+🔗 Blockchain inmobiliario
+📈 Análisis predictivo
 
-⏱️ Duración: 45-60 minutos
-📍 Modalidad: Presencial u online
-💰 Costo: GRATUITO
+⏱️ Duración: 30-45 minutos
+📍 Modalidad: Online o presencial
+🎁 Incluye: Análisis gratuito
+💻 Plataforma: Zoom/Teams/Presencial
 
-Horarios disponibles:
-• Lunes a Viernes: 9:00 - 18:00
-• Sábados: 10:00 - 16:00
-• Domingos: Solo casos especiales
+Horarios exclusivos:
+• Lunes a Viernes: 9:00 - 19:00
+• Sábados: 10:00 - 17:00
+• Sesiones VIP: Horarios especiales
 
-¿Cuándo te gustaría tu consulta?
+¿Cuándo quieres ver el futuro inmobiliario?
             `;
 
-            const when = prompt(consultationInfo + "\n\nIngresa tu preferencia de día y hora:");
+            const when = prompt(demoInfo + "\n\nIngresa tu día y hora preferida:");
             
             if (when) {
-                const contactInfo = prompt("Para confirmar tu consulta, necesitamos:\n\n• Nombre completo\n• Teléfono\n• Email\n• Tipo de servicio de interés\n\nIngresa tus datos:");
+                const contactInfo = prompt(`🚀 RESERVA TU DEMO\n\nPara personalizar tu experiencia:\n\n• Nombre completo\n• Teléfono/WhatsApp\n• Email corporativo\n• Tipo de servicio de interés\n• Presupuesto aproximado\n\nIngresa tus datos:`);
                 
                 if (contactInfo) {
-                    alert(`✅ ¡CONSULTA AGENDADA!
-
-📅 Preferencia: ${when}
-📋 Datos: ${contactInfo}
-
-Próximos pasos:
-1. Te contactaremos en las próximas 2 horas
-2. Confirmaremos fecha, hora y modalidad
-3. Te enviaremos link de reunión (si es online)
-4. Recibirás recordatorio 24hrs antes
-
-¡Nos vemos pronto!`);
+                    alert(`✅ ¡DEMO AGENDADO!\n\n📅 Preferencia: ${when}\n📋 Datos: ${contactInfo}\n\nPróximos pasos:\n1. Confirmación en 1 hora\n2. Calendar invite personalizado\n3. Material pre-demo exclusivo\n4. Acceso a plataforma demo\n\n🚀 Prepárate para ver el futuro!`);
                 }
             }
         }
 
-        // Add interactive hover effects
-        document.querySelectorAll('.service-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-8px) scale(1.02)';
+        // Animations on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = Math.random() * 0.5 + 's';
+                    entry.target.classList.add('fade-in');
+                }
             });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
         });
 
-        // Add click animation to service buttons
-        document.querySelectorAll('.service-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                
-                // Get service type from parent card
-                const serviceCard = this.closest('.service-card');
-                const serviceTitle = serviceCard.querySelector('.service-title').textContent;
-                
-                // Animation effect
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 150);
+        // Parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax');
+            
+            parallaxElements.forEach(element => {
+                const speed = 0.5;
+                const yPos = -(scrolled * speed);
+                element.style.backgroundPosition = `center ${yPos}px`;
             });
         });
-
-        // Add scroll animations
-        function observeElements() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('.service-card, .process-step, .testimonial-card').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(50px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-        }
-
-        // Initialize animations on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            observeElements();
-        });
-
-        // Enhanced service info display
-        function showServiceDetail(serviceType) {
-            // This could be expanded to show a modal with more detailed information
-            console.log(`Showing details for service: ${serviceType}`);
-        }
-
-        // Add pricing calculator (basic)
-        function calculateServicePrice(serviceType, propertyValue) {
-            let price = 0;
-            
-            switch(serviceType) {
-                case 'compra':
-                    price = propertyValue * 0.01; // 1%
-                    break;
-                case 'venta':
-                    price = propertyValue * 0.02; // 2%
-                    break;
-                case 'arriendo':
-                    price = propertyValue; // 1 mes
-                    break;
-                default:
-                    price = 0;
-            }
-            
-            return price;
-        }
-
-        // Track user interactions for analytics (placeholder)
-        function trackServiceInteraction(serviceType, action) {
-            // This would integrate with Google Analytics or similar
-            console.log(`Service: ${serviceType}, Action: ${action}`);
-        }
     </script>
 </body>
 </html>
