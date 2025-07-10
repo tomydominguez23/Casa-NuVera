@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosotros - Roberto Reyes Propiedades</title>
+    <title>Nosotros - Casa Nuvera | Innovative Real Estate // Est. 2019</title>
+    <link rel="stylesheet" href="property-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -11,440 +15,516 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
+        :root {
+            --primary-black: #0a0a0a;
+            --secondary-gray: #666666;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --background-gray: #7a7a7a;
+            --white: #ffffff;
+            --accent-orange: #ff6b35;
+            --text-muted: #999999;
+            --border-color: #ddd;
+            --overlay-dark: rgba(0, 0, 0, 0.6);
+            --overlay-medium: rgba(0, 0, 0, 0.4);
+            --overlay-light: rgba(0, 0, 0, 0.2);
+            --overlay-white: rgba(255, 255, 255, 0.9);
         }
 
-        /* Header */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.5;
+            color: var(--white);
+            background-color: var(--background-gray);
+            font-weight: 400;
+            overflow-x: hidden;
+        }
+
+        /* Header flotante */
         .header {
-            background: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
+            position: fixed;
             top: 0;
-            z-index: 100;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 2rem;
+            padding: 1rem 2rem;
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: 300;
-            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
             text-decoration: none;
-            font-style: italic;
+            color: var(--primary-black);
+        }
+
+        .logo-image {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
 
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 3rem;
+            align-items: center;
         }
 
         .nav-menu a {
             text-decoration: none;
-            color: #7f8c8d;
+            color: var(--secondary-gray);
             font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
             text-transform: uppercase;
-            font-size: 0.9rem;
-            transition: color 0.3s;
+            letter-spacing: 0.5px;
         }
 
         .nav-menu a:hover,
         .nav-menu a.active {
-            color: #2c3e50;
+            color: var(--primary-black);
+        }
+
+        .nav-cta {
+            background: var(--primary-black);
+            color: white !important;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+
+        .nav-cta:hover {
+            background: var(--secondary-gray);
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+            height: 80vh;
+            background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752025283665_0.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             color: white;
-            padding: 6rem 0;
-            text-align: center;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+            margin-top: 80px;
         }
 
-        .hero-container {
-            max-width: 800px;
-            margin: 0 auto;
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
             padding: 0 2rem;
+            z-index: 2;
+        }
+
+        .hero-tagline {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            font-weight: 500;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: 4.5rem;
             font-weight: 300;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            opacity: 0.9;
+            line-height: 1.1;
             margin-bottom: 2rem;
+            letter-spacing: -2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        .hero-stats {
+        .hero-description {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+
+        /* Story Section */
+        .story-section {
+            background: var(--background-gray);
+            padding: 8rem 2rem;
+            color: white;
+        }
+
+        .story-container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .story-content h2 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            color: white;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .story-content p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .story-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 2rem;
             margin-top: 3rem;
         }
 
-        .stat-item {
+        .story-stat {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
         }
 
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #3498db;
+            color: var(--accent-orange);
+            margin-bottom: 0.5rem;
+            display: block;
         }
 
         .stat-label {
             font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             opacity: 0.8;
         }
 
-        /* Story Section */
-        .story-section {
-            padding: 4rem 0;
-            background: white;
-        }
-
-        .story-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .story-content h2 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-            font-weight: 300;
-        }
-
-        .story-content p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-            color: #666;
-        }
-
         .story-image {
-            height: 400px;
-            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            opacity: 0.3;
+            height: 600px;
+            background: linear-gradient(var(--overlay-light), var(--overlay-light)), 
+                        url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        /* Values Section */
-        .values-section {
-            padding: 4rem 0;
-            background: #f8f9fa;
+        /* Vision Section */
+        .vision-section {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=1080&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 8rem 2rem;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        .values-container {
+        .vision-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .section-title {
             text-align: center;
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 3rem;
-            font-weight: 300;
         }
 
-        .values-grid {
+        .vision-container h2 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .vision-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            gap: 3rem;
+            margin-top: 4rem;
         }
 
-        .value-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .vision-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 3rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
-            transition: transform 0.3s;
+            transition: all 0.3s ease;
         }
 
-        .value-card:hover {
-            transform: translateY(-5px);
+        .vision-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-10px);
         }
 
-        .value-icon {
+        .vision-icon {
             font-size: 3.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            display: block;
         }
 
-        .value-title {
-            font-size: 1.3rem;
+        .vision-title {
+            font-size: 1.5rem;
             font-weight: 600;
-            color: #2c3e50;
             margin-bottom: 1rem;
+            color: white;
         }
 
-        .value-description {
-            color: #666;
+        .vision-description {
+            color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
         }
 
         /* Team Section */
         .team-section {
-            padding: 4rem 0;
-            background: white;
+            background: var(--background-gray);
+            padding: 8rem 2rem;
+            color: white;
         }
 
         .team-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: white;
         }
 
         .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
         }
 
         .team-member {
-            background: white;
-            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .team-member:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
         }
 
-        .member-photo {
-            height: 250px;
-            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+        .member-image {
+            height: 300px;
+            background: linear-gradient(135deg, var(--secondary-gray), var(--primary-black));
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 4rem;
-            opacity: 0.3;
+            color: white;
         }
 
         .member-info {
             padding: 2rem;
-            text-align: center;
         }
 
         .member-name {
             font-size: 1.3rem;
             font-weight: 600;
-            color: #2c3e50;
             margin-bottom: 0.5rem;
+            color: white;
         }
 
         .member-role {
-            color: #3498db;
-            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--accent-orange);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 1rem;
         }
 
         .member-description {
-            color: #666;
-            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
             margin-bottom: 1.5rem;
         }
 
         .member-contact {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .contact-btn {
-            padding: 0.5rem 1rem;
-            border: 2px solid #3498db;
-            border-radius: 20px;
-            background: transparent;
-            color: #3498db;
-            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.3s;
         }
 
-        .contact-btn:hover {
-            background: #3498db;
+        /* Contact Section */
+        .contact-section {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1920&h=1080&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: white;
+            padding: 8rem 2rem;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        /* Timeline Section */
-        .timeline-section {
-            padding: 4rem 0;
-            background: #2c3e50;
-            color: white;
-        }
-
-        .timeline-container {
-            max-width: 1000px;
+        .contact-container {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .timeline {
-            position: relative;
-            margin-top: 3rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #3498db;
-            transform: translateX(-50%);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 3rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .timeline-item:nth-child(odd) {
-            flex-direction: row;
-        }
-
-        .timeline-item:nth-child(even) {
-            flex-direction: row-reverse;
-        }
-
-        .timeline-content {
-            background: rgba(255,255,255,0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            width: 45%;
-            backdrop-filter: blur(10px);
-        }
-
-        .timeline-year {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #3498db;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-description {
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: 50%;
-            width: 20px;
-            height: 20px;
-            background: #3498db;
-            border-radius: 50%;
-            transform: translateX(-50%);
-            border: 4px solid #2c3e50;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 4rem 0;
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
             text-align: center;
         }
 
-        .cta-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .cta-title {
-            font-size: 2.5rem;
+        .contact-container h2 {
+            font-size: 3rem;
             font-weight: 300;
-            margin-bottom: 1rem;
-        }
-
-        .cta-description {
-            font-size: 1.2rem;
-            opacity: 0.9;
             margin-bottom: 2rem;
+            color: white;
         }
 
-        .cta-buttons {
+        .contact-container p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-buttons {
             display: flex;
-            gap: 1rem;
             justify-content: center;
+            gap: 2rem;
             flex-wrap: wrap;
         }
 
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
+        .contact-btn {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            transition: all 0.3s ease;
             cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: white;
-            color: #3498db;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .btn-outline {
-            background: transparent;
+            display: inline-block;
             color: white;
-            border: 2px solid white;
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
         }
 
-        .btn-outline:hover {
-            background: white;
-            color: #3498db;
+        .contact-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .contact-btn.primary {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-btn.primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Footer con fondo de imagen */
+        .footer {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752027032204_0.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 4rem 2rem 2rem;
+            color: white;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-tagline {
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* Mobile Responsive */
@@ -454,19 +534,19 @@
             }
 
             .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-stats {
-                grid-template-columns: repeat(2, 1fr);
+                font-size: 2.8rem;
             }
 
             .story-container {
                 grid-template-columns: 1fr;
-                gap: 2rem;
+                gap: 3rem;
             }
 
-            .values-grid {
+            .story-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .vision-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -474,129 +554,155 @@
                 grid-template-columns: 1fr;
             }
 
-            .timeline::before {
-                left: 30px;
-            }
-
-            .timeline-item {
-                flex-direction: row !important;
-                padding-left: 60px;
-            }
-
-            .timeline-content {
-                width: 100%;
-            }
-
-            .timeline-dot {
-                left: 30px;
-            }
-
-            .cta-buttons {
+            .contact-buttons {
                 flex-direction: column;
                 align-items: center;
             }
 
-            .btn {
-                width: 250px;
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
             }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero,
+            .vision-section,
+            .contact-section {
+                background-attachment: scroll;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Parallax effect */
+        .parallax {
+            background-attachment: fixed;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header flotante -->
     <header class="header">
         <div class="nav-container">
-            <a href="index.html" class="logo">Roberto Reyes</a>
+            <a href="index.html" class="logo">
+                <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752020935606_0.png" 
+                     alt="Casa Nuvera Logo" 
+                     class="logo-image">
+                <span class="logo-text">Casa Nuvera</span>
+            </a>
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.html">Inicio</a></li>
-                    <li><a href="compras.html">Compra</a></li>
-                    <li><a href="arriendos.html">Arriendo</a></li>
+                    <li><a href="compras.html">Comprar</a></li>
+                    <li><a href="arriendos.html">Arrendar</a></li>
                     <li><a href="servicios.html">Servicios</a></li>
                     <li><a href="nosotros.html" class="active">Nosotros</a></li>
-                    <li><a href="blog.html">Blog</a></li>
                     <li><a href="contacto.html">Contacto</a></li>
+                    <li><a href="subir-imagenes.html" class="nav-cta">Gestionar</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <h1>Nosotros</h1>
-            <p>Más de una década ayudando a familias a encontrar su hogar ideal y construyendo patrimonio a través de bienes raíces</p>
-            
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <div class="stat-number">10+</div>
-                    <div class="stat-label">Años de experiencia</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">500+</div>
-                    <div class="stat-label">Familias satisfechas</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">1000+</div>
-                    <div class="stat-label">Operaciones exitosas</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">15</div>
-                    <div class="stat-label">Comunas de cobertura</div>
-                </div>
-            </div>
+    <section class="hero parallax">
+        <div class="hero-content fade-in">
+            <div class="hero-tagline">Casa Nuvera | Innovative Real Estate Since 2019</div>
+            <h1>Pioneering the future of real estate</h1>
+            <p class="hero-description">Somos pioneros en la transformación digital del sector inmobiliario, combinando experiencia tradicional con tecnología de vanguardia para crear experiencias únicas y resultados excepcionales.</p>
         </div>
     </section>
 
     <!-- Story Section -->
     <section class="story-section">
         <div class="story-container">
-            <div class="story-content">
+            <div class="story-content fade-in">
                 <h2>Nuestra Historia</h2>
-                <p>Roberto Reyes Propiedades nació en 2014 con una visión clara: transformar la experiencia de comprar, vender o arrendar una propiedad en un proceso transparente, confiable y centrado en las necesidades del cliente.</p>
+                <p>Fundada en 2019, Casa Nuvera nació de la visión de revolucionar la industria inmobiliaria chilena. Reconocimos que el mercado necesitaba una aproximación más inteligente, transparente y centrada en el cliente.</p>
                 
-                <p>Comenzamos como una pequeña oficina familiar en Providencia, con Roberto Reyes liderando un equipo de 3 personas. Nuestra filosofía siempre ha sido simple: tratar a cada cliente como si fuera familia, brindando asesoría honesta y acompañamiento personalizado en cada etapa del proceso.</p>
+                <p>Comenzamos como un equipo pequeño pero ambicioso de profesionales inmobiliarios y expertos en tecnología. Desde el primer día, nuestro objetivo fue claro: usar la innovación para crear valor real para nuestros clientes.</p>
                 
-                <p>Hoy, después de más de 10 años en el mercado, hemos crecido hasta convertirnos en una de las corredoras más respetadas de Santiago, manteniendo siempre nuestros valores fundacionales de confianza, transparencia y excelencia en el servicio.</p>
+                <p>Hoy, somos líderes en la aplicación de inteligencia artificial, IoT y blockchain en bienes raíces, habiendo transformado la experiencia de miles de familias y inversionistas.</p>
+
+                <div class="story-stats">
+                    <div class="story-stat">
+                        <span class="stat-number">2019</span>
+                        <span class="stat-label">Año de Fundación</span>
+                    </div>
+                    <div class="story-stat">
+                        <span class="stat-number">1000+</span>
+                        <span class="stat-label">Operaciones Exitosas</span>
+                    </div>
+                    <div class="story-stat">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Tecnologías Implementadas</span>
+                    </div>
+                    <div class="story-stat">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Satisfacción Cliente</span>
+                    </div>
+                </div>
             </div>
-            <div class="story-image">🏢</div>
+            
+            <div class="story-image fade-in"></div>
         </div>
     </section>
 
-    <!-- Values Section -->
-    <section class="values-section">
-        <div class="values-container">
-            <h2 class="section-title">Nuestros Valores</h2>
-            <div class="values-grid">
-                <div class="value-card">
-                    <div class="value-icon">🤝</div>
-                    <h3 class="value-title">Confianza</h3>
-                    <p class="value-description">Construimos relaciones duraderas basadas en la honestidad, la transparencia y el cumplimiento de nuestras promesas.</p>
+    <!-- Vision Section -->
+    <section class="vision-section parallax">
+        <div class="vision-container">
+            <h2 class="fade-in">Nuestros Valores</h2>
+            
+            <div class="vision-grid">
+                <div class="vision-card fade-in">
+                    <span class="vision-icon">🚀</span>
+                    <h3 class="vision-title">Innovación</h3>
+                    <p class="vision-description">Adoptamos las tecnologías más avanzadas para transformar cada aspecto de la experiencia inmobiliaria, desde la búsqueda hasta el cierre.</p>
                 </div>
-                <div class="value-card">
-                    <div class="value-icon">🎯</div>
-                    <h3 class="value-title">Excelencia</h3>
-                    <p class="value-description">Nos esforzamos por superar las expectativas en cada detalle, desde la primera consulta hasta la entrega de llaves.</p>
+
+                <div class="vision-card fade-in">
+                    <span class="vision-icon">🔒</span>
+                    <h3 class="vision-title">Transparencia</h3>
+                    <p class="vision-description">Creemos en la información clara y accesible. Nuestros clientes siempre saben exactamente qué está pasando en cada etapa del proceso.</p>
                 </div>
-                <div class="value-card">
-                    <div class="value-icon">👥</div>
-                    <h3 class="value-title">Servicio Personal</h3>
-                    <p class="value-description">Cada cliente es único. Adaptamos nuestro servicio a las necesidades específicas de cada persona o familia.</p>
+
+                <div class="vision-card fade-in">
+                    <span class="vision-icon">🎯</span>
+                    <h3 class="vision-title">Excelencia</h3>
+                    <p class="vision-description">No nos conformamos con lo suficiente. Buscamos constantemente superar expectativas y establecer nuevos estándares en la industria.</p>
                 </div>
-                <div class="value-card">
-                    <div class="value-icon">🔍</div>
-                    <h3 class="value-title">Conocimiento del Mercado</h3>
-                    <p class="value-description">Mantenemos un profundo conocimiento del mercado inmobiliario para ofrecer la mejor asesoría posible.</p>
+
+                <div class="vision-card fade-in">
+                    <span class="vision-icon">🤝</span>
+                    <h3 class="vision-title">Confianza</h3>
+                    <p class="vision-description">Construimos relaciones duraderas basadas en honestidad, competencia profesional y compromiso genuino con el éxito de nuestros clientes.</p>
                 </div>
-                <div class="value-card">
-                    <div class="value-icon">⚡</div>
-                    <h3 class="value-title">Agilidad</h3>
-                    <p class="value-description">Procesos eficientes y respuesta rápida para aprovechar las mejores oportunidades del mercado.</p>
+
+                <div class="vision-card fade-in">
+                    <span class="vision-icon">🌱</span>
+                    <h3 class="vision-title">Sustentabilidad</h3>
+                    <p class="vision-description">Promovemos desarrollos responsables y prácticas inmobiliarias que contribuyan positivamente al medio ambiente y las comunidades.</p>
                 </div>
-                <div class="value-card">
-                    <div class="value-icon">🛡️</div>
-                    <h3 class="value-title">Seguridad Jurídica</h3>
-                    <p class="value-description">Todas nuestras operaciones cuentan con respaldo legal completo para proteger los intereses de nuestros clientes.</p>
+
+                <div class="vision-card fade-in">
+                    <span class="vision-icon">⚡</span>
+                    <h3 class="vision-title">Agilidad</h3>
+                    <p class="vision-description">Nos adaptamos rápidamente a los cambios del mercado y las necesidades de nuestros clientes, manteniendo siempre la velocidad y eficiencia.</p>
                 </div>
             </div>
         </div>
@@ -606,428 +712,420 @@
     <section class="team-section">
         <div class="team-container">
             <h2 class="section-title">Nuestro Equipo</h2>
+            
             <div class="team-grid">
-                <div class="team-member">
-                    <div class="member-photo">👨‍💼</div>
+                <div class="team-member fade-in" onclick="showMemberInfo('ceo')">
+                    <div class="member-image">👨‍💼</div>
                     <div class="member-info">
-                        <h3 class="member-name">Roberto Reyes</h3>
-                        <div class="member-role">Fundador & CEO</div>
-                        <p class="member-description">Corredor de propiedades con más de 15 años de experiencia. Especialista en inversiones inmobiliarias y desarrollo de proyectos residenciales.</p>
-                        <div class="member-contact">
-                            <a href="mailto:roberto@robertoreyespropiedades.cl" class="contact-btn">📧 Email</a>
-                            <a href="tel:+56912345678" class="contact-btn">📱 Llamar</a>
-                        </div>
+                        <h3 class="member-name">Sebastián Núñez</h3>
+                        <p class="member-role">CEO & Fundador</p>
+                        <p class="member-description">Visionario tecnológico con 15+ años en bienes raíces. Especialista en transformación digital y estrategia empresarial.</p>
+                        <p class="member-contact">sebastian@casanuvera.cl</p>
                     </div>
                 </div>
 
-                <div class="team-member">
-                    <div class="member-photo">👩‍💼</div>
+                <div class="team-member fade-in" onclick="showMemberInfo('cto')">
+                    <div class="member-image">👩‍💻</div>
                     <div class="member-info">
-                        <h3 class="member-name">María González</h3>
-                        <div class="member-role">Gerente de Ventas</div>
-                        <p class="member-description">Especialista en propiedades residenciales de alta gama. Experta en negociación y cierre de operaciones complejas.</p>
-                        <div class="member-contact">
-                            <a href="mailto:maria@robertoreyespropiedades.cl" class="contact-btn">📧 Email</a>
-                            <a href="tel:+56987654321" class="contact-btn">📱 Llamar</a>
-                        </div>
+                        <h3 class="member-name">María Fernanda López</h3>
+                        <p class="member-role">CTO & Co-Fundadora</p>
+                        <p class="member-description">Ingeniera en software con expertise en IA y blockchain. Lidera nuestro desarrollo tecnológico e innovación.</p>
+                        <p class="member-contact">maria@casanuvera.cl</p>
                     </div>
                 </div>
 
-                <div class="team-member">
-                    <div class="member-photo">👨‍💻</div>
+                <div class="team-member fade-in" onclick="showMemberInfo('sales')">
+                    <div class="member-image">👨‍💼</div>
                     <div class="member-info">
-                        <h3 class="member-name">Carlos Pérez</h3>
-                        <div class="member-role">Jefe de Arriendos</div>
-                        <p class="member-description">Encargado de la gestión integral de arriendos. Especialista en evaluación de postulantes y gestión de garantías.</p>
-                        <div class="member-contact">
-                            <a href="mailto:carlos@robertoreyespropiedades.cl" class="contact-btn">📧 Email</a>
-                            <a href="tel:+56956789012" class="contact-btn">📱 Llamar</a>
-                        </div>
+                        <h3 class="member-name">Roberto Mendoza</h3>
+                        <p class="member-role">Director Comercial</p>
+                        <p class="member-description">Experto en ventas inmobiliarias con track record excepcional. Especialista en propiedades premium y relaciones VIP.</p>
+                        <p class="member-contact">roberto@casanuvera.cl</p>
                     </div>
                 </div>
 
-                <div class="team-member">
-                    <div class="member-photo">👩‍⚖️</div>
+                <div class="team-member fade-in" onclick="showMemberInfo('operations')">
+                    <div class="member-image">👩‍💼</div>
                     <div class="member-info">
-                        <h3 class="member-name">Ana Morales</h3>
-                        <div class="member-role">Asesora Legal</div>
-                        <p class="member-description">Abogada especialista en derecho inmobiliario. Se encarga de la revisión de contratos y asesoría jurídica integral.</p>
-                        <div class="member-contact">
-                            <a href="mailto:ana@robertoreyespropiedades.cl" class="contact-btn">📧 Email</a>
-                            <a href="tel:+56934567890" class="contact-btn">📱 Llamar</a>
-                        </div>
+                        <h3 class="member-name">Valentina Torres</h3>
+                        <p class="member-role">Directora de Operaciones</p>
+                        <p class="member-description">Optimiza procesos y garantiza experiencias excepcionales. Experta en gestión de operaciones y customer success.</p>
+                        <p class="member-contact">valentina@casanuvera.cl</p>
+                    </div>
+                </div>
+
+                <div class="team-member fade-in" onclick="showMemberInfo('legal')">
+                    <div class="member-image">⚖️</div>
+                    <div class="member-info">
+                        <h3 class="member-name">Dr. Carlos Ramírez</h3>
+                        <p class="member-role">Director Legal</p>
+                        <p class="member-description">Abogado especialista en derecho inmobiliario y tech law. Garantiza el cumplimiento y protección legal en todas nuestras operaciones.</p>
+                        <p class="member-contact">carlos@casanuvera.cl</p>
+                    </div>
+                </div>
+
+                <div class="team-member fade-in" onclick="showMemberInfo('finance')">
+                    <div class="member-image">📊</div>
+                    <div class="member-info">
+                        <h3 class="member-name">Patricia Jiménez</h3>
+                        <p class="member-role">Directora Financiera</p>
+                        <p class="member-description">CPA con expertise en finanzas inmobiliarias e inversiones. Maneja nuestras estrategias financieras y análisis de mercado.</p>
+                        <p class="member-contact">patricia@casanuvera.cl</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Timeline Section -->
-    <section class="timeline-section">
-        <div class="timeline-container">
-            <h2 class="section-title">Nuestra Trayectoria</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-year">2014</div>
-                        <h3 class="timeline-title">Fundación de la empresa</h3>
-                        <p class="timeline-description">Roberto Reyes funda la corredora con una pequeña oficina en Providencia y un equipo de 3 personas.</p>
-                    </div>
-                    <div class="timeline-dot"></div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-year">2016</div>
-                        <h3 class="timeline-title">Primer gran proyecto</h3>
-                        <p class="timeline-description">Participamos en la venta del 80% de las unidades del proyecto "Vista Cordillera" en Las Condes.</p>
-                    </div>
-                    <div class="timeline-dot"></div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-year">2018</div>
-                        <h3 class="timeline-title">Expansión del equipo</h3>
-                        <p class="timeline-description">Crecemos a 15 colaboradores y abrimos nuestra división especializada en arriendos.</p>
-                    </div>
-                    <div class="timeline-dot"></div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-year">2020</div>
-                        <h3 class="timeline-title">Transformación digital</h3>
-                        <p class="timeline-description">Implementamos herramientas digitales avanzadas y tours virtuales para adaptarnos a los nuevos tiempos.</p>
-                    </div>
-                    <div class="timeline-dot"></div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-year">2022</div>
-                        <h3 class="timeline-title">Reconocimiento de excelencia</h3>
-                        <p class="timeline-description">Recibimos el premio "Mejor Corredora Familiar" otorgado por la Asociación de Desarrolladores Inmobiliarios.</p>
-                    </div>
-                    <div class="timeline-dot"></div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-year">2024</div>
-                        <h3 class="timeline-title">10 años de trayectoria</h3>
-                        <p class="timeline-description">Celebramos una década de servicio con más de 1000 operaciones exitosas y la confianza de cientos de familias.</p>
-                    </div>
-                    <div class="timeline-dot"></div>
-                </div>
+    <!-- Contact Section -->
+    <section class="contact-section parallax">
+        <div class="contact-container">
+            <h2>¿Quieres ser parte del futuro inmobiliario?</h2>
+            <p>Únete a nosotros y experimenta la diferencia de trabajar con verdaderos innovadores del sector. Nuestro equipo está aquí para transformar tus objetivos inmobiliarios en realidad.</p>
+            
+            <div class="contact-buttons">
+                <a href="contacto.html" class="contact-btn primary">Conoce al Equipo</a>
+                <a href="#" class="contact-btn" onclick="joinTeam()">Trabajar con Nosotros</a>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="cta-container">
-            <h2 class="cta-title">¿Listo para trabajar con nosotros?</h2>
-            <p class="cta-description">Únete a las más de 500 familias que han confiado en nosotros para encontrar su hogar ideal o hacer la mejor inversión de su vida.</p>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Casa Nuvera</h4>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="servicios.html">Servicios</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Servicios</h4>
+                    <ul>
+                        <li><a href="compras.html">Comprar</a></li>
+                        <li><a href="arriendos.html">Arrendar</a></li>
+                        <li><a href="servicios.html">Consultoría</a></li>
+                        <li><a href="servicios.html">Inversiones</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Innovación</h4>
+                    <ul>
+                        <li><a href="servicios.html">IA & Analytics</a></li>
+                        <li><a href="servicios.html">Blockchain</a></li>
+                        <li><a href="servicios.html">IoT Solutions</a></li>
+                        <li><a href="blog.html">Tech Blog</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></li>
+                        <li><a href="tel:+56912345678">+56 9 1234 5678</a></li>
+                        <li>Av. Apoquindo 1234</li>
+                        <li>Las Condes, Santiago</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-tagline">Casa Nuvera | Innovative Real Estate // Est. 2019</div>
+                <div>&copy; 2025 Casa Nuvera. Todos los derechos reservados.</div>
             </div>
         </div>
-    </section>
+    </footer>
 
+    <!-- Scripts -->
     <script>
-        // Animate stats on scroll
-        function animateStats() {
-            const stats = document.querySelectorAll('.stat-number');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const target = entry.target;
-                        const finalValue = target.textContent;
-                        const numericValue = parseInt(finalValue.replace(/[^\d]/g, ''));
-                        
-                        let current = 0;
-                        const increment = numericValue / 50;
-                        const timer = setInterval(() => {
-                            current += increment;
-                            if (current >= numericValue) {
-                                current = numericValue;
-                                clearInterval(timer);
-                            }
-                            
-                            if (finalValue.includes('+')) {
-                                target.textContent = Math.floor(current) + '+';
-                            } else {
-                                target.textContent = Math.floor(current);
-                            }
-                        }, 30);
-                        
-                        observer.unobserve(target);
-                    }
-                });
-            });
-            
-            stats.forEach(stat => observer.observe(stat));
-        }
+        // Show member info
+        function showMemberInfo(memberId) {
+            let memberInfo = '';
 
-        // Team member interactions
-        function setupTeamInteractions() {
-            const members = document.querySelectorAll('.team-member');
-            
-            members.forEach(member => {
-                member.addEventListener('click', function() {
-                    const name = this.querySelector('.member-name').textContent;
-                    const role = this.querySelector('.member-role').textContent;
-                    const description = this.querySelector('.member-description').textContent;
-                    
-                    const memberInfo = `
-👤 ${name}
-🎯 ${role}
+            switch(memberId) {
+                case 'ceo':
+                    memberInfo = `
+👨‍💼 SEBASTIÁN NÚÑEZ - CEO & FUNDADOR
 
-${description}
+🎓 Formación:
+• MBA Universidad de Chile
+• Ingeniería Comercial UC
+• Certificación en PropTech MIT
 
-¿Qué te gustaría hacer?
+🏆 Experiencia:
+• 15+ años en bienes raíces
+• Ex-director regional inmobiliaria líder
+• Pionero en tecnología inmobiliaria Chile
+• Speaker internacional en PropTech
 
-OK = Enviar mensaje directo
-Cancelar = Ver más información del equipo
+🚀 Logros en Casa Nuvera:
+• Crecimiento 300% en 3 años
+• Implementación IA propietaria
+• $50M+ en transacciones gestionadas
+• Premio Innovación Empresarial 2023
+
+💡 Visión:
+"Creo que la tecnología debe humanizar, no robotizar, la experiencia inmobiliaria."
+
+📧 sebastian@casanuvera.cl
                     `;
-                    
-                    const action = confirm(memberInfo);
-                    if (action) {
-                        contactTeamMember(name);
-                    } else {
-                        showTeamInfo();
-                    }
-                });
-            });
-        }
+                    break;
 
-        function contactTeamMember(memberName) {
-            let email = '';
-            let specialty = '';
-            
-            switch(memberName) {
-                case 'Roberto Reyes':
-                    email = 'roberto@robertoreyespropiedades.cl';
-                    specialty = 'Inversiones y desarrollo de proyectos';
+                case 'cto':
+                    memberInfo = `
+👩‍💻 MARÍA FERNANDA LÓPEZ - CTO & CO-FUNDADORA
+
+🎓 Formación:
+• PhD Computer Science Stanford
+• MS Artificial Intelligence MIT
+• Blockchain Certification Berkeley
+
+💻 Expertise Técnico:
+• Machine Learning & Deep Learning
+• Blockchain & Smart Contracts
+• IoT & Real Estate Technology
+• Cloud Architecture & DevOps
+
+🔧 Tecnologías que Lidera:
+• Sistema de IA para valuaciones
+• Plataforma blockchain propiedades
+• App móvil con AR/VR
+• Dashboard predictivo inversiones
+
+🏆 Reconocimientos:
+• Top 10 Women in Tech Chile 2024
+• Innovation Award PropTech Summit
+• 3 patentes en tecnología inmobiliaria
+
+📧 maria@casanuvera.cl
+                    `;
                     break;
-                case 'María González':
-                    email = 'maria@robertoreyespropiedades.cl';
-                    specialty = 'Propiedades residenciales de alta gama';
+
+                case 'sales':
+                    memberInfo = `
+👨‍💼 ROBERTO MENDOZA - DIRECTOR COMERCIAL
+
+🎯 Track Record:
+• $100M+ en ventas ejecutadas
+• 500+ familias satisfechas
+• 95% tasa de cierre
+• Cliente promedio: UF 5,000+
+
+🏆 Especialidades:
+• Propiedades premium +UF 10,000
+• Inversionistas internacionales
+• Desarrollos exclusivos
+• Negociación compleja
+
+📈 Resultados 2024:
+• 25% sobre meta anual
+• 40% clientes por referidos
+• Tiempo promedio venta: 45 días
+• Satisfacción cliente: 98%
+
+🎓 Certificaciones:
+• Real Estate Luxury Specialist
+• International Property Consultant
+• Negotiation Expert Certificate
+
+📧 roberto@casanuvera.cl
+🎯 "Mi misión es convertir sueños en llaves"
+                    `;
                     break;
-                case 'Carlos Pérez':
-                    email = 'carlos@robertoreyespropiedades.cl';
-                    specialty = 'Gestión integral de arriendos';
+
+                case 'operations':
+                    memberInfo = `
+👩‍💼 VALENTINA TORRES - DIRECTORA DE OPERACIONES
+
+📊 Optimización de Procesos:
+• Reducción 60% tiempo operativo
+• Automatización 80% tareas rutinarias
+• NPS: 9.2/10 satisfacción cliente
+• Eficiencia operacional: 95%
+
+🔄 Sistemas que Gestiona:
+• CRM avanzado con IA
+• Pipeline automatizado
+• Quality assurance
+• Customer success journey
+
+🎓 Formación:
+• Industrial Engineering UC
+• Six Sigma Black Belt
+• Lean Management Certification
+• Customer Experience Specialist
+
+🚀 Proyectos Actuales:
+• Implementación chatbot IA
+• Sistema predicción demanda
+• Dashboard tiempo real
+• Programa fidelización clientes
+
+📧 valentina@casanuvera.cl
+💫 "La excelencia operacional es nuestra ventaja competitiva"
+                    `;
                     break;
-                case 'Ana Morales':
-                    email = 'ana@robertoreyespropiedades.cl';
-                    specialty = 'Asesoría legal inmobiliaria';
+
+                case 'legal':
+                    memberInfo = `
+⚖️ DR. CARLOS RAMÍREZ - DIRECTOR LEGAL
+
+🎓 Formación Legal:
+• JD Harvard Law School
+• LLM Real Estate Law
+• Blockchain Legal Certification
+• International Property Law
+
+🏛️ Experiencia:
+• 20+ años derecho inmobiliario
+• Ex-socio bufete tier 1
+• Asesor regulatorio gobierno
+• Expert witness internacional
+
+📋 Áreas de Expertise:
+• Due diligence automatizado
+• Smart contracts inmobiliarios
+• Regulación PropTech
+• Transacciones complejas internacionales
+
+🛡️ Protección Cliente:
+• 0% litigios perdidos
+• Contratos blindados
+• Cumplimiento normativo 100%
+• Protección patrimonial integral
+
+📧 carlos@casanuvera.cl
+⚖️ "El derecho debe facilitar, no complicar, los negocios"
+                    `;
+                    break;
+
+                case 'finance':
+                    memberInfo = `
+📊 PATRICIA JIMÉNEZ - DIRECTORA FINANCIERA
+
+🎓 Credenciales:
+• CPA Universidad de Chile
+• CFA Charterholder
+• Real Estate Finance Specialist
+• Fintech Financial Analyst
+
+💰 Gestión Financiera:
+• $200M+ en financiamientos gestionados
+• Estructuración deals complejos
+• Análisis ROI predictivo
+• Optimización tributaria
+
+📈 Análisis de Mercado:
+• Modelado predictivo precios
+• Análisis macro inmobiliario
+• Risk assessment avanzado
+• Proyecciones inversión
+
+🏆 Resultados:
+• ROI promedio clientes: 15%
+• Aprobación créditos: 92%
+• Ahorro tributario promedio: 25%
+• Precisión proyecciones: 87%
+
+📧 patricia@casanuvera.cl
+📊 "Los números cuentan la historia real del mercado"
+                    `;
                     break;
             }
+
+            alert(memberInfo + "\n\n¿Te gustaría agendar una reunión con este especialista?");
+        }
+
+        // Join team function
+        function joinTeam() {
+            const jobInfo = `
+🚀 ÚNETE A CASA NUVERA
+
+Estamos buscando talentos excepcionales:
+
+🎯 Posiciones Abiertas:
+• Senior PropTech Developer
+• Real Estate AI Specialist  
+• Business Development Manager
+• Customer Success Manager
+• Marketing Digital Specialist
+• Legal Tech Associate
+
+💰 Lo que Ofrecemos:
+• Salarios competitivos + equity
+• Ambiente de innovación constante
+• Capacitación internacional
+• Flexibilidad laboral total
+• Beneficios premium
+• Proyectos de impacto
+
+🏆 Perfil Ideal:
+• Pasión por la innovación
+• Mentalidad de crecimiento
+• Experiencia relevante
+• Orientación a resultados
+• Trabajo en equipo
+• Pensamiento disruptivo
+
+¿Te interesa ser parte de la revolución inmobiliaria?
+            `;
+
+            const interest = confirm(jobInfo + "\n\n¿Te gustaría conocer más sobre las oportunidades disponibles?");
             
-            const message = prompt(`Mensaje para ${memberName} (${specialty}):\n\nEscribe tu consulta:`);
-            if (message) {
-                window.location.href = `mailto:${email}?subject=Consulta para ${memberName}&body=${encodeURIComponent(message)}`;
+            if (interest) {
+                const contactInfo = prompt("¡Excelente! Para enviarte información detallada:\n\n• Nombre completo\n• Área de interés\n• Email\n• LinkedIn\n• Experiencia relevante\n\nIngresa tus datos:");
+                
+                if (contactInfo) {
+                    alert(`✅ ¡SOLICITUD RECIBIDA!\n\n📋 Datos: ${contactInfo}\n\nPróximos pasos:\n1. Revisión de perfil (48hrs)\n2. Contacto inicial por email\n3. Entrevista informal (video)\n4. Proceso de selección\n5. ¡Bienvenido al equipo!\n\n🚀 ¡Nos emociona conocerte!`);
+                }
             }
         }
 
-        function showTeamInfo() {
-            alert(`👥 NUESTRO EQUIPO COMPLETO
+        // Animations on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-🏢 Roberto Reyes Propiedades cuenta con:
-
-• 1 CEO y Fundador
-• 1 Gerente de Ventas  
-• 1 Jefe de Arriendos
-• 1 Asesora Legal
-• 8 Corredores especializados
-• 3 Asistentes administrativos
-• 2 Especialistas en marketing digital
-
-📞 Contacto general: +56 9 1234 5678
-📧 Email: info@robertoreyespropiedades.cl
-
-¡Estamos aquí para ayudarte!`);
-        }
-
-        // Timeline animations
-        function setupTimelineAnimations() {
-            const timelineItems = document.querySelectorAll('.timeline-item');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, { threshold: 0.3 });
-
-            timelineItems.forEach((item, index) => {
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(50px)';
-                item.style.transition = `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`;
-                observer.observe(item);
-            });
-        }
-
-        // Value cards interactions
-        function setupValueCards() {
-            const valueCards = document.querySelectorAll('.value-card');
-            
-            valueCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    const title = this.querySelector('.value-title').textContent;
-                    const description = this.querySelector('.value-description').textContent;
-                    const icon = this.querySelector('.value-icon').textContent;
-                    
-                    let detailedInfo = '';
-                    
-                    switch(title) {
-                        case 'Confianza':
-                            detailedInfo = `${icon} CONFIANZA
-
-• Más de 500 clientes satisfechos
-• 0 reclamos en SERNAC en los últimos 3 años
-• Referencias verificables de cada operación
-• Transparencia total en comisiones y costos
-• Comunicación constante durante todo el proceso
-
-"La confianza se gana gota a gota y se pierde a chorros"`;
-                            break;
-                        case 'Excelencia':
-                            detailedInfo = `${icon} EXCELENCIA
-
-• Certificación ISO 9001 en gestión de calidad
-• Capacitación continua del equipo
-• Uso de tecnología de punta
-• Procesos estandarizados y auditados
-• Seguimiento post-venta por 6 meses
-
-"La excelencia no es un acto, sino un hábito"`;
-                            break;
-                        case 'Servicio Personal':
-                            detailedInfo = `${icon} SERVICIO PERSONALIZADO
-
-• Un ejecutivo dedicado por cliente
-• Asesoría 24/7 durante el proceso
-• Adaptación a horarios del cliente
-• Atención en idiomas extranjeros
-• Servicios complementarios (tasaciones, créditos)
-
-"Cada cliente es único y merece atención única"`;
-                            break;
-                        case 'Conocimiento del Mercado':
-                            detailedInfo = `${icon} CONOCIMIENTO DEL MERCADO
-
-• Análisis mensual de tendencias
-• Base de datos con +10,000 operaciones
-• Red de contactos con desarrolladores
-• Estudios de mercado actualizados
-• Presencia en 15 comunas de Santiago
-
-"El conocimiento es poder en bienes raíces"`;
-                            break;
-                        case 'Agilidad':
-                            detailedInfo = `${icon} AGILIDAD
-
-• Respuesta en menos de 2 horas
-• Proceso de aprobación en 24-48 hrs
-• Firma digital de documentos
-• Gestión expedita de créditos
-• Red de servicios complementarios
-
-"El tiempo es dinero en bienes raíces"`;
-                            break;
-                        case 'Seguridad Jurídica':
-                            detailedInfo = `${icon} SEGURIDAD JURÍDICA
-
-• Abogado especialista en el equipo
-• Revisión exhaustiva de títulos
-• Seguro de responsabilidad civil
-• Contratos con respaldo notarial
-• Asesoría en aspectos tributarios
-
-"Tu tranquilidad es nuestra prioridad"`;
-                            break;
-                    }
-                    
-                    alert(detailedInfo);
-                });
-            });
-        }
-
-        // CTA button interactions
-        function setupCTAButtons() {
-            const ctaButtons = document.querySelectorAll('.cta-buttons .btn');
-            
-            ctaButtons.forEach(btn => {
-                if (btn.textContent.includes('Contactános')) {
-                    btn.addEventListener('click', function(e) {
-                        if (!btn.href) {
-                            e.preventDefault();
-                            showContactOptions();
-                        }
-                    });
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = Math.random() * 0.5 + 's';
+                    entry.target.classList.add('fade-in');
                 }
             });
-        }
+        }, observerOptions);
 
-        function showContactOptions() {
-            const contactInfo = `
-📞 CONTACTA CON NOSOTROS
-
-¿Cómo prefieres que te contactemos?
-
-1 = WhatsApp (respuesta inmediata)
-2 = Teléfono (llamada directa)  
-3 = Email (consulta detallada)
-4 = Agendar reunión presencial
-
-Ingresa el número de tu opción:
-            `;
-            
-            const option = prompt(contactInfo);
-            
-            switch(option) {
-                case '1':
-                    window.open('https://wa.me/56912345678?text=Hola, me gustaría conocer más sobre sus servicios inmobiliarios', '_blank');
-                    break;
-                case '2':
-                    window.location.href = 'tel:+56912345678';
-                    break;
-                case '3':
-                    window.location.href = 'mailto:info@robertoreyespropiedades.cl?subject=Consulta desde página Nosotros';
-                    break;
-                case '4':
-                    const when = prompt('¿Cuándo te gustaría reunirte?\n\nIngresa fecha y hora preferida:');
-                    if (when) {
-                        alert(`📅 Reunión agendada para: ${when}\n\nTe contactaremos para confirmar la ubicación y detalles.\n\n¡Gracias por confiar en Roberto Reyes Propiedades!`);
-                    }
-                    break;
-                default:
-                    alert('Por cualquier consulta:\n📱 +56 9 1234 5678\n📧 info@robertoreyespropiedades.cl');
-            }
-        }
-
-        // Initialize all interactions
-        document.addEventListener('DOMContentLoaded', function() {
-            animateStats();
-            setupTeamInteractions();
-            setupTimelineAnimations();
-            setupValueCards();
-            setupCTAButtons();
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
         });
 
-        // Add smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+        // Parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax');
+            
+            parallaxElements.forEach(element => {
+                const speed = 0.5;
+                const yPos = -(scrolled * speed);
+                element.style.backgroundPosition = `center ${yPos}px`;
+            });
+        });
+
+        // Add click effects to team members
+        document.querySelectorAll('.team-member').forEach(member => {
+            member.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.02)';
+            });
+            
+            member.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
             });
         });
     </script>
