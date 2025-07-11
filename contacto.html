@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto - Roberto Reyes Propiedades</title>
+    <title>Contacto - Casa Nuvera | Innovative Real Estate // Est. 2019</title>
+    <link rel="stylesheet" href="property-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -11,176 +15,272 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f8f9fa;
+        :root {
+            --primary-black: #0a0a0a;
+            --secondary-gray: #666666;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --background-gray: #7a7a7a;
+            --white: #ffffff;
+            --accent-orange: #ff6b35;
+            --text-muted: #999999;
+            --border-color: #ddd;
+            --overlay-dark: rgba(0, 0, 0, 0.6);
+            --overlay-medium: rgba(0, 0, 0, 0.4);
+            --overlay-light: rgba(0, 0, 0, 0.2);
+            --overlay-white: rgba(255, 255, 255, 0.9);
         }
 
-        /* Header */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.5;
+            color: var(--white);
+            background-color: var(--background-gray);
+            font-weight: 400;
+            overflow-x: hidden;
+        }
+
+        /* Header flotante */
         .header {
-            background: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
+            position: fixed;
             top: 0;
-            z-index: 100;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 2rem;
+            padding: 1rem 2rem;
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: 300;
-            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
             text-decoration: none;
-            font-style: italic;
+            color: var(--primary-black);
+        }
+
+        .logo-image {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
 
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 3rem;
+            align-items: center;
         }
 
         .nav-menu a {
             text-decoration: none;
-            color: #7f8c8d;
+            color: var(--secondary-gray);
             font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
             text-transform: uppercase;
-            font-size: 0.9rem;
-            transition: color 0.3s;
+            letter-spacing: 0.5px;
         }
 
         .nav-menu a:hover,
         .nav-menu a.active {
-            color: #2c3e50;
+            color: var(--primary-black);
+        }
+
+        .nav-cta {
+            background: var(--primary-black);
+            color: white !important;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+
+        .nav-cta:hover {
+            background: var(--secondary-gray);
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            height: 70vh;
+            background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
+                        url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1920&h=1080&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             color: white;
-            padding: 4rem 0;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+            margin-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
             text-align: center;
+            padding: 0 2rem;
+            z-index: 2;
+        }
+
+        .hero-tagline {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            font-weight: 500;
         }
 
         .hero h1 {
-            font-size: 3rem;
+            font-size: 4rem;
             font-weight: 300;
-            margin-bottom: 1rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        .hero p {
-            font-size: 1.2rem;
+        .hero-description {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
             opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto 2rem;
         }
 
         .hero-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
         .hero-stat {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
         }
 
         .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
         }
 
         .stat-text {
             font-size: 0.9rem;
             opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* Contact Methods */
         .contact-methods {
-            background: white;
-            padding: 3rem 0;
-            margin-top: -2rem;
-            position: relative;
-            z-index: 10;
+            background: var(--background-gray);
+            padding: 6rem 2rem;
+            color: white;
         }
 
         .methods-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 2rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
         }
 
         .method-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 3rem;
             text-align: center;
-            transition: transform 0.3s;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .method-card:hover {
-            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-10px);
         }
 
         .method-icon {
             font-size: 3.5rem;
             margin-bottom: 1.5rem;
+            display: block;
         }
 
         .method-title {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: white;
             margin-bottom: 1rem;
         }
 
         .method-description {
-            color: #666;
-            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
             line-height: 1.6;
         }
 
         .method-action {
-            background: #e74c3c;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
             color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             padding: 1rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-weight: 600;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
         }
 
         .method-action:hover {
-            background: #c0392b;
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
         }
 
         /* Main Content */
         .main-content {
-            max-width: 1200px;
+            background: var(--background-gray);
+            padding: 6rem 2rem;
+            color: white;
+        }
+
+        .content-container {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 4rem 2rem;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 4rem;
@@ -188,21 +288,21 @@
 
         /* Contact Form */
         .contact-form-section {
-            background: white;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .form-title {
             font-size: 2rem;
-            color: #2c3e50;
+            color: white;
             margin-bottom: 1rem;
-            font-weight: 400;
+            font-weight: 300;
         }
 
         .form-subtitle {
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
             margin-bottom: 2rem;
         }
 
@@ -212,29 +312,37 @@
 
         .form-group label {
             display: block;
-            font-weight: 600;
-            color: #2c3e50;
+            font-weight: 500;
+            color: white;
             margin-bottom: 0.5rem;
         }
 
         .form-group.required label::after {
             content: " *";
-            color: #e74c3c;
+            color: #4CAF50;
         }
 
         .form-control {
             width: 100%;
             padding: 1rem;
-            border: 2px solid #e0e6ed;
+            border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             font-size: 1rem;
             transition: border-color 0.3s;
             font-family: inherit;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(20px);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #e74c3c;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .form-row {
@@ -249,37 +357,38 @@
         }
 
         .form-submit {
-            background: #e74c3c;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
             color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 1.2rem 2rem;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .form-submit:hover {
-            background: #c0392b;
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
         }
 
         /* Contact Info */
         .contact-info-section {
-            background: white;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .info-title {
             font-size: 2rem;
-            color: #2c3e50;
+            color: white;
             margin-bottom: 2rem;
-            font-weight: 400;
+            font-weight: 300;
         }
 
         .contact-item {
@@ -288,47 +397,48 @@
             gap: 1rem;
             margin-bottom: 2rem;
             padding: 1.5rem;
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
             transition: background 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .contact-item:hover {
-            background: #e9ecef;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .contact-icon {
             font-size: 1.5rem;
             min-width: 2rem;
-            color: #e74c3c;
+            color: white;
         }
 
         .contact-details h4 {
-            color: #2c3e50;
+            color: white;
             margin-bottom: 0.5rem;
             font-weight: 600;
         }
 
         .contact-details p {
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
             margin: 0;
             line-height: 1.5;
         }
 
         .contact-details a {
-            color: #e74c3c;
+            color: white;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: opacity 0.3s;
         }
 
         .contact-details a:hover {
-            color: #c0392b;
+            opacity: 0.8;
         }
 
         /* Office Hours */
         .office-hours {
-            background: #2c3e50;
-            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 2rem;
             border-radius: 10px;
             margin-top: 2rem;
@@ -337,7 +447,8 @@
         .hours-title {
             font-size: 1.3rem;
             margin-bottom: 1rem;
-            color: #ecf0f1;
+            color: white;
+            font-weight: 600;
         }
 
         .hours-list {
@@ -347,8 +458,9 @@
         .hours-list li {
             display: flex;
             justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #34495e;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .hours-list li:last-child {
@@ -357,33 +469,41 @@
 
         /* FAQ Section */
         .faq-section {
-            background: white;
-            padding: 4rem 0;
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752025283665_0.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 6rem 2rem;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
         .faq-container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 0 2rem;
         }
 
         .faq-title {
-            font-size: 2.5rem;
-            color: #2c3e50;
+            font-size: 3rem;
+            color: white;
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
             font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .faq-item {
             margin-bottom: 1rem;
-            border: 1px solid #e0e6ed;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             overflow: hidden;
         }
 
         .faq-question {
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.05);
             padding: 1.5rem;
             cursor: pointer;
             display: flex;
@@ -393,17 +513,17 @@
         }
 
         .faq-question:hover {
-            background: #e9ecef;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .faq-question h3 {
-            color: #2c3e50;
+            color: white;
             font-weight: 500;
         }
 
         .faq-toggle {
             font-size: 1.5rem;
-            color: #e74c3c;
+            color: white;
             transition: transform 0.3s;
         }
 
@@ -412,7 +532,7 @@
             max-height: 0;
             overflow: hidden;
             transition: all 0.3s;
-            background: white;
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .faq-answer.active {
@@ -421,19 +541,86 @@
         }
 
         .faq-answer p {
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
         }
 
         /* Success Message */
         .success-message {
-            background: #d4edda;
-            color: #155724;
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
             display: none;
-            border: 1px solid #c3e6cb;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            backdrop-filter: blur(20px);
+        }
+
+        /* Footer con fondo de imagen */
+        .footer {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752027032204_0.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 4rem 2rem 2rem;
+            color: white;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-tagline {
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* Mobile Responsive */
@@ -443,21 +630,20 @@
             }
 
             .hero h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
 
             .hero-stats {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
             }
 
             .methods-container {
                 grid-template-columns: 1fr;
             }
 
-            .main-content {
+            .content-container {
                 grid-template-columns: 1fr;
                 gap: 2rem;
-                padding: 2rem 1rem;
             }
 
             .contact-form-section,
@@ -468,45 +654,86 @@
             .form-row {
                 grid-template-columns: 1fr;
             }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero,
+            .faq-section {
+                background-attachment: scroll;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Parallax effect */
+        .parallax {
+            background-attachment: fixed;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header flotante -->
     <header class="header">
         <div class="nav-container">
-            <a href="index.html" class="logo">Roberto Reyes</a>
+            <a href="index.html" class="logo">
+                <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752020935606_0.png" 
+                     alt="Casa Nuvera Logo" 
+                     class="logo-image">
+                <span class="logo-text">Casa Nuvera</span>
+            </a>
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.html">Inicio</a></li>
-                    <li><a href="compras.html">Compra</a></li>
-                    <li><a href="arriendos.html">Arriendo</a></li>
+                    <li><a href="compras.html">Comprar</a></li>
+                    <li><a href="arriendos.html">Arrendar</a></li>
                     <li><a href="servicios.html">Servicios</a></li>
                     <li><a href="nosotros.html">Nosotros</a></li>
-                    <li><a href="blog.html">Blog</a></li>
                     <li><a href="contacto.html" class="active">Contacto</a></li>
+                    <li><a href="subir-imagenes.html" class="nav-cta">Gestionar</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <h1>Contáctanos</h1>
-        <p>Estamos aquí para ayudarte a encontrar tu hogar ideal o hacer la mejor inversión inmobiliaria</p>
-        
-        <div class="hero-stats">
-            <div class="hero-stat">
-                <div class="stat-icon">📞</div>
-                <div class="stat-text">Respuesta en menos de 2 horas</div>
-            </div>
-            <div class="hero-stat">
-                <div class="stat-icon">🕒</div>
-                <div class="stat-text">Atención 7 días a la semana</div>
-            </div>
-            <div class="hero-stat">
-                <div class="stat-icon">✅</div>
-                <div class="stat-text">Asesoría gratuita personalizada</div>
+    <section class="hero parallax">
+        <div class="hero-content fade-in">
+            <div class="hero-tagline">Casa Nuvera | Premier Real Estate Contact</div>
+            <h1>Conecta con el futuro inmobiliario</h1>
+            <p class="hero-description">Estamos aquí para transformar tu experiencia inmobiliaria con tecnología avanzada y asesoría personalizada de primer nivel.</p>
+            
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-text">Respuesta en menos de 2 horas</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-icon">🕒</div>
+                    <div class="stat-text">Atención 7 días a la semana</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-text">Asesoría gratuita personalizada</div>
+                </div>
             </div>
         </div>
     </section>
@@ -516,219 +743,275 @@
         <div class="methods-container">
             <div class="method-card" onclick="contactWhatsApp()">
                 <div class="method-icon">📱</div>
-                <h3 class="method-title">WhatsApp</h3>
-                <p class="method-description">Respuesta inmediata para consultas rápidas y coordinación de visitas</p>
+                <h3 class="method-title">WhatsApp Premium</h3>
+                <p class="method-description">Respuesta inmediata para consultas rápidas y coordinación de visitas con tecnología avanzada</p>
                 <button class="method-action">Escribir por WhatsApp</button>
             </div>
 
             <div class="method-card" onclick="contactPhone()">
                 <div class="method-icon">📞</div>
                 <h3 class="method-title">Llamada Directa</h3>
-                <p class="method-description">Habla directamente con nuestros especialistas para asesoría personalizada</p>
+                <p class="method-description">Habla directamente con nuestros especialistas para asesoría inmobiliaria premium</p>
                 <button class="method-action">Llamar Ahora</button>
             </div>
 
             <div class="method-card" onclick="contactEmail()">
                 <div class="method-icon">📧</div>
-                <h3 class="method-title">Email</h3>
-                <p class="method-description">Envía tu consulta detallada y te responderemos con toda la información</p>
+                <h3 class="method-title">Email Corporativo</h3>
+                <p class="method-description">Envía tu consulta detallada y recibe propuestas personalizadas con análisis de mercado</p>
                 <button class="method-action">Enviar Email</button>
             </div>
 
             <div class="method-card" onclick="scheduleVisit()">
                 <div class="method-icon">📅</div>
-                <h3 class="method-title">Agendar Cita</h3>
-                <p class="method-description">Programa una reunión presencial en nuestra oficina o en la propiedad</p>
-                <button class="method-action">Agendar Reunión</button>
+                <h3 class="method-title">Demo Tecnológico</h3>
+                <p class="method-description">Programa una reunión presencial o virtual para conocer nuestras soluciones innovadoras</p>
+                <button class="method-action">Agendar Demo</button>
             </div>
         </div>
     </section>
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Contact Form -->
-        <section class="contact-form-section">
-            <h2 class="form-title">Envíanos tu Consulta</h2>
-            <p class="form-subtitle">Complete el formulario y nos pondremos en contacto contigo en las próximas 2 horas</p>
-            
-            <div class="success-message" id="successMessage">
-                ✅ ¡Mensaje enviado exitosamente! Te contactaremos pronto.
-            </div>
+        <div class="content-container">
+            <!-- Contact Form -->
+            <section class="contact-form-section">
+                <h2 class="form-title">Consulta Especializada</h2>
+                <p class="form-subtitle">Complete el formulario y nuestros especialistas se contactarán contigo en las próximas 2 horas con una propuesta personalizada</p>
+                
+                <div class="success-message" id="successMessage">
+                    ✅ ¡Consulta enviada exitosamente! Te contactaremos pronto.
+                </div>
 
-            <form id="contactForm">
-                <div class="form-row">
-                    <div class="form-group required">
-                        <label for="firstName">Nombre</label>
-                        <input type="text" id="firstName" class="form-control" required>
+                <form id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label for="firstName">Nombre</label>
+                            <input type="text" id="firstName" class="form-control" required>
+                        </div>
+                        <div class="form-group required">
+                            <label for="lastName">Apellido</label>
+                            <input type="text" id="lastName" class="form-control" required>
+                        </div>
                     </div>
+
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group required">
+                            <label for="phone">Teléfono / WhatsApp</label>
+                            <input type="tel" id="phone" class="form-control" required>
+                        </div>
+                    </div>
+
                     <div class="form-group required">
-                        <label for="lastName">Apellido</label>
-                        <input type="text" id="lastName" class="form-control" required>
+                        <label for="subject">Tipo de Servicio</label>
+                        <select id="subject" class="form-control" required>
+                            <option value="">Seleccionar servicio...</option>
+                            <option value="compra">Compra de Propiedades con IA</option>
+                            <option value="venta">Venta Premium con Marketing 360°</option>
+                            <option value="arriendo-buscar">Búsqueda de Arriendos Inteligente</option>
+                            <option value="arriendo-gestionar">Gestión de Arriendos IoT</option>
+                            <option value="inversion">Asesoría de Inversiones con ML</option>
+                            <option value="tasacion">Tasación Inteligente Blockchain</option>
+                            <option value="legal">Asesoría Legal Tech</option>
+                            <option value="demo">Demo Tecnológico Completo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget">Presupuesto (opcional)</label>
+                        <select id="budget" class="form-control">
+                            <option value="">Seleccionar rango...</option>
+                            <option value="hasta-3000">Hasta UF 3.000</option>
+                            <option value="3000-5000">UF 3.000 - 5.000</option>
+                            <option value="5000-8000">UF 5.000 - 8.000</option>
+                            <option value="8000-12000">UF 8.000 - 12.000</option>
+                            <option value="12000-mas">Más de UF 12.000</option>
+                            <option value="inversion">Portafolio de Inversión</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group required">
+                        <label for="message">Descripción del Proyecto</label>
+                        <textarea id="message" class="form-control" 
+                                  placeholder="Describe tu proyecto inmobiliario, ubicación preferida, características específicas, timeline, etc. Mientras más detalles proporciones, mejor podremos personalizar nuestra propuesta." 
+                                  required></textarea>
+                    </div>
+
+                    <button type="submit" class="form-submit">Enviar Consulta Especializada</button>
+                </form>
+            </section>
+
+            <!-- Contact Info -->
+            <section class="contact-info-section">
+                <h2 class="info-title">Información de Contacto</h2>
+
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <div class="contact-details">
+                        <h4>Email Corporativo</h4>
+                        <p><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></p>
+                        <p>Consultas generales y propuestas comerciales</p>
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group required">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" class="form-control" required>
-                    </div>
-                    <div class="form-group required">
-                        <label for="phone">Teléfono</label>
-                        <input type="tel" id="phone" class="form-control" required>
+                <div class="contact-item">
+                    <div class="contact-icon">📱</div>
+                    <div class="contact-details">
+                        <h4>WhatsApp / Teléfono</h4>
+                        <p><a href="tel:+56912345678">+56 9 1234 5678</a></p>
+                        <p>Disponible 24/7 para emergencias inmobiliarias</p>
                     </div>
                 </div>
 
-                <div class="form-group required">
-                    <label for="subject">Tipo de Consulta</label>
-                    <select id="subject" class="form-control" required>
-                        <option value="">Seleccionar...</option>
-                        <option value="compra">Quiero comprar una propiedad</option>
-                        <option value="venta">Quiero vender mi propiedad</option>
-                        <option value="arriendo-buscar">Busco propiedad en arriendo</option>
-                        <option value="arriendo-ofrecer">Quiero arrendar mi propiedad</option>
-                        <option value="inversion">Asesoría de inversión</option>
-                        <option value="tasacion">Tasación de propiedad</option>
-                        <option value="legal">Consulta legal</option>
-                        <option value="otro">Otra consulta</option>
-                    </select>
+                <div class="contact-item">
+                    <div class="contact-icon">🏢</div>
+                    <div class="contact-details">
+                        <h4>Oficina Premium</h4>
+                        <p>Av. Apoquindo 1234, Oficina 567<br>Las Condes, Santiago</p>
+                        <p>Metro Tobalaba - Acceso directo</p>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="budget">Presupuesto (opcional)</label>
-                    <select id="budget" class="form-control">
-                        <option value="">Seleccionar rango...</option>
-                        <option value="hasta-3000">Hasta UF 3.000</option>
-                        <option value="3000-5000">UF 3.000 - 5.000</option>
-                        <option value="5000-8000">UF 5.000 - 8.000</option>
-                        <option value="8000-12000">UF 8.000 - 12.000</option>
-                        <option value="12000-mas">Más de UF 12.000</option>
-                    </select>
+                <div class="contact-item">
+                    <div class="contact-icon">🤖</div>
+                    <div class="contact-details">
+                        <h4>Centro de Innovación</h4>
+                        <p>Tecnología IA & Blockchain</p>
+                        <p>Tours virtuales y análisis predictivo</p>
+                    </div>
                 </div>
 
-                <div class="form-group required">
-                    <label for="message">Mensaje</label>
-                    <textarea id="message" class="form-control" 
-                              placeholder="Cuéntanos sobre tu proyecto inmobiliario, ubicación preferida, características deseadas, etc." 
-                              required></textarea>
+                <div class="office-hours">
+                    <h4 class="hours-title">Horarios de Atención</h4>
+                    <ul class="hours-list">
+                        <li><span>Lunes - Viernes</span><span>9:00 - 19:00</span></li>
+                        <li><span>Sábados</span><span>10:00 - 17:00</span></li>
+                        <li><span>Domingos</span><span>11:00 - 15:00</span></li>
+                        <li><span>Emergencias</span><span>24/7 vía WhatsApp</span></li>
+                    </ul>
                 </div>
-
-                <button type="submit" class="form-submit">Enviar Consulta</button>
-            </form>
-        </section>
-
-        <!-- Contact Info -->
-        <section class="contact-info-section">
-            <h2 class="info-title">Información de Contacto</h2>
-
-            <div class="contact-item">
-                <div class="contact-icon">📧</div>
-                <div class="contact-details">
-                    <h4>Email Principal</h4>
-                    <p><a href="mailto:info@robertoreyespropiedades.cl">info@robertoreyespropiedades.cl</a></p>
-                    <p>Consultas generales y solicitudes de información</p>
-                </div>
-            </div>
-
-            <div class="contact-item">
-                <div class="contact-icon">📱</div>
-                <div class="contact-details">
-                    <h4>Teléfono / WhatsApp</h4>
-                    <p><a href="tel:+56912345678">+56 9 1234 5678</a></p>
-                    <p>Disponible de lunes a domingo de 8:00 a 22:00 hrs</p>
-                </div>
-            </div>
-
-            <div class="contact-item">
-                <div class="contact-icon">🏢</div>
-                <div class="contact-details">
-                    <h4>Oficina Principal</h4>
-                    <p>Av. Providencia 1234, Oficina 567<br>Providencia, Santiago</p>
-                    <p>Metro Tobalaba - Línea 1 y 4</p>
-                </div>
-            </div>
-
-            <div class="contact-item">
-                <div class="contact-icon">🚗</div>
-                <div class="contact-details">
-                    <h4>Estacionamiento</h4>
-                    <p>Disponible para clientes</p>
-                    <p>Validación gratuita por 2 horas</p>
-                </div>
-            </div>
-
-            <div class="office-hours">
-                <h4 class="hours-title">Horarios de Atención</h4>
-                <ul class="hours-list">
-                    <li><span>Lunes - Viernes</span><span>9:00 - 19:00</span></li>
-                    <li><span>Sábados</span><span>10:00 - 16:00</span></li>
-                    <li><span>Domingos</span><span>11:00 - 15:00</span></li>
-                    <li><span>Feriados</span><span>Solo emergencias</span></li>
-                </ul>
-            </div>
-        </section>
+            </section>
+        </div>
     </div>
 
     <!-- FAQ Section -->
-    <section class="faq-section">
+    <section class="faq-section parallax">
         <div class="faq-container">
             <h2 class="faq-title">Preguntas Frecuentes</h2>
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFAQ(0)">
-                    <h3>¿Cobran por la asesoría inicial?</h3>
+                    <h3>¿Qué incluye la asesoría premium gratuita?</h3>
                     <span class="faq-toggle">+</span>
                 </div>
                 <div class="faq-answer">
-                    <p>No, nuestra asesoría inicial es completamente gratuita. Incluye evaluación de necesidades, análisis de mercado y recomendaciones personalizadas.</p>
+                    <p>Incluye análisis de mercado con IA, evaluación de propiedades con algoritmos avanzados, estrategia personalizada, y demo de nuestras tecnologías innovadoras. Todo sin costo inicial.</p>
                 </div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFAQ(1)">
-                    <h3>¿En cuánto tiempo responden las consultas?</h3>
+                    <h3>¿Cómo funciona su tecnología de IA en bienes raíces?</h3>
                     <span class="faq-toggle">+</span>
                 </div>
                 <div class="faq-answer">
-                    <p>Nos comprometemos a responder todas las consultas en menos de 2 horas durante días hábiles, y dentro de 4 horas los fines de semana.</p>
+                    <p>Utilizamos machine learning para análisis predictivo de mercado, algoritmos de matching para encontrar propiedades ideales, y IoT para gestión inteligente. Todo integrado en una plataforma única.</p>
                 </div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFAQ(2)">
-                    <h3>¿Hacen visitas fuera de Santiago?</h3>
+                    <h3>¿Qué diferencia a Casa Nuvera de otras inmobiliarias?</h3>
                     <span class="faq-toggle">+</span>
                 </div>
                 <div class="faq-answer">
-                    <p>Sí, atendemos clientes en toda la Región Metropolitana y principales ciudades del país. Para lugares más alejados, coordinamos visitas con agenda previa.</p>
+                    <p>Somos la única inmobiliaria en Chile que combina tecnología blockchain, tours virtuales inmersivos, análisis predictivo con IA, y gestión IoT, ofreciendo una experiencia completamente innovadora.</p>
                 </div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFAQ(3)">
-                    <h3>¿Qué documentos necesito para comprar?</h3>
+                    <h3>¿Ofrecen servicios de inversión inmobiliaria?</h3>
                     <span class="faq-toggle">+</span>
                 </div>
                 <div class="faq-answer">
-                    <p>Necesitas cédula de identidad, certificado de ingresos, pre-aprobación bancaria (si usas crédito) y poder notarial si actúas por terceros. Te asesoramos en todo el proceso.</p>
+                    <p>Sí, tenemos un área especializada en inversiones con análisis cuantitativo, modelado de riesgos, y optimización de portafolios usando machine learning para maximizar retornos.</p>
                 </div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFAQ(4)">
-                    <h3>¿Ofrecen garantía en sus servicios?</h3>
+                    <h3>¿Cómo garantizan la seguridad en las transacciones?</h3>
                     <span class="faq-toggle">+</span>
                 </div>
                 <div class="faq-answer">
-                    <p>Sí, todos nuestros servicios tienen garantía. Si no estás satisfecho con nuestra gestión, te devolvemos el 100% de lo pagado en comisiones.</p>
+                    <p>Utilizamos tecnología blockchain para contratos inteligentes, verificación digital de documentos, y due diligence automatizado, garantizando máxima seguridad y transparencia.</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Servicios</h4>
+                    <ul>
+                        <li><a href="compras.html">Comprar</a></li>
+                        <li><a href="arriendos.html">Arrendar</a></li>
+                        <li><a href="servicios.html">Consultoría</a></li>
+                        <li><a href="servicios.html">Inversiones</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Tecnología</h4>
+                    <ul>
+                        <li><a href="servicios.html">IA & Analytics</a></li>
+                        <li><a href="servicios.html">Tours Virtuales</a></li>
+                        <li><a href="servicios.html">IoT & Smart Homes</a></li>
+                        <li><a href="servicios.html">Blockchain</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Soporte</h4>
+                    <ul>
+                        <li><a href="contacto.html">Contacto</a></li>
+                        <li><a href="blog.html">Centro de Ayuda</a></li>
+                        <li><a href="subir-imagenes.html">Portal Clientes</a></li>
+                        <li><a href="nosotros.html">Documentación</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></li>
+                        <li><a href="tel:+56912345678">+56 9 1234 5678</a></li>
+                        <li>Av. Apoquindo 1234</li>
+                        <li>Las Condes, Santiago</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-tagline">Casa Nuvera | Innovative Real Estate // Est. 2019</div>
+                <div>&copy; 2025 Casa Nuvera. Todos los derechos reservados.</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
     <script>
         // Contact methods
         function contactWhatsApp() {
-            const message = "Hola, me gustaría recibir información sobre sus servicios inmobiliarios. ¿Podrían ayudarme?";
+            const message = "Hola Casa Nuvera! Me interesa conocer más sobre sus servicios inmobiliarios innovadores con IA y tecnología avanzada. ¿Podrían proporcionarme información personalizada?";
             window.open(`https://wa.me/56912345678?text=${encodeURIComponent(message)}`, '_blank');
         }
 
@@ -737,33 +1020,42 @@
         }
 
         function contactEmail() {
-            window.location.href = 'mailto:info@robertoreyespropiedades.cl?subject=Consulta desde página web';
+            window.location.href = 'mailto:hola@casanuvera.cl?subject=Consulta desde página web - Casa Nuvera';
         }
 
         function scheduleVisit() {
-            const when = prompt(`📅 AGENDAR REUNIÓN
+            const demoInfo = `
+📅 DEMO TECNOLÓGICO PERSONALIZADO - CASA NUVERA
 
-¿Cuándo te gustaría reunirte con nosotros?
+¿Qué incluye nuestro demo premium?
+🤖 IA aplicada a bienes raíces en vivo
+📱 Apps móviles exclusivas
+🏠 Tours virtuales inmersivos 360°
+📊 Dashboards en tiempo real
+🔗 Blockchain inmobiliario
+📈 Análisis predictivo personalizado
+💎 Propuestas con machine learning
 
-Opciones disponibles:
-• Hoy en la tarde
-• Mañana
-• Esta semana
-• Próxima semana
+⏱️ Duración: 45-60 minutos
+📍 Modalidad: Presencial u online
+🎁 Incluye: Análisis gratuito de mercado
+💻 Plataforma: Zoom/Teams/Oficina premium
 
-Ingresa tu preferencia:`);
+Horarios exclusivos:
+• Lunes a Viernes: 9:00 - 19:00
+• Sábados: 10:00 - 17:00
+• Sesiones VIP: Horarios especiales
 
+¿Cuándo quieres experimentar el futuro inmobiliario?
+            `;
+
+            const when = prompt(demoInfo + "\n\nIngresa tu día y hora preferida:");
+            
             if (when) {
-                const contact = prompt('¿Cómo prefieres que te contactemos para confirmar?\n\nIngresa tu teléfono o email:');
-                if (contact) {
-                    alert(`✅ ¡REUNIÓN SOLICITADA!
-
-📅 Preferencia: ${when}
-📞 Contacto: ${contact}
-
-Te llamaremos dentro de las próximas 2 horas para confirmar fecha, hora y lugar.
-
-¡Gracias por confiar en Roberto Reyes Propiedades!`);
+                const contactInfo = prompt(`🚀 RESERVA TU DEMO PREMIUM\n\nPara personalizar completamente tu experiencia:\n\n• Nombre completo\n• Teléfono/WhatsApp\n• Email corporativo\n• Tipo de servicio de interés\n• Presupuesto aproximado\n• Ubicación preferida\n\nIngresa tus datos:`);
+                
+                if (contactInfo) {
+                    alert(`✅ ¡DEMO PREMIUM AGENDADO!\n\n📅 Preferencia: ${when}\n📋 Datos: ${contactInfo}\n\nPróximos pasos:\n1. Confirmación en 1 hora\n2. Calendar invite personalizado\n3. Material pre-demo exclusivo\n4. Acceso a plataforma de demostración\n5. Análisis de mercado preliminar\n\n🚀 ¡Prepárate para experimentar el futuro inmobiliario!`);
                 }
             }
         }
@@ -792,7 +1084,7 @@ Te llamaremos dentro de las próximas 2 horas para confirmar fecha, hora y lugar
             // Show loading
             const submitBtn = this.querySelector('.form-submit');
             const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Enviando...';
+            submitBtn.textContent = 'Procesando con IA...';
             submitBtn.disabled = true;
 
             // Simulate form submission
@@ -802,21 +1094,29 @@ Te llamaremos dentro de las próximas 2 horas para confirmar fecha, hora y lugar
                 
                 // Show detailed confirmation
                 const confirmation = `
-✅ ¡CONSULTA ENVIADA EXITOSAMENTE!
+✅ ¡CONSULTA ESPECIALIZADA RECIBIDA!
 
-📝 Resumen de tu consulta:
-• Nombre: ${formData.firstName} ${formData.lastName}
+🚀 CASA NUVERA - INNOVATIVE REAL ESTATE
+
+📝 Resumen de tu consulta premium:
+• Cliente: ${formData.firstName} ${formData.lastName}
 • Email: ${formData.email}
 • Teléfono: ${formData.phone}
-• Tipo: ${getSubjectText(formData.subject)}
+• Servicio: ${getSubjectText(formData.subject)}
 ${formData.budget ? '• Presupuesto: ' + getBudgetText(formData.budget) : ''}
 
-📞 Próximos pasos:
-1. Te contactaremos en las próximas 2 horas
-2. Agendaremos una reunión si es necesario
-3. Te enviaremos propuestas personalizadas
+🤖 Procesamiento con IA en curso...
 
-¡Gracias por confiar en Roberto Reyes Propiedades!
+📞 Próximos pasos automáticos:
+1. Análisis de tu perfil con machine learning
+2. Contacto especializado en las próximas 2 horas
+3. Propuesta personalizada con IA
+4. Demo tecnológico si corresponde
+5. Matching inteligente de propiedades
+
+🎯 Tu consulta ha sido asignada a nuestro equipo premium especializado en ${getSubjectText(formData.subject)}.
+
+¡Bienvenido al futuro inmobiliario con Casa Nuvera!
                 `;
                 
                 alert(confirmation);
@@ -831,19 +1131,19 @@ ${formData.budget ? '• Presupuesto: ' + getBudgetText(formData.budget) : ''}
                     document.getElementById('successMessage').style.display = 'none';
                 }, 5000);
 
-            }, 1500);
+            }, 2000);
         });
 
         function getSubjectText(value) {
             const subjects = {
-                'compra': 'Comprar propiedad',
-                'venta': 'Vender propiedad',
-                'arriendo-buscar': 'Buscar arriendo',
-                'arriendo-ofrecer': 'Arrendar propiedad',
-                'inversion': 'Asesoría de inversión',
-                'tasacion': 'Tasación',
-                'legal': 'Consulta legal',
-                'otro': 'Otra consulta'
+                'compra': 'Compra de Propiedades con IA',
+                'venta': 'Venta Premium con Marketing 360°',
+                'arriendo-buscar': 'Búsqueda de Arriendos Inteligente',
+                'arriendo-gestionar': 'Gestión de Arriendos IoT',
+                'inversion': 'Asesoría de Inversiones con ML',
+                'tasacion': 'Tasación Inteligente Blockchain',
+                'legal': 'Asesoría Legal Tech',
+                'demo': 'Demo Tecnológico Completo'
             };
             return subjects[value] || value;
         }
@@ -854,7 +1154,8 @@ ${formData.budget ? '• Presupuesto: ' + getBudgetText(formData.budget) : ''}
                 '3000-5000': 'UF 3.000 - 5.000',
                 '5000-8000': 'UF 5.000 - 8.000',
                 '8000-12000': 'UF 8.000 - 12.000',
-                '12000-mas': 'Más de UF 12.000'
+                '12000-mas': 'Más de UF 12.000',
+                'inversion': 'Portafolio de Inversión'
             };
             return budgets[value] || value;
         }
@@ -889,7 +1190,38 @@ ${formData.budget ? '• Presupuesto: ' + getBudgetText(formData.budget) : ''}
             }
         }
 
-        // Phone number formatting
+        // Animations on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = Math.random() * 0.5 + 's';
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax');
+            
+            parallaxElements.forEach(element => {
+                const speed = 0.5;
+                const yPos = -(scrolled * speed);
+                element.style.backgroundPosition = `center ${yPos}px`;
+            });
+        });
+
+        // Enhanced phone formatting
         document.getElementById('phone').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             
@@ -917,77 +1249,6 @@ ${formData.budget ? '• Presupuesto: ' + getBudgetText(formData.budget) : ''}
                 });
             }
         });
-
-        // Add click tracking for contact methods
-        document.querySelectorAll('.method-card').forEach(card => {
-            card.addEventListener('click', function() {
-                // Add visual feedback
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = 'translateY(-5px)';
-                }, 150);
-            });
-        });
-
-        // Add hover effects to contact items
-        document.querySelectorAll('.contact-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const link = this.querySelector('a');
-                if (link) {
-                    link.click();
-                }
-            });
-        });
-
-        // Enhanced form validation
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-
-        function validatePhone(phone) {
-            const cleanPhone = phone.replace(/\D/g, '');
-            return cleanPhone.length >= 8;
-        }
-
-        // Real-time validation
-        document.getElementById('email').addEventListener('blur', function() {
-            if (this.value && !validateEmail(this.value)) {
-                this.style.borderColor = '#e74c3c';
-                showFieldError(this, 'Por favor ingresa un email válido');
-            } else {
-                this.style.borderColor = '#e0e6ed';
-                clearFieldError(this);
-            }
-        });
-
-        document.getElementById('phone').addEventListener('blur', function() {
-            if (this.value && !validatePhone(this.value)) {
-                this.style.borderColor = '#e74c3c';
-                showFieldError(this, 'Por favor ingresa un teléfono válido');
-            } else {
-                this.style.borderColor = '#e0e6ed';
-                clearFieldError(this);
-            }
-        });
-
-        function showFieldError(field, message) {
-            clearFieldError(field);
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'field-error';
-            errorDiv.style.color = '#e74c3c';
-            errorDiv.style.fontSize = '0.9rem';
-            errorDiv.style.marginTop = '0.5rem';
-            errorDiv.textContent = message;
-            field.parentNode.appendChild(errorDiv);
-        }
-
-        function clearFieldError(field) {
-            const errorDiv = field.parentNode.querySelector('.field-error');
-            if (errorDiv) {
-                errorDiv.remove();
-            }
-        }
     </script>
 </body>
 </html>
