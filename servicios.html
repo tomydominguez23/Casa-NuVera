@@ -336,9 +336,10 @@
         }
 
         .detailed-icon {
-            font-size: 3rem;
-            margin-bottom: 2rem;
             display: block;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
         }
 
         .detailed-title {
@@ -346,6 +347,7 @@
             font-weight: 600;
             margin-bottom: 1.5rem;
             color: white;
+            text-align: center;
         }
 
         .detailed-description {
@@ -742,7 +744,20 @@
             
             <div class="detailed-grid">
                 <div class="detailed-card" onclick="selectService('compra')">
-                    <span class="detailed-icon">🏠</span>
+                    <svg class="detailed-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Casa base -->
+                        <path d="M20 80 L50 20 L80 80 L20 80 Z" fill="#e0e0e0" stroke="#999" stroke-width="2"/>
+                        <!-- Techo -->
+                        <path d="M15 75 L50 15 L85 75" fill="none" stroke="#999" stroke-width="3"/>
+                        <!-- Puerta -->
+                        <rect x="40" y="60" width="20" height="20" fill="#ccc" stroke="#999"/>
+                        <!-- Ventana -->
+                        <rect x="25" y="45" width="15" height="12" fill="#ccc" stroke="#999"/>
+                        <rect x="60" y="45" width="15" height="12" fill="#ccc" stroke="#999"/>
+                        <!-- Check mark -->
+                        <circle cx="75" cy="35" r="15" fill="#4CAF50" stroke="white" stroke-width="2"/>
+                        <path d="M68 35 L73 40 L82 31" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    </svg>
                     <h3 class="detailed-title">Compra de Propiedades</h3>
                     <p class="detailed-description">Servicio integral de compra con análisis de mercado, gestión financiera y acompañamiento legal completo.</p>
                     <ul class="detailed-features">
@@ -758,7 +773,23 @@
                 </div>
 
                 <div class="detailed-card" onclick="selectService('venta')">
-                    <span class="detailed-icon">💰</span>
+                    <svg class="detailed-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Bolsa de dinero -->
+                        <ellipse cx="50" cy="70" rx="25" ry="20" fill="#e0e0e0" stroke="#999" stroke-width="2"/>
+                        <!-- Parte superior de la bolsa -->
+                        <rect x="35" y="35" width="30" height="35" fill="#e0e0e0" stroke="#999" stroke-width="2"/>
+                        <!-- Cordón de la bolsa -->
+                        <path d="M35 40 Q50 30 65 40" fill="none" stroke="#999" stroke-width="2"/>
+                        <circle cx="38" cy="40" r="3" fill="#999"/>
+                        <circle cx="62" cy="40" r="3" fill="#999"/>
+                        <!-- Símbolo de dólar -->
+                        <text x="50" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#666">$</text>
+                        <!-- Líneas de brillo -->
+                        <path d="M25 25 L30 30" stroke="#f4d03f" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M75 25 L70 30" stroke="#f4d03f" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M15 50 L20 50" stroke="#f4d03f" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M85 50 L80 50" stroke="#f4d03f" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
                     <h3 class="detailed-title">Venta de Propiedades</h3>
                     <p class="detailed-description">Marketing premium con tecnología 360°, fotografía profesional y estrategias digitales avanzadas.</p>
                     <ul class="detailed-features">
@@ -774,7 +805,23 @@
                 </div>
 
                 <div class="detailed-card" onclick="selectService('arriendo')">
-                    <span class="detailed-icon">🔑</span>
+                    <svg class="detailed-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Llave principal -->
+                        <rect x="20" y="45" width="45" height="10" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="5"/>
+                        <!-- Cabeza de la llave -->
+                        <circle cx="25" cy="50" r="15" fill="#e0e0e0" stroke="#999" stroke-width="2"/>
+                        <!-- Agujero en la cabeza -->
+                        <circle cx="25" cy="50" r="6" fill="#7a7a7a"/>
+                        <!-- Dientes de la llave -->
+                        <rect x="60" y="40" width="8" height="8" fill="#e0e0e0" stroke="#999"/>
+                        <rect x="68" y="35" width="8" height="13" fill="#e0e0e0" stroke="#999"/>
+                        <rect x="76" y="45" width="8" height="8" fill="#e0e0e0" stroke="#999"/>
+                        <!-- Sombra/dimensión -->
+                        <path d="M20 55 L65 55 L65 52 L20 52" fill="#ccc"/>
+                        <!-- Líneas de brillo en la cabeza -->
+                        <path d="M18 42 L22 46" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M32 42 L28 46" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
                     <h3 class="detailed-title">Gestión de Arriendos</h3>
                     <p class="detailed-description">Administración inteligente con IoT, automatización de pagos y mantenimiento predictivo.</p>
                     <ul class="detailed-features">
