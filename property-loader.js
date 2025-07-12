@@ -1,4 +1,4 @@
-// property-loader.js - Adaptado para estructura en inglés de Casa Nuvera
+// property-loader.js - Adaptado para estructura en inglés de Casa Nuvera con efectos hover premium
 
 class PropertyLoader {
     constructor() {
@@ -22,7 +22,14 @@ class PropertyLoader {
             // Query adaptada a tu estructura en inglés
             const { data, error } = await window.supabase
                 .from('properties')
-                .select('*')
+                .select(`
+                    *,
+                    property_images (
+                        image_url,
+                        image_order,
+                        is_main
+                    )
+                `)
                 .eq('published', true)  // published en lugar de activa
                 .order('featured', { ascending: false })
                 .order('created_at', { ascending: false }); // created_at en lugar de fecha_creacion
@@ -69,7 +76,7 @@ class PropertyLoader {
             .slice(0, limit);
     }
 
-    // Generar HTML para una propiedad (ADAPTADO A ESTRUCTURA INGLÉS)
+    // Generar HTML para una propiedad con efectos hover premium (ACTUALIZADO)
     generatePropertyHTML(property) {
         const formatPrice = (precio, moneda) => {
             const formatted = new Intl.NumberFormat('es-CL').format(precio);
@@ -102,6 +109,18 @@ class PropertyLoader {
         // Buscar imagen principal - adaptado a tu estructura
         const imageUrl = this.getPropertyMainImage(property);
 
+        // Generar características para el hover
+        const features = [];
+        if (property.bedrooms !== null && property.bedrooms !== undefined) {
+            features.push(`${property.bedrooms === 0 ? 'Studio' : property.bedrooms + ' dormitorios'}`);
+        }
+        if (property.bathrooms) features.push(`${property.bathrooms} baños`);
+        if (property.total_area) features.push(`${property.total_area}m²`);
+        if (property.parking_spaces > 0) features.push(`${property.parking_spaces} estacionamientos`);
+
+        // Información de contacto para el hover
+        const contactInfo = property.contact_phone || property.contact_email || 'Contactar para más información';
+
         return `
             <div class="property-card" data-id="${property.id}">
                 <div class="property-image ${imageUrl ? 'has-image' : 'no-image'}">
@@ -114,6 +133,19 @@ class PropertyLoader {
                     }
                     <div class="${getBadgeClass(property.property_type)} ${property.featured ? 'featured' : ''}">
                         ${property.featured ? '⭐ ' : ''}${getBadgeText(property.property_type)}
+                    </div>
+                    
+                    <!-- Información adicional que aparece en hover -->
+                    <div class="property-hover-info">
+                        <h4>${property.title}</h4>
+                        <div class="hover-price">${formatPrice(property.price, property.currency)}</div>
+                        <p>📍 ${property.address}, ${property.commune}</p>
+                        <div class="hover-features">${features.join(' • ')}</div>
+                        ${property.expenses ? 
+                            `<p>💰 Gastos comunes: $${new Intl.NumberFormat('es-CL').format(property.expenses)}</p>` : 
+                            ''
+                        }
+                        <div class="hover-contact">📞 ${contactInfo}</div>
                     </div>
                 </div>
                 
@@ -145,6 +177,17 @@ class PropertyLoader {
 
     // Función para obtener imagen principal de la propiedad
     getPropertyMainImage(property) {
+        // Si tienes imágenes relacionadas de property_images
+        if (property.property_images && property.property_images.length > 0) {
+            // Buscar imagen principal primero
+            const mainImage = property.property_images.find(img => img.is_main);
+            if (mainImage) {
+                return mainImage.image_url;
+            }
+            // Si no hay imagen marcada como principal, usar la primera
+            return property.property_images[0].image_url;
+        }
+        
         // Si tienes una columna main_image
         if (property.main_image) {
             return property.main_image;
@@ -155,8 +198,6 @@ class PropertyLoader {
             return property.images[0];
         }
         
-        // Si necesitas obtener de la tabla property_images (requiere query separada)
-        // Por ahora retornamos null, se puede implementar después
         return null;
     }
 
@@ -263,6 +304,36 @@ class PropertyLoader {
         container.innerHTML = propertiesHTML;
 
         console.log(`✅ ${propertiesToShow.length} propiedades renderizadas en ${containerId}`);
+        
+        // Configurar eventos hover después de renderizar
+        this.setupHoverEvents(container);
+    }
+
+    // Configurar eventos hover para efectos premium
+    setupHoverEvents(container) {
+        const propertyCards = container.querySelectorAll('.property-card');
+        
+        propertyCards.forEach(card => {
+            const hoverInfo = card.querySelector('.property-hover-info');
+            
+            if (hoverInfo) {
+                // Agregar delay para evitar activación accidental
+                let hoverTimeout;
+                
+                card.addEventListener('mouseenter', () => {
+                    hoverTimeout = setTimeout(() => {
+                        hoverInfo.style.opacity = '1';
+                        hoverInfo.style.pointerEvents = 'all';
+                    }, 300); // 300ms de delay
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    clearTimeout(hoverTimeout);
+                    hoverInfo.style.opacity = '0';
+                    hoverInfo.style.pointerEvents = 'none';
+                });
+            }
+        });
     }
 
     // Función para búsqueda de propiedades (ADAPTADO)
@@ -320,7 +391,7 @@ class PropertyLoader {
         await this.loadProperties();
         
         // Re-renderizar todas las secciones activas
-        const containers = ['featuredProperties', 'compraProperties', 'arriendoProperties'];
+        const containers = ['featuredProperties', 'compraProperties', 'arriendoProperties', 'propertiesGrid'];
         
         for (const containerId of containers) {
             const container = document.getElementById(containerId);
@@ -331,6 +402,9 @@ class PropertyLoader {
                     await this.renderProperties(containerId, 'compra');
                 } else if (containerId === 'arriendoProperties') {
                     await this.renderProperties(containerId, 'arriendo');
+                } else if (containerId === 'propertiesGrid') {
+                    // Renderizar todas las propiedades si es una página de listado
+                    await this.renderProperties(containerId);
                 }
             }
         }
@@ -405,7 +479,7 @@ window.propertyLoader = new PropertyLoader();
 
 // Auto-inicializar cuando el DOM y Supabase estén listos
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log('🏠 Inicializando Property Loader (Estructura Inglés)...');
+    console.log('🏠 Inicializando Property Loader con efectos hover premium...');
     
     // Esperar a que Supabase esté listo
     if (window.supabase) {
@@ -433,6 +507,7 @@ function initializePropertyLoader() {
             const featuredContainer = document.getElementById('featuredProperties');
             const compraContainer = document.getElementById('compraProperties');
             const arriendoContainer = document.getElementById('arriendoProperties');
+            const propertiesGrid = document.getElementById('propertiesGrid');
 
             if (featuredContainer) {
                 console.log('📋 Cargando propiedades destacadas...');
@@ -449,6 +524,11 @@ function initializePropertyLoader() {
                 await window.propertyLoader.renderProperties('arriendoProperties', 'arriendo');
             }
 
+            if (propertiesGrid) {
+                console.log('🏘️ Cargando todas las propiedades...');
+                await window.propertyLoader.renderProperties('propertiesGrid');
+            }
+
             // Mostrar estadísticas en consola
             const stats = window.propertyLoader.getStats();
             console.log('📊 Estadísticas de propiedades:', stats);
@@ -459,4 +539,4 @@ function initializePropertyLoader() {
     }, 1000);
 }
 
-console.log('✅ Property Loader cargado correctamente - Casa Nuvera (Estructura Inglés)');
+console.log('✅ Property Loader con efectos hover premium cargado correctamente - Casa Nuvera');
