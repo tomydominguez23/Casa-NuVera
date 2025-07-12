@@ -29,6 +29,7 @@
             --overlay-medium: rgba(0, 0, 0, 0.4);
             --overlay-light: rgba(0, 0, 0, 0.2);
             --overlay-white: rgba(255, 255, 255, 0.9);
+            --green-accent: #00ff88;
         }
 
         body {
@@ -118,6 +119,40 @@
 
         .nav-cta:hover {
             background: var(--secondary-gray);
+        }
+
+        /* Botón flotante para subir propiedades */
+        .floating-upload-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--green-accent), #00cc6a);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: pulse-green 3s infinite;
+        }
+
+        .floating-upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
+            background: linear-gradient(135deg, #00cc6a, var(--green-accent));
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 15px 40px rgba(0, 255, 136, 0.5); }
         }
 
         /* Hero Section con imagen de fondo full */
@@ -220,6 +255,28 @@
             color: var(--primary-black);
         }
 
+        .btn-upload {
+            background: linear-gradient(135deg, var(--green-accent), #00cc6a);
+            color: white;
+            border: 2px solid var(--green-accent);
+            padding: 1.2rem 2.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-upload:hover {
+            background: linear-gradient(135deg, #00cc6a, var(--green-accent));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+        }
+
         /* Navigation Grid sin fondo */
         .nav-grid {
             padding: 0;
@@ -230,7 +287,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
         }
 
         .nav-item {
@@ -270,6 +327,14 @@
                         url('https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&crop=center');
             background-size: cover;
             background-position: center;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+        }
+
+        .nav-item:nth-child(4) {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
             border-right: none;
             filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
@@ -285,7 +350,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 255, 136, 0.1);
             z-index: 1;
         }
 
@@ -324,7 +389,108 @@
             font-size: 0.9rem;
         }
 
-        /* Featured Properties sin fondo - Full Width */
+        /* Sección especial de venta */
+        .sell-section {
+            background: linear-gradient(135deg, var(--green-accent), #00cc6a);
+            padding: 6rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .sell-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sell-section h2 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .sell-section p {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .sell-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .sell-feature {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sell-feature h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .sell-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-sell-primary {
+            background: white;
+            color: var(--green-accent);
+            border: 2px solid white;
+            padding: 1.2rem 3rem;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 50px;
+        }
+
+        .btn-sell-primary:hover {
+            background: transparent;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-sell-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 1.2rem 3rem;
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 50px;
+        }
+
+        .btn-sell-secondary:hover {
+            background: white;
+            color: var(--green-accent);
+            transform: translateY(-2px);
+        }
+
+        /* Resto de estilos iguales... */
         .featured-section {
             padding: 0;
             background: transparent;
@@ -835,8 +1001,19 @@
                 background-attachment: scroll;
             }
 
-            .contact-section {
-                background-attachment: scroll;
+            .floating-upload-btn {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.8rem 1.2rem;
+                font-size: 0.8rem;
+            }
+
+            .sell-features {
+                grid-template-columns: 1fr;
+            }
+
+            .sell-actions {
+                flex-direction: column;
             }
         }
 
@@ -861,6 +1038,12 @@
     </style>
 </head>
 <body>
+    <!-- Botón flotante para subir propiedades -->
+    <a href="subir-propiedades.html" class="floating-upload-btn">
+        <span>🏠</span>
+        Subir Propiedad
+    </a>
+
     <!-- Header flotante -->
     <header class="header">
         <div class="nav-container">
@@ -892,6 +1075,7 @@
             <p class="hero-description">Somos un equipo de diseñadores y creativos que están abriendo camino hacia la libertad creativa para propietarios en todas partes. Desde nuestras propiedades líderes en la industria hasta nuevas innovaciones en el mercado inmobiliario.</p>
             <div class="hero-actions">
                 <a href="#servicios" class="btn-primary">Explorar Propiedades</a>
+                <a href="subir-propiedades.html" class="btn-upload">🏠 Subir Propiedad</a>
                 <a href="#contacto" class="btn-secondary">Contactar Ahora</a>
             </div>
         </div>
@@ -926,6 +1110,51 @@
                     <span class="nav-item-link">Conocer Más →</span>
                 </div>
             </a>
+
+            <a href="subir-propiedades.html" class="nav-item">
+                <div class="nav-item-content">
+                    <div class="nav-item-label">Vende</div>
+                    <h3>Subir Propiedad</h3>
+                    <p>Publica tu propiedad de manera rápida y sencilla en nuestra plataforma.</p>
+                    <span class="nav-item-link">Publicar Ahora →</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Sección especial para vender propiedades -->
+    <section class="sell-section">
+        <div class="sell-container">
+            <h2>¿Tienes una propiedad para vender o arrendar?</h2>
+            <p>Únete a Casa Nuvera y llega a miles de compradores potenciales. Proceso simple, resultados excepcionales.</p>
+            
+            <div class="sell-features">
+                <div class="sell-feature">
+                    <h4>🚀 Publicación Rápida</h4>
+                    <p>Sube tu propiedad en minutos con nuestro formulario intuitivo</p>
+                </div>
+                <div class="sell-feature">
+                    <h4>📸 Galería Premium</h4>
+                    <p>Muestra tu propiedad con imágenes de alta calidad</p>
+                </div>
+                <div class="sell-feature">
+                    <h4>📊 Mayor Visibilidad</h4>
+                    <p>Tu propiedad será vista por miles de potenciales compradores</p>
+                </div>
+                <div class="sell-feature">
+                    <h4>💼 Asesoría Experta</h4>
+                    <p>Nuestro equipo te acompañará en todo el proceso</p>
+                </div>
+            </div>
+
+            <div class="sell-actions">
+                <a href="subir-propiedades.html" class="btn-sell-primary">
+                    🏠 Subir Mi Propiedad
+                </a>
+                <a href="#contacto" class="btn-sell-secondary">
+                    💬 Consultar Asesor
+                </a>
+            </div>
         </div>
     </section>
 
@@ -937,7 +1166,7 @@
                 <h2 class="section-title">The world's finest properties designed to maximize those lifestyle dreams</h2>
             </div>
 
-            <div class="properties-grid">
+            <div class="properties-grid" id="featuredProperties">
                 <div class="property-card fade-in">
                     <div class="property-image" style="background-image: url('https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=600&h=400&fit=crop&crop=center');">
                         <div class="property-badge">Destacada</div>
@@ -1067,7 +1296,7 @@
                     <ul>
                         <li><a href="compras.html">Comprar</a></li>
                         <li><a href="arriendos.html">Arrendar</a></li>
-                        <li><a href="subir-propiedades.html">Vender</a></li>
+                        <li><a href="subir-propiedades.html">🏠 Subir Propiedad</a></li>
                         <li><a href="#servicios">Tasaciones</a></li>
                     </ul>
                 </div>
@@ -1086,9 +1315,9 @@
                     <h4>Soporte</h4>
                     <ul>
                         <li><a href="#contacto">Contacto</a></li>
-                        <li><a href="#">Centro de Ayuda</a></li>
+                        <li><a href="#" onclick="alert('Próximamente: Centro de ayuda con guías y tutoriales')">Centro de Ayuda</a></li>
                         <li><a href="subir-imagenes.html">Gestionar Contenido</a></li>
-                        <li><a href="#">Términos</a></li>
+                        <li><a href="#" onclick="alert('Próximamente: Términos y condiciones')">Términos</a></li>
                     </ul>
                 </div>
                 
