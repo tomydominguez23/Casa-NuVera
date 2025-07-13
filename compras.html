@@ -173,143 +173,7 @@
             opacity: 0.9;
         }
 
-        /* Filters Section con fondo premium */
-        .filters-section {
-            background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
-                        url('https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1920&h=600&fit=crop&crop=center');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: white;
-            padding: 4rem 0;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
-        }
-
-        .filters-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 300;
-            text-align: center;
-            margin-bottom: 3rem;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .filter-group {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-        }
-
-        .filter-group label {
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: white;
-            display: block;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-        }
-
-        .filter-select,
-        .filter-input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .filter-select option {
-            background: var(--primary-black);
-            color: white;
-        }
-
-        .filter-select:focus,
-        .filter-input:focus {
-            outline: none;
-            border-color: rgba(255, 255, 255, 0.6);
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .filter-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .price-range {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .price-range span {
-            color: white;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .filter-actions {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .btn {
-            padding: 1.2rem 2.5rem;
-            border: none;
-            border-radius: 0;
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-primary {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(20px);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-
-        .btn-secondary:hover {
-            background: white;
-            color: var(--primary-black);
-        }
-
-        /* Loading */
+        /* Resto del CSS original de compras.html... */
         .loading-container {
             display: flex;
             flex-direction: column;
@@ -336,7 +200,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Error State */
         .error-container {
             text-align: center;
             padding: 4rem 2rem;
@@ -347,6 +210,7 @@
         .error-container h3 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
+            color: #d32f2f;
         }
 
         .error-container p {
@@ -354,11 +218,52 @@
             font-size: 1.1rem;
         }
 
-        /* Properties Section - FONDO BLANCO */
+        .diagnostic-info {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: left;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-black);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-gray);
+        }
+
+        .btn-secondary {
+            background: var(--medium-gray);
+            color: var(--primary-black);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-gray);
+            color: white;
+        }
+
+        /* Properties Section */
         .properties-section {
             background: white;
             padding: 4rem 2rem;
             color: var(--primary-black);
+            min-height: 50vh;
         }
 
         .properties-container {
@@ -379,279 +284,10 @@
             font-weight: 500;
         }
 
-        .sort-select {
-            padding: 0.8rem 1.5rem;
-            border: 2px solid var(--medium-gray);
-            border-radius: 8px;
-            background: white;
-            color: var(--primary-black);
-        }
-
-        .sort-select option {
-            background: white;
-            color: var(--primary-black);
-        }
-
         .properties-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 2rem;
-        }
-
-        .property-card {
-            background: white;
-            border: 1px solid var(--medium-gray);
-            border-radius: 8px;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            height: 500px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .property-card:hover {
-            transform: scale(1.05);
-            z-index: 10;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .property-card:hover .property-image {
-            filter: saturate(1.0) contrast(1.2) brightness(1.2) sepia(0.4) hue-rotate(15deg);
-        }
-
-        .property-card:hover .property-info {
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
-        }
-
-        .property-image {
-            height: 100%;
-            background: var(--medium-gray);
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            transition: all 0.4s ease;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
-        }
-
-        .property-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .property-badge {
-            position: absolute;
-            top: 1.5rem;
-            left: 1.5rem;
-            background: rgba(255, 255, 255, 0.95);
-            color: var(--primary-black);
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            z-index: 5;
-        }
-
-        .property-favorite {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
-            font-size: 1.3rem;
-            transition: all 0.3s ease;
-            z-index: 5;
-            color: var(--primary-black);
-        }
-
-        .property-favorite:hover {
-            background: white;
-            transform: scale(1.1);
-        }
-
-        .property-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 2rem;
-            color: white;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-            transition: all 0.4s ease;
-        }
-
-        .property-price {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 0.5rem;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }
-
-        .property-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 0.5rem;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }
-
-        .property-location {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }
-
-        .property-features {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }
-
-        .property-link {
-            color: white;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.9rem;
-            text-decoration: none;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-            border-bottom: 2px solid white;
-            padding-bottom: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .property-link:hover {
-            opacity: 0.8;
-        }
-
-        /* No Properties */
-        .no-properties {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 4rem 2rem;
-            background: var(--light-gray);
-            border: 1px solid var(--medium-gray);
-            border-radius: 8px;
-            color: var(--secondary-gray);
-        }
-
-        .no-properties h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            font-weight: 300;
-        }
-
-        .no-properties p {
-            font-size: 1.1rem;
-            opacity: 0.8;
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 3rem;
-            gap: 0.5rem;
-        }
-
-        .pagination button {
-            padding: 0.8rem 1.2rem;
-            border: 2px solid var(--medium-gray);
-            background: white;
-            color: var(--primary-black);
-            border-radius: 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .pagination button:hover,
-        .pagination button.active {
-            background: var(--primary-black);
-            color: white;
-            border-color: var(--primary-black);
-        }
-
-        .pagination button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Footer con fondo de imagen */
-        .footer {
-            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
-                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752027032204_0.jpg');
-            background-size: cover;
-            background-position: center;
-            padding: 4rem 2rem 2rem;
-            color: white;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
-        }
-
-        .footer-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-section h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1.5rem;
-            color: white;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-section ul li a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section ul li a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-
-        .footer-tagline {
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         /* Mobile Responsive */
@@ -664,16 +300,8 @@
                 font-size: 2.5rem;
             }
 
-            .filters-grid {
-                grid-template-columns: 1fr;
-            }
-
             .properties-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .property-card {
-                height: 400px;
             }
 
             .section-header {
@@ -682,54 +310,9 @@
                 align-items: flex-start;
             }
 
-            .filter-actions {
-                flex-direction: column;
-            }
-
-            .price-range {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .price-range span {
-                display: none;
-            }
-
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
             .hero {
                 background-attachment: scroll;
             }
-
-            .filters-section {
-                background-attachment: scroll;
-            }
-        }
-
-        /* Animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeIn 0.8s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Parallax effect */
-        .parallax {
-            background-attachment: fixed;
         }
     </style>
 </head>
@@ -751,80 +334,18 @@
                     <li><a href="servicios.html">Servicios</a></li>
                     <li><a href="nosotros.html">Nosotros</a></li>
                     <li><a href="contacto.html">Contacto</a></li>
-                    <li><a href="subir-imagenes.html" class="nav-cta">Gestionar</a></li>
+                    <li><a href="subir-propiedades.html" class="nav-cta">🏠 Subir Propiedad</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero parallax">
-        <div class="hero-content fade-in">
+    <section class="hero">
+        <div class="hero-content">
             <div class="hero-tagline">Casa Nuvera | Propiedades Premium en Venta</div>
             <h1>Find your perfect home among our luxury listings</h1>
             <p class="hero-description">Descubre propiedades exclusivas cuidadosamente seleccionadas en las mejores ubicaciones de Santiago. Desde casas familiares hasta departamentos de lujo.</p>
-        </div>
-    </section>
-
-    <!-- Filters Section -->
-    <section class="filters-section parallax">
-        <div class="filters-container">
-            <h2 class="section-title">Encuentra tu Propiedad Ideal</h2>
-            
-            <div class="filters-grid">
-                <div class="filter-group">
-                    <label for="comuna">Comuna</label>
-                    <select id="comuna" class="filter-select">
-                        <option value="">Todas las comunas</option>
-                        <option value="Las Condes">Las Condes</option>
-                        <option value="Providencia">Providencia</option>
-                        <option value="Vitacura">Vitacura</option>
-                        <option value="Ñuñoa">Ñuñoa</option>
-                        <option value="Santiago">Santiago Centro</option>
-                        <option value="La Reina">La Reina</option>
-                        <option value="Lo Barnechea">Lo Barnechea</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="tipo">Tipo de Propiedad</label>
-                    <select id="tipo" class="filter-select">
-                        <option value="">Todos los tipos</option>
-                        <option value="casa">Casa</option>
-                        <option value="departamento">Departamento</option>
-                        <option value="oficina">Oficina</option>
-                        <option value="local-comercial">Local Comercial</option>
-                        <option value="terreno">Terreno</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="dormitorios">Dormitorios</label>
-                    <select id="dormitorios" class="filter-select">
-                        <option value="">Cualquier cantidad</option>
-                        <option value="0">Studio</option>
-                        <option value="1">1 Dormitorio</option>
-                        <option value="2">2 Dormitorios</option>
-                        <option value="3">3 Dormitorios</option>
-                        <option value="4">4 Dormitorios</option>
-                        <option value="5">5+ Dormitorios</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label>Rango de Precio</label>
-                    <div class="price-range">
-                        <input type="number" class="filter-input" placeholder="Precio mínimo" id="precioMin">
-                        <span>—</span>
-                        <input type="number" class="filter-input" placeholder="Precio máximo" id="precioMax">
-                    </div>
-                </div>
-            </div>
-
-            <div class="filter-actions">
-                <button class="btn btn-primary" id="aplicarFiltros">Buscar Propiedades</button>
-                <button class="btn btn-secondary" id="limpiarFiltros">Limpiar Filtros</button>
-            </div>
         </div>
     </section>
 
@@ -832,13 +353,20 @@
     <div id="loadingContainer" class="loading-container">
         <div class="loading-spinner"></div>
         <p>Cargando propiedades en venta...</p>
+        <p style="font-size: 0.9rem; margin-top: 1rem; color: var(--secondary-gray);">
+            Detectando estructura de base de datos...
+        </p>
     </div>
 
     <!-- Error Container -->
     <div id="errorContainer" class="error-container" style="display: none;">
-        <h3>Error al cargar propiedades</h3>
-        <p id="errorMessage">No se pudieron cargar las propiedades. Verifica tu conexión e intenta nuevamente.</p>
-        <button class="btn btn-primary" onclick="location.reload()">Reintentar</button>
+        <h3>❌ Error al cargar propiedades</h3>
+        <p id="errorMessage">Detectando problema con la base de datos...</p>
+        <div id="diagnosticInfo" class="diagnostic-info"></div>
+        <div>
+            <button class="btn btn-primary" onclick="retryWithDiagnostic()">🔍 Diagnosticar y Reintentar</button>
+            <button class="btn btn-secondary" onclick="location.reload()">🔄 Recargar Página</button>
+        </div>
     </div>
 
     <!-- Properties Section -->
@@ -848,95 +376,27 @@
                 <div class="results-count" id="resultsCount">
                     Cargando propiedades...
                 </div>
-                <select class="sort-select" id="sortSelect">
-                    <option value="newest">Más recientes</option>
-                    <option value="price_low">Precio: menor a mayor</option>
-                    <option value="price_high">Precio: mayor a menor</option>
-                    <option value="featured">Destacadas primero</option>
-                    <option value="surface">Mayor superficie</option>
-                </select>
             </div>
 
             <div class="properties-grid" id="propertiesGrid">
                 <!-- Property Cards will be populated by JavaScript -->
             </div>
-
-            <!-- Pagination -->
-            <div class="pagination" id="pagination" style="display: none;">
-                <button id="prevPage" onclick="changePage(-1)" disabled>Anterior</button>
-                <span id="pageNumbers"></span>
-                <button id="nextPage" onclick="changePage(1)">Siguiente</button>
-            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Propiedades</h4>
-                    <ul>
-                        <li><a href="compras.html">Comprar</a></li>
-                        <li><a href="arriendos.html">Arrendar</a></li>
-                        <li><a href="subir-propiedades.html">Vender</a></li>
-                        <li><a href="servicios.html">Tasaciones</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Servicios</h4>
-                    <ul>
-                        <li><a href="servicios.html">Asesoría</a></li>
-                        <li><a href="contacto.html">Consultoría</a></li>
-                        <li><a href="servicios.html">Inversiones</a></li>
-                        <li><a href="contacto.html">Financiamiento</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Soporte</h4>
-                    <ul>
-                        <li><a href="contacto.html">Contacto</a></li>
-                        <li><a href="blog.html">Centro de Ayuda</a></li>
-                        <li><a href="subir-imagenes.html">Gestionar Contenido</a></li>
-                        <li><a href="nosotros.html">Términos</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Contacto</h4>
-                    <ul>
-                        <li><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></li>
-                        <li><a href="tel:+56912345678">+56 9 1234 5678</a></li>
-                        <li>Av. Apoquindo 1234</li>
-                        <li>Las Condes, Santiago</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="footer-tagline">Casa Nuvera | Innovative Real Estate // Est. 2019</div>
-                <div>&copy; 2025 Casa Nuvera. Todos los derechos reservados.</div>
-            </div>
-        </div>
-    </footer>
-
     <!-- Scripts -->
     <script src="supabase.js"></script>
-    <script src="property-handler.js"></script>
+    <script src="database-diagnostic.js"></script>
     <script src="property-loader.js"></script>
 
     <script>
         // Variables globales
+        let dbConfig = null;
         let allProperties = [];
-        let filteredProperties = [];
-        let currentPage = 1;
-        const propertiesPerPage = 6;
 
-        // Inicializar página
+        // Inicializar página con diagnóstico automático
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🏠 Iniciando página de compras...');
+            console.log('🏠 Iniciando página de compras con diagnóstico automático...');
             
             // Esperar a que Supabase esté listo
             if (window.supabase) {
@@ -947,423 +407,191 @@
                 // Timeout de seguridad
                 setTimeout(() => {
                     if (!window.supabase) {
-                        showError('No se pudo conectar con la base de datos');
+                        showError('No se pudo conectar con Supabase', 'Verifica la configuración de Supabase en supabase.js');
                     }
-                }, 5000);
+                }, 10000);
             }
         });
 
         async function initializePage() {
             console.log('🚀 Configurando página de compras...');
             
-            // Configurar event listeners
-            setupEventListeners();
-            
-            // Cargar propiedades de venta
-            await loadProperties();
-        }
-
-        function setupEventListeners() {
-            document.getElementById('aplicarFiltros').addEventListener('click', applyFilters);
-            document.getElementById('limpiarFiltros').addEventListener('click', clearFilters);
-            document.getElementById('sortSelect').addEventListener('change', sortProperties);
-        }
-
-        async function loadProperties() {
             try {
                 showLoading(true);
-                hideError();
                 
-                console.log('📥 Cargando propiedades en venta...');
+                // Ejecutar diagnóstico automático
+                if (window.diagnoseDatabaseStructure) {
+                    console.log('🔍 Ejecutando diagnóstico de base de datos...');
+                    dbConfig = await window.diagnoseDatabaseStructure();
+                    
+                    if (dbConfig && dbConfig.mainTable) {
+                        console.log('✅ Configuración detectada:', dbConfig);
+                        await loadPropertiesWithConfig();
+                    } else {
+                        throw new Error('No se pudo detectar la estructura de la base de datos');
+                    }
+                } else {
+                    throw new Error('Sistema de diagnóstico no disponible');
+                }
                 
-                // Obtener propiedades de venta desde Supabase
-                const { data, error } = await window.supabase
-                    .from('properties')
-                    .select(`
-                        *,
-                        property_images (
-                            image_url,
-                            image_order,
-                            is_main
-                        )
-                    `)
-                    .eq('published', true)
-                    .eq('property_type', 'venta')
-                    .order('created_at', { ascending: false });
+            } catch (error) {
+                console.error('💥 Error en inicialización:', error);
+                showError('Error al detectar base de datos', error.message);
+            }
+        }
+
+        async function loadPropertiesWithConfig() {
+            try {
+                if (!dbConfig || !dbConfig.mainTable) {
+                    throw new Error('Configuración de base de datos no disponible');
+                }
+
+                console.log('📥 Cargando propiedades desde:', dbConfig.mainTable);
+                
+                // Construir query usando la configuración detectada
+                let query = window.supabase.from(dbConfig.mainTable);
+                
+                // Seleccionar campos usando el mapeo detectado
+                const fields = ['*'];
+                if (dbConfig.imageTable) {
+                    fields.push(`${dbConfig.imageTable} (*)`);
+                }
+                
+                query = query.select(fields.join(', '));
+                
+                // Filtrar por propiedades activas usando el campo correcto
+                const publishedField = dbConfig.fieldMapping?.published || 'published';
+                query = query.eq(publishedField, true);
+                
+                // Filtrar por tipo de operación (venta)
+                const typeField = dbConfig.fieldMapping?.property_type || 'property_type';
+                query = query.in(typeField, ['venta', 'compra', 'sale']);
+                
+                // Ordenar por fecha
+                const dateField = dbConfig.fieldMapping?.created_at || 'created_at';
+                query = query.order(dateField, { ascending: false });
+
+                const { data, error } = await query;
 
                 if (error) {
-                    console.error('❌ Error al cargar propiedades:', error);
+                    console.error('❌ Error en query:', error);
                     throw error;
                 }
 
                 allProperties = data || [];
-                filteredProperties = [...allProperties];
-                currentPage = 1;
-                
-                showLoading(false);
-                renderProperties();
-                updateResultsCount();
-                
                 console.log(`✅ ${allProperties.length} propiedades cargadas`);
                 
-            } catch (error) {
-                console.error('💥 Error al cargar propiedades:', error);
-                showError('No se pudieron cargar las propiedades en venta');
-                showLoading(false);
-            }
-        }
-
-        async function applyFilters() {
-            try {
-                showLoading(true);
-                hideError();
-                
-                const filters = {
-                    comuna: document.getElementById('comuna').value,
-                    tipo: document.getElementById('tipo').value,
-                    dormitorios: document.getElementById('dormitorios').value,
-                    precioMin: document.getElementById('precioMin').value,
-                    precioMax: document.getElementById('precioMax').value
-                };
-
-                console.log('🔍 Aplicando filtros:', filters);
-
-                let query = window.supabase
-                    .from('properties')
-                    .select(`
-                        *,
-                        property_images (
-                            image_url,
-                            image_order,
-                            is_main
-                        )
-                    `)
-                    .eq('published', true)
-                    .eq('property_type', 'venta');
-
-                // Aplicar filtros
-                if (filters.comuna) {
-                    query = query.eq('commune', filters.comuna);
-                }
-
-                if (filters.tipo) {
-                    query = query.eq('category', filters.tipo);
-                }
-
-                if (filters.dormitorios) {
-                    const bedrooms = parseInt(filters.dormitorios);
-                    if (bedrooms === 5) {
-                        query = query.gte('bedrooms', 5);
-                    } else {
-                        query = query.eq('bedrooms', bedrooms);
-                    }
-                }
-
-                if (filters.precioMin) {
-                    query = query.gte('price', parseFloat(filters.precioMin));
-                }
-
-                if (filters.precioMax) {
-                    query = query.lte('price', parseFloat(filters.precioMax));
-                }
-
-                const { data, error } = await query.order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                filteredProperties = data || [];
-                currentPage = 1;
-                
                 showLoading(false);
                 renderProperties();
-                updateResultsCount();
-
+                
             } catch (error) {
-                console.error('💥 Error al aplicar filtros:', error);
-                showError('Error al filtrar propiedades');
-                showLoading(false);
+                console.error('💥 Error cargando propiedades:', error);
+                showError('Error al cargar propiedades', `${error.message}\n\nTabla detectada: ${dbConfig?.mainTable || 'No detectada'}`);
             }
-        }
-
-        function clearFilters() {
-            // Limpiar todos los filtros
-            document.getElementById('comuna').value = '';
-            document.getElementById('tipo').value = '';
-            document.getElementById('dormitorios').value = '';
-            document.getElementById('precioMin').value = '';
-            document.getElementById('precioMax').value = '';
-            document.getElementById('sortSelect').value = 'newest';
-            
-            // Restaurar todas las propiedades
-            filteredProperties = [...allProperties];
-            currentPage = 1;
-            renderProperties();
-            updateResultsCount();
-        }
-
-        function sortProperties() {
-            const sortBy = document.getElementById('sortSelect').value;
-            
-            console.log(`📊 Ordenando por: ${sortBy}`);
-            
-            switch(sortBy) {
-                case 'price_low':
-                    filteredProperties.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-                    break;
-                case 'price_high':
-                    filteredProperties.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-                    break;
-                case 'surface':
-                    filteredProperties.sort((a, b) => (parseFloat(b.total_area) || 0) - (parseFloat(a.total_area) || 0));
-                    break;
-                case 'featured':
-                    filteredProperties.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-                    break;
-                default: // newest
-                    filteredProperties.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                    break;
-            }
-            
-            currentPage = 1;
-            renderProperties();
         }
 
         function renderProperties() {
             const grid = document.getElementById('propertiesGrid');
-            const startIndex = (currentPage - 1) * propertiesPerPage;
-            const endIndex = startIndex + propertiesPerPage;
-            const currentProperties = filteredProperties.slice(startIndex, endIndex);
+            const resultsCount = document.getElementById('resultsCount');
 
-            if (currentProperties.length === 0) {
+            if (allProperties.length === 0) {
                 grid.innerHTML = `
-                    <div class="no-properties">
-                        <h3>No hay propiedades disponibles</h3>
-                        <p>No se encontraron propiedades que coincidan con tu búsqueda. Intenta ajustar los filtros.</p>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
+                        <h3>No hay propiedades en venta disponibles</h3>
+                        <p>Configuración detectada: ${dbConfig?.mainTable || 'No detectada'}</p>
+                        <button class="btn btn-primary" onclick="retryWithDiagnostic()">🔍 Volver a Diagnosticar</button>
                     </div>
                 `;
-                document.getElementById('pagination').style.display = 'none';
+                resultsCount.textContent = 'No se encontraron propiedades';
                 return;
             }
 
-            grid.innerHTML = currentProperties.map(property => createPropertyCard(property)).join('');
-
-            // Configurar botones de favoritos
-            setupFavoriteButtons();
-            
-            // Actualizar paginación
-            updatePagination();
-        }
-
-        function createPropertyCard(property) {
-            // Obtener imagen principal
-            const mainImage = property.property_images?.find(img => img.is_main) || 
-                             property.property_images?.[0];
-            
-            // Formatear precio
-            const formattedPrice = formatPrice(property.price, property.currency);
-            
-            // Características principales
-            const features = [];
-            if (property.bedrooms !== null && property.bedrooms !== undefined) {
-                features.push(`${property.bedrooms === 0 ? 'Studio' : property.bedrooms + ' dormitorios'}`);
-            }
-            if (property.bathrooms) features.push(`${property.bathrooms} baños`);
-            if (property.total_area) features.push(`${property.total_area}m²`);
-            if (property.parking_spaces > 0) features.push(`${property.parking_spaces} estacionamientos`);
-
-            return `
-                <div class="property-card">
-                    <div class="property-image" style="background-image: url('${mainImage?.image_url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'}');">
-                        <div class="property-badge">${property.featured ? 'Destacada' : 'Disponible'}</div>
-                        <button class="property-favorite" data-id="${property.id}">♡</button>
+            // Renderizar propiedades (versión simplificada para debugging)
+            const propertiesHTML = allProperties.map(property => {
+                const title = property[dbConfig.fieldMapping?.title || 'title'] || property.title || 'Sin título';
+                const price = property[dbConfig.fieldMapping?.price || 'price'] || property.price || 0;
+                const commune = property[dbConfig.fieldMapping?.commune || 'commune'] || property.commune || 'Sin ubicación';
+                
+                return `
+                    <div style="border: 1px solid #ddd; padding: 1rem; border-radius: 8px; background: white;">
+                        <h3>${title}</h3>
+                        <p><strong>Precio:</strong> $${new Intl.NumberFormat('es-CL').format(price)}</p>
+                        <p><strong>Ubicación:</strong> ${commune}</p>
+                        <p><strong>ID:</strong> ${property.id}</p>
+                        <button class="btn btn-primary" onclick="contactProperty('${property.id}')">Contactar</button>
                     </div>
-                    <div class="property-info">
-                        <div class="property-price">${formattedPrice}</div>
-                        <h3 class="property-title">${property.title}</h3>
-                        <div class="property-location">
-                            ${property.commune}${property.neighborhood ? ', ' + property.neighborhood : ''}
-                        </div>
-                        <div class="property-features">
-                            ${features.join(' • ')}
-                        </div>
-                        <a href="#" class="property-link" onclick="viewProperty('${property.id}')">Ver Detalles →</a>
-                    </div>
-                </div>
-            `;
-        }
+                `;
+            }).join('');
 
-        function formatPrice(price, currency) {
-            const numPrice = parseFloat(price);
-            
-            switch(currency) {
-                case 'CLP':
-                    return `$${numPrice.toLocaleString('es-CL')}`;
-                case 'UF':
-                    return `UF ${numPrice.toLocaleString('es-CL')}`;
-                case 'USD':
-                    return `US$ ${numPrice.toLocaleString('en-US')}`;
-                default:
-                    return `${currency || '$'} ${numPrice.toLocaleString()}`;
-            }
-        }
+            grid.innerHTML = propertiesHTML;
+            resultsCount.textContent = `Mostrando ${allProperties.length} propiedades en venta`;
 
-        function setupFavoriteButtons() {
-            document.querySelectorAll('.property-favorite').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    this.textContent = this.textContent === '♡' ? '❤️' : '♡';
-                    this.style.color = this.textContent === '❤️' ? '#ff6b35' : '#333';
-                });
-            });
-        }
-
-        function updateResultsCount() {
-            const resultsCount = document.getElementById('resultsCount');
-            const total = filteredProperties.length;
-            const showing = Math.min(propertiesPerPage, total - (currentPage - 1) * propertiesPerPage);
-            const startNum = total > 0 ? (currentPage - 1) * propertiesPerPage + 1 : 0;
-            const endNum = (currentPage - 1) * propertiesPerPage + showing;
-            
-            resultsCount.textContent = `Mostrando ${startNum}-${endNum} de ${total} propiedades`;
-        }
-
-        function updatePagination() {
-            const pagination = document.getElementById('pagination');
-            const pageNumbers = document.getElementById('pageNumbers');
-            const prevBtn = document.getElementById('prevPage');
-            const nextBtn = document.getElementById('nextPage');
-            const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
-
-            if (totalPages <= 1) {
-                pagination.style.display = 'none';
-                return;
-            }
-
-            pagination.style.display = 'flex';
-            
-            // Actualizar botones prev/next
-            prevBtn.disabled = currentPage <= 1;
-            nextBtn.disabled = currentPage >= totalPages;
-            
-            // Generar números de página
-            let pageHtml = '';
-            for (let i = 1; i <= totalPages; i++) {
-                pageHtml += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-            }
-            pageNumbers.innerHTML = pageHtml;
-        }
-
-        function changePage(direction) {
-            const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
-            const newPage = currentPage + direction;
-            
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                renderProperties();
-                updateResultsCount();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
-
-        function goToPage(page) {
-            currentPage = page;
-            renderProperties();
-            updateResultsCount();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Mostrar la sección de propiedades
+            document.getElementById('propertiesSection').style.display = 'block';
         }
 
         function showLoading(show) {
             const loadingContainer = document.getElementById('loadingContainer');
             const propertiesSection = document.getElementById('propertiesSection');
+            const errorContainer = document.getElementById('errorContainer');
             
             if (show) {
                 loadingContainer.style.display = 'flex';
                 propertiesSection.style.display = 'none';
+                errorContainer.style.display = 'none';
             } else {
                 loadingContainer.style.display = 'none';
-                propertiesSection.style.display = 'block';
             }
         }
 
-        function showError(message) {
+        function showError(title, message) {
             const errorContainer = document.getElementById('errorContainer');
             const errorMessage = document.getElementById('errorMessage');
+            const diagnosticInfo = document.getElementById('diagnosticInfo');
             const loadingContainer = document.getElementById('loadingContainer');
             const propertiesSection = document.getElementById('propertiesSection');
             
-            errorMessage.textContent = message;
+            errorMessage.textContent = title;
+            
+            if (message) {
+                diagnosticInfo.textContent = `Detalles del error:\n${message}\n\nConfiguración detectada:\n${JSON.stringify(dbConfig, null, 2)}`;
+                diagnosticInfo.style.display = 'block';
+            } else {
+                diagnosticInfo.style.display = 'none';
+            }
+            
             errorContainer.style.display = 'block';
             loadingContainer.style.display = 'none';
             propertiesSection.style.display = 'none';
         }
 
-        function hideError() {
-            document.getElementById('errorContainer').style.display = 'none';
+        async function retryWithDiagnostic() {
+            console.log('🔄 Reintentando con nuevo diagnóstico...');
+            dbConfig = null;
+            allProperties = [];
+            await initializePage();
         }
 
-        function viewProperty(id) {
-            const property = filteredProperties.find(p => p.id === id) || allProperties.find(p => p.id === id);
-            
+        // Función básica de contacto
+        window.contactProperty = function(propertyId) {
+            const property = allProperties.find(p => p.id === propertyId);
             if (!property) {
                 alert('Propiedad no encontrada');
                 return;
             }
 
-            const features = [];
-            if (property.bedrooms !== null && property.bedrooms !== undefined) {
-                features.push(`${property.bedrooms === 0 ? 'Studio' : property.bedrooms + ' dormitorios'}`);
-            }
-            if (property.bathrooms) features.push(`${property.bathrooms} baños`);
-            if (property.total_area) features.push(`${property.total_area}m²`);
-            if (property.parking_spaces > 0) features.push(`${property.parking_spaces} estacionamientos`);
-
-            alert(`
-🏠 ${property.title}
-
-📍 ${property.address}, ${property.commune}
-💰 ${formatPrice(property.price, property.currency)}
-🏠 ${features.join(', ')}
-${property.expenses > 0 ? `💸 Gastos comunes: $${property.expenses.toLocaleString()}\n` : ''}
-
-📞 Contacto: ${property.contact_phone}
-✉️ Email: ${property.contact_email}
-
-${property.description || 'Sin descripción adicional'}
-
-¡Contáctanos para más información!
-            `);
-        }
-
-        // Animations on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationDelay = Math.random() * 0.5 + 's';
-                    entry.target.classList.add('fade-in');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Parallax effect
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallaxElements = document.querySelectorAll('.parallax');
+            const title = property[dbConfig.fieldMapping?.title || 'title'] || property.title || 'Propiedad';
+            const price = property[dbConfig.fieldMapping?.price || 'price'] || property.price || 0;
+            const commune = property[dbConfig.fieldMapping?.commune || 'commune'] || property.commune || '';
             
-            parallaxElements.forEach(element => {
-                const speed = 0.5;
-                const yPos = -(scrolled * speed);
-                element.style.backgroundPosition = `center ${yPos}px`;
-            });
-        });
+            const message = `Hola! Estoy interesado en la propiedad "${title}" en ${commune}. Precio: $${new Intl.NumberFormat('es-CL').format(price)}`;
+            
+            // Buscar teléfono de contacto
+            const phone = property.contact_phone || property.telefono_contacto || property.phone || '56912345678';
+            const whatsappURL = `https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+            
+            window.open(whatsappURL, '_blank');
+        };
     </script>
 </body>
 </html>
