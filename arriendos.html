@@ -32,7 +32,12 @@
             --overlay-medium: rgba(0, 0, 0, 0.4);
             --overlay-light: rgba(0, 0, 0, 0.2);
             --overlay-white: rgba(255, 255, 255, 0.9);
-            --green-accent: #00ff88;
+            
+            /* NUEVO ESQUEMA DE COLORES PROFESIONAL */
+            --luxury-gold: #D4AF37;
+            --deep-blue: #1B365D;
+            --silver: #C0C0C0;
+            --dark-gold: #B8941A;
         }
 
         body {
@@ -49,7 +54,7 @@
             position: fixed;
             bottom: 2rem;
             right: 2rem;
-            background: linear-gradient(135deg, var(--green-accent), #00cc6a);
+            background: linear-gradient(135deg, var(--luxury-gold), var(--dark-gold));
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 50px;
@@ -58,25 +63,25 @@
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
             transition: all 0.3s ease;
             z-index: 999;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            animation: pulse-green 3s infinite;
+            animation: pulse-gold 3s infinite;
         }
 
         .floating-upload-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
-            background: linear-gradient(135deg, #00cc6a, var(--green-accent));
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+            background: linear-gradient(135deg, var(--dark-gold), var(--luxury-gold));
             color: white;
         }
 
-        @keyframes pulse-green {
-            0%, 100% { box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3); }
-            50% { box-shadow: 0 15px 40px rgba(0, 255, 136, 0.5); }
+        @keyframes pulse-gold {
+            0%, 100% { box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); }
+            50% { box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5); }
         }
 
         /* Header flotante sobre imágenes */
@@ -140,11 +145,11 @@
 
         .nav-menu a:hover,
         .nav-menu a.active {
-            color: var(--primary-black);
+            color: var(--luxury-gold); /* Dorado en lugar de negro */
         }
 
         .nav-cta {
-            background: var(--primary-black);
+            background: var(--deep-blue); /* Azul profundo */
             color: white !important;
             padding: 0.8rem 1.5rem;
             border-radius: 0;
@@ -156,7 +161,7 @@
         }
 
         .nav-cta:hover {
-            background: var(--secondary-gray);
+            background: var(--luxury-gold); /* Dorado al hover */
         }
 
         /* Hero Section con imagen de fondo */
@@ -184,7 +189,7 @@
 
         .hero-tagline {
             font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--luxury-gold); /* Dorado elegante */
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 2rem;
@@ -224,7 +229,7 @@
 
         .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
-            border-top: 4px solid var(--primary-black);
+            border-top: 4px solid var(--luxury-gold); /* Dorado */
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -266,12 +271,12 @@
         }
 
         .btn-primary {
-            background: var(--primary-black);
+            background: var(--deep-blue); /* Azul profundo */
             color: white;
         }
 
         .btn-primary:hover {
-            background: var(--secondary-gray);
+            background: var(--luxury-gold); /* Dorado al hover */
         }
 
         /* Properties Section - AQUÍ ES DONDE SE APLICA EL GRID OSCURO */
