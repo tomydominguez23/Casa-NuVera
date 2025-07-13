@@ -1,4 +1,4 @@
-/* ESTILOS PARA EL GRID DE PROPIEDADES - ESTILO MODERNO SIN BORDES */
+/* ESTILOS PARA EL GRID DE PROPIEDADES - EXACTO COMO LA IMAGEN DE REFERENCIA */
 
 /* Container principal para secciones de propiedades */
 .featured-section,
@@ -12,40 +12,42 @@
     margin: 0 !important;
 }
 
-/* Grid de propiedades - una al lado de la otra, sin espacios */
+/* Grid de propiedades - pegadas completamente */
 .properties-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0; /* Sin espacios entre propiedades */
+    gap: 0; /* Cero espacios - completamente pegadas */
     background: #1a1a1a;
     padding: 0;
     margin: 0;
     width: 100%;
-    min-height: 500px;
+    height: 600px; /* Altura fija como en la imagen */
 }
 
-/* Tarjeta de propiedad */
+/* Tarjeta de propiedad - solo imagen con texto superpuesto */
 .property-card {
     position: relative;
-    background: transparent;
-    border: none; /* Sin bordes */
+    background: #000;
+    border: none;
     overflow: hidden;
-    transition: all 0.4s ease;
     cursor: pointer;
-    height: 500px;
+    height: 100%;
     width: 100%;
+    transition: all 0.3s ease;
 }
 
-/* Contenedor de imagen que ocupa toda la tarjeta */
+/* Imagen de fondo que ocupa todo el espacio */
 .property-card .property-image {
     width: 100%;
     height: 100%;
-    position: relative;
-    overflow: hidden;
-    background: #333;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
-/* Imagen principal - ocupa todo el espacio */
+/* Imagen principal */
 .property-card .property-image img {
     width: 100%;
     height: 100%;
@@ -55,14 +57,14 @@
     display: block;
 }
 
-/* Efecto de iluminación al hover */
+/* Efecto de iluminación al hover - más sutil */
 .property-card:hover .property-image img {
-    filter: brightness(1.3) contrast(1.1);
-    transform: scale(1.05);
+    filter: brightness(1.2) saturate(1.1);
+    transform: scale(1.02);
 }
 
-/* Overlay oscuro por defecto */
-.property-card .property-image::before {
+/* Overlay oscuro para legibilidad del texto */
+.property-card::before {
     content: '';
     position: absolute;
     top: 0;
@@ -71,53 +73,47 @@
     bottom: 0;
     background: linear-gradient(
         to bottom,
-        rgba(0, 0, 0, 0.3) 0%,
-        rgba(0, 0, 0, 0.5) 50%,
-        rgba(0, 0, 0, 0.8) 100%
+        rgba(0, 0, 0, 0.1) 0%,
+        rgba(0, 0, 0, 0.3) 40%,
+        rgba(0, 0, 0, 0.7) 100%
     );
     z-index: 2;
-    transition: all 0.4s ease;
+    transition: all 0.3s ease;
 }
 
 /* Overlay más claro al hover */
-.property-card:hover .property-image::before {
+.property-card:hover::before {
     background: linear-gradient(
         to bottom,
-        rgba(0, 0, 0, 0.1) 0%,
-        rgba(0, 0, 0, 0.3) 50%,
-        rgba(0, 0, 0, 0.6) 100%
+        rgba(0, 0, 0, 0.05) 0%,
+        rgba(0, 0, 0, 0.2) 40%,
+        rgba(0, 0, 0, 0.5) 100%
     );
 }
 
-/* Badge/etiqueta de tipo de propiedad */
+/* Badge en esquina superior izquierda */
 .property-card .property-badge {
     position: absolute;
     top: 20px;
     left: 20px;
-    background: rgba(245, 245, 220, 0.95); /* Beige elegante */
-    color: #2d2d2d;
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
     padding: 8px 16px;
-    border-radius: 4px;
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     z-index: 3;
+    border-radius: 4px;
     backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
 }
 
 .property-card .property-badge.featured {
-    background: linear-gradient(135deg, #F5F5DC, #F0E68C);
-    box-shadow: 0 4px 12px rgba(245, 245, 220, 0.4);
+    background: rgba(245, 245, 220, 0.95);
+    color: #2d2d2d;
 }
 
-.property-card:hover .property-badge {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(245, 245, 220, 0.5);
-}
-
-/* Información de la propiedad superpuesta */
+/* Información superpuesta en la parte inferior */
 .property-card .property-info {
     position: absolute;
     bottom: 0;
@@ -127,85 +123,64 @@
     color: #ffffff;
     z-index: 3;
     background: transparent;
-    transition: all 0.4s ease;
 }
 
-/* Precio destacado */
+/* Precio - texto grande y prominente */
 .property-card .property-price {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 700;
-    color: #F5F5DC; /* Beige elegante */
+    color: #ffffff;
     margin-bottom: 8px;
-    line-height: 1.2;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    transition: all 0.3s ease;
-}
-
-.property-card:hover .property-price {
-    transform: translateY(-5px);
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+    line-height: 1;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
 }
 
 /* Título de la propiedad */
 .property-card .property-title {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
     color: #ffffff;
     margin-bottom: 8px;
-    line-height: 1.3;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-    transition: all 0.3s ease;
-}
-
-.property-card:hover .property-title {
-    transform: translateY(-3px);
+    line-height: 1.2;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 /* Ubicación */
 .property-card .property-location {
-    font-size: 14px;
-    color: #D3D3D3; /* Gris claro */
+    font-size: 16px;
+    color: #ffffff;
     margin-bottom: 12px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    transition: all 0.3s ease;
-}
-
-.property-card:hover .property-location {
-    color: #F0E68C; /* Beige cálido al hover */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+    opacity: 0.9;
 }
 
 /* Características */
 .property-card .property-features {
-    font-size: 13px;
-    color: #cccccc;
-    line-height: 1.5;
-    margin-bottom: 10px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    transition: all 0.3s ease;
-}
-
-.property-card:hover .property-features {
+    font-size: 14px;
     color: #ffffff;
+    line-height: 1.4;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+    opacity: 0.85;
 }
 
-/* Gastos */
+/* Gastos comunes */
 .property-card .property-expenses {
-    font-size: 12px;
-    color: #F0E68C; /* Beige cálido */
+    font-size: 13px;
+    color: #ffffff;
     margin-top: 8px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+    opacity: 0.8;
 }
 
-/* Overlay que aparece en hover con indicador */
+/* Indicador de hover que aparece en el centro */
 .property-card .property-overlay {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
-    transition: all 0.4s ease;
+    transition: all 0.3s ease;
     z-index: 4;
-    pointer-events: none;
 }
 
 .property-card:hover .property-overlay {
@@ -213,72 +188,62 @@
 }
 
 .property-card .property-details-btn {
-    background: rgba(245, 245, 220, 0.95); /* Beige elegante */
-    color: #2d2d2d;
-    padding: 15px 30px;
-    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    padding: 12px 24px;
+    border-radius: 25px;
     font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 8px 25px rgba(245, 245, 220, 0.4);
-    transform: translateY(20px);
-    transition: all 0.4s ease;
-    border: 2px solid rgba(245, 245, 220, 0.6);
-}
-
-.property-card:hover .property-details-btn {
-    transform: translateY(0);
-    box-shadow: 0 12px 35px rgba(245, 245, 220, 0.6);
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* Placeholder para imágenes que no cargan */
 .property-card .placeholder-image {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #3a3a3a, #2d2d2d);
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #888;
-    position: relative;
+    color: #666;
 }
 
 .property-card .placeholder-icon {
-    font-size: 64px;
-    margin-bottom: 15px;
-    opacity: 0.6;
+    font-size: 48px;
+    margin-bottom: 10px;
+    opacity: 0.5;
 }
 
 .property-card .placeholder-text {
-    font-size: 16px;
-    font-weight: 500;
-    opacity: 0.8;
+    font-size: 14px;
+    opacity: 0.7;
 }
 
-/* Loading y estados */
+/* Estados de carga y error */
 .loading-container {
     background: #1a1a1a;
     color: #ffffff;
     text-align: center;
-    padding: 80px 20px;
+    padding: 100px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 300px;
+    height: 600px;
 }
 
 .loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid #333;
-    border-top: 4px solid #F5F5DC; /* Beige elegante */
+    width: 40px;
+    height: 40px;
+    border: 3px solid #333;
+    border-top: 3px solid #fff;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 @keyframes spin {
@@ -290,49 +255,34 @@
     background: #1a1a1a;
     color: #ff6b6b;
     text-align: center;
-    padding: 80px 20px;
-    border: 1px solid #333;
+    padding: 100px 20px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .error-container h3 {
-    color: #F5F5DC; /* Beige elegante */
-    margin-bottom: 20px;
-    font-size: 24px;
-}
-
-.error-actions {
-    margin-top: 25px;
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
+    color: #fff;
+    margin-bottom: 15px;
 }
 
 .retry-btn, .reconnect-btn {
-    background: #F5F5DC; /* Beige elegante */
-    color: #2d2d2d;
+    background: #fff;
+    color: #000;
     border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 5px;
     font-weight: 600;
     cursor: pointer;
+    margin: 5px;
     transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .retry-btn:hover, .reconnect-btn:hover {
-    background: #F0E68C; /* Beige cálido */
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(245, 245, 220, 0.3);
-}
-
-.error-hint {
-    color: #888;
-    font-size: 14px;
-    margin-top: 20px;
-    font-style: italic;
+    background: #f0f0f0;
+    transform: translateY(-1px);
 }
 
 /* Sin propiedades */
@@ -341,64 +291,63 @@
     color: #ffffff;
     text-align: center;
     padding: 100px 20px;
-    border: 1px solid #333;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .no-properties-icon {
-    font-size: 80px;
-    margin-bottom: 25px;
-    opacity: 0.6;
-}
-
-.no-properties-container h3 {
-    color: #F5F5DC; /* Beige elegante */
+    font-size: 64px;
     margin-bottom: 20px;
-    font-size: 28px;
-}
-
-.no-properties-container p {
-    color: #aaa;
-    margin-bottom: 35px;
-    font-size: 18px;
-}
-
-.no-properties-actions {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
+    opacity: 0.5;
 }
 
 .add-property-btn, .refresh-btn {
-    background: #F5F5DC; /* Beige elegante */
-    color: #2d2d2d;
-    padding: 15px 30px;
-    border-radius: 30px;
+    background: #fff;
+    color: #000;
+    padding: 12px 24px;
+    border-radius: 25px;
     text-decoration: none;
     font-weight: 600;
     border: none;
     cursor: pointer;
+    margin: 5px;
     transition: all 0.3s ease;
     display: inline-block;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .add-property-btn:hover, .refresh-btn:hover {
-    background: #F0E68C; /* Beige cálido */
-    transform: translateY(-3px);
-    color: #2d2d2d;
-    box-shadow: 0 8px 20px rgba(245, 245, 220, 0.4);
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    color: #000;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
     .properties-grid {
         grid-template-columns: repeat(2, 1fr);
+        height: 500px;
     }
     
-    .property-card {
-        height: 450px;
+    .property-card .property-price {
+        font-size: 28px;
+    }
+    
+    .property-card .property-title {
+        font-size: 20px;
+    }
+    
+    .property-card .property-info {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .properties-grid {
+        grid-template-columns: 1fr;
+        height: 400px;
     }
     
     .property-card .property-price {
@@ -408,45 +357,23 @@
     .property-card .property-title {
         font-size: 18px;
     }
-}
-
-@media (max-width: 768px) {
-    .properties-grid {
-        grid-template-columns: 1fr;
-        gap: 0;
+    
+    .property-card .property-location {
+        font-size: 14px;
     }
     
-    .property-card {
-        height: 400px;
-    }
-    
-    .property-card .property-info {
-        padding: 25px;
-    }
-    
-    .property-card .property-price {
-        font-size: 22px;
-    }
-    
-    .property-card .property-title {
-        font-size: 16px;
-    }
-    
-    .property-card .property-badge {
-        top: 15px;
-        left: 15px;
-        padding: 6px 12px;
-        font-size: 11px;
-    }
-}
-
-@media (max-width: 480px) {
-    .property-card {
-        height: 350px;
+    .property-card .property-features {
+        font-size: 12px;
     }
     
     .property-card .property-info {
         padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .properties-grid {
+        height: 350px;
     }
     
     .property-card .property-price {
@@ -454,21 +381,20 @@
     }
     
     .property-card .property-title {
-        font-size: 15px;
+        font-size: 16px;
     }
     
-    .property-card .property-features {
-        font-size: 12px;
+    .property-card .property-info {
+        padding: 15px;
     }
 }
 
-/* Compatibilidad con estructura existente */
+/* Override para compatibilidad */
 .featured-container .properties-grid,
 .section-container .properties-grid {
     background: #1a1a1a !important;
 }
 
-/* Override para el section header sobre fondo oscuro */
 .featured-section .section-header {
     background: var(--background-gray) !important;
     color: white;
@@ -480,19 +406,4 @@
 
 .featured-section .section-title {
     color: white !important;
-}
-
-/* Efecto especial para propiedades destacadas */
-.property-card .property-badge.featured {
-    animation: pulse-featured 3s infinite;
-}
-
-@keyframes pulse-featured {
-    0%, 100% { 
-        box-shadow: 0 4px 12px rgba(245, 245, 220, 0.4);
-    }
-    50% { 
-        box-shadow: 0 8px 25px rgba(245, 245, 220, 0.7);
-        transform: translateY(-2px) scale(1.05);
-    }
 }
