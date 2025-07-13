@@ -1,4 +1,4 @@
-// property-loader.js - Adaptado para estructura en inglés de Casa Nuvera con efectos hover premium
+// property-loader.js - Sistema completo de carga de propiedades para Casa Nuvera con efectos hover premium
 
 class PropertyLoader {
     constructor() {
@@ -6,7 +6,7 @@ class PropertyLoader {
         this.isLoading = false;
     }
 
-    // Cargar propiedades desde Supabase (ADAPTADO A ESTRUCTURA INGLÉS)
+    // Cargar propiedades desde Supabase con nombres de columnas correctos
     async loadProperties() {
         if (this.isLoading) return;
         
@@ -19,26 +19,48 @@ class PropertyLoader {
                 throw new Error('Supabase no está disponible');
             }
             
-            // Query adaptada a tu estructura en inglés
+            // Query con nombres de columnas en español (ajustado a tu estructura real)
             const { data, error } = await window.supabase
-                .from('properties')
+                .from('propiedades')  // Tabla en español
                 .select(`
                     *,
-                    property_images (
-                        image_url,
-                        image_order,
-                        is_main
+                    imagenes_propiedades (
+                        url_imagen,
+                        orden_imagen,
+                        es_principal
                     )
                 `)
-                .eq('published', true)  // published en lugar de activa
-                .order('featured', { ascending: false })
-                .order('created_at', { ascending: false }); // created_at en lugar de fecha_creacion
+                .eq('activa', true)  // activa en lugar de published
+                .order('destacada', { ascending: false })
+                .order('fecha_creacion', { ascending: false });
 
             if (error) {
-                throw error;
+                console.warn('❌ Error con nombres en español, intentando nombres en inglés...', error);
+                
+                // Fallback: intentar con nombres en inglés
+                const { data: dataEn, error: errorEn } = await window.supabase
+                    .from('properties')
+                    .select(`
+                        *,
+                        property_images (
+                            image_url,
+                            image_order,
+                            is_main
+                        )
+                    `)
+                    .eq('published', true)
+                    .order('featured', { ascending: false })
+                    .order('created_at', { ascending: false });
+
+                if (errorEn) {
+                    throw errorEn;
+                }
+
+                this.properties = this.normalizeProperties(dataEn || [], 'english');
+            } else {
+                this.properties = this.normalizeProperties(data || [], 'spanish');
             }
 
-            this.properties = data || [];
             console.log(`✅ ${this.properties.length} propiedades cargadas`);
             
             return {
@@ -57,11 +79,60 @@ class PropertyLoader {
         }
     }
 
-    // Filtrar propiedades por tipo de operación (ADAPTADO)
+    // Normalizar propiedades para usar nombres consistentes
+    normalizeProperties(properties, sourceLanguage) {
+        return properties.map(property => {
+            if (sourceLanguage === 'spanish') {
+                // Convertir nombres en español a inglés para consistencia interna
+                return {
+                    id: property.id,
+                    title: property.titulo || property.title,
+                    description: property.descripcion || property.description,
+                    address: property.direccion || property.address,
+                    commune: property.comuna || property.commune,
+                    region: property.region || property.region,
+                    neighborhood: property.barrio || property.neighborhood,
+                    price: property.precio || property.price,
+                    currency: property.moneda || property.currency,
+                    property_type: property.tipo_operacion || property.property_type,
+                    category: property.categoria || property.category,
+                    bedrooms: property.dormitorios || property.bedrooms,
+                    bathrooms: property.banos || property.bathrooms,
+                    total_area: property.superficie_total || property.total_area,
+                    parking_spaces: property.estacionamientos || property.parking_spaces,
+                    expenses: property.gastos_comunes || property.expenses,
+                    contact_phone: property.telefono_contacto || property.contact_phone,
+                    contact_email: property.email_contacto || property.contact_email,
+                    featured: property.destacada || property.featured,
+                    published: property.activa || property.published,
+                    created_at: property.fecha_creacion || property.created_at,
+                    main_image: property.imagen_principal || property.main_image,
+                    images: property.imagenes || property.images,
+                    property_images: (property.imagenes_propiedades || property.property_images || []).map(img => ({
+                        image_url: img.url_imagen || img.image_url,
+                        image_order: img.orden_imagen || img.image_order,
+                        is_main: img.es_principal || img.is_main
+                    }))
+                };
+            } else {
+                // Ya está en inglés, solo asegurar que tenga todos los campos
+                return {
+                    ...property,
+                    property_images: (property.property_images || []).map(img => ({
+                        image_url: img.image_url,
+                        image_order: img.image_order,
+                        is_main: img.is_main
+                    }))
+                };
+            }
+        });
+    }
+
+    // Filtrar propiedades por tipo de operación
     getPropertiesByType(tipo) {
         return this.properties.filter(property => {
             if (tipo === 'compra') {
-                return property.property_type === 'venta'; // property_type en lugar de tipo_operacion
+                return property.property_type === 'venta' || property.property_type === 'compra';
             } else if (tipo === 'arriendo') {
                 return property.property_type === 'arriendo' || property.property_type === 'arriendo-temporal';
             }
@@ -69,14 +140,14 @@ class PropertyLoader {
         });
     }
 
-    // Obtener propiedades destacadas (ADAPTADO)
+    // Obtener propiedades destacadas
     getFeaturedProperties(limit = 6) {
         return this.properties
-            .filter(p => p.featured) // featured en lugar de destacada
+            .filter(p => p.featured)
             .slice(0, limit);
     }
 
-    // Generar HTML para una propiedad con efectos hover premium (ACTUALIZADO)
+    // Generar HTML para una propiedad con efectos hover premium
     generatePropertyHTML(property) {
         const formatPrice = (precio, moneda) => {
             const formatted = new Intl.NumberFormat('es-CL').format(precio);
@@ -90,7 +161,8 @@ class PropertyLoader {
 
         const getBadgeClass = (tipo) => {
             switch(tipo) {
-                case 'venta': return 'property-badge sale';
+                case 'venta': 
+                case 'compra': return 'property-badge sale';
                 case 'arriendo': return 'property-badge rent';
                 case 'arriendo-temporal': return 'property-badge temp-rent';
                 default: return 'property-badge';
@@ -99,14 +171,15 @@ class PropertyLoader {
 
         const getBadgeText = (tipo) => {
             switch(tipo) {
-                case 'venta': return 'VENTA';
+                case 'venta': 
+                case 'compra': return 'VENTA';
                 case 'arriendo': return 'ARRIENDO';
                 case 'arriendo-temporal': return 'ARRIENDO TEMPORAL';
                 default: return 'DISPONIBLE';
             }
         };
 
-        // Buscar imagen principal - adaptado a tu estructura
+        // Buscar imagen principal
         const imageUrl = this.getPropertyMainImage(property);
 
         // Generar características para el hover
@@ -181,7 +254,7 @@ class PropertyLoader {
         if (property.property_images && property.property_images.length > 0) {
             // Buscar imagen principal primero
             const mainImage = property.property_images.find(img => img.is_main);
-            if (mainImage) {
+            if (mainImage && mainImage.image_url) {
                 return mainImage.image_url;
             }
             // Si no hay imagen marcada como principal, usar la primera
@@ -199,28 +272,6 @@ class PropertyLoader {
         }
         
         return null;
-    }
-
-    // Cargar imagen principal desde tabla property_images
-    async loadPropertyImages(propertyId) {
-        try {
-            const { data, error } = await window.supabase
-                .from('property_images')
-                .select('image_url')
-                .eq('property_id', propertyId)
-                .eq('is_main', true)
-                .single();
-
-            if (error) {
-                console.warn('No se encontró imagen principal para propiedad:', propertyId);
-                return null;
-            }
-
-            return data.image_url;
-        } catch (error) {
-            console.warn('Error cargando imagen principal:', error);
-            return null;
-        }
     }
 
     // Renderizar propiedades en un contenedor específico
@@ -257,7 +308,7 @@ class PropertyLoader {
                             </button>
                         </div>
                         <p class="error-hint">
-                            💡 Si el problema persiste, verifica la tabla 'properties' en Supabase.
+                            💡 Si el problema persiste, verifica la configuración de la base de datos.
                         </p>
                     </div>
                 `;
@@ -285,7 +336,7 @@ class PropertyLoader {
                     <h3>${tipoTexto}</h3>
                     <p>No hay propiedades disponibles en este momento.</p>
                     <div class="no-properties-actions">
-                        <a href="subir-propiedad.html" class="add-property-btn">
+                        <a href="subir-propiedades.html" class="add-property-btn">
                             ➕ Agregar Nueva Propiedad
                         </a>
                         <button onclick="propertyLoader.refreshProperties()" class="refresh-btn">
@@ -336,7 +387,7 @@ class PropertyLoader {
         });
     }
 
-    // Función para búsqueda de propiedades (ADAPTADO)
+    // Función para búsqueda de propiedades
     searchProperties(query, filters = {}) {
         let filteredProperties = [...this.properties];
 
@@ -352,7 +403,7 @@ class PropertyLoader {
             );
         }
 
-        // Filtros adicionales (ADAPTADOS A ESTRUCTURA INGLÉS)
+        // Filtros adicionales
         if (filters.property_type) {
             filteredProperties = filteredProperties.filter(p => p.property_type === filters.property_type);
         }
@@ -412,11 +463,11 @@ class PropertyLoader {
         console.log('✅ Propiedades refrescadas');
     }
 
-    // Función para obtener estadísticas (ADAPTADO)
+    // Función para obtener estadísticas
     getStats() {
         const stats = {
             total: this.properties.length,
-            ventas: this.properties.filter(p => p.property_type === 'venta').length,
+            ventas: this.properties.filter(p => p.property_type === 'venta' || p.property_type === 'compra').length,
             arriendos: this.properties.filter(p => p.property_type === 'arriendo' || p.property_type === 'arriendo-temporal').length,
             destacadas: this.properties.filter(p => p.featured).length,
             promedioPrecio: 0
@@ -431,7 +482,7 @@ class PropertyLoader {
     }
 }
 
-// Funciones globales para interactuar con propiedades (ADAPTADO)
+// Funciones globales para interactuar con propiedades
 window.contactProperty = function(propertyId) {
     const property = window.propertyLoader.properties.find(p => p.id === propertyId);
     if (!property) {
@@ -454,6 +505,8 @@ window.contactProperty = function(propertyId) {
 📍 Dirección: ${property.address}
 💰 Precio: ${formatPrice(property.price, property.currency)}
 🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños
+${property.total_area ? `📐 Superficie: ${property.total_area}m²` : ''}
+${property.expenses ? `💸 Gastos comunes: $${property.expenses.toLocaleString()}` : ''}
 
 ¿Podrías darme más información?`;
 
