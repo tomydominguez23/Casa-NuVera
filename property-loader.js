@@ -1,4 +1,4 @@
-// property-loader.js - Sistema robusto con propiedades de ejemplo para Casa Nuvera
+// property-loader.js - Sistema robusto con diseño moderno sin bordes
 
 class PropertyLoader {
     constructor() {
@@ -13,7 +13,7 @@ class PropertyLoader {
             {
                 id: 1,
                 title: "Casa Moderna Las Condes",
-                description: "Hermosa casa moderna con acabados premium y excelente ubicación.",
+                description: "Hermosa casa moderna con acabados premium y excelente ubicación en sector exclusivo.",
                 address: "Av. Las Condes 1234",
                 commune: "Las Condes",
                 region: "Santiago",
@@ -32,10 +32,10 @@ class PropertyLoader {
                 featured: true,
                 published: true,
                 created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=600&h=400&fit=crop&crop=center",
+                main_image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=600&fit=crop&crop=center",
                 property_images: [
                     {
-                        image_url: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=600&h=400&fit=crop&crop=center",
+                        image_url: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=600&fit=crop&crop=center",
                         image_order: 1,
                         is_main: true
                     }
@@ -44,7 +44,7 @@ class PropertyLoader {
             {
                 id: 2,
                 title: "Departamento Providencia",
-                description: "Departamento con vista panorámica en el corazón de Providencia.",
+                description: "Departamento con vista panorámica en el corazón de Providencia, ubicación privilegiada.",
                 address: "Av. Providencia 567",
                 commune: "Providencia",
                 region: "Santiago",
@@ -63,10 +63,10 @@ class PropertyLoader {
                 featured: true,
                 published: true,
                 created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop&crop=center",
+                main_image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop&crop=center",
                 property_images: [
                     {
-                        image_url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop&crop=center",
+                        image_url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop&crop=center",
                         image_order: 1,
                         is_main: true
                     }
@@ -75,7 +75,7 @@ class PropertyLoader {
             {
                 id: 3,
                 title: "Casa Familiar Vitacura",
-                description: "Amplia casa familiar con jardín y piscina en sector exclusivo.",
+                description: "Amplia casa familiar con jardín y piscina en sector exclusivo de Vitacura.",
                 address: "Calle Los Almendros 890",
                 commune: "Vitacura",
                 region: "Santiago",
@@ -94,10 +94,10 @@ class PropertyLoader {
                 featured: true,
                 published: true,
                 created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=600&h=400&fit=crop&crop=center",
+                main_image: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=800&h=600&fit=crop&crop=center",
                 property_images: [
                     {
-                        image_url: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=600&h=400&fit=crop&crop=center",
+                        image_url: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=800&h=600&fit=crop&crop=center",
                         image_order: 1,
                         is_main: true
                     }
@@ -106,7 +106,7 @@ class PropertyLoader {
             {
                 id: 4,
                 title: "Departamento en Arriendo Ñuñoa",
-                description: "Cómodo departamento para arriendo en excelente ubicación.",
+                description: "Cómodo departamento para arriendo en excelente ubicación cerca de Plaza Ñuñoa.",
                 address: "Av. Ñuñoa 345",
                 commune: "Ñuñoa",
                 region: "Santiago",
@@ -125,10 +125,10 @@ class PropertyLoader {
                 featured: false,
                 published: true,
                 created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop&crop=center",
+                main_image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center",
                 property_images: [
                     {
-                        image_url: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop&crop=center",
+                        image_url: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center",
                         image_order: 1,
                         is_main: true
                     }
@@ -137,7 +137,7 @@ class PropertyLoader {
             {
                 id: 5,
                 title: "Casa en Arriendo San Miguel",
-                description: "Casa amplia para arriendo familiar en barrio tranquilo.",
+                description: "Casa amplia para arriendo familiar en barrio tranquilo de San Miguel.",
                 address: "Calle San Miguel 123",
                 commune: "San Miguel",
                 region: "Santiago",
@@ -156,10 +156,10 @@ class PropertyLoader {
                 featured: false,
                 published: true,
                 created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&h=400&fit=crop&crop=center",
+                main_image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&crop=center",
                 property_images: [
                     {
-                        image_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&h=400&fit=crop&crop=center",
+                        image_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&crop=center",
                         image_order: 1,
                         is_main: true
                     }
@@ -290,9 +290,9 @@ class PropertyLoader {
             featured: property.featured || property.destacada || false,
             published: property.published || property.activa || true,
             created_at: property.created_at || property.fecha_creacion || new Date().toISOString(),
-            main_image: property.main_image || property.imagen_principal || `https://images.unsplash.com/photo-${Math.floor(Math.random() * 5) + 1505142468610}-359e7d316be0?w=600&h=400&fit=crop&crop=center`,
+            main_image: property.main_image || property.imagen_principal || `https://images.unsplash.com/photo-${Math.floor(Math.random() * 5) + 1505142468610}-359e7d316be0?w=800&h=600&fit=crop&crop=center`,
             property_images: [{
-                image_url: property.main_image || property.imagen_principal || `https://images.unsplash.com/photo-${Math.floor(Math.random() * 5) + 1505142468610}-359e7d316be0?w=600&h=400&fit=crop&crop=center`,
+                image_url: property.main_image || property.imagen_principal || `https://images.unsplash.com/photo-${Math.floor(Math.random() * 5) + 1505142468610}-359e7d316be0?w=800&h=600&fit=crop&crop=center`,
                 image_order: 1,
                 is_main: true
             }]
@@ -318,7 +318,7 @@ class PropertyLoader {
             .slice(0, limit);
     }
 
-    // Generar HTML para una propiedad
+    // Generar HTML para una propiedad - NUEVO DISEÑO SIN BORDES
     generatePropertyHTML(property) {
         const formatPrice = (precio, moneda) => {
             const formatted = new Intl.NumberFormat('es-CL').format(precio);
@@ -343,15 +343,30 @@ class PropertyLoader {
 
         const imageUrl = this.getPropertyMainImage(property);
 
+        // Generar características de forma más limpia
+        const features = [];
+        if (property.bedrooms > 0) features.push(`${property.bedrooms} ${property.bedrooms === 1 ? 'dormitorio' : 'dormitorios'}`);
+        if (property.bathrooms > 0) features.push(`${property.bathrooms} ${property.bathrooms === 1 ? 'baño' : 'baños'}`);
+        if (property.total_area > 0) features.push(`${property.total_area}m²`);
+        if (property.parking_spaces > 0) features.push(`${property.parking_spaces} ${property.parking_spaces === 1 ? 'estacionamiento' : 'estacionamientos'}`);
+
         return `
             <div class="property-card" data-id="${property.id}" onclick="goToProperty(${property.id})">
                 <div class="property-image">
-                    <img src="${imageUrl}" alt="${property.title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop&crop=center'">
+                    ${imageUrl ? 
+                        `<img src="${imageUrl}" alt="${property.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'placeholder-image\\'><div class=\\'placeholder-icon\\'>🏠</div><div class=\\'placeholder-text\\'>Sin imagen disponible</div></div>'">` : 
+                        `<div class="placeholder-image">
+                            <div class="placeholder-icon">🏠</div>
+                            <div class="placeholder-text">Sin imagen disponible</div>
+                        </div>`
+                    }
+                    
                     <div class="property-badge ${property.featured ? 'featured' : ''}">
                         ${property.featured ? '⭐ ' : ''}${getBadgeText(property.property_type)}
                     </div>
+                    
                     <div class="property-overlay">
-                        <div class="property-details-btn">Ver Detalles</div>
+                        <div class="property-details-btn">👁️ Ver Detalles</div>
                     </div>
                 </div>
                 
@@ -361,9 +376,7 @@ class PropertyLoader {
                     <div class="property-location">📍 ${property.commune}, ${property.region}</div>
                     
                     <div class="property-features">
-                        🛏️ ${property.bedrooms} dorm. • 🚿 ${property.bathrooms} baños
-                        ${property.total_area ? ` • 📐 ${property.total_area}m²` : ''}
-                        ${property.parking_spaces > 0 ? ` • 🚗 ${property.parking_spaces} est.` : ''}
+                        ${features.join(' • ')}
                     </div>
                     
                     ${property.expenses ? 
@@ -389,7 +402,7 @@ class PropertyLoader {
             return property.main_image;
         }
         
-        return `https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop&crop=center`;
+        return `https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center`;
     }
 
     // Renderizar propiedades
@@ -441,14 +454,21 @@ class PropertyLoader {
                         '<p><small>📡 Mostrando datos de ejemplo - verifica la conexión a la base de datos</small></p>' : 
                         ''
                     }
+                    <div class="no-properties-actions">
+                        <a href="subir-propiedades.html" class="add-property-btn">➕ Agregar Propiedad</a>
+                        <button onclick="propertyLoader.refreshProperties()" class="refresh-btn">🔄 Actualizar</button>
+                    </div>
                 </div>
             `;
             return;
         }
 
-        const propertiesHTML = propertiesToShow
-            .map(property => this.generatePropertyHTML(property))
-            .join('');
+        // Generar HTML usando grid sin espacios
+        const propertiesHTML = `
+            <div class="properties-grid">
+                ${propertiesToShow.map(property => this.generatePropertyHTML(property)).join('')}
+            </div>
+        `;
 
         container.innerHTML = propertiesHTML;
 
@@ -486,18 +506,53 @@ class PropertyLoader {
 
 // Funciones globales
 window.goToProperty = function(propertyId) {
-    window.location.href = `propiedad.html?id=${propertyId}`;
+    try {
+        console.log('🔗 Navegando a propiedad:', propertyId);
+        window.location.href = `propiedad.html?id=${propertyId}`;
+    } catch (error) {
+        console.error('❌ Error navegando a propiedad:', error);
+        alert('Error al abrir la propiedad. Por favor, intenta nuevamente.');
+    }
 };
 
 window.contactProperty = function(propertyId) {
-    const property = window.propertyLoader.properties.find(p => p.id == propertyId);
-    if (!property) return;
+    try {
+        const property = window.propertyLoader.properties.find(p => p.id == propertyId);
+        if (!property) {
+            console.error('❌ Propiedad no encontrada:', propertyId);
+            alert('Propiedad no encontrada');
+            return;
+        }
 
-    const message = `Hola! Estoy interesado/a en la propiedad "${property.title}" en ${property.commune}. ¿Podrías darme más información?`;
-    const phoneNumber = property.contact_phone.replace(/[^0-9]/g, '');
-    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    
-    window.open(whatsappURL, '_blank');
+        const formatPrice = (precio, moneda) => {
+            const formatted = new Intl.NumberFormat('es-CL').format(precio);
+            switch(moneda) {
+                case 'CLP': return `$${formatted}`;
+                case 'UF': return `UF ${formatted}`;
+                case 'USD': return `US$${formatted}`;
+                default: return `${moneda} ${formatted}`;
+            }
+        };
+
+        const message = `Hola! Estoy interesado/a en la propiedad "${property.title}" ubicada en ${property.commune}.
+
+📍 Dirección: ${property.address}
+💰 Precio: ${formatPrice(property.price, property.currency)}
+🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños
+${property.total_area ? `📐 Superficie: ${property.total_area}m²` : ''}
+${property.expenses ? `💸 Gastos comunes: $${property.expenses.toLocaleString()}` : ''}
+
+¿Podrías darme más información?`;
+
+        const phoneNumber = property.contact_phone.replace(/[^0-9]/g, '');
+        const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        
+        console.log('📱 Abriendo WhatsApp para propiedad:', property.title);
+        window.open(whatsappURL, '_blank');
+    } catch (error) {
+        console.error('❌ Error contactando propiedad:', error);
+        alert('Error al contactar. Por favor, intenta nuevamente.');
+    }
 };
 
 // Crear instancia global
@@ -505,7 +560,7 @@ window.propertyLoader = new PropertyLoader();
 
 // Auto-inicializar
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏠 Inicializando Property Loader con datos garantizados...');
+    console.log('🏠 Inicializando Property Loader con diseño moderno...');
     
     setTimeout(async () => {
         try {
@@ -515,18 +570,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const propertiesGrid = document.getElementById('propertiesGrid');
 
             if (featuredContainer) {
+                console.log('📋 Cargando propiedades destacadas...');
                 await window.propertyLoader.renderProperties('featuredProperties', null, 3);
             }
             
             if (compraContainer) {
+                console.log('🏠 Cargando propiedades en venta...');
                 await window.propertyLoader.renderProperties('compraProperties', 'compra');
             }
             
             if (arriendoContainer) {
+                console.log('🏘️ Cargando propiedades en arriendo...');
                 await window.propertyLoader.renderProperties('arriendoProperties', 'arriendo');
             }
 
             if (propertiesGrid) {
+                console.log('🏘️ Cargando todas las propiedades...');
                 await window.propertyLoader.renderProperties('propertiesGrid');
             }
             
@@ -536,4 +595,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1000);
 });
 
-console.log('✅ Property Loader con datos garantizados cargado - Casa Nuvera');
+console.log('✅ Property Loader con diseño moderno sin bordes cargado - Casa Nuvera');
