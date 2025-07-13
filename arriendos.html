@@ -3,1046 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Propiedades en Arriendo - Casa Nuvera | v2.0</title>
-    <link rel="stylesheet" href="property-styles.css?v=1704067200">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Arriendos - Casa NuVera</title>
     
-    <!-- CACHE BUSTER - NO BORRAR -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS PERSONALIZADO -->
+    <link rel="stylesheet" href="css/property-grid-dark.css">
     
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        :root {
-            --primary-black: #0a0a0a;
-            --secondary-gray: #666666;
-            --light-gray: #f5f5f5;
-            --medium-gray: #e0e0e0;
-            --background-gray: #7a7a7a;
-            --white: #ffffff;
-            --accent-orange: #ff6b35;
-            --text-muted: #999999;
-            --border-color: #ddd;
-            --overlay-dark: rgba(0, 0, 0, 0.6);
-            --overlay-medium: rgba(0, 0, 0, 0.4);
-            --overlay-light: rgba(0, 0, 0, 0.2);
-            --overlay-white: rgba(255, 255, 255, 0.9);
-            --green-accent: #00ff88;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.5;
-            color: var(--white);
-            background-color: var(--background-gray);
-            font-weight: 400;
+            background: #0a0a0a;
+            color: #ffffff;
             overflow-x: hidden;
         }
 
-        /* INDICADOR DE CARGA EXITOSA */
-        .cache-indicator {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: var(--green-accent);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            z-index: 9999;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Botón flotante para subir propiedades */
-        .floating-upload-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: linear-gradient(135deg, var(--green-accent), #00cc6a);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
-            transition: all 0.3s ease;
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            animation: pulse-green 3s infinite;
-        }
-
-        .floating-upload-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
-            background: linear-gradient(135deg, #00cc6a, var(--green-accent));
-        }
-
-        @keyframes pulse-green {
-            0%, 100% { box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3); }
-            50% { box-shadow: 0 15px 40px rgba(0, 255, 136, 0.5); }
-        }
-
-        /* Header flotante sobre imágenes */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
+        /* HEADER */
+        .navbar {
+            background: rgba(0, 0, 0, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #333;
+            padding: 15px 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
         }
 
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            text-decoration: none;
-            color: var(--primary-black);
-        }
-
-        .logo-image {
-            width: 45px;
-            height: 45px;
-            object-fit: contain;
-        }
-
-        .logo-text {
-            font-size: 1.3rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--secondary-gray);
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-menu a:hover,
-        .nav-menu a.active {
-            color: var(--primary-black);
-        }
-
-        .nav-cta {
-            background: var(--primary-black);
-            color: white !important;
-            padding: 0.8rem 1.5rem;
-            border-radius: 0;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.85rem;
-        }
-
-        .nav-cta:hover {
-            background: var(--secondary-gray);
-        }
-
-        /* Hero Section con imagen de fondo full */
-        .hero {
-            height: 60vh;
-            background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
-                        url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1920&h=1080&fit=crop&crop=center');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            color: white;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
-            margin-top: 80px;
-        }
-
-        .hero-content {
-            max-width: 1200px;
-            width: 100%;
-            text-align: center;
-            padding: 0 2rem;
-            z-index: 2;
-        }
-
-        .hero-tagline {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 2rem;
-            font-weight: 500;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 300;
-            line-height: 1.1;
-            margin-bottom: 2rem;
-            letter-spacing: -2px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .hero-description {
-            font-size: 1.3rem;
-            margin-bottom: 3rem;
-            line-height: 1.6;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            opacity: 0.9;
-        }
-
-        /* Loading */
-        .loading-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem 2rem;
-            text-align: center;
-            background: white;
-            color: var(--primary-black);
-        }
-
-        .loading-spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-top: 4px solid var(--primary-black);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error-container {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--primary-black);
-            background: white;
-        }
-
-        .error-container h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #d32f2f;
-        }
-
-        .error-container p {
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: var(--primary-black);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--secondary-gray);
-        }
-
-        /* Properties Section */
-        .properties-section {
-            background: white;
-            padding: 4rem 2rem;
-            color: var(--primary-black);
-            min-height: 50vh;
-        }
-
-        .properties-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 3rem;
-        }
-
-        .results-count {
-            color: var(--secondary-gray);
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        .properties-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        /* Property Card con efectos hover premium */
-        .property-card {
-            background: white;
-            border: 1px solid var(--medium-gray);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            position: relative;
-            cursor: pointer;
-            height: 450px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .property-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            z-index: 10;
-            box-shadow: 0 25px 50px rgba(0, 255, 136, 0.3);
-            border: 2px solid var(--green-accent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { box-shadow: 0 25px 50px rgba(0, 255, 136, 0.3); }
-            50% { box-shadow: 0 30px 60px rgba(0, 255, 136, 0.5); }
-            100% { box-shadow: 0 25px 50px rgba(0, 255, 136, 0.3); }
-        }
-
-        .property-image {
-            height: 250px;
-            background: var(--medium-gray);
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            transition: all 0.4s ease;
-        }
-
-        .property-image.no-image {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--light-gray);
-        }
-
-        .placeholder-image {
-            text-align: center;
-            color: var(--secondary-gray);
-        }
-
-        .placeholder-icon {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .placeholder-text {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .property-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .property-badge {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            background: rgba(255, 255, 255, 0.95);
-            color: var(--primary-black);
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 20px;
-            z-index: 5;
-        }
-
-        .property-badge.featured {
-            background: var(--green-accent);
-            color: white;
-        }
-
-        /* Información del hover premium */
-        .property-hover-info {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 255, 136, 0.95);
-            backdrop-filter: blur(20px);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            text-align: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-            z-index: 15;
-            min-width: 280px;
-        }
-
-        .property-card:hover .property-hover-info {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .property-hover-info h4 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .hover-price {
-            font-size: 1.4rem;
+        .navbar-brand {
             font-weight: 700;
-            color: white;
-            margin-bottom: 0.5rem;
+            font-size: 24px;
+            color: #00ff88 !important;
         }
 
-        .hover-features {
-            font-size: 0.9rem;
-            margin: 0.5rem 0;
-            opacity: 0.9;
-        }
-
-        .hover-contact {
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            opacity: 0.8;
-        }
-
-        .property-info {
-            padding: 1.5rem;
-            height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .property-price {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--primary-black);
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .property-card:hover .property-price {
-            color: var(--green-accent);
-        }
-
-        .property-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary-black);
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .property-card:hover .property-title {
-            color: var(--green-accent);
-        }
-
-        .property-location {
-            color: var(--secondary-gray);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            transition: color 0.3s ease;
-        }
-
-        .property-card:hover .property-location {
-            color: var(--green-accent);
-        }
-
-        .property-features {
-            color: var(--secondary-gray);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-
-        .property-expenses {
-            color: var(--secondary-gray);
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .property-contact {
-            margin-top: auto;
-        }
-
-        .contact-btn {
-            background: var(--primary-black);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
+        .navbar-nav .nav-link {
+            color: #ffffff !important;
             font-weight: 500;
-            cursor: pointer;
+            margin: 0 10px;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            width: 100%;
         }
 
-        .contact-btn:hover {
-            background: var(--green-accent);
+        .navbar-nav .nav-link:hover {
+            color: #00ff88 !important;
             transform: translateY(-2px);
         }
 
-        /* Footer */
-        .footer {
-            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
-                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752027032204_0.jpg');
-            background-size: cover;
-            background-position: center;
-            padding: 4rem 2rem 2rem;
-            color: white;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
-        }
-
-        .footer-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-section h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1.5rem;
-            color: white;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-section ul li a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section ul li a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 2rem;
+        /* HERO SECTION */
+        .hero-arriendos {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            height: 40vh;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
+            justify-content: center;
+            text-align: center;
+            margin-top: 76px;
+            position: relative;
         }
 
-        .footer-tagline {
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #00ff88;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 1rem;
         }
 
-        /* Mobile Responsive */
+        .hero-content p {
+            font-size: 1.2rem;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        /* BOTÓN FLOTANTE */
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.4);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 255, 136, 0.6);
+            color: #000;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .floating-upload-btn {
-                bottom: 1rem;
-                right: 1rem;
-                padding: 0.8rem 1.2rem;
-                font-size: 0.8rem;
+            .hero-content h1 {
+                font-size: 2rem;
             }
             
-            .nav-menu {
-                display: none;
+            .hero-content p {
+                font-size: 1rem;
             }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .properties-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .property-card {
-                height: 400px;
-            }
-
-            .section-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .hero {
-                background-attachment: scroll;
+            
+            .floating-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                bottom: 20px;
+                right: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- INDICADOR DE CARGA EXITOSA -->
-    <div class="cache-indicator" id="cacheIndicator">
-        ✅ Página Cargada - v2.0
-    </div>
+    <!-- HEADER -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-home"></i> Casa NuVera
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="compras.html">Comprar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="arriendos.html">Arrendar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="subir-propiedades.html">Publicar</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Botón flotante para subir propiedades -->
-    <a href="subir-propiedades.html" class="floating-upload-btn">
-        <span>🏠</span>
-        Subir Propiedad
+    <!-- HERO SECTION -->
+    <section class="hero-arriendos">
+        <div class="hero-content">
+            <h1>Encuentra tu arriendo ideal</h1>
+            <p>Descubre las mejores propiedades en arriendo</p>
+        </div>
+    </section>
+
+    <!-- PROPIEDADES EN ARRIENDO -->
+    <section class="properties-section">
+        <div class="properties-container">
+            <!-- LOADING -->
+            <div id="loading" class="properties-loading">
+                <i class="fas fa-spinner fa-spin"></i> Cargando propiedades...
+            </div>
+
+            <!-- ERROR -->
+            <div id="error" class="properties-error" style="display: none;">
+                <h3><i class="fas fa-exclamation-triangle"></i> Error al cargar propiedades</h3>
+                <p>Hubo un problema al cargar las propiedades. Por favor, inténtalo de nuevo.</p>
+                <button onclick="loadProperties()" class="contact-btn" style="margin-top: 20px;">
+                    <i class="fas fa-refresh"></i> Reintentar
+                </button>
+            </div>
+
+            <!-- GRID DE PROPIEDADES -->
+            <div id="propertiesGrid" class="properties-grid" style="display: none;">
+                <!-- Las propiedades se cargan dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- BOTÓN FLOTANTE -->
+    <a href="subir-propiedades.html" class="floating-btn" title="Publicar Propiedad">
+        <i class="fas fa-plus"></i>
     </a>
 
-    <!-- Header flotante -->
-    <header class="header">
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752020935606_0.png" 
-                     alt="Casa Nuvera Logo" 
-                     class="logo-image">
-                <span class="logo-text">Casa Nuvera</span>
-            </a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="compras.html">Comprar</a></li>
-                    <li><a href="arriendos.html" class="active">Arrendar</a></li>
-                    <li><a href="servicios.html">Servicios</a></li>
-                    <li><a href="nosotros.html">Nosotros</a></li>
-                    <li><a href="contacto.html">Contacto</a></li>
-                    <li><a href="subir-propiedades.html" class="nav-cta">🏠 Subir Propiedad</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-tagline">Casa Nuvera | Propiedades Premium en Arriendo</div>
-            <h1>Discover your ideal rental home today</h1>
-            <p class="hero-description">Encuentra propiedades en arriendo cuidadosamente seleccionadas en las mejores ubicaciones de Santiago. Desde departamentos modernos hasta casas familiares.</p>
-        </div>
-    </section>
-
-    <!-- Loading -->
-    <div id="loadingContainer" class="loading-container">
-        <div class="loading-spinner"></div>
-        <p>Cargando propiedades en arriendo...</p>
-    </div>
-
-    <!-- Error Container -->
-    <div id="errorContainer" class="error-container" style="display: none;">
-        <h3>❌ Error al cargar propiedades</h3>
-        <p id="errorMessage">Error al cargar propiedades</p>
-        <button class="btn btn-primary" onclick="location.reload()">🔄 Recargar Página</button>
-    </div>
-
-    <!-- Properties Section -->
-    <section class="properties-section" id="propertiesSection" style="display: none;">
-        <div class="properties-container">
-            <div class="section-header">
-                <div class="results-count" id="resultsCount">
-                    Cargando propiedades...
-                </div>
-            </div>
-
-            <div class="properties-grid" id="propertiesGrid">
-                <!-- Property Cards will be populated by JavaScript -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Propiedades</h4>
-                    <ul>
-                        <li><a href="compras.html">Comprar</a></li>
-                        <li><a href="arriendos.html">Arrendar</a></li>
-                        <li><a href="subir-propiedades.html">🏠 Subir Propiedad</a></li>
-                        <li><a href="servicios.html">Tasaciones</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Servicios</h4>
-                    <ul>
-                        <li><a href="servicios.html">Asesoría</a></li>
-                        <li><a href="contacto.html">Consultoría</a></li>
-                        <li><a href="servicios.html">Inversiones</a></li>
-                        <li><a href="contacto.html">Financiamiento</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Soporte</h4>
-                    <ul>
-                        <li><a href="contacto.html">Contacto</a></li>
-                        <li><a href="blog.html">Centro de Ayuda</a></li>
-                        <li><a href="subir-imagenes.html">Gestionar Contenido</a></li>
-                        <li><a href="nosotros.html">Términos</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Contacto</h4>
-                    <ul>
-                        <li><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></li>
-                        <li><a href="tel:+56912345678">+56 9 1234 5678</a></li>
-                        <li>Av. Apoquindo 1234</li>
-                        <li>Las Condes, Santiago</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="footer-tagline">Casa Nuvera | Innovative Real Estate // Est. 2019</div>
-                <div>&copy; 2025 Casa Nuvera. Todos los derechos reservados.</div>
-            </div>
-        </div>
-    </footer>
-
     <!-- Scripts -->
-    <script src="supabase.js?v=1704067200"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // INDICADOR DE CARGA EXITOSA
-        console.log('🎉 ARRIENDOS.HTML CARGADO EXITOSAMENTE - v2.0');
-        console.log('Fecha de carga:', new Date().toLocaleString());
-        
-        // Ocultar indicador después de 3 segundos
-        setTimeout(() => {
-            const indicator = document.getElementById('cacheIndicator');
-            if (indicator) {
-                indicator.style.opacity = '0';
-                setTimeout(() => indicator.remove(), 500);
-            }
-        }, 3000);
-
-        // Variables globales
-        let allProperties = [];
-
-        // Inicializar página
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🏠 Iniciando página de arriendos...');
-            
-            // Esperar a que Supabase esté listo
-            if (window.supabase) {
-                initializePage();
-            } else {
-                window.addEventListener('supabaseReady', initializePage);
-                
-                // Timeout de seguridad
-                setTimeout(() => {
-                    if (!window.supabase) {
-                        showError('No se pudo conectar con Supabase');
-                    }
-                }, 5000);
-            }
-        });
-
-        async function initializePage() {
-            console.log('🚀 Configurando página de arriendos...');
-            await loadProperties();
-        }
+        // Configuración de Supabase
+        const SUPABASE_URL = 'https://yteajlpzfsksypifyfbn.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWFqbHB6ZnNrc3lwaWZ5ZmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0Mzk2ODYsImV4cCI6MjA1MDAxNTY4Nn0.8bnPWzNjn9IrMPbTlqfLjvhVQI7D5lKEE1Q3W0FKEK4';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function loadProperties() {
             try {
-                showLoading(true);
-                
-                console.log('📥 Cargando propiedades en arriendo desde tabla "properties"...');
-                
-                // Query simplificado SIN JOIN - solo cargar propiedades de arriendo
-                const { data, error } = await window.supabase
+                console.log('🔄 Cargando propiedades en arriendo...');
+
+                // Cargar propiedades sin JOIN para evitar errores
+                const { data: properties, error: propertiesError } = await supabase
                     .from('properties')
                     .select('*')
-                    .eq('published', true)
-                    .in('property_type', ['arriendo', 'arriendo-temporal'])
-                    .order('created_at', { ascending: false });
+                    .in('property_type', ['arriendo', 'arriendo-temporal', 'rent'])
+                    .eq('published', true);
 
-                if (error) {
-                    console.error('❌ Error al cargar propiedades:', error);
-                    throw error;
+                if (propertiesError) {
+                    console.error('❌ Error cargando propiedades:', propertiesError);
+                    throw propertiesError;
                 }
 
-                allProperties = data || [];
-                console.log(`✅ ${allProperties.length} propiedades cargadas`);
-                
-                // Cargar imágenes por separado para cada propiedad
-                await loadPropertyImages();
-                
-                showLoading(false);
-                renderProperties();
-                
-            } catch (error) {
-                console.error('💥 Error al cargar propiedades:', error);
-                showError(`Error al cargar propiedades: ${error.message}`);
-                showLoading(false);
-            }
-        }
+                console.log('✅ Propiedades cargadas:', properties.length);
 
-        async function loadPropertyImages() {
-            console.log('🖼️ Cargando imágenes de propiedades...');
-            
-            for (let property of allProperties) {
-                try {
-                    // Intentar cargar imagen principal por separado
-                    const { data: images, error } = await window.supabase
-                        .from('property_images')
-                        .select('image_url, is_main')
-                        .eq('property_id', property.id)
-                        .order('is_main', { ascending: false });
+                // Cargar imágenes para cada propiedad por separado
+                for (let property of properties) {
+                    try {
+                        const { data: images, error: imagesError } = await supabase
+                            .from('property_images')
+                            .select('*')
+                            .eq('property_id', property.id);
 
-                    if (!error && images && images.length > 0) {
-                        property.images = images;
-                        property.main_image = images.find(img => img.is_main)?.image_url || images[0].image_url;
+                        if (!imagesError && images) {
+                            property.images = images;
+                        } else {
+                            property.images = [];
+                        }
+                    } catch (error) {
+                        console.log('⚠️ Error cargando imágenes para propiedad', property.id, ':', error);
+                        property.images = [];
                     }
-                } catch (e) {
-                    console.warn(`⚠️ No se pudo cargar imagen para propiedad ${property.id}:`, e);
                 }
+
+                displayProperties(properties);
+
+            } catch (error) {
+                console.error('❌ Error general:', error);
+                showError();
             }
-            
-            console.log('✅ Imágenes cargadas');
         }
 
-        function renderProperties() {
+        function displayProperties(properties) {
+            const loading = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
             const grid = document.getElementById('propertiesGrid');
-            const resultsCount = document.getElementById('resultsCount');
 
-            if (allProperties.length === 0) {
+            loading.style.display = 'none';
+            errorDiv.style.display = 'none';
+            grid.style.display = 'grid';
+
+            if (properties.length === 0) {
                 grid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
-                        <h3>No hay propiedades en arriendo disponibles</h3>
-                        <p>Intenta nuevamente más tarde</p>
-                        <button class="btn btn-primary" onclick="location.reload()">🔄 Recargar</button>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #cccccc;">
+                        <i class="fas fa-home" style="font-size: 48px; margin-bottom: 20px; color: #555;"></i>
+                        <h3>No hay propiedades disponibles</h3>
+                        <p>Vuelve pronto para ver nuevas propiedades en arriendo.</p>
                     </div>
                 `;
-                resultsCount.textContent = 'No se encontraron propiedades';
                 return;
             }
 
-            // Renderizar propiedades con efecto hover premium
-            const propertiesHTML = allProperties.map(property => {
-                const formattedPrice = formatPrice(property.price, property.currency);
-                const features = [];
-                
-                if (property.bedrooms !== null && property.bedrooms !== undefined) {
-                    features.push(`${property.bedrooms === 0 ? 'Studio' : property.bedrooms + ' dormitorios'}`);
-                }
-                if (property.bathrooms) features.push(`${property.bathrooms} baños`);
-                if (property.total_area) features.push(`${property.total_area}m²`);
-                if (property.parking_spaces > 0) features.push(`${property.parking_spaces} estacionamientos`);
+            grid.innerHTML = properties.map(property => createPropertyCard(property)).join('');
+        }
 
-                const contactInfo = property.contact_phone || property.contact_email || 'Contactar para más información';
-                const badgeText = property.property_type === 'arriendo-temporal' ? 'ARRIENDO TEMPORAL' : 'ARRIENDO';
+        function createPropertyCard(property) {
+            const price = property.price ? `$${parseInt(property.price).toLocaleString('es-CL')}/mes` : 'Precio a consultar';
+            const title = property.title || 'Propiedad sin título';
+            const location = property.location || 'Ubicación no disponible';
+            const bedrooms = property.bedrooms || 0;
+            const bathrooms = property.bathrooms || 0;
+            const area = property.area || 0;
+            const parking = property.parking || 0;
+            const propertyType = property.property_type || 'Propiedad';
+            
+            // Imagen principal
+            const mainImage = property.images && property.images.length > 0 
+                ? property.images[0].image_url 
+                : 'https://via.placeholder.com/400x250/333/fff?text=Sin+Imagen';
 
-                return `
-                    <div class="property-card" data-id="${property.id}">
-                        <div class="property-image ${property.main_image ? 'has-image' : 'no-image'}">
-                            ${property.main_image ? 
-                                `<img src="${property.main_image}" alt="${property.title}" onerror="this.style.display='none'; this.parentNode.classList.add('no-image');">` : 
-                                `<div class="placeholder-image">
-                                    <div class="placeholder-icon">🏠</div>
-                                    <div class="placeholder-text">Sin imagen</div>
-                                </div>`
-                            }
-                            <div class="property-badge ${property.featured ? 'featured' : ''}">
-                                ${property.featured ? '⭐ ' : ''}${badgeText}
+            return `
+                <div class="property-card" onclick="goToProperty(${property.id})">
+                    <div class="property-type">${propertyType.toUpperCase()}</div>
+                    <div class="property-image">
+                        <img src="${mainImage}" alt="${title}" loading="lazy">
+                    </div>
+                    <div class="property-content">
+                        <h3 class="property-title">${title}</h3>
+                        <p class="property-location">
+                            <i class="fas fa-map-marker-alt"></i> ${location}
+                        </p>
+                        <div class="property-price">${price}</div>
+                        <div class="property-features">
+                            <div class="feature">
+                                <i class="fas fa-bed"></i> ${bedrooms}
                             </div>
-                            
-                            <!-- Información adicional que aparece en hover -->
-                            <div class="property-hover-info">
-                                <h4>${property.title}</h4>
-                                <div class="hover-price">${formattedPrice}</div>
-                                <p>📍 ${property.address}, ${property.commune}</p>
-                                <div class="hover-features">${features.join(' • ')}</div>
-                                ${property.expenses ? 
-                                    `<p>💰 Gastos comunes: $${new Intl.NumberFormat('es-CL').format(property.expenses)}</p>` : 
-                                    ''
-                                }
-                                <div class="hover-contact">📞 ${contactInfo}</div>
+                            <div class="feature">
+                                <i class="fas fa-bath"></i> ${bathrooms}
                             </div>
-                        </div>
-                        
-                        <div class="property-info">
-                            <div class="property-price">${formattedPrice}</div>
-                            <h3 class="property-title">${property.title}</h3>
-                            <div class="property-location">
-                                📍 ${property.commune}${property.neighborhood ? ', ' + property.neighborhood : ''}
+                            <div class="feature">
+                                <i class="fas fa-ruler-combined"></i> ${area}m²
                             </div>
-                            <div class="property-features">
-                                ${features.join(' • ')}
-                            </div>
-                            ${property.expenses ? 
-                                `<div class="property-expenses">💰 Gastos comunes: $${property.expenses.toLocaleString()}</div>` : 
-                                ''
-                            }
-                            <div class="property-contact">
-                                <button class="contact-btn" onclick="contactProperty('${property.id}')">
-                                    💬 Contactar por WhatsApp
-                                </button>
+                            <div class="feature">
+                                <i class="fas fa-car"></i> ${parking}
                             </div>
                         </div>
                     </div>
-                `;
-            }).join('');
-
-            grid.innerHTML = propertiesHTML;
-            resultsCount.textContent = `Mostrando ${allProperties.length} propiedades en arriendo`;
-
-            // Mostrar la sección de propiedades
-            document.getElementById('propertiesSection').style.display = 'block';
+                </div>
+            `;
         }
 
-        function formatPrice(price, currency) {
-            const numPrice = parseFloat(price);
-            
-            switch(currency) {
-                case 'CLP':
-                    return `$${numPrice.toLocaleString('es-CL')}`;
-                case 'UF':
-                    return `UF ${numPrice.toLocaleString('es-CL')}`;
-                case 'USD':
-                    return `US$ ${numPrice.toLocaleString('en-US')}`;
-                default:
-                    return `${currency || '$'} ${numPrice.toLocaleString()}`;
-            }
+        function goToProperty(propertyId) {
+            window.location.href = `propiedad.html?id=${propertyId}`;
         }
 
-        function showLoading(show) {
-            const loadingContainer = document.getElementById('loadingContainer');
-            const propertiesSection = document.getElementById('propertiesSection');
-            const errorContainer = document.getElementById('errorContainer');
-            
-            if (show) {
-                loadingContainer.style.display = 'flex';
-                propertiesSection.style.display = 'none';
-                errorContainer.style.display = 'none';
-            } else {
-                loadingContainer.style.display = 'none';
-            }
+        function showError() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('propertiesGrid').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
         }
 
-        function showError(message) {
-            const errorContainer = document.getElementById('errorContainer');
-            const errorMessage = document.getElementById('errorMessage');
-            const loadingContainer = document.getElementById('loadingContainer');
-            const propertiesSection = document.getElementById('propertiesSection');
-            
-            errorMessage.textContent = message;
-            errorContainer.style.display = 'block';
-            loadingContainer.style.display = 'none';
-            propertiesSection.style.display = 'none';
-        }
-
-        // Función global para contactar propiedades
-        window.contactProperty = function(propertyId) {
-            const property = allProperties.find(p => p.id === propertyId);
-            
-            if (!property) {
-                alert('Propiedad no encontrada');
-                return;
-            }
-
-            const features = [];
-            if (property.bedrooms !== null && property.bedrooms !== undefined) {
-                features.push(`${property.bedrooms === 0 ? 'Studio' : property.bedrooms + ' dormitorios'}`);
-            }
-            if (property.bathrooms) features.push(`${property.bathrooms} baños`);
-            if (property.total_area) features.push(`${property.total_area}m²`);
-            if (property.parking_spaces > 0) features.push(`${property.parking_spaces} estacionamientos`);
-
-            const message = `Hola! Estoy interesado/a en arrendar la propiedad "${property.title}" ubicada en ${property.commune}.
-
-📍 Dirección: ${property.address}
-💰 Precio: ${formatPrice(property.price, property.currency)}${property.property_type === 'arriendo-temporal' ? ' (temporal)' : ''}
-🏠 ${features.join(', ')}
-${property.expenses ? `💸 Gastos comunes: $${property.expenses.toLocaleString()}` : ''}
-
-¿Podrías darme más información?`;
-
-            // Limpiar número de teléfono
-            const phoneNumber = property.contact_phone.replace(/[^0-9]/g, '');
-            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            
-            console.log('📱 Abriendo WhatsApp para propiedad:', property.title);
-            window.open(whatsappURL, '_blank');
-        };
+        // Cargar propiedades al inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Página de arriendos cargada');
+            loadProperties();
+        });
     </script>
 </body>
 </html>
