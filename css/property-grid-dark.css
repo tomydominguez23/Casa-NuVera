@@ -1,4 +1,4 @@
-/* ESTILOS PARA EL GRID DE PROPIEDADES - OSCURO Y LUJOSO */
+/* ESTILOS PARA EL GRID DE PROPIEDADES - OSCURO ELEGANTE */
 
 /* Grid de propiedades oscuro y compacto */
 .properties-grid {
@@ -35,15 +35,15 @@
     transition: all 0.3s ease;
 }
 
-/* Iluminación dorada al hover */
+/* Iluminación beige al hover */
 .property-card:hover::before {
-    background: rgba(212, 175, 55, 0.1); /* Dorado elegante */
+    background: rgba(245, 245, 220, 0.1); /* Beige suave */
 }
 
 .property-card:hover {
     transform: scale(1.02);
-    border-color: #D4AF37; /* Dorado elegante */
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    border-color: #F5F5DC; /* Beige elegante */
+    box-shadow: 0 0 20px rgba(245, 245, 220, 0.3);
     z-index: 10;
 }
 
@@ -94,7 +94,7 @@
 .property-card .property-price {
     font-size: 18px;
     font-weight: 700;
-    color: #D4AF37; /* Dorado elegante */
+    color: #F5F5DC; /* Beige elegante */
     margin-bottom: 8px;
 }
 
@@ -109,7 +109,7 @@
 }
 
 .property-card .property-location i {
-    color: #D4AF37; /* Dorado elegante */
+    color: #D3D3D3; /* Gris claro */
     margin-right: 5px;
 }
 
@@ -134,7 +134,7 @@
 
 .property-card .feature i {
     font-size: 12px;
-    color: #D4AF37; /* Dorado elegante */
+    color: #D3D3D3; /* Gris claro */
 }
 
 /* Tipo de propiedad */
@@ -142,8 +142,8 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    background: rgba(212, 175, 55, 0.9); /* Dorado elegante */
-    color: #000;
+    background: rgba(245, 245, 220, 0.9); /* Beige elegante */
+    color: #2d2d2d;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 11px;
@@ -158,8 +158,8 @@
     position: absolute;
     bottom: 15px;
     right: 15px;
-    background: rgba(212, 175, 55, 0.9); /* Dorado elegante */
-    color: #000;
+    background: rgba(245, 245, 220, 0.9); /* Beige elegante */
+    color: #2d2d2d;
     padding: 6px 12px;
     border-radius: 20px;
     font-size: 11px;
