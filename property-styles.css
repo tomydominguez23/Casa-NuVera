@@ -1,92 +1,45 @@
-/* property-styles.css - Estilos para las propiedades de Casa Nuvera */
+/* property-styles.css - Estilos premium para visualización de propiedades estilo PortalInmobiliario */
 
-/* Loading */
-.loading-container {
-    text-align: center;
-    padding: 4rem 2rem;
-    grid-column: 1 / -1;
-}
-
-.loading-spinner {
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #333;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Grid de propiedades mejorado */
+/* Properties Grid - Diseño compacto y oscuro */
 .properties-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2.5rem;
-    margin-bottom: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 0; /* Sin espacios entre propiedades */
+    margin: 0;
+    padding: 0;
 }
 
-/* Tarjeta de propiedad con efecto premium de iluminación verde */
+/* Property Card - Diseño oscuro y compacto */
 .property-card {
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
+    background: #1a1a1a;
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    cursor: pointer;
     position: relative;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+    overflow: hidden;
+    cursor: pointer;
+    height: 350px;
+    box-shadow: none;
 }
 
-/* Efecto hover premium con borde verde brillante */
+/* Eliminar borde derecho en la última columna */
+.property-card:nth-child(3n) {
+    border-right: none;
+}
+
+/* Hover Effect Premium - Iluminación verde */
 .property-card:hover {
-    transform: translateY(-12px) scale(1.02);
-    box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.25),
-        0 0 0 3px #00ff88,
-        0 0 20px rgba(0, 255, 136, 0.4),
-        inset 0 0 0 1px rgba(0, 255, 136, 0.2);
+    background: #0a0a0a;
+    transform: scale(1.02);
     z-index: 10;
-}
-
-/* Efecto de brillo verde que se expande al hacer hover */
-.property-card::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, 
-        transparent, 
-        rgba(0, 255, 136, 0.1), 
-        rgba(0, 255, 136, 0.3), 
-        rgba(0, 255, 136, 0.1), 
-        transparent
-    );
-    border-radius: 10px;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    z-index: -1;
-    animation: shimmer 2s infinite;
+    box-shadow: 
+        0 0 50px rgba(0, 255, 136, 0.4),
+        inset 0 0 0 2px var(--green-accent);
+    border-color: var(--green-accent);
 }
 
 .property-card:hover::before {
-    opacity: 1;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(400%) rotate(45deg); }
-}
-
-/* Overlay de información adicional que aparece en hover */
-.property-card::after {
     content: '';
     position: absolute;
     top: 0;
@@ -95,98 +48,27 @@
     bottom: 0;
     background: linear-gradient(
         135deg,
-        rgba(0, 255, 136, 0.05) 0%,
-        rgba(0, 255, 136, 0.1) 50%,
+        rgba(0, 255, 136, 0.1) 0%,
+        transparent 50%,
         rgba(0, 255, 136, 0.05) 100%
     );
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    z-index: 1;
     pointer-events: none;
-    border-radius: 8px;
 }
 
-.property-card:hover::after {
-    opacity: 1;
-}
-
-/* Información adicional que aparece en hover */
-.property-hover-info {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.9);
-    color: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    border: 2px solid #00ff88;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    z-index: 20;
-    backdrop-filter: blur(10px);
-    min-width: 280px;
-    text-align: center;
-    box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(0, 255, 136, 0.3);
-}
-
-.property-card:hover .property-hover-info {
-    opacity: 1;
-    pointer-events: all;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.property-hover-info h4 {
-    color: #00ff88;
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.property-hover-info p {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    margin-bottom: 0.8rem;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.property-hover-info .hover-price {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #00ff88;
-    margin-bottom: 1rem;
-}
-
-.property-hover-info .hover-features {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 1rem;
-}
-
-.property-hover-info .hover-contact {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 136, 0.9);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-top: 1px solid rgba(0, 255, 136, 0.3);
-    padding-top: 1rem;
-}
-
-/* Imagen de la propiedad */
+/* Property Image - Ocupa toda la altura */
 .property-image {
-    height: 250px;
-    background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+    height: 100%;
+    background: #2a2a2a;
+    background-size: cover;
+    background-position: center;
     position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color: rgba(0,0,0,0.3);
+    transition: all 0.4s ease;
+    filter: brightness(0.7) contrast(1.1);
+}
+
+.property-card:hover .property-image {
+    filter: brightness(1.0) contrast(1.2) saturate(1.2);
 }
 
 .property-image img {
@@ -196,475 +78,377 @@
     transition: transform 0.4s ease;
 }
 
-.property-card:hover .property-image {
-    filter: brightness(0.7) contrast(1.1);
-}
-
 .property-card:hover .property-image img {
     transform: scale(1.05);
 }
 
-.property-image::before {
-    content: '🏠';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 3rem;
-    opacity: 0.3;
-    pointer-events: none;
-}
-
-.property-image.has-image::before {
-    display: none;
-}
-
-/* Badges mejorados con animación */
+/* Property Badge - Esquina superior izquierda */
 .property-badge {
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background: #333;
+    background: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 0.5rem 1rem;
-    border-radius: 3px;
-    font-size: 0.8rem;
-    font-weight: 400;
+    font-size: 0.75rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    z-index: 2;
-    transition: all 0.3s ease;
-}
-
-.property-card:hover .property-badge {
-    background: #00ff88;
-    color: #000;
-    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+    letter-spacing: 1px;
+    border-radius: 4px;
+    z-index: 5;
+    backdrop-filter: blur(10px);
 }
 
 .property-badge.featured {
-    background: #e74c3c;
-    animation: pulse 2s infinite;
+    background: rgba(0, 255, 136, 0.9);
+    color: white;
 }
 
-.property-card:hover .property-badge.featured {
-    background: #00ff88;
-    color: #000;
+.property-card:hover .property-badge {
+    background: rgba(0, 255, 136, 0.9);
+    transform: scale(1.05);
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-/* Contenido de la propiedad */
+/* Property Info - Overlay en la parte inferior */
 .property-info {
-    padding: 2rem;
-    position: relative;
-    transition: all 0.3s ease;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(
+        transparent 0%,
+        rgba(0, 0, 0, 0.7) 40%,
+        rgba(0, 0, 0, 0.9) 100%
+    );
+    color: white;
+    z-index: 3;
+    transition: all 0.4s ease;
 }
 
 .property-card:hover .property-info {
-    background: rgba(0, 255, 136, 0.02);
+    background: linear-gradient(
+        transparent 0%,
+        rgba(0, 255, 136, 0.2) 30%,
+        rgba(0, 0, 0, 0.8) 70%,
+        rgba(0, 0, 0, 0.95) 100%
+    );
 }
 
+/* Property Price - Destacado */
 .property-price {
-    font-size: 1.5rem;
-    font-weight: 400;
-    color: #333;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
     margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    transition: all 0.3s ease;
 }
 
 .property-card:hover .property-price {
-    color: #00ff88;
-    text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+    color: var(--green-accent);
+    transform: scale(1.05);
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
 }
 
+/* Property Title */
 .property-title {
-    font-size: 1.1rem;
-    font-weight: 400;
-    color: #333;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    line-height: 1.3;
-    transition: color 0.3s ease;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 0.3rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    transition: all 0.3s ease;
+    line-height: 1.2;
 }
 
 .property-card:hover .property-title {
-    color: #00aa66;
+    color: var(--green-accent);
 }
 
+/* Property Location */
 .property-location {
-    color: #999;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    transition: all 0.3s ease;
 }
 
 .property-card:hover .property-location {
-    color: #00ff88;
+    color: rgba(0, 255, 136, 0.9);
 }
 
+/* Property Features */
 .property-features {
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-    font-weight: 300;
-    transition: color 0.3s ease;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.4;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-.property-card:hover .property-features {
-    color: #555;
-}
-
-.property-contact {
-    text-align: center;
-}
-
-.contact-btn {
-    background: #333;
+/* Property Hover Info - Información adicional en hover */
+.property-hover-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 255, 136, 0.95);
+    backdrop-filter: blur(20px);
     color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-    width: 100%;
-}
-
-.contact-btn:hover,
-.property-card:hover .contact-btn {
-    background: #00ff88;
-    color: #000;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
-}
-
-/* Filtros de búsqueda */
-.search-filters {
-    background: white;
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-    margin-bottom: 3rem;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
     transition: all 0.3s ease;
+    z-index: 15;
+    min-width: 280px;
+    max-width: 90%;
 }
 
-.search-filters:hover {
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+.property-card:hover .property-hover-info {
+    opacity: 1;
+    pointer-events: all;
+    transform: translate(-50%, -50%) scale(1);
 }
 
-.filter-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.filter-label {
+.property-hover-info h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
     margin-bottom: 0.5rem;
-    font-weight: 400;
-    color: #333;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-size: 0.9rem;
-}
-
-.filter-select,
-.filter-input {
-    padding: 1rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 3px;
-    background: white;
-    color: #333;
-    font-size: 0.9rem;
-    font-weight: 300;
-    transition: all 0.3s ease;
-}
-
-.filter-select:focus,
-.filter-input:focus {
-    outline: none;
-    border-color: #00ff88;
-    box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
-}
-
-.filter-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-}
-
-.filter-btn {
-    background: #333;
     color: white;
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: 3px;
-    cursor: pointer;
+}
+
+.hover-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.8rem;
+}
+
+.hover-features {
     font-size: 0.9rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
+    margin: 0.5rem 0;
+    opacity: 0.9;
+    line-height: 1.4;
 }
 
-.filter-btn:hover {
-    background: #00ff88;
-    color: #000;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+.hover-contact {
+    font-size: 0.8rem;
+    margin-top: 0.8rem;
+    opacity: 0.8;
 }
 
-.filter-btn.secondary {
-    background: transparent;
-    color: #333;
-    border: 2px solid #333;
-}
-
-.filter-btn.secondary:hover {
-    background: #00ff88;
-    color: #000;
-    border-color: #00ff88;
-}
-
-/* Estados de error y vacío */
-.error-container,
-.empty-container {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: #666;
-    grid-column: 1 / -1;
-}
-
-.error-container {
-    background: #fdf2f2;
-    border-radius: 8px;
-    border: 2px dashed #e74c3c;
-    color: #e74c3c;
-}
-
-.empty-container {
-    background: #f0f8ff;
-    border-radius: 8px;
-    border: 2px dashed #3498db;
-    color: #3498db;
-}
-
-.retry-btn {
-    margin-top: 1rem;
+.property-hover-info .view-details-btn {
+    background: white;
+    color: var(--green-accent);
+    border: none;
     padding: 0.8rem 1.5rem;
-    background: #333;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+    border-radius: 25px;
+    font-weight: 600;
     font-size: 0.9rem;
-    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    transition: all 0.3s ease;
 }
 
-.retry-btn:hover {
-    background: #00ff88;
-    color: #000;
-    transform: translateY(-2px);
+.property-hover-info .view-details-btn:hover {
+    background: var(--green-accent);
+    color: white;
+    transform: scale(1.05);
 }
 
-/* Paginación */
-.pagination {
+/* Placeholder para propiedades sin imagen */
+.property-image.no-image {
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    margin-top: 3rem;
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
 }
 
-.pagination-btn {
-    padding: 0.8rem 1.2rem;
-    border: 1px solid #ddd;
-    background: white;
-    color: #333;
-    text-decoration: none;
-    border-radius: 3px;
-    font-size: 0.9rem;
-    font-weight: 400;
-    transition: all 0.3s ease;
-    cursor: pointer;
+.placeholder-image {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.3);
 }
 
-.pagination-btn:hover {
-    background: #00ff88;
-    color: #000;
-    border-color: #00ff88;
-    box-shadow: 0 3px 10px rgba(0, 255, 136, 0.3);
-}
-
-.pagination-btn.active {
-    background: #00ff88;
-    color: #000;
-    border-color: #00ff88;
-}
-
-.pagination-btn:disabled {
+.placeholder-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
     opacity: 0.5;
-    cursor: not-allowed;
+}
+
+.placeholder-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.7;
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .properties-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .property-card:nth-child(3n) {
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .property-card:nth-child(2n) {
+        border-right: none;
+    }
+}
+
 @media (max-width: 768px) {
     .properties-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
     }
     
-    .filter-grid {
-        grid-template-columns: 1fr;
+    .property-card {
+        border-right: none;
+        height: 300px;
     }
     
-    .filter-actions {
-        flex-direction: column;
-    }
-    
-    .property-image {
-        height: 200px;
-    }
-    
-    .property-info {
-        padding: 1.5rem;
-    }
-    
-    .pagination {
-        flex-wrap: wrap;
-    }
-
     .property-hover-info {
         min-width: 250px;
         padding: 1rem;
     }
-}
-
-@media (max-width: 480px) {
-    .properties-grid {
-        gap: 1.5rem;
-    }
     
     .property-info {
         padding: 1rem;
     }
-    
-    .search-filters {
-        padding: 1.5rem;
-        margin: 0 1rem 2rem;
-    }
-
-    .property-hover-info {
-        min-width: 200px;
-        padding: 0.8rem;
-    }
 }
 
-/* Animaciones adicionales */
-.property-card {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Destacados especiales */
-.featured-properties .property-card.featured {
-    border: 2px solid #e74c3c;
-    box-shadow: 0 5px 25px rgba(231, 76, 60, 0.15);
-}
-
-.featured-properties .property-card.featured:hover {
-    border-color: #00ff88;
-    box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.25),
-        0 0 0 3px #00ff88,
-        0 0 30px rgba(0, 255, 136, 0.5);
-}
-
-/* Iconos y elementos visuales */
-.property-features {
+/* Loading States */
+.loading-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    background: #1a1a1a;
+    color: white;
+    min-height: 400px;
 }
 
-.feature-item {
-    background: #f8f9fa;
-    padding: 0.3rem 0.6rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    color: #666;
-    white-space: nowrap;
-    transition: all 0.3s ease;
+.loading-spinner {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid var(--green-accent);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
 }
 
-.property-card:hover .feature-item {
-    background: rgba(0, 255, 136, 0.1);
-    color: #00aa66;
-    border: 1px solid rgba(0, 255, 136, 0.3);
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-/* Estados hover mejorados */
-.property-card:hover .property-title {
-    color: #00aa66;
+/* Error Container */
+.error-container {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #1a1a1a;
+    color: white;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.property-card:hover .property-price {
-    color: #00ff88;
+.error-container h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #ff6b6b;
 }
 
-/* Transiciones suaves */
-* {
-    transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+.error-container p {
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    opacity: 0.8;
 }
 
-/* Efecto de partículas en hover (opcional) */
+/* No Properties State */
+.no-properties {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #1a1a1a;
+    color: white;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-properties h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    font-weight: 300;
+    opacity: 0.8;
+}
+
+.no-properties p {
+    font-size: 1.1rem;
+    opacity: 0.6;
+    margin-bottom: 2rem;
+}
+
+/* Animations */
+@keyframes shimmer {
+    0% { 
+        box-shadow: 0 0 50px rgba(0, 255, 136, 0.4);
+    }
+    50% { 
+        box-shadow: 0 0 80px rgba(0, 255, 136, 0.6);
+    }
+    100% { 
+        box-shadow: 0 0 50px rgba(0, 255, 136, 0.4);
+    }
+}
+
 .property-card:hover {
-    animation: glow 2s ease-in-out infinite alternate;
+    animation: shimmer 2s infinite;
 }
 
-@keyframes glow {
-    from {
-        box-shadow: 
-            0 25px 50px rgba(0, 0, 0, 0.25),
-            0 0 0 3px #00ff88,
-            0 0 20px rgba(0, 255, 136, 0.4);
-    }
-    to {
-        box-shadow: 
-            0 25px 50px rgba(0, 0, 0, 0.25),
-            0 0 0 3px #00ff88,
-            0 0 30px rgba(0, 255, 136, 0.6);
-    }
+/* Utility Classes */
+.btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0.5rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: var(--green-accent);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #00cc6a;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-secondary:hover {
+    background: white;
+    color: #1a1a1a;
 }
