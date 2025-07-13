@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Propiedades en Arriendo - Casa Nuvera | Innovative Real Estate // Est. 2019</title>
-    <link rel="stylesheet" href="property-styles.css">
+    <title>Propiedades en Arriendo - Casa Nuvera | v2.0</title>
+    <link rel="stylesheet" href="property-styles.css?v=1704067200">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CACHE BUSTER - NO BORRAR -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     
     <style>
         * {
@@ -39,6 +44,25 @@
             background-color: var(--background-gray);
             font-weight: 400;
             overflow-x: hidden;
+        }
+
+        /* INDICADOR DE CARGA EXITOSA */
+        .cache-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--green-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 9999;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Botón flotante para subir propiedades */
@@ -630,6 +654,11 @@
     </style>
 </head>
 <body>
+    <!-- INDICADOR DE CARGA EXITOSA -->
+    <div class="cache-indicator" id="cacheIndicator">
+        ✅ Página Cargada - v2.0
+    </div>
+
     <!-- Botón flotante para subir propiedades -->
     <a href="subir-propiedades.html" class="floating-upload-btn">
         <span>🏠</span>
@@ -749,9 +778,22 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="supabase.js"></script>
+    <script src="supabase.js?v=1704067200"></script>
 
     <script>
+        // INDICADOR DE CARGA EXITOSA
+        console.log('🎉 ARRIENDOS.HTML CARGADO EXITOSAMENTE - v2.0');
+        console.log('Fecha de carga:', new Date().toLocaleString());
+        
+        // Ocultar indicador después de 3 segundos
+        setTimeout(() => {
+            const indicator = document.getElementById('cacheIndicator');
+            if (indicator) {
+                indicator.style.opacity = '0';
+                setTimeout(() => indicator.remove(), 500);
+            }
+        }, 3000);
+
         // Variables globales
         let allProperties = [];
 
