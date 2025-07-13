@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propiedades en Arriendo - Casa Nuvera</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --primary-black: #0a0a0a;
+            --secondary-gray: #666666;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+            --elegant-beige: #F5F5DC;
+            --warm-beige: #F0E68C;
+            --charcoal: #36454F;
+            --dark-gray: #2F2F2F;
+            --border-light: #e0e0e0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --rent-blue: #2196F3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--primary-black);
+            background: var(--light-gray);
+            font-weight: 400;
+        }
+
+        /* ===== HEADER PROFESIONAL ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            color: var(--primary-black);
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--secondary-gray);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: var(--charcoal);
+        }
+
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--elegant-beige);
+        }
+
+        .nav-cta {
+            background: var(--charcoal) !important;
+            color: white !important;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-transform: none;
+        }
+
+        .nav-cta:hover {
+            background: var(--elegant-beige) !important;
+            color: var(--primary-black) !important;
+            transform: translateY(-1px);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--rent-blue) 0%, #1976D2 100%);
+            color: white;
+            padding: 120px 2rem 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* ===== FILTROS ===== */
+        .filters-section {
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 4px 20px var(--shadow-light);
+            margin: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+        }
+
+        .filters-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filters-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--secondary-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-select,
+        .filter-input {
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background: white;
+            color: var(--primary-black);
+            transition: var(--transition);
+        }
+
+        .filter-select:focus,
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--rent-blue);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+        }
+
+        .price-range {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .price-range input {
+            flex: 1;
+        }
+
+        .price-separator {
+            font-weight: 600;
+            color: var(--secondary-gray);
+        }
+
+        .filters-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: none;
+        }
+
+        .filter-btn.primary {
+            background: var(--rent-blue);
+            color: white;
+        }
+
+        .filter-btn.primary:hover {
+            background: #1976D2;
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.secondary {
+            background: transparent;
+            color: var(--secondary-gray);
+            border: 2px solid var(--border-light);
+        }
+
+        .filter-btn.secondary:hover {
+            background: var(--light-gray);
+            border-color: var(--rent-blue);
+            color: var(--rent-blue);
+        }
+
+        /* ===== RESULTADOS ===== */
+        .results-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow-light);
+            border: 1px solid var(--border-light);
+            margin: 0 2rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .results-count {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sort-label {
+            font-size: 0.9rem;
+            color: var(--secondary-gray);
+            font-weight: 500;
+        }
+
+        /* ===== GRID DE PROPIEDADES ===== */
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2rem;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow-light);
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .property-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px var(--shadow-medium);
+            border-color: var(--rent-blue);
+        }
+
+        .property-image {
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+            background: var(--light-gray);
+        }
+
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .property-card:hover .property-image img {
+            transform: scale(1.05);
+        }
+
+        .property-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--rent-blue);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+
+        .property-content {
+            padding: 1.5rem;
+        }
+
+        .property-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--rent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .property-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .property-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--secondary-gray);
+            margin-bottom: 1rem;
+        }
+
+        .property-features {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+        }
+
+        .feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.85rem;
+            color: var(--secondary-gray);
+        }
+
+        .feature i {
+            font-size: 1rem;
+            color: var(--rent-blue);
+        }
+
+        .feature-value {
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .property-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .contact-btn {
+            flex: 1;
+            background: var(--rent-blue);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .contact-btn:hover {
+            background: #1976D2;
+            transform: translateY(-1px);
+        }
+
+        .details-btn {
+            background: transparent;
+            color: var(--rent-blue);
+            border: 2px solid var(--border-light);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .details-btn:hover {
+            border-color: var(--rent-blue);
+            background: var(--rent-blue);
+            color: white;
+        }
+
+        /* ===== PLACEHOLDER PARA IMÁGENES ===== */
+        .placeholder-image {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--light-gray), #e8e8e8);
+            color: var(--secondary-gray);
+            text-align: center;
+        }
+
+        .placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+
+        .placeholder-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.7;
+        }
+
+        /* ===== ESTADOS DE CARGA ===== */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        .loading-spinner {
+            border: 4px solid var(--border-light);
+            border-top: 4px solid var(--rent-blue);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--secondary-gray);
+            grid-column: 1 / -1;
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--charcoal);
+        }
+
+        /* ===== FLOATING BUTTON ===== */
+        .floating-upload-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--elegant-beige), var(--warm-beige));
+            color: var(--primary-black);
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 25px rgba(245, 245, 220, 0.3);
+            transition: var(--transition);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .floating-upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(245, 245, 220, 0.4);
+            background: linear-gradient(135deg, var(--warm-beige), var(--elegant-beige));
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero {
+                padding: 100px 1rem 40px;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .filters-section,
+            .results-section {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-actions {
+                flex-direction: column;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .property-features {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .property-actions {
+                flex-direction: column;
+            }
+
+            .floating-upload-btn {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.8rem 1.2rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botón flotante para subir propiedades -->
+    <a href="subir-propiedades.html" class="floating-upload-btn" aria-label="Subir nueva propiedad">
+        <i class="fas fa-plus"></i>
+        Subir Propiedad
+    </a>
+
+    <!-- Header profesional -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-home"></i>
+                Casa Nuvera
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="compras.html">Comprar</a></li>
+                    <li><a href="arriendos.html" class="active">Arrendar</a></li>
+                    <li><a href="index.html#servicios">Servicios</a></li>
+                    <li><a href="index.html#nosotros">Nosotros</a></li>
+                    <li><a href="index.html#contacto">Contacto</a></li>
+                    <li><a href="subir-propiedades.html" class="nav-cta">
+                        <i class="fas fa-plus"></i>
+                        Subir Propiedad
+                    </a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Propiedades en Arriendo</h1>
+            <p>Encuentra el hogar perfecto para arrendar en Santiago con nuestros filtros avanzados y opciones flexibles</p>
+        </div>
+    </section>
+
+    <!-- Filtros estilo PortalInmobiliario -->
+    <section class="filters-section">
+        <div class="filters-container">
+            <h2 class="filters-title">
+                <i class="fas fa-filter"></i>
+                Filtrar Propiedades en Arriendo
+            </h2>
+            
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-category">Tipo de Propiedad</label>
+                    <select class="filter-select" id="filter-category">
+                        <option value="">Todas</option>
+                        <option value="casa">Casa</option>
+                        <option value="departamento">Departamento</option>
+                        <option value="oficina">Oficina</option>
+                        <option value="local">Local Comercial</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-commune">Comuna</label>
+                    <select class="filter-select" id="filter-commune">
+                        <option value="">Todas las comunas</option>
+                        <option value="las-condes">Las Condes</option>
+                        <option value="providencia">Providencia</option>
+                        <option value="vitacura">Vitacura</option>
+                        <option value="ñuñoa">Ñuñoa</option>
+                        <option value="san-miguel">San Miguel</option>
+                        <option value="santiago">Santiago Centro</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-bedrooms">Dormitorios</label>
+                    <select class="filter-select" id="filter-bedrooms">
+                        <option value="">Cualquier cantidad</option>
+                        <option value="1">1 dormitorio</option>
+                        <option value="2">2 dormitorios</option>
+                        <option value="3">3 dormitorios</option>
+                        <option value="4">4 dormitorios</option>
+                        <option value="5">5+ dormitorios</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-bathrooms">Baños</label>
+                    <select class="filter-select" id="filter-bathrooms">
+                        <option value="">Cualquier cantidad</option>
+                        <option value="1">1 baño</option>
+                        <option value="2">2 baños</option>
+                        <option value="3">3 baños</option>
+                        <option value="4">4+ baños</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Rango de Precio (CLP)</label>
+                    <div class="price-range">
+                        <input type="number" class="filter-input" id="filter-price-min" placeholder="Mínimo">
+                        <span class="price-separator">-</span>
+                        <input type="number" class="filter-input" id="filter-price-max" placeholder="Máximo">
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-area">Superficie (m²)</label>
+                    <input type="number" class="filter-input" id="filter-area" placeholder="Mínimo m²">
+                </div>
+            </div>
+            
+            <div class="filters-actions">
+                <button class="filter-btn secondary" onclick="clearFilters()">
+                    <i class="fas fa-times"></i>
+                    Limpiar Filtros
+                </button>
+                <button class="filter-btn primary" onclick="applyFilters()">
+                    <i class="fas fa-search"></i>
+                    Buscar Propiedades
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resultados -->
+    <section class="results-section">
+        <div class="results-header">
+            <div class="results-count" id="results-count">
+                Cargando propiedades...
+            </div>
+            <div class="sort-options">
+                <span class="sort-label">Ordenar por:</span>
+                <select class="filter-select" id="sort-options" onchange="sortProperties()">
+                    <option value="date-desc">Más recientes</option>
+                    <option value="price-asc">Precio: menor a mayor</option>
+                    <option value="price-desc">Precio: mayor a menor</option>
+                    <option value="area-desc">Mayor superficie</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="properties-grid" id="properties-grid">
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Cargando propiedades en arriendo...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="supabase.js"></script>
+
+    <script>
+        // Datos de ejemplo de propiedades en arriendo
+        const allProperties = [
+            {
+                id: 1,
+                title: "Departamento en Arriendo Ñuñoa",
+                location: "Ñuñoa, Santiago",
+                price: 650000,
+                currency: "CLP",
+                type: "arriendo",
+                category: "departamento",
+                commune: "ñuñoa",
+                bedrooms: 2,
+                bathrooms: 1,
+                area: 80,
+                parking: 1,
+                featured: false,
+                image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop"
+            },
+            {
+                id: 2,
+                title: "Casa en Arriendo San Miguel",
+                location: "San Miguel, Santiago",
+                price: 850000,
+                currency: "CLP",
+                type: "arriendo",
+                category: "casa",
+                commune: "san-miguel",
+                bedrooms: 3,
+                bathrooms: 2,
+                area: 150,
+                parking: 2,
+                featured: false,
+                image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop"
+            },
+            {
+                id: 3,
+                title: "Departamento Premium Providencia",
+                location: "Providencia, Santiago",
+                price: 1200000,
+                currency: "CLP",
+                type: "arriendo",
+                category: "departamento",
+                commune: "providencia",
+                bedrooms: 3,
+                bathrooms: 2,
+                area: 140,
+                parking: 1,
+                featured: false,
+                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"
+            },
+            {
+                id: 4,
+                title: "Casa Familiar Las Condes",
+                location: "Las Condes, Santiago",
+                price: 1800000,
+                currency: "CLP",
+                type: "arriendo",
+                category: "casa",
+                commune: "las-condes",
+                bedrooms: 4,
+                bathrooms: 3,
+                area: 220,
+                parking: 2,
+                featured: false,
+                image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=600&fit=crop"
+            },
+            {
+                id: 5,
+                title: "Oficina Santiago Centro",
+                location: "Santiago Centro",
+                price: 900000,
+                currency: "CLP",
+                type: "arriendo",
+                category: "oficina",
+                commune: "santiago",
+                bedrooms: 0,
+                bathrooms: 2,
+                area: 80,
+                parking: 1,
+                featured: false,
+                image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop"
+            },
+            {
+                id: 6,
+                title: "Departamento Studio Ñuñoa",
+                location: "Ñuñoa, Santiago",
+                price: 450000,
+                currency: "CLP",
+                type: "arriendo",
+                category: "departamento",
+                commune: "ñuñoa",
+                bedrooms: 1,
+                bathrooms: 1,
+                area: 45,
+                parking: 0,
+                featured: false,
+                image: null
+            }
+        ];
+
+        let filteredProperties = [...allProperties];
+
+        // Funciones de filtrado
+        function applyFilters() {
+            const category = document.getElementById('filter-category').value;
+            const commune = document.getElementById('filter-commune').value;
+            const bedrooms = document.getElementById('filter-bedrooms').value;
+            const bathrooms = document.getElementById('filter-bathrooms').value;
+            const priceMin = parseInt(document.getElementById('filter-price-min').value) || 0;
+            const priceMax = parseInt(document.getElementById('filter-price-max').value) || Infinity;
+            const areaMin = parseInt(document.getElementById('filter-area').value) || 0;
+
+            filteredProperties = allProperties.filter(property => {
+                return (!category || property.category === category) &&
+                       (!commune || property.commune === commune) &&
+                       (!bedrooms || property.bedrooms >= parseInt(bedrooms)) &&
+                       (!bathrooms || property.bathrooms >= parseInt(bathrooms)) &&
+                       (property.price >= priceMin && property.price <= priceMax) &&
+                       (property.area >= areaMin);
+            });
+
+            updateResultsCount();
+            renderProperties();
+        }
+
+        function clearFilters() {
+            document.getElementById('filter-category').value = '';
+            document.getElementById('filter-commune').value = '';
+            document.getElementById('filter-bedrooms').value = '';
+            document.getElementById('filter-bathrooms').value = '';
+            document.getElementById('filter-price-min').value = '';
+            document.getElementById('filter-price-max').value = '';
+            document.getElementById('filter-area').value = '';
+
+            filteredProperties = [...allProperties];
+            updateResultsCount();
+            renderProperties();
+        }
+
+        function sortProperties() {
+            const sortValue = document.getElementById('sort-options').value;
+            
+            switch(sortValue) {
+                case 'price-asc':
+                    filteredProperties.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filteredProperties.sort((a, b) => b.price - a.price);
+                    break;
+                case 'area-desc':
+                    filteredProperties.sort((a, b) => b.area - a.area);
+                    break;
+                default:
+                    filteredProperties.sort((a, b) => b.id - a.id);
+            }
+            
+            renderProperties();
+        }
+
+        function updateResultsCount() {
+            const count = filteredProperties.length;
+            document.getElementById('results-count').innerHTML = `<strong>${count}</strong> propiedades en arriendo encontradas`;
+        }
+
+        function renderProperties() {
+            const grid = document.getElementById('properties-grid');
+            
+            if (filteredProperties.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">🏠</div>
+                        <h3>No se encontraron propiedades</h3>
+                        <p>Intenta ajustar los filtros de búsqueda</p>
+                        <button class="filter-btn primary" onclick="clearFilters()" style="margin-top: 1rem;">
+                            <i class="fas fa-times"></i>
+                            Limpiar Filtros
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredProperties.map(property => {
+                const formatPrice = (price, currency) => {
+                    const formatted = new Intl.NumberFormat('es-CL').format(price);
+                    return currency === 'CLP' ? `$${formatted}` : `UF ${formatted}`;
+                };
+
+                return `
+                    <div class="property-card" onclick="goToProperty(${property.id})">
+                        <div class="property-image">
+                            ${property.image ? 
+                                `<img src="${property.image}" alt="${property.title}" loading="lazy">` :
+                                `<div class="placeholder-image">
+                                    <div class="placeholder-icon">🏠</div>
+                                    <div class="placeholder-text">Imagen no disponible</div>
+                                </div>`
+                            }
+                            <div class="property-badge">ARRIENDO</div>
+                        </div>
+                        <div class="property-content">
+                            <div class="property-price">${formatPrice(property.price, property.currency)}</div>
+                            <h3 class="property-title">${property.title}</h3>
+                            <div class="property-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${property.location}
+                            </div>
+                            <div class="property-features">
+                                <div class="feature">
+                                    <i class="fas fa-bed"></i>
+                                    <span class="feature-value">${property.bedrooms}</span>
+                                    <span>dorm</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-bath"></i>
+                                    <span class="feature-value">${property.bathrooms}</span>
+                                    <span>baños</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-ruler-combined"></i>
+                                    <span class="feature-value">${property.area}</span>
+                                    <span>m²</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-car"></i>
+                                    <span class="feature-value">${property.parking}</span>
+                                    <span>est</span>
+                                </div>
+                            </div>
+                            <div class="property-actions">
+                                <button class="contact-btn" onclick="event.stopPropagation(); contactProperty(${property.id})">
+                                    <i class="fab fa-whatsapp"></i>
+                                    WhatsApp
+                                </button>
+                                <button class="details-btn" onclick="goToProperty(${property.id})">
+                                    Ver Detalles
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Funciones de interacción
+        function goToProperty(id) {
+            console.log(`Navegando a propiedad ${id}`);
+            window.location.href = `propiedad.html?id=${id}`;
+        }
+
+        function contactProperty(id) {
+            const property = allProperties.find(p => p.id === id);
+            if (property) {
+                const formatPrice = (price, currency) => {
+                    const formatted = new Intl.NumberFormat('es-CL').format(price);
+                    return currency === 'CLP' ? `$${formatted}` : `UF ${formatted}`;
+                };
+
+                const message = `Hola! Estoy interesado/a en arrendar la propiedad "${property.title}" ubicada en ${property.location}.\n\n💰 Precio: ${formatPrice(property.price, property.currency)}/mes\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\n📐 Superficie: ${property.area}m²\n\n¿Podrías darme más información sobre disponibilidad y condiciones?`;
+                const whatsappURL = `https://wa.me/56912345678?text=${encodeURIComponent(message)}`;
+                window.open(whatsappURL, '_blank');
+            }
+        }
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            updateResultsCount();
+            renderProperties();
+        });
+    </script>
+</body>
+</html>
