@@ -29,6 +29,7 @@
             --overlay-medium: rgba(0, 0, 0, 0.4);
             --overlay-light: rgba(0, 0, 0, 0.2);
             --overlay-white: rgba(255, 255, 255, 0.9);
+            --green-accent: #00ff88;
         }
 
         body {
@@ -38,6 +39,40 @@
             background-color: var(--background-gray);
             font-weight: 400;
             overflow-x: hidden;
+        }
+
+        /* Botón flotante para subir propiedades */
+        .floating-upload-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--green-accent), #00cc6a);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: pulse-green 3s infinite;
+        }
+
+        .floating-upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
+            background: linear-gradient(135deg, #00cc6a, var(--green-accent));
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 15px 40px rgba(0, 255, 136, 0.5); }
         }
 
         /* Header flotante sobre imágenes */
@@ -173,7 +208,7 @@
             opacity: 0.9;
         }
 
-        /* Resto del CSS original de compras.html... */
+        /* Loading */
         .loading-container {
             display: flex;
             flex-direction: column;
@@ -218,17 +253,6 @@
             font-size: 1.1rem;
         }
 
-        .diagnostic-info {
-            background: #f5f5f5;
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            text-align: left;
-            font-family: monospace;
-            font-size: 0.9rem;
-            white-space: pre-wrap;
-        }
-
         .btn {
             padding: 1rem 2rem;
             border: none;
@@ -246,16 +270,6 @@
 
         .btn-primary:hover {
             background: var(--secondary-gray);
-        }
-
-        .btn-secondary {
-            background: var(--medium-gray);
-            color: var(--primary-black);
-        }
-
-        .btn-secondary:hover {
-            background: var(--secondary-gray);
-            color: white;
         }
 
         /* Properties Section */
@@ -286,12 +300,199 @@
 
         .properties-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
+        }
+
+        /* Property Card con efectos hover premium */
+        .property-card {
+            background: white;
+            border: 1px solid var(--medium-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            cursor: pointer;
+            height: 450px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .property-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            z-index: 10;
+            box-shadow: 0 25px 50px rgba(0, 255, 136, 0.3);
+            border: 2px solid var(--green-accent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { box-shadow: 0 25px 50px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 30px 60px rgba(0, 255, 136, 0.5); }
+            100% { box-shadow: 0 25px 50px rgba(0, 255, 136, 0.3); }
+        }
+
+        .property-image {
+            height: 250px;
+            background: var(--medium-gray);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .property-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary-black);
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 20px;
+            z-index: 5;
+        }
+
+        .property-badge.featured {
+            background: var(--green-accent);
+            color: white;
+        }
+
+        /* Información del hover premium */
+        .property-hover-info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 255, 136, 0.95);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 15;
+            min-width: 280px;
+        }
+
+        .property-card:hover .property-hover-info {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .property-hover-info h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .hover-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .hover-features {
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+
+        .hover-contact {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .property-info {
+            padding: 1.5rem;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .property-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .property-card:hover .property-price {
+            color: var(--green-accent);
+        }
+
+        .property-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .property-card:hover .property-title {
+            color: var(--green-accent);
+        }
+
+        .property-location {
+            color: var(--secondary-gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .property-card:hover .property-location {
+            color: var(--green-accent);
+        }
+
+        .property-features {
+            color: var(--secondary-gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .contact-btn {
+            background: var(--primary-black);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-btn:hover {
+            background: var(--green-accent);
+            transform: translateY(-2px);
         }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            .floating-upload-btn {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.8rem 1.2rem;
+                font-size: 0.8rem;
+            }
+            
             .nav-menu {
                 display: none;
             }
@@ -302,6 +503,10 @@
 
             .properties-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .property-card {
+                height: 400px;
             }
 
             .section-header {
@@ -317,6 +522,12 @@
     </style>
 </head>
 <body>
+    <!-- Botón flotante para subir propiedades -->
+    <a href="subir-propiedades.html" class="floating-upload-btn">
+        <span>🏠</span>
+        Subir Propiedad
+    </a>
+
     <!-- Header flotante -->
     <header class="header">
         <div class="nav-container">
@@ -353,20 +564,13 @@
     <div id="loadingContainer" class="loading-container">
         <div class="loading-spinner"></div>
         <p>Cargando propiedades en venta...</p>
-        <p style="font-size: 0.9rem; margin-top: 1rem; color: var(--secondary-gray);">
-            Detectando estructura de base de datos...
-        </p>
     </div>
 
     <!-- Error Container -->
     <div id="errorContainer" class="error-container" style="display: none;">
         <h3>❌ Error al cargar propiedades</h3>
-        <p id="errorMessage">Detectando problema con la base de datos...</p>
-        <div id="diagnosticInfo" class="diagnostic-info"></div>
-        <div>
-            <button class="btn btn-primary" onclick="retryWithDiagnostic()">🔍 Diagnosticar y Reintentar</button>
-            <button class="btn btn-secondary" onclick="location.reload()">🔄 Recargar Página</button>
-        </div>
+        <p id="errorMessage">Error al cargar propiedades</p>
+        <button class="btn btn-primary" onclick="location.reload()">🔄 Recargar Página</button>
     </div>
 
     <!-- Properties Section -->
@@ -386,17 +590,14 @@
 
     <!-- Scripts -->
     <script src="supabase.js"></script>
-    <script src="database-diagnostic.js"></script>
-    <script src="property-loader.js"></script>
 
     <script>
         // Variables globales
-        let dbConfig = null;
         let allProperties = [];
 
-        // Inicializar página con diagnóstico automático
+        // Inicializar página
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🏠 Iniciando página de compras con diagnóstico automático...');
+            console.log('🏠 Iniciando página de compras...');
             
             // Esperar a que Supabase esté listo
             if (window.supabase) {
@@ -407,87 +608,74 @@
                 // Timeout de seguridad
                 setTimeout(() => {
                     if (!window.supabase) {
-                        showError('No se pudo conectar con Supabase', 'Verifica la configuración de Supabase en supabase.js');
+                        showError('No se pudo conectar con Supabase');
                     }
-                }, 10000);
+                }, 5000);
             }
         });
 
         async function initializePage() {
             console.log('🚀 Configurando página de compras...');
-            
+            await loadProperties();
+        }
+
+        async function loadProperties() {
             try {
                 showLoading(true);
                 
-                // Ejecutar diagnóstico automático
-                if (window.diagnoseDatabaseStructure) {
-                    console.log('🔍 Ejecutando diagnóstico de base de datos...');
-                    dbConfig = await window.diagnoseDatabaseStructure();
-                    
-                    if (dbConfig && dbConfig.mainTable) {
-                        console.log('✅ Configuración detectada:', dbConfig);
-                        await loadPropertiesWithConfig();
-                    } else {
-                        throw new Error('No se pudo detectar la estructura de la base de datos');
-                    }
-                } else {
-                    throw new Error('Sistema de diagnóstico no disponible');
-                }
+                console.log('📥 Cargando propiedades en venta desde tabla "properties"...');
                 
-            } catch (error) {
-                console.error('💥 Error en inicialización:', error);
-                showError('Error al detectar base de datos', error.message);
-            }
-        }
-
-        async function loadPropertiesWithConfig() {
-            try {
-                if (!dbConfig || !dbConfig.mainTable) {
-                    throw new Error('Configuración de base de datos no disponible');
-                }
-
-                console.log('📥 Cargando propiedades desde:', dbConfig.mainTable);
-                
-                // Construir query usando la configuración detectada
-                let query = window.supabase.from(dbConfig.mainTable);
-                
-                // Seleccionar campos usando el mapeo detectado
-                const fields = ['*'];
-                if (dbConfig.imageTable) {
-                    fields.push(`${dbConfig.imageTable} (*)`);
-                }
-                
-                query = query.select(fields.join(', '));
-                
-                // Filtrar por propiedades activas usando el campo correcto
-                const publishedField = dbConfig.fieldMapping?.published || 'published';
-                query = query.eq(publishedField, true);
-                
-                // Filtrar por tipo de operación (venta)
-                const typeField = dbConfig.fieldMapping?.property_type || 'property_type';
-                query = query.in(typeField, ['venta', 'compra', 'sale']);
-                
-                // Ordenar por fecha
-                const dateField = dbConfig.fieldMapping?.created_at || 'created_at';
-                query = query.order(dateField, { ascending: false });
-
-                const { data, error } = await query;
+                // Query simplificado SIN JOIN - solo cargar propiedades
+                const { data, error } = await window.supabase
+                    .from('properties')
+                    .select('*')
+                    .eq('published', true)
+                    .eq('property_type', 'venta')
+                    .order('created_at', { ascending: false });
 
                 if (error) {
-                    console.error('❌ Error en query:', error);
+                    console.error('❌ Error al cargar propiedades:', error);
                     throw error;
                 }
 
                 allProperties = data || [];
                 console.log(`✅ ${allProperties.length} propiedades cargadas`);
                 
+                // Cargar imágenes por separado para cada propiedad
+                await loadPropertyImages();
+                
                 showLoading(false);
                 renderProperties();
                 
             } catch (error) {
-                console.error('💥 Error cargando propiedades:', error);
-                showError('Error al cargar propiedades', `${error.message}\n\nTabla detectada: ${dbConfig?.mainTable || 'No detectada'}`);
+                console.error('💥 Error al cargar propiedades:', error);
+                showError(`Error al cargar propiedades: ${error.message}`);
+                showLoading(false);
             }
+        }
+
+        async function loadPropertyImages() {
+            console.log('🖼️ Cargando imágenes de propiedades...');
+            
+            for (let property of allProperties) {
+                try {
+                    // Intentar cargar imagen principal por separado
+                    const { data: images, error } = await window.supabase
+                        .from('property_images')
+                        .select('image_url, is_main')
+                        .eq('property_id', property.id)
+                        .order('is_main', { ascending: false });
+
+                    if (!error && images && images.length > 0) {
+                        property.images = images;
+                        property.main_image = images.find(img => img.is_main)?.image_url || images[0].image_url;
+                    }
+                } catch (e) {
+                    console.warn(`⚠️ No se pudo cargar imagen para propiedad ${property.id}:`, e);
+                }
+            }
+            
+            console.log('✅ Imágenes cargadas');
         }
 
         function renderProperties() {
@@ -498,27 +686,62 @@
                 grid.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
                         <h3>No hay propiedades en venta disponibles</h3>
-                        <p>Configuración detectada: ${dbConfig?.mainTable || 'No detectada'}</p>
-                        <button class="btn btn-primary" onclick="retryWithDiagnostic()">🔍 Volver a Diagnosticar</button>
+                        <p>Intenta nuevamente más tarde</p>
+                        <button class="btn btn-primary" onclick="location.reload()">🔄 Recargar</button>
                     </div>
                 `;
                 resultsCount.textContent = 'No se encontraron propiedades';
                 return;
             }
 
-            // Renderizar propiedades (versión simplificada para debugging)
+            // Renderizar propiedades con efecto hover premium
             const propertiesHTML = allProperties.map(property => {
-                const title = property[dbConfig.fieldMapping?.title || 'title'] || property.title || 'Sin título';
-                const price = property[dbConfig.fieldMapping?.price || 'price'] || property.price || 0;
-                const commune = property[dbConfig.fieldMapping?.commune || 'commune'] || property.commune || 'Sin ubicación';
+                const formattedPrice = formatPrice(property.price, property.currency);
+                const features = [];
                 
+                if (property.bedrooms !== null && property.bedrooms !== undefined) {
+                    features.push(`${property.bedrooms === 0 ? 'Studio' : property.bedrooms + ' dormitorios'}`);
+                }
+                if (property.bathrooms) features.push(`${property.bathrooms} baños`);
+                if (property.total_area) features.push(`${property.total_area}m²`);
+                if (property.parking_spaces > 0) features.push(`${property.parking_spaces} estacionamientos`);
+
+                const contactInfo = property.contact_phone || property.contact_email || 'Contactar para más información';
+
                 return `
-                    <div style="border: 1px solid #ddd; padding: 1rem; border-radius: 8px; background: white;">
-                        <h3>${title}</h3>
-                        <p><strong>Precio:</strong> $${new Intl.NumberFormat('es-CL').format(price)}</p>
-                        <p><strong>Ubicación:</strong> ${commune}</p>
-                        <p><strong>ID:</strong> ${property.id}</p>
-                        <button class="btn btn-primary" onclick="contactProperty('${property.id}')">Contactar</button>
+                    <div class="property-card" data-id="${property.id}">
+                        <div class="property-image" style="background-image: url('${property.main_image || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'}');">
+                            <div class="property-badge ${property.featured ? 'featured' : ''}">
+                                ${property.featured ? '⭐ ' : ''}VENTA
+                            </div>
+                            
+                            <!-- Información adicional que aparece en hover -->
+                            <div class="property-hover-info">
+                                <h4>${property.title}</h4>
+                                <div class="hover-price">${formattedPrice}</div>
+                                <p>📍 ${property.address}, ${property.commune}</p>
+                                <div class="hover-features">${features.join(' • ')}</div>
+                                ${property.expenses ? 
+                                    `<p>💰 Gastos comunes: $${new Intl.NumberFormat('es-CL').format(property.expenses)}</p>` : 
+                                    ''
+                                }
+                                <div class="hover-contact">📞 ${contactInfo}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="property-info">
+                            <div class="property-price">${formattedPrice}</div>
+                            <h3 class="property-title">${property.title}</h3>
+                            <div class="property-location">
+                                📍 ${property.commune}${property.neighborhood ? ', ' + property.neighborhood : ''}
+                            </div>
+                            <div class="property-features">
+                                ${features.join(' • ')}
+                            </div>
+                            <button class="contact-btn" onclick="contactProperty('${property.id}')">
+                                💬 Contactar por WhatsApp
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -528,6 +751,21 @@
 
             // Mostrar la sección de propiedades
             document.getElementById('propertiesSection').style.display = 'block';
+        }
+
+        function formatPrice(price, currency) {
+            const numPrice = parseFloat(price);
+            
+            switch(currency) {
+                case 'CLP':
+                    return `$${numPrice.toLocaleString('es-CL')}`;
+                case 'UF':
+                    return `UF ${numPrice.toLocaleString('es-CL')}`;
+                case 'USD':
+                    return `US$ ${numPrice.toLocaleString('en-US')}`;
+                default:
+                    return `${currency || '$'} ${numPrice.toLocaleString()}`;
+            }
         }
 
         function showLoading(show) {
@@ -544,35 +782,19 @@
             }
         }
 
-        function showError(title, message) {
+        function showError(message) {
             const errorContainer = document.getElementById('errorContainer');
             const errorMessage = document.getElementById('errorMessage');
-            const diagnosticInfo = document.getElementById('diagnosticInfo');
             const loadingContainer = document.getElementById('loadingContainer');
             const propertiesSection = document.getElementById('propertiesSection');
             
-            errorMessage.textContent = title;
-            
-            if (message) {
-                diagnosticInfo.textContent = `Detalles del error:\n${message}\n\nConfiguración detectada:\n${JSON.stringify(dbConfig, null, 2)}`;
-                diagnosticInfo.style.display = 'block';
-            } else {
-                diagnosticInfo.style.display = 'none';
-            }
-            
+            errorMessage.textContent = message;
             errorContainer.style.display = 'block';
             loadingContainer.style.display = 'none';
             propertiesSection.style.display = 'none';
         }
 
-        async function retryWithDiagnostic() {
-            console.log('🔄 Reintentando con nuevo diagnóstico...');
-            dbConfig = null;
-            allProperties = [];
-            await initializePage();
-        }
-
-        // Función básica de contacto
+        // Función de contacto
         window.contactProperty = function(propertyId) {
             const property = allProperties.find(p => p.id === propertyId);
             if (!property) {
@@ -580,16 +802,28 @@
                 return;
             }
 
-            const title = property[dbConfig.fieldMapping?.title || 'title'] || property.title || 'Propiedad';
-            const price = property[dbConfig.fieldMapping?.price || 'price'] || property.price || 0;
-            const commune = property[dbConfig.fieldMapping?.commune || 'commune'] || property.commune || '';
+            const features = [];
+            if (property.bedrooms !== null && property.bedrooms !== undefined) {
+                features.push(`${property.bedrooms === 0 ? 'Studio' : property.bedrooms + ' dormitorios'}`);
+            }
+            if (property.bathrooms) features.push(`${property.bathrooms} baños`);
+            if (property.total_area) features.push(`${property.total_area}m²`);
+            if (property.parking_spaces > 0) features.push(`${property.parking_spaces} estacionamientos`);
+
+            const message = `Hola! Estoy interesado/a en comprar la propiedad "${property.title}" ubicada en ${property.commune}.
+
+📍 Dirección: ${property.address}
+💰 Precio: ${formatPrice(property.price, property.currency)}
+🏠 ${features.join(', ')}
+${property.expenses ? `💸 Gastos comunes: $${property.expenses.toLocaleString()}` : ''}
+
+¿Podrías darme más información?`;
+
+            // Limpiar número de teléfono
+            const phoneNumber = property.contact_phone.replace(/[^0-9]/g, '');
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             
-            const message = `Hola! Estoy interesado en la propiedad "${title}" en ${commune}. Precio: $${new Intl.NumberFormat('es-CL').format(price)}`;
-            
-            // Buscar teléfono de contacto
-            const phone = property.contact_phone || property.telefono_contacto || property.phone || '56912345678';
-            const whatsappURL = `https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
-            
+            console.log('📱 Abriendo WhatsApp para propiedad:', property.title);
             window.open(whatsappURL, '_blank');
         };
     </script>
