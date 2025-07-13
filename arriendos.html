@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arriendos - Casa NuVera</title>
+    <title>Propiedades en Arriendo - Casa Nuvera</title>
+    <link rel="stylesheet" href="property-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- CSS PERSONALIZADO -->
+    <!-- CSS GRID OSCURO -->
     <link rel="stylesheet" href="css/property-grid-dark.css">
     
     <style>
@@ -20,328 +16,571 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-black: #0a0a0a;
+            --secondary-gray: #666666;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --background-gray: #7a7a7a;
+            --white: #ffffff;
+            --accent-orange: #ff6b35;
+            --text-muted: #999999;
+            --border-color: #ddd;
+            --overlay-dark: rgba(0, 0, 0, 0.6);
+            --overlay-medium: rgba(0, 0, 0, 0.4);
+            --overlay-light: rgba(0, 0, 0, 0.2);
+            --overlay-white: rgba(255, 255, 255, 0.9);
+            --green-accent: #00ff88;
         }
 
         body {
-            background: #0a0a0a;
-            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.5;
+            color: var(--white);
+            background-color: var(--background-gray);
+            font-weight: 400;
             overflow-x: hidden;
         }
 
-        /* HEADER */
-        .navbar {
-            background: rgba(0, 0, 0, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #333;
-            padding: 15px 0;
+        /* Botón flotante para subir propiedades */
+        .floating-upload-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--green-accent), #00cc6a);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: pulse-green 3s infinite;
+        }
+
+        .floating-upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
+            background: linear-gradient(135deg, #00cc6a, var(--green-accent));
+            color: white;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 15px 40px rgba(0, 255, 136, 0.5); }
+        }
+
+        /* Header flotante sobre imágenes */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
             z-index: 1000;
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 24px;
-            color: #00ff88 !important;
-        }
-
-        .navbar-nav .nav-link {
-            color: #ffffff !important;
-            font-weight: 500;
-            margin: 0 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
         }
 
-        .navbar-nav .nav-link:hover {
-            color: #00ff88 !important;
-            transform: translateY(-2px);
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
         }
 
-        /* HERO SECTION */
-        .hero-arriendos {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                        url('https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
-            height: 40vh;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            color: var(--primary-black);
+        }
+
+        .logo-image {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--secondary-gray);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: var(--primary-black);
+        }
+
+        .nav-cta {
+            background: var(--primary-black);
+            color: white !important;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+
+        .nav-cta:hover {
+            background: var(--secondary-gray);
+        }
+
+        /* Hero Section con imagen de fondo */
+        .hero {
+            height: 60vh;
+            background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
+                        url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1920&h=1080&fit=crop&crop=center') center/cover;
+            background-attachment: fixed;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            margin-top: 76px;
             position: relative;
+            color: white;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+            margin-top: 80px;
         }
 
-        .hero-content h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #00ff88;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+            padding: 0 2rem;
+            z-index: 2;
+        }
+
+        .hero-tagline {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-description {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+
+        /* Loading y Error States */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+            background: white;
+            color: var(--primary-black);
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--primary-black);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
             margin-bottom: 1rem;
         }
 
-        .hero-content p {
-            font-size: 1.2rem;
-            color: #ffffff;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        /* BOTÓN FLOTANTE */
-        .floating-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
-            color: #000;
+        .error-container {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--primary-black);
+            background: white;
+        }
+
+        .error-container h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #d32f2f;
+        }
+
+        .error-container p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
             border: none;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 24px;
-            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.4);
-            z-index: 1000;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.5rem;
             transition: all 0.3s ease;
-            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-black);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-gray);
+        }
+
+        /* Properties Section - AQUÍ ES DONDE SE APLICA EL GRID OSCURO */
+        .properties-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .section-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            animation: pulse 2s infinite;
+            margin-bottom: 0;
+            padding: 3rem 2rem 2rem;
+            background: white;
+            color: var(--primary-black);
         }
 
-        .floating-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(0, 255, 136, 0.6);
-            color: #000;
+        .results-count {
+            color: var(--secondary-gray);
+            font-size: 1rem;
+            font-weight: 500;
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
-        }
-
-        /* RESPONSIVE */
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2rem;
+            .floating-upload-btn {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.8rem 1.2rem;
+                font-size: 0.8rem;
             }
             
-            .hero-content p {
-                font-size: 1rem;
+            .nav-menu {
+                display: none;
             }
-            
-            .floating-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-                bottom: 20px;
-                right: 20px;
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero {
+                background-attachment: scroll;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
             }
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
-    <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <i class="fas fa-home"></i> Casa NuVera
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="compras.html">Comprar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="arriendos.html">Arrendar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="subir-propiedades.html">Publicar</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- HERO SECTION -->
-    <section class="hero-arriendos">
-        <div class="hero-content">
-            <h1>Encuentra tu arriendo ideal</h1>
-            <p>Descubre las mejores propiedades en arriendo</p>
-        </div>
-    </section>
-
-    <!-- PROPIEDADES EN ARRIENDO -->
-    <section class="properties-section">
-        <div class="properties-container">
-            <!-- LOADING -->
-            <div id="loading" class="properties-loading">
-                <i class="fas fa-spinner fa-spin"></i> Cargando propiedades...
-            </div>
-
-            <!-- ERROR -->
-            <div id="error" class="properties-error" style="display: none;">
-                <h3><i class="fas fa-exclamation-triangle"></i> Error al cargar propiedades</h3>
-                <p>Hubo un problema al cargar las propiedades. Por favor, inténtalo de nuevo.</p>
-                <button onclick="loadProperties()" class="contact-btn" style="margin-top: 20px;">
-                    <i class="fas fa-refresh"></i> Reintentar
-                </button>
-            </div>
-
-            <!-- GRID DE PROPIEDADES -->
-            <div id="propertiesGrid" class="properties-grid" style="display: none;">
-                <!-- Las propiedades se cargan dinámicamente -->
-            </div>
-        </div>
-    </section>
-
-    <!-- BOTÓN FLOTANTE -->
-    <a href="subir-propiedades.html" class="floating-btn" title="Publicar Propiedad">
-        <i class="fas fa-plus"></i>
+    <!-- Botón flotante para subir propiedades -->
+    <a href="subir-propiedades.html" class="floating-upload-btn">
+        <span>🏠</span>
+        Subir Propiedad
     </a>
 
+    <!-- Header flotante -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752020935606_0.png" 
+                     alt="Casa Nuvera Logo" 
+                     class="logo-image">
+                <span class="logo-text">Casa Nuvera</span>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="compras.html">Comprar</a></li>
+                    <li><a href="arriendos.html" class="active">Arrendar</a></li>
+                    <li><a href="index.html#servicios">Servicios</a></li>
+                    <li><a href="index.html#nosotros">Nosotros</a></li>
+                    <li><a href="index.html#contacto">Contacto</a></li>
+                    <li><a href="subir-propiedades.html" class="nav-cta">🏠 Subir Propiedad</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-tagline">Casa Nuvera | Propiedades Premium en Arriendo</div>
+            <h1>Discover your ideal rental home today</h1>
+            <p class="hero-description">Encuentra propiedades en arriendo cuidadosamente seleccionadas en las mejores ubicaciones de Santiago. Desde departamentos modernos hasta casas familiares.</p>
+        </div>
+    </section>
+
+    <!-- Loading -->
+    <div id="loadingContainer" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Cargando propiedades en arriendo...</p>
+    </div>
+
+    <!-- Error Container -->
+    <div id="errorContainer" class="error-container" style="display: none;">
+        <h3>❌ Error al cargar propiedades</h3>
+        <p id="errorMessage">Error al cargar propiedades</p>
+        <button class="btn btn-primary" onclick="location.reload()">🔄 Recargar Página</button>
+    </div>
+
+    <!-- Properties Section -->
+    <section class="properties-section" id="propertiesSection" style="display: none;">
+        <div class="properties-container">
+            <div class="section-header">
+                <div class="results-count" id="resultsCount">
+                    Cargando propiedades...
+                </div>
+            </div>
+
+            <!-- GRID OSCURO DE PROPIEDADES -->
+            <div class="properties-grid" id="propertiesGrid">
+                <!-- Property Cards se cargan dinámicamente -->
+            </div>
+        </div>
+    </section>
+
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
 
     <script>
-        // Configuración de Supabase
-        const SUPABASE_URL = 'https://yteajlpzfsksypifyfbn.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWFqbHB6ZnNrc3lwaWZ5ZmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0Mzk2ODYsImV4cCI6MjA1MDAxNTY4Nn0.8bnPWzNjn9IrMPbTlqfLjvhVQI7D5lKEE1Q3W0FKEK4';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Variables globales
+        let allProperties = [];
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏠 Iniciando página de arriendos...');
+            
+            // Esperar a que Supabase esté listo
+            if (window.supabase) {
+                initializePage();
+            } else {
+                window.addEventListener('supabaseReady', initializePage);
+                
+                // Timeout de seguridad
+                setTimeout(() => {
+                    if (!window.supabase) {
+                        showError('No se pudo conectar con Supabase');
+                    }
+                }, 5000);
+            }
+        });
+
+        async function initializePage() {
+            console.log('🚀 Configurando página de arriendos...');
+            await loadProperties();
+        }
 
         async function loadProperties() {
             try {
-                console.log('🔄 Cargando propiedades en arriendo...');
-
-                // Cargar propiedades sin JOIN para evitar errores
-                const { data: properties, error: propertiesError } = await supabase
+                showLoading(true);
+                
+                console.log('📥 Cargando propiedades en arriendo desde tabla "properties"...');
+                
+                // Query simplificado SIN JOIN - solo cargar propiedades de arriendo
+                const { data, error } = await window.supabase
                     .from('properties')
                     .select('*')
+                    .eq('published', true)
                     .in('property_type', ['arriendo', 'arriendo-temporal', 'rent'])
-                    .eq('published', true);
+                    .order('created_at', { ascending: false });
 
-                if (propertiesError) {
-                    console.error('❌ Error cargando propiedades:', propertiesError);
-                    throw propertiesError;
+                if (error) {
+                    console.error('❌ Error al cargar propiedades:', error);
+                    throw error;
                 }
 
-                console.log('✅ Propiedades cargadas:', properties.length);
-
-                // Cargar imágenes para cada propiedad por separado
-                for (let property of properties) {
-                    try {
-                        const { data: images, error: imagesError } = await supabase
-                            .from('property_images')
-                            .select('*')
-                            .eq('property_id', property.id);
-
-                        if (!imagesError && images) {
-                            property.images = images;
-                        } else {
-                            property.images = [];
-                        }
-                    } catch (error) {
-                        console.log('⚠️ Error cargando imágenes para propiedad', property.id, ':', error);
-                        property.images = [];
-                    }
-                }
-
-                displayProperties(properties);
-
+                allProperties = data || [];
+                console.log(`✅ ${allProperties.length} propiedades cargadas`);
+                
+                // Cargar imágenes por separado para cada propiedad
+                await loadPropertyImages();
+                
+                showLoading(false);
+                renderProperties();
+                
             } catch (error) {
-                console.error('❌ Error general:', error);
-                showError();
+                console.error('💥 Error al cargar propiedades:', error);
+                showError(`Error al cargar propiedades: ${error.message}`);
+                showLoading(false);
             }
         }
 
-        function displayProperties(properties) {
-            const loading = document.getElementById('loading');
-            const errorDiv = document.getElementById('error');
+        async function loadPropertyImages() {
+            console.log('🖼️ Cargando imágenes de propiedades...');
+            
+            for (let property of allProperties) {
+                try {
+                    // Intentar cargar imagen principal por separado
+                    const { data: images, error } = await window.supabase
+                        .from('property_images')
+                        .select('image_url, is_main')
+                        .eq('property_id', property.id)
+                        .order('is_main', { ascending: false });
+
+                    if (!error && images && images.length > 0) {
+                        property.images = images;
+                        property.main_image = images.find(img => img.is_main)?.image_url || images[0].image_url;
+                    }
+                } catch (e) {
+                    console.warn(`⚠️ No se pudo cargar imagen para propiedad ${property.id}:`, e);
+                }
+            }
+            
+            console.log('✅ Imágenes cargadas');
+        }
+
+        function renderProperties() {
             const grid = document.getElementById('propertiesGrid');
+            const resultsCount = document.getElementById('resultsCount');
 
-            loading.style.display = 'none';
-            errorDiv.style.display = 'none';
-            grid.style.display = 'grid';
-
-            if (properties.length === 0) {
+            if (allProperties.length === 0) {
                 grid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #cccccc;">
-                        <i class="fas fa-home" style="font-size: 48px; margin-bottom: 20px; color: #555;"></i>
-                        <h3>No hay propiedades disponibles</h3>
-                        <p>Vuelve pronto para ver nuevas propiedades en arriendo.</p>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: #cccccc;">
+                        <h3>No hay propiedades en arriendo disponibles</h3>
+                        <p>Intenta nuevamente más tarde</p>
+                        <button class="btn btn-primary" onclick="location.reload()">🔄 Recargar</button>
                     </div>
                 `;
+                resultsCount.textContent = 'No se encontraron propiedades';
                 return;
             }
 
-            grid.innerHTML = properties.map(property => createPropertyCard(property)).join('');
-        }
+            // Renderizar propiedades con el nuevo diseño oscuro
+            const propertiesHTML = allProperties.map(property => {
+                const price = property.price ? `$${parseInt(property.price).toLocaleString('es-CL')}/mes` : 'Precio a consultar';
+                const title = property.title || 'Propiedad sin título';
+                const location = property.location || 'Ubicación no disponible';
+                const bedrooms = property.bedrooms || 0;
+                const bathrooms = property.bathrooms || 0;
+                const area = property.area || 0;
+                const parking = property.parking || 0;
+                const propertyType = property.property_type || 'Propiedad';
+                
+                // Imagen principal
+                const mainImage = property.main_image || 'https://via.placeholder.com/400x250/333/fff?text=Sin+Imagen';
 
-        function createPropertyCard(property) {
-            const price = property.price ? `$${parseInt(property.price).toLocaleString('es-CL')}/mes` : 'Precio a consultar';
-            const title = property.title || 'Propiedad sin título';
-            const location = property.location || 'Ubicación no disponible';
-            const bedrooms = property.bedrooms || 0;
-            const bathrooms = property.bathrooms || 0;
-            const area = property.area || 0;
-            const parking = property.parking || 0;
-            const propertyType = property.property_type || 'Propiedad';
-            
-            // Imagen principal
-            const mainImage = property.images && property.images.length > 0 
-                ? property.images[0].image_url 
-                : 'https://via.placeholder.com/400x250/333/fff?text=Sin+Imagen';
-
-            return `
-                <div class="property-card" onclick="goToProperty(${property.id})">
-                    <div class="property-type">${propertyType.toUpperCase()}</div>
-                    <div class="property-image">
-                        <img src="${mainImage}" alt="${title}" loading="lazy">
-                    </div>
-                    <div class="property-content">
-                        <h3 class="property-title">${title}</h3>
-                        <p class="property-location">
-                            <i class="fas fa-map-marker-alt"></i> ${location}
-                        </p>
-                        <div class="property-price">${price}</div>
-                        <div class="property-features">
-                            <div class="feature">
-                                <i class="fas fa-bed"></i> ${bedrooms}
-                            </div>
-                            <div class="feature">
-                                <i class="fas fa-bath"></i> ${bathrooms}
-                            </div>
-                            <div class="feature">
-                                <i class="fas fa-ruler-combined"></i> ${area}m²
-                            </div>
-                            <div class="feature">
-                                <i class="fas fa-car"></i> ${parking}
+                return `
+                    <div class="property-card" onclick="goToProperty(${property.id})">
+                        <div class="property-type">${propertyType.toUpperCase()}</div>
+                        <div class="property-image">
+                            <img src="${mainImage}" alt="${title}" loading="lazy">
+                        </div>
+                        <div class="property-content">
+                            <h3 class="property-title">${title}</h3>
+                            <p class="property-location">
+                                <i class="fas fa-map-marker-alt"></i> ${location}
+                            </p>
+                            <div class="property-price">${price}</div>
+                            <div class="property-features">
+                                <div class="feature">
+                                    <i class="fas fa-bed"></i> ${bedrooms}
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-bath"></i> ${bathrooms}
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-ruler-combined"></i> ${area}m²
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-car"></i> ${parking}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            }).join('');
+
+            grid.innerHTML = propertiesHTML;
+            resultsCount.textContent = `Mostrando ${allProperties.length} propiedades en arriendo`;
+
+            // Mostrar la sección de propiedades
+            document.getElementById('propertiesSection').style.display = 'block';
         }
 
         function goToProperty(propertyId) {
             window.location.href = `propiedad.html?id=${propertyId}`;
         }
 
-        function showError() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('propertiesGrid').style.display = 'none';
-            document.getElementById('error').style.display = 'block';
+        function showLoading(show) {
+            const loadingContainer = document.getElementById('loadingContainer');
+            const propertiesSection = document.getElementById('propertiesSection');
+            const errorContainer = document.getElementById('errorContainer');
+            
+            if (show) {
+                loadingContainer.style.display = 'flex';
+                propertiesSection.style.display = 'none';
+                errorContainer.style.display = 'none';
+            } else {
+                loadingContainer.style.display = 'none';
+            }
         }
 
-        // Cargar propiedades al inicializar
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 Página de arriendos cargada');
-            loadProperties();
-        });
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            const errorMessage = document.getElementById('errorMessage');
+            const loadingContainer = document.getElementById('loadingContainer');
+            const propertiesSection = document.getElementById('propertiesSection');
+            
+            errorMessage.textContent = message;
+            errorContainer.style.display = 'block';
+            loadingContainer.style.display = 'none';
+            propertiesSection.style.display = 'none';
+        }
     </script>
 </body>
 </html>
