@@ -1,4 +1,4 @@
-// property-loader.js - Sistema completo de carga de propiedades para Casa Nuvera con efectos hover premium
+// property-loader.js - Sistema simplificado de carga de propiedades para Casa Nuvera
 
 class PropertyLoader {
     constructor() {
@@ -6,7 +6,7 @@ class PropertyLoader {
         this.isLoading = false;
     }
 
-    // Cargar propiedades desde Supabase con nombres de columnas correctos
+    // Cargar propiedades desde Supabase SIN JOINs complejos
     async loadProperties() {
         if (this.isLoading) return;
         
@@ -19,47 +19,37 @@ class PropertyLoader {
                 throw new Error('Supabase no está disponible');
             }
             
-            // Query con nombres de columnas en español (ajustado a tu estructura real)
-            const { data, error } = await window.supabase
-                .from('propiedades')  // Tabla en español
-                .select(`
-                    *,
-                    imagenes_propiedades (
-                        url_imagen,
-                        orden_imagen,
-                        es_principal
-                    )
-                `)
-                .eq('activa', true)  // activa en lugar de published
-                .order('destacada', { ascending: false })
-                .order('fecha_creacion', { ascending: false });
+            // Primero intentar cargar propiedades SIN JOIN
+            let { data, error } = await window.supabase
+                .from('properties')
+                .select('*')
+                .eq('published', true)
+                .order('featured', { ascending: false })
+                .order('created_at', { ascending: false });
 
             if (error) {
-                console.warn('❌ Error con nombres en español, intentando nombres en inglés...', error);
+                console.warn('❌ Error con tabla "properties", intentando "propiedades"...', error);
                 
-                // Fallback: intentar con nombres en inglés
-                const { data: dataEn, error: errorEn } = await window.supabase
-                    .from('properties')
-                    .select(`
-                        *,
-                        property_images (
-                            image_url,
-                            image_order,
-                            is_main
-                        )
-                    `)
-                    .eq('published', true)
-                    .order('featured', { ascending: false })
-                    .order('created_at', { ascending: false });
+                // Fallback: intentar con tabla en español
+                const { data: dataEs, error: errorEs } = await window.supabase
+                    .from('propiedades')
+                    .select('*')
+                    .eq('activa', true)
+                    .order('destacada', { ascending: false })
+                    .order('fecha_creacion', { ascending: false });
 
-                if (errorEn) {
-                    throw errorEn;
+                if (errorEs) {
+                    throw new Error(`Error en ambas tablas: ${error.message} | ${errorEs.message}`);
                 }
 
-                this.properties = this.normalizeProperties(dataEn || [], 'english');
-            } else {
+                data = dataEs;
                 this.properties = this.normalizeProperties(data || [], 'spanish');
+            } else {
+                this.properties = this.normalizeProperties(data || [], 'english');
             }
+
+            // Cargar imágenes por separado para cada propiedad
+            await this.loadPropertyImages();
 
             console.log(`✅ ${this.properties.length} propiedades cargadas`);
             
@@ -79,6 +69,43 @@ class PropertyLoader {
         }
     }
 
+    // Cargar imágenes por separado para evitar problemas de JOIN
+    async loadPropertyImages() {
+        for (let property of this.properties) {
+            try {
+                // Intentar cargar imágenes en inglés
+                let { data: images, error } = await window.supabase
+                    .from('property_images')
+                    .select('*')
+                    .eq('property_id', property.id)
+                    .order('image_order', { ascending: true });
+
+                if (error) {
+                    // Intentar en español
+                    const { data: imagesEs, error: errorEs } = await window.supabase
+                        .from('imagenes_propiedades')
+                        .select('*')
+                        .eq('propiedad_id', property.id)
+                        .order('orden_imagen', { ascending: true });
+
+                    if (!errorEs && imagesEs) {
+                        images = imagesEs.map(img => ({
+                            image_url: img.url_imagen,
+                            image_order: img.orden_imagen,
+                            is_main: img.es_principal
+                        }));
+                    }
+                }
+
+                property.property_images = images || [];
+                
+            } catch (imgError) {
+                console.warn(`⚠️ Error cargando imágenes para propiedad ${property.id}:`, imgError);
+                property.property_images = [];
+            }
+        }
+    }
+
     // Normalizar propiedades para usar nombres consistentes
     normalizeProperties(properties, sourceLanguage) {
         return properties.map(property => {
@@ -86,43 +113,55 @@ class PropertyLoader {
                 // Convertir nombres en español a inglés para consistencia interna
                 return {
                     id: property.id,
-                    title: property.titulo || property.title,
-                    description: property.descripcion || property.description,
-                    address: property.direccion || property.address,
-                    commune: property.comuna || property.commune,
-                    region: property.region || property.region,
-                    neighborhood: property.barrio || property.neighborhood,
-                    price: property.precio || property.price,
-                    currency: property.moneda || property.currency,
-                    property_type: property.tipo_operacion || property.property_type,
-                    category: property.categoria || property.category,
-                    bedrooms: property.dormitorios || property.bedrooms,
-                    bathrooms: property.banos || property.bathrooms,
-                    total_area: property.superficie_total || property.total_area,
-                    parking_spaces: property.estacionamientos || property.parking_spaces,
-                    expenses: property.gastos_comunes || property.expenses,
-                    contact_phone: property.telefono_contacto || property.contact_phone,
-                    contact_email: property.email_contacto || property.contact_email,
-                    featured: property.destacada || property.featured,
-                    published: property.activa || property.published,
-                    created_at: property.fecha_creacion || property.created_at,
-                    main_image: property.imagen_principal || property.main_image,
-                    images: property.imagenes || property.images,
-                    property_images: (property.imagenes_propiedades || property.property_images || []).map(img => ({
-                        image_url: img.url_imagen || img.image_url,
-                        image_order: img.orden_imagen || img.image_order,
-                        is_main: img.es_principal || img.is_main
-                    }))
+                    title: property.titulo || property.title || 'Propiedad sin título',
+                    description: property.descripcion || property.description || '',
+                    address: property.direccion || property.address || 'Dirección no disponible',
+                    commune: property.comuna || property.commune || 'Comuna no especificada',
+                    region: property.region || property.region || 'Santiago',
+                    neighborhood: property.barrio || property.neighborhood || '',
+                    price: property.precio || property.price || 0,
+                    currency: property.moneda || property.currency || 'CLP',
+                    property_type: property.tipo_operacion || property.property_type || 'venta',
+                    category: property.categoria || property.category || 'Casa',
+                    bedrooms: property.dormitorios || property.bedrooms || 0,
+                    bathrooms: property.banos || property.bathrooms || 0,
+                    total_area: property.superficie_total || property.total_area || 0,
+                    parking_spaces: property.estacionamientos || property.parking_spaces || 0,
+                    expenses: property.gastos_comunes || property.expenses || 0,
+                    contact_phone: property.telefono_contacto || property.contact_phone || '+56912345678',
+                    contact_email: property.email_contacto || property.contact_email || 'contacto@casanuvera.cl',
+                    featured: property.destacada || property.featured || false,
+                    published: property.activa || property.published || true,
+                    created_at: property.fecha_creacion || property.created_at || new Date().toISOString(),
+                    main_image: property.imagen_principal || property.main_image || null,
+                    property_images: []
                 };
             } else {
                 // Ya está en inglés, solo asegurar que tenga todos los campos
                 return {
-                    ...property,
-                    property_images: (property.property_images || []).map(img => ({
-                        image_url: img.image_url,
-                        image_order: img.image_order,
-                        is_main: img.is_main
-                    }))
+                    id: property.id,
+                    title: property.title || 'Property without title',
+                    description: property.description || '',
+                    address: property.address || 'Address not available',
+                    commune: property.commune || 'Commune not specified',
+                    region: property.region || 'Santiago',
+                    neighborhood: property.neighborhood || '',
+                    price: property.price || 0,
+                    currency: property.currency || 'CLP',
+                    property_type: property.property_type || 'sale',
+                    category: property.category || 'House',
+                    bedrooms: property.bedrooms || 0,
+                    bathrooms: property.bathrooms || 0,
+                    total_area: property.total_area || 0,
+                    parking_spaces: property.parking_spaces || 0,
+                    expenses: property.expenses || 0,
+                    contact_phone: property.contact_phone || '+56912345678',
+                    contact_email: property.contact_email || 'contacto@casanuvera.cl',
+                    featured: property.featured || false,
+                    published: property.published || true,
+                    created_at: property.created_at || new Date().toISOString(),
+                    main_image: property.main_image || null,
+                    property_images: []
                 };
             }
         });
@@ -132,9 +171,9 @@ class PropertyLoader {
     getPropertiesByType(tipo) {
         return this.properties.filter(property => {
             if (tipo === 'compra') {
-                return property.property_type === 'venta' || property.property_type === 'compra';
+                return property.property_type === 'venta' || property.property_type === 'compra' || property.property_type === 'sale';
             } else if (tipo === 'arriendo') {
-                return property.property_type === 'arriendo' || property.property_type === 'arriendo-temporal';
+                return property.property_type === 'arriendo' || property.property_type === 'arriendo-temporal' || property.property_type === 'rent';
             }
             return false;
         });
@@ -147,7 +186,7 @@ class PropertyLoader {
             .slice(0, limit);
     }
 
-    // Generar HTML para una propiedad con efectos hover premium
+    // Generar HTML para una propiedad
     generatePropertyHTML(property) {
         const formatPrice = (precio, moneda) => {
             const formatted = new Intl.NumberFormat('es-CL').format(precio);
@@ -159,21 +198,13 @@ class PropertyLoader {
             }
         };
 
-        const getBadgeClass = (tipo) => {
-            switch(tipo) {
-                case 'venta': 
-                case 'compra': return 'property-badge sale';
-                case 'arriendo': return 'property-badge rent';
-                case 'arriendo-temporal': return 'property-badge temp-rent';
-                default: return 'property-badge';
-            }
-        };
-
         const getBadgeText = (tipo) => {
             switch(tipo) {
                 case 'venta': 
-                case 'compra': return 'VENTA';
-                case 'arriendo': return 'ARRIENDO';
+                case 'compra': 
+                case 'sale': return 'VENTA';
+                case 'arriendo': 
+                case 'rent': return 'ARRIENDO';
                 case 'arriendo-temporal': return 'ARRIENDO TEMPORAL';
                 default: return 'DISPONIBLE';
             }
@@ -182,43 +213,21 @@ class PropertyLoader {
         // Buscar imagen principal
         const imageUrl = this.getPropertyMainImage(property);
 
-        // Generar características para el hover
-        const features = [];
-        if (property.bedrooms !== null && property.bedrooms !== undefined) {
-            features.push(`${property.bedrooms === 0 ? 'Studio' : property.bedrooms + ' dormitorios'}`);
-        }
-        if (property.bathrooms) features.push(`${property.bathrooms} baños`);
-        if (property.total_area) features.push(`${property.total_area}m²`);
-        if (property.parking_spaces > 0) features.push(`${property.parking_spaces} estacionamientos`);
-
-        // Información de contacto para el hover
-        const contactInfo = property.contact_phone || property.contact_email || 'Contactar para más información';
-
         return `
-            <div class="property-card" data-id="${property.id}">
-                <div class="property-image ${imageUrl ? 'has-image' : 'no-image'}">
+            <div class="property-card" data-id="${property.id}" onclick="goToProperty(${property.id})">
+                <div class="property-image">
                     ${imageUrl ? 
-                        `<img src="${imageUrl}" alt="${property.title}" onerror="this.style.display='none'; this.parentNode.classList.add('no-image');">` : 
+                        `<img src="${imageUrl}" alt="${property.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300/f0f0f0/666?text=Sin+Imagen'">` : 
                         `<div class="placeholder-image">
                             <div class="placeholder-icon">🏠</div>
                             <div class="placeholder-text">Sin imagen</div>
                         </div>`
                     }
-                    <div class="${getBadgeClass(property.property_type)} ${property.featured ? 'featured' : ''}">
+                    <div class="property-badge ${property.featured ? 'featured' : ''}">
                         ${property.featured ? '⭐ ' : ''}${getBadgeText(property.property_type)}
                     </div>
-                    
-                    <!-- Información adicional que aparece en hover -->
-                    <div class="property-hover-info">
-                        <h4>${property.title}</h4>
-                        <div class="hover-price">${formatPrice(property.price, property.currency)}</div>
-                        <p>📍 ${property.address}, ${property.commune}</p>
-                        <div class="hover-features">${features.join(' • ')}</div>
-                        ${property.expenses ? 
-                            `<p>💰 Gastos comunes: $${new Intl.NumberFormat('es-CL').format(property.expenses)}</p>` : 
-                            ''
-                        }
-                        <div class="hover-contact">📞 ${contactInfo}</div>
+                    <div class="property-overlay">
+                        <div class="property-details-btn">Ver Detalles</div>
                     </div>
                 </div>
                 
@@ -237,12 +246,6 @@ class PropertyLoader {
                         `<div class="property-expenses">💰 Gastos comunes: $${new Intl.NumberFormat('es-CL').format(property.expenses)}</div>` : 
                         ''
                     }
-                    
-                    <div class="property-contact">
-                        <button class="contact-btn" onclick="contactProperty('${property.id}')">
-                            💬 Contactar por WhatsApp
-                        </button>
-                    </div>
                 </div>
             </div>
         `;
@@ -266,12 +269,9 @@ class PropertyLoader {
             return property.main_image;
         }
         
-        // Si guardas imágenes en un array JSON
-        if (property.images && Array.isArray(property.images) && property.images.length > 0) {
-            return property.images[0];
-        }
-        
-        return null;
+        // Fallback a imagen por defecto de unsplash
+        const randomImageId = Math.floor(Math.random() * 1000);
+        return `https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop&crop=center&auto=format&q=80&sig=${randomImageId}`;
     }
 
     // Renderizar propiedades en un contenedor específico
@@ -303,8 +303,8 @@ class PropertyLoader {
                                     class="retry-btn">
                                 🔄 Reintentar
                             </button>
-                            <button onclick="window.reconnectSupabase()" class="reconnect-btn">
-                                🔌 Reconectar Base de Datos
+                            <button onclick="window.location.reload()" class="reconnect-btn">
+                                🔌 Recargar Página
                             </button>
                         </div>
                         <p class="error-hint">
@@ -355,84 +355,6 @@ class PropertyLoader {
         container.innerHTML = propertiesHTML;
 
         console.log(`✅ ${propertiesToShow.length} propiedades renderizadas en ${containerId}`);
-        
-        // Configurar eventos hover después de renderizar
-        this.setupHoverEvents(container);
-    }
-
-    // Configurar eventos hover para efectos premium
-    setupHoverEvents(container) {
-        const propertyCards = container.querySelectorAll('.property-card');
-        
-        propertyCards.forEach(card => {
-            const hoverInfo = card.querySelector('.property-hover-info');
-            
-            if (hoverInfo) {
-                // Agregar delay para evitar activación accidental
-                let hoverTimeout;
-                
-                card.addEventListener('mouseenter', () => {
-                    hoverTimeout = setTimeout(() => {
-                        hoverInfo.style.opacity = '1';
-                        hoverInfo.style.pointerEvents = 'all';
-                    }, 300); // 300ms de delay
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    clearTimeout(hoverTimeout);
-                    hoverInfo.style.opacity = '0';
-                    hoverInfo.style.pointerEvents = 'none';
-                });
-            }
-        });
-    }
-
-    // Función para búsqueda de propiedades
-    searchProperties(query, filters = {}) {
-        let filteredProperties = [...this.properties];
-
-        // Filtro por texto
-        if (query && query.trim()) {
-            const searchTerm = query.toLowerCase().trim();
-            filteredProperties = filteredProperties.filter(property => 
-                property.title.toLowerCase().includes(searchTerm) ||
-                property.description?.toLowerCase().includes(searchTerm) ||
-                property.commune.toLowerCase().includes(searchTerm) ||
-                property.address.toLowerCase().includes(searchTerm) ||
-                property.neighborhood?.toLowerCase().includes(searchTerm)
-            );
-        }
-
-        // Filtros adicionales
-        if (filters.property_type) {
-            filteredProperties = filteredProperties.filter(p => p.property_type === filters.property_type);
-        }
-
-        if (filters.category) {
-            filteredProperties = filteredProperties.filter(p => p.category === filters.category);
-        }
-
-        if (filters.commune) {
-            filteredProperties = filteredProperties.filter(p => p.commune === filters.commune);
-        }
-
-        if (filters.bedrooms_min) {
-            filteredProperties = filteredProperties.filter(p => p.bedrooms >= filters.bedrooms_min);
-        }
-
-        if (filters.bedrooms_max) {
-            filteredProperties = filteredProperties.filter(p => p.bedrooms <= filters.bedrooms_max);
-        }
-
-        if (filters.price_min) {
-            filteredProperties = filteredProperties.filter(p => p.price >= filters.price_min);
-        }
-
-        if (filters.price_max) {
-            filteredProperties = filteredProperties.filter(p => p.price <= filters.price_max);
-        }
-
-        return filteredProperties;
     }
 
     // Función para recargar propiedades
@@ -448,13 +370,12 @@ class PropertyLoader {
             const container = document.getElementById(containerId);
             if (container) {
                 if (containerId === 'featuredProperties') {
-                    await this.renderProperties(containerId, null, 6);
+                    await this.renderProperties(containerId, null, 3);
                 } else if (containerId === 'compraProperties') {
                     await this.renderProperties(containerId, 'compra');
                 } else if (containerId === 'arriendoProperties') {
                     await this.renderProperties(containerId, 'arriendo');
                 } else if (containerId === 'propertiesGrid') {
-                    // Renderizar todas las propiedades si es una página de listado
                     await this.renderProperties(containerId);
                 }
             }
@@ -467,8 +388,8 @@ class PropertyLoader {
     getStats() {
         const stats = {
             total: this.properties.length,
-            ventas: this.properties.filter(p => p.property_type === 'venta' || p.property_type === 'compra').length,
-            arriendos: this.properties.filter(p => p.property_type === 'arriendo' || p.property_type === 'arriendo-temporal').length,
+            ventas: this.properties.filter(p => p.property_type === 'venta' || p.property_type === 'compra' || p.property_type === 'sale').length,
+            arriendos: this.properties.filter(p => p.property_type === 'arriendo' || p.property_type === 'rent').length,
             destacadas: this.properties.filter(p => p.featured).length,
             promedioPrecio: 0
         };
@@ -482,7 +403,12 @@ class PropertyLoader {
     }
 }
 
-// Funciones globales para interactuar con propiedades
+// Función global para navegar a la página individual de propiedad
+window.goToProperty = function(propertyId) {
+    window.location.href = `propiedad.html?id=${propertyId}`;
+};
+
+// Función global para contactar por WhatsApp
 window.contactProperty = function(propertyId) {
     const property = window.propertyLoader.properties.find(p => p.id === propertyId);
     if (!property) {
@@ -510,7 +436,6 @@ ${property.expenses ? `💸 Gastos comunes: $${property.expenses.toLocaleString(
 
 ¿Podrías darme más información?`;
 
-    // Limpiar número de teléfono
     const phoneNumber = property.contact_phone.replace(/[^0-9]/g, '');
     const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
@@ -518,43 +443,14 @@ ${property.expenses ? `💸 Gastos comunes: $${property.expenses.toLocaleString(
     window.open(whatsappURL, '_blank');
 };
 
-// Función para mostrar detalles de propiedad
-window.showPropertyDetails = function(propertyId) {
-    const property = window.propertyLoader.properties.find(p => p.id === propertyId);
-    if (!property) return;
-
-    // Implementar modal o página de detalles aquí
-    console.log('🔍 Mostrar detalles de:', property.title);
-};
-
 // Crear instancia global
 window.propertyLoader = new PropertyLoader();
 
-// Auto-inicializar cuando el DOM y Supabase estén listos
+// Auto-inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log('🏠 Inicializando Property Loader con efectos hover premium...');
+    console.log('🏠 Inicializando Property Loader...');
     
     // Esperar a que Supabase esté listo
-    if (window.supabase) {
-        initializePropertyLoader();
-    } else {
-        console.log('⏳ Esperando Supabase...');
-        window.addEventListener('supabaseReady', initializePropertyLoader);
-        
-        // Timeout de seguridad
-        setTimeout(() => {
-            if (!window.supabase) {
-                console.warn('⚠️ Timeout esperando Supabase, intentando inicializar de todos modos...');
-                initializePropertyLoader();
-            }
-        }, 5000);
-    }
-});
-
-function initializePropertyLoader() {
-    console.log('🚀 Inicializando Property Loader...');
-    
-    // Auto-cargar propiedades en las secciones correspondientes
     setTimeout(async () => {
         try {
             const featuredContainer = document.getElementById('featuredProperties');
@@ -564,7 +460,7 @@ function initializePropertyLoader() {
 
             if (featuredContainer) {
                 console.log('📋 Cargando propiedades destacadas...');
-                await window.propertyLoader.renderProperties('featuredProperties', null, 6);
+                await window.propertyLoader.renderProperties('featuredProperties', null, 3);
             }
             
             if (compraContainer) {
@@ -589,7 +485,7 @@ function initializePropertyLoader() {
         } catch (error) {
             console.error('❌ Error inicializando Property Loader:', error);
         }
-    }, 1000);
-}
+    }, 2000);
+});
 
-console.log('✅ Property Loader con efectos hover premium cargado correctamente - Casa Nuvera');
+console.log('✅ Property Loader simplificado cargado - Casa Nuvera');
