@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Propiedades - Casa Nuvera</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <style>
+        /* Estilos específicos para gestión de propiedades */
+        .properties-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .properties-filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .property-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .property-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            font-size: 3rem;
+        }
+
+        .property-content {
+            padding: 1.5rem;
+        }
+
+        .property-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .property-location {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .property-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .property-detail {
+            text-align: center;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .property-detail-value {
+            font-weight: 600;
+            color: #2c3e50;
+            display: block;
+        }
+
+        .property-detail-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .property-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        .property-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .property-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            justify-content: space-between;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn.edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .action-btn.view {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .no-properties {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+
+        .no-properties-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .properties-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 768px) {
+            .properties-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .property-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .properties-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Casa Nuvera</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span>☰</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="admin-dashboard.html" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="admin-properties.html" class="menu-item active">
+                <span class="menu-icon">🏘️</span>
+                <span class="menu-text">Propiedades</span>
+            </a>
+            <a href="subir-propiedades.html" class="menu-item">
+                <span class="menu-icon">➕</span>
+                <span class="menu-text">Nueva Propiedad</span>
+            </a>
+            <a href="admin-contacts.html" class="menu-item">
+                <span class="menu-icon">📧</span>
+                <span class="menu-text">Contactos</span>
+            </a>
+            <a href="admin-analytics.html" class="menu-item">
+                <span class="menu-icon">📈</span>
+                <span class="menu-text">Análisis</span>
+            </a>
+            <a href="admin-settings.html" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-text">Configuración</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="index.html" class="menu-item">
+                <span class="menu-icon">🌐</span>
+                <span class="menu-text">Ver Sitio Web</span>
+            </a>
+            <a href="#" class="menu-item" onclick="logoutAdmin()">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">Cerrar Sesión</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <h1>Gestión de Propiedades</h1>
+                <p>Administra todas las propiedades de Casa Nuvera</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-name" id="userName">Administrador</span>
+                    <span class="user-role">Casa Nuvera</span>
+                </div>
+                <div class="user-avatar">👨‍💼</div>
+            </div>
+        </header>
+
+        <!-- Auth Warning -->
+        <div class="auth-warning" id="authWarning" style="display: none;">
+            <h2>🔐 Acceso Restringido</h2>
+            <p>Esta página requiere autenticación de administrador.</p>
+            <a href="admin-login.html" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
+
+        <!-- Properties Content -->
+        <div class="dashboard-content" id="propertiesContent">
+            <!-- Header de Propiedades -->
+            <div class="properties-header">
+                <div>
+                    <h2>Todas las Propiedades</h2>
+                    <p id="propertiesCount">0 propiedades encontradas</p>
+                </div>
+                <a href="subir-propiedades.html" class="btn btn-primary">
+                    ➕ Nueva Propiedad
+                </a>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="properties-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalProperties">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="activeProperties">0</div>
+                    <div class="stat-label">Activas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="ventaProperties">0</div>
+                    <div class="stat-label">Venta</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="arriendoProperties">0</div>
+                    <div class="stat-label">Arriendo</div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="properties-filters">
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label for="filterType">Tipo de Operación</label>
+                        <select id="filterType" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="venta">Venta</option>
+                            <option value="arriendo">Arriendo</option>
+                            <option value="arriendo-temporal">Arriendo Temporal</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="filterCategory">Categoría</label>
+                        <select id="filterCategory" class="form-control">
+                            <option value="">Todas</option>
+                            <option value="casa">Casa</option>
+                            <option value="departamento">Departamento</option>
+                            <option value="oficina">Oficina</option>
+                            <option value="local-comercial">Local Comercial</option>
+                            <option value="terreno">Terreno</option>
+                            <option value="bodega">Bodega</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="filterCommune">Comuna</label>
+                        <select id="filterCommune" class="form-control">
+                            <option value="">Todas</option>
+                            <option value="Las Condes">Las Condes</option>
+                            <option value="Providencia">Providencia</option>
+                            <option value="Vitacura">Vitacura</option>
+                            <option value="Ñuñoa">Ñuñoa</option>
+                            <option value="Santiago">Santiago Centro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="searchInput">Buscar</label>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Buscar por título...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button type="button" class="btn btn-secondary" onclick="clearFilters()">
+                            🔄 Limpiar Filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de Propiedades -->
+            <div class="properties-grid" id="propertiesGrid">
+                <!-- Las propiedades se cargan dinámicamente aquí -->
+            </div>
+
+            <!-- No hay propiedades -->
+            <div class="no-properties" id="noProperties" style="display: none;">
+                <div class="no-properties-icon">🏠</div>
+                <h3>No hay propiedades</h3>
+                <p>No se encontraron propiedades que coincidan con los filtros seleccionados.</p>
+                <a href="subir-propiedades.html" class="btn btn-primary">
+                    ➕ Agregar Primera Propiedad
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Cargando propiedades...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="admin-scripts.js"></script>
+    
+    <script>
+        class PropertiesManager {
+            constructor() {
+                this.properties = [];
+                this.filteredProperties = [];
+                this.filters = {
+                    type: '',
+                    category: '',
+                    commune: '',
+                    search: ''
+                };
+                
+                this.init();
+            }
+
+            async init() {
+                console.log('🏘️ Inicializando gestor de propiedades...');
+                
+                // Verificar autenticación
+                if (!window.checkAdminSession || !window.checkAdminSession()) {
+                    this.showAuthWarning();
+                    return;
+                }
+
+                // Configurar eventos
+                this.setupEventListeners();
+                
+                // Cargar propiedades cuando Supabase esté listo
+                if (window.supabaseClient) {
+                    await this.loadProperties();
+                } else {
+                    window.addEventListener('supabaseReady', () => {
+                        this.loadProperties();
+                    });
+                }
+                
+                this.hideLoading();
+            }
+
+            showAuthWarning() {
+                document.getElementById('authWarning').style.display = 'block';
+                document.getElementById('propertiesContent').style.display = 'none';
+                this.hideLoading();
+            }
+
+            setupEventListeners() {
+                // Filtros
+                document.getElementById('filterType').addEventListener('change', (e) => {
+                    this.filters.type = e.target.value;
+                    this.applyFilters();
+                });
+
+                document.getElementById('filterCategory').addEventListener('change', (e) => {
+                    this.filters.category = e.target.value;
+                    this.applyFilters();
+                });
+
+                document.getElementById('filterCommune').addEventListener('change', (e) => {
+                    this.filters.commune = e.target.value;
+                    this.applyFilters();
+                });
+
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.filters.search = e.target.value.toLowerCase();
+                    this.applyFilters();
+                });
+            }
+
+            async loadProperties() {
+                try {
+                    console.log('📦 Cargando propiedades...');
+                    
+                    const { data, error } = await window.supabaseClient
+                        .from('properties')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+
+                    if (error) throw error;
+                    
+                    this.properties = data || [];
+                    this.filteredProperties = [...this.properties];
+                    
+                    console.log(`✅ ${this.properties.length} propiedades cargadas`);
+                    
+                    this.updateStats();
+                    this.renderProperties();
+                    
+                } catch (error) {
+                    console.error('❌ Error al cargar propiedades:', error);
+                    
+                    // Mostrar datos de ejemplo si hay error
+                    this.loadDemoProperties();
+                    
+                    window.showNotification('Error al cargar propiedades. Mostrando datos de ejemplo.', 'warning');
+                }
+            }
+
+            loadDemoProperties() {
+                this.properties = [
+                    {
+                        id: 1,
+                        title: 'Casa moderna en Las Condes',
+                        property_type: 'venta',
+                        category: 'casa',
+                        commune: 'Las Condes',
+                        address: 'Av. Apoquindo 1234',
+                        bedrooms: 3,
+                        bathrooms: 2,
+                        parking_spaces: 2,
+                        price: 350000000,
+                        currency: 'CLP',
+                        created_at: '2025-07-14T10:00:00',
+                        status: 'active'
+                    },
+                    {
+                        id: 2,
+                        title: 'Departamento en Providencia',
+                        property_type: 'arriendo',
+                        category: 'departamento',
+                        commune: 'Providencia',
+                        address: 'Av. Providencia 567',
+                        bedrooms: 2,
+                        bathrooms: 1,
+                        parking_spaces: 1,
+                        price: 450000,
+                        currency: 'CLP',
+                        created_at: '2025-07-13T15:30:00',
+                        status: 'active'
+                    }
+                ];
+                
+                this.filteredProperties = [...this.properties];
+                this.updateStats();
+                this.renderProperties();
+            }
+
+            updateStats() {
+                const total = this.properties.length;
+                const active = this.properties.filter(p => p.status === 'active').length;
+                const venta = this.properties.filter(p => p.property_type === 'venta').length;
+                const arriendo = this.properties.filter(p => p.property_type === 'arriendo').length;
+
+                document.getElementById('totalProperties').textContent = total;
+                document.getElementById('activeProperties').textContent = active;
+                document.getElementById('ventaProperties').textContent = venta;
+                document.getElementById('arriendoProperties').textContent = arriendo;
+                
+                document.getElementById('propertiesCount').textContent = 
+                    `${this.filteredProperties.length} propiedades encontradas`;
+            }
+
+            applyFilters() {
+                this.filteredProperties = this.properties.filter(property => {
+                    // Filtro por tipo
+                    if (this.filters.type && property.property_type !== this.filters.type) {
+                        return false;
+                    }
+                    
+                    // Filtro por categoría
+                    if (this.filters.category && property.category !== this.filters.category) {
+                        return false;
+                    }
+                    
+                    // Filtro por comuna
+                    if (this.filters.commune && property.commune !== this.filters.commune) {
+                        return false;
+                    }
+                    
+                    // Filtro por búsqueda
+                    if (this.filters.search && 
+                        !property.title.toLowerCase().includes(this.filters.search)) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+
+                this.renderProperties();
+                this.updateStats();
+            }
+
+            renderProperties() {
+                const grid = document.getElementById('propertiesGrid');
+                const noProperties = document.getElementById('noProperties');
+
+                if (this.filteredProperties.length === 0) {
+                    grid.style.display = 'none';
+                    noProperties.style.display = 'block';
+                    return;
+                }
+
+                grid.style.display = 'grid';
+                noProperties.style.display = 'none';
+
+                grid.innerHTML = this.filteredProperties.map(property => 
+                    this.createPropertyCard(property)
+                ).join('');
+            }
+
+            createPropertyCard(property) {
+                const formattedPrice = this.formatPrice(property.price, property.currency);
+                const formattedDate = this.formatDate(property.created_at);
+                
+                return `
+                    <div class="property-card">
+                        <div class="property-image">
+                            ${property.category === 'casa' ? '🏠' : 
+                              property.category === 'departamento' ? '🏢' : 
+                              property.category === 'oficina' ? '🏬' : '🏘️'}
+                        </div>
+                        <div class="property-content">
+                            <h3 class="property-title">${property.title}</h3>
+                            <div class="property-location">
+                                📍 ${property.address}, ${property.commune}
+                            </div>
+                            
+                            <div class="property-details">
+                                <div class="property-detail">
+                                    <span class="property-detail-value">${property.bedrooms}</span>
+                                    <span class="property-detail-label">Dorm.</span>
+                                </div>
+                                <div class="property-detail">
+                                    <span class="property-detail-value">${property.bathrooms}</span>
+                                    <span class="property-detail-label">Baños</span>
+                                </div>
+                                <div class="property-detail">
+                                    <span class="property-detail-value">${property.parking_spaces || 0}</span>
+                                    <span class="property-detail-label">Est.</span>
+                                </div>
+                            </div>
+                            
+                            <div class="property-price">${formattedPrice}</div>
+                            
+                            <div class="d-flex justify-between align-center">
+                                <span class="property-status status-${property.status || 'active'}">
+                                    ${property.status === 'active' ? 'Activa' : 
+                                      property.status === 'inactive' ? 'Inactiva' : 'Pendiente'}
+                                </span>
+                                <small style="color: #7f8c8d;">${formattedDate}</small>
+                            </div>
+                            
+                            <div class="property-actions">
+                                <a href="property-detail.html?id=${property.id}" class="action-btn view">
+                                    👁️ Ver
+                                </a>
+                                <button class="action-btn edit" onclick="editProperty(${property.id})">
+                                    ✏️ Editar
+                                </button>
+                                <button class="action-btn delete" onclick="deleteProperty(${property.id})">
+                                    🗑️ Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            formatPrice(price, currency = 'CLP') {
+                if (!price) return 'Precio a consultar';
+                
+                const formatters = {
+                    CLP: new Intl.NumberFormat('es-CL', { 
+                        style: 'currency', 
+                        currency: 'CLP',
+                        minimumFractionDigits: 0
+                    }),
+                    USD: new Intl.NumberFormat('es-CL', { 
+                        style: 'currency', 
+                        currency: 'USD' 
+                    }),
+                    UF: (amount) => `${amount.toLocaleString('es-CL')} UF`
+                };
+
+                if (currency === 'UF') {
+                    return formatters.UF(price);
+                }
+
+                return formatters[currency]?.format(price) || 
+                       `${currency} ${price.toLocaleString('es-CL')}`;
+            }
+
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('es-CL', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+
+            async deletePropertyById(id) {
+                try {
+                    const { error } = await window.supabaseClient
+                        .from('properties')
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) throw error;
+                    
+                    // Remover de la lista local
+                    this.properties = this.properties.filter(p => p.id !== id);
+                    this.applyFilters();
+                    
+                    window.showNotification('Propiedad eliminada exitosamente', 'success');
+                    
+                } catch (error) {
+                    console.error('Error al eliminar propiedad:', error);
+                    window.showNotification('Error al eliminar propiedad', 'error');
+                }
+            }
+
+            hideLoading() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+            }
+        }
+
+        // Funciones globales
+        function editProperty(id) {
+            window.location.href = `subir-propiedades.html?edit=${id}`;
+        }
+
+        function deleteProperty(id) {
+            window.showConfirm(
+                '¿Estás seguro de que deseas eliminar esta propiedad? Esta acción no se puede deshacer.',
+                () => {
+                    if (window.propertiesManager) {
+                        window.propertiesManager.deletePropertyById(id);
+                    }
+                }
+            );
+        }
+
+        function clearFilters() {
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterCategory').value = '';
+            document.getElementById('filterCommune').value = '';
+            document.getElementById('searchInput').value = '';
+            
+            if (window.propertiesManager) {
+                window.propertiesManager.filters = {
+                    type: '',
+                    category: '',
+                    commune: '',
+                    search: ''
+                };
+                window.propertiesManager.applyFilters();
+            }
+        }
+
+        // Inicializar cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', () => {
+            window.propertiesManager = new PropertiesManager();
+        });
+    </script>
+</body>
+</html>
