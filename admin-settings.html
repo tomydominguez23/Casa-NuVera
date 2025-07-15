@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración - Casa Nuvera</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <style>
+        /* Estilos específicos para configuración */
+        .settings-tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #7f8c8d;
+        }
+
+        .tab-button.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .tab-button:hover:not(.active) {
+            background: #ecf0f1;
+        }
+
+        .settings-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .tab-panel {
+            display: none;
+            padding: 2rem;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .settings-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-description {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .settings-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .color-input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #3498db;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .logo-upload {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .logo-upload:hover {
+            border-color: #3498db;
+            background: #f0f8ff;
+        }
+
+        .logo-preview {
+            max-width: 200px;
+            max-height: 100px;
+            margin: 1rem auto;
+            display: block;
+        }
+
+        .social-media-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .backup-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .backup-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .backup-date {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .backup-size {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .danger-zone {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .danger-zone h4 {
+            color: #e53e3e;
+            margin-bottom: 1rem;
+        }
+
+        .api-key-display {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .notification-info h5 {
+            margin: 0 0 0.25rem 0;
+            color: #2c3e50;
+        }
+
+        .notification-info p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .settings-tabs {
+                flex-direction: column;
+            }
+
+            .settings-grid,
+            .settings-grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .backup-actions {
+                flex-direction: column;
+            }
+
+            .social-media-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Casa Nuvera</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span>☰</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="admin-dashboard.html" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="admin-properties.html" class="menu-item">
+                <span class="menu-icon">🏘️</span>
+                <span class="menu-text">Propiedades</span>
+            </a>
+            <a href="subir-propiedades.html" class="menu-item">
+                <span class="menu-icon">➕</span>
+                <span class="menu-text">Nueva Propiedad</span>
+            </a>
+            <a href="admin-contacts.html" class="menu-item">
+                <span class="menu-icon">📧</span>
+                <span class="menu-text">Contactos</span>
+            </a>
+            <a href="admin-analytics.html" class="menu-item">
+                <span class="menu-icon">📈</span>
+                <span class="menu-text">Análisis</span>
+            </a>
+            <a href="admin-settings.html" class="menu-item active">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-text">Configuración</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="index.html" class="menu-item">
+                <span class="menu-icon">🌐</span>
+                <span class="menu-text">Ver Sitio Web</span>
+            </a>
+            <a href="#" class="menu-item" onclick="logoutAdmin()">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">Cerrar Sesión</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <h1>Configuración</h1>
+                <p>Ajustes generales del sistema y sitio web</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-name" id="userName">Administrador</span>
+                    <span class="user-role">Casa Nuvera</span>
+                </div>
+                <div class="user-avatar">👨‍💼</div>
+            </div>
+        </header>
+
+        <!-- Auth Warning -->
+        <div class="auth-warning" id="authWarning" style="display: none;">
+            <h2>🔐 Acceso Restringido</h2>
+            <p>Esta página requiere autenticación de administrador.</p>
+            <a href="admin-login.html" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="dashboard-content" id="settingsContent">
+            <!-- Tabs -->
+            <div class="settings-tabs">
+                <button class="tab-button active" onclick="showTab('general')">
+                    🏢 General
+                </button>
+                <button class="tab-button" onclick="showTab('appearance')">
+                    🎨 Apariencia
+                </button>
+                <button class="tab-button" onclick="showTab('notifications')">
+                    🔔 Notificaciones
+                </button>
+                <button class="tab-button" onclick="showTab('integrations')">
+                    🔗 Integraciones
+                </button>
+                <button class="tab-button" onclick="showTab('security')">
+                    🔒 Seguridad
+                </button>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="settings-content">
+                <!-- General Settings -->
+                <div id="generalTab" class="tab-panel active">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>🏢</span>
+                                Información de la Empresa
+                            </h3>
+                        </div>
+                        <div class="section-description">
+                            Configuración básica de Casa Nuvera
+                        </div>
+                        
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label for="companyName">Nombre de la Empresa</label>
+                                <input type="text" id="companyName" class="form-control" value="Casa Nuvera">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="companySlogan">Eslogan</label>
+                                <input type="text" id="companySlogan" class="form-control" 
+                                       value="Tu hogar ideal te está esperando">
+                            </div>
+                        </div>
+                        
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label for="companyPhone">Teléfono Principal</label>
+                                <input type="tel" id="companyPhone" class="form-control" 
+                                       value="+56 2 2345 6789">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="companyEmail">Email Principal</label>
+                                <input type="email" id="companyEmail" class="form-control" 
+                                       value="contacto@casanuvera.cl">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="companyAddress">Dirección</label>
+                            <input type="text" id="companyAddress" class="form-control" 
+                                   value="Av. Providencia 1234, Oficina 567, Providencia, Santiago">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="companyDescription">Descripción de la Empresa</label>
+                            <textarea id="companyDescription" class="form-control" rows="4">Casa Nuvera es una inmobiliaria especializada en la venta y arriendo de propiedades en las mejores ubicaciones de Santiago. Con más de 10 años de experiencia, ofrecemos un servicio personalizado y de calidad.</textarea>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>🌐</span>
+                                Configuración del Sitio Web
+                            </h3>
+                        </div>
+                        
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label for="siteTitle">Título del Sitio</label>
+                                <input type="text" id="siteTitle" class="form-control" 
+                                       value="Casa Nuvera - Inmobiliaria">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="siteUrl">URL del Sitio</label>
+                                <input type="url" id="siteUrl" class="form-control" 
+                                       value="https://casanuvera.cl">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="siteDescription">Descripción SEO</label>
+                            <textarea id="siteDescription" class="form-control" rows="3">Encuentra tu hogar ideal con Casa Nuvera. Inmobiliaria especializada en venta y arriendo de propiedades en Santiago.</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="siteKeywords">Palabras Clave SEO</label>
+                            <input type="text" id="siteKeywords" class="form-control" 
+                                   value="inmobiliaria, propiedades, venta, arriendo, Santiago, Chile">
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>📱</span>
+                                Redes Sociales
+                            </h3>
+                        </div>
+                        
+                        <div class="social-media-inputs">
+                            <div class="form-group">
+                                <label for="facebookUrl">Facebook</label>
+                                <input type="url" id="facebookUrl" class="form-control" 
+                                       placeholder="https://facebook.com/casanuvera">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="instagramUrl">Instagram</label>
+                                <input type="url" id="instagramUrl" class="form-control" 
+                                       placeholder="https://instagram.com/casanuvera">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="linkedinUrl">LinkedIn</label>
+                                <input type="url" id="linkedinUrl" class="form-control" 
+                                       placeholder="https://linkedin.com/company/casanuvera">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="whatsappNumber">WhatsApp</label>
+                                <input type="tel" id="whatsappNumber" class="form-control" 
+                                       placeholder="+56 9 1234 5678">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appearance Settings -->
+                <div id="appearanceTab" class="tab-panel">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>🎨</span>
+                                Logo y Marca
+                            </h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Logo Principal</label>
+                            <div class="logo-upload" onclick="document.getElementById('logoInput').click()">
+                                <div>📸</div>
+                                <p>Haz clic para subir el logo</p>
+                                <small>Recomendado: 300x100px, formato PNG o SVG</small>
+                                <input type="file" id="logoInput" style="display: none;" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>🌈</span>
+                                Colores del Sitio
+                            </h3>
+                        </div>
+                        
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label for="primaryColor">Color Primario</label>
+                                <div class="color-input-group">
+                                    <input type="color" id="primaryColor" value="#2c3e50">
+                                    <input type="text" class="form-control" value="#2c3e50">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="secondaryColor">Color Secundario</label>
+                                <div class="color-input-group">
+                                    <input type="color" id="secondaryColor" value="#3498db">
+                                    <input type="text" class="form-control" value="#3498db">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label for="accentColor">Color de Acento</label>
+                                <div class="color-input-group">
+                                    <input type="color" id="accentColor" value="#27ae60">
+                                    <input type="text" class="form-control" value="#27ae60">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="backgroundColor">Color de Fondo</label>
+                                <div class="color-input-group">
+                                    <input type="color" id="backgroundColor" value="#f8f9fa">
+                                    <input type="text" class="form-control" value="#f8f9fa">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>📝</span>
+                                Tipografía
+                            </h3>
+                        </div>
+                        
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label for="primaryFont">Fuente Principal</label>
+                                <select id="primaryFont" class="form-control">
+                                    <option value="Segoe UI">Segoe UI</option>
+                                    <option value="Arial">Arial</option>
+                                    <option value="Helvetica">Helvetica</option>
+                                    <option value="Roboto">Roboto</option>
+                                    <option value="Open Sans">Open Sans</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="headingFont">Fuente de Títulos</label>
+                                <select id="headingFont" class="form-control">
+                                    <option value="inherit">Misma que principal</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Times New Roman">Times New Roman</option>
+                                    <option value="Playfair Display">Playfair Display</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Settings -->
+                <div id="notificationsTab" class="tab-panel">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>📧</span>
+                                Notificaciones por Email
+                            </h3>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h5>Nuevas consultas</h5>
+                                <p>Recibir email cuando llegue una nueva consulta de clientes</p>
+                            </div>
+                            <div class="toggle-switch">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h5>Nuevas propiedades</h5>
+                                <p>Recibir email cuando se publique una nueva propiedad</p>
+                            </div>
+                            <div class="toggle-switch">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h5>Reportes semanales</h5>
+                                <p>Recibir resumen semanal de actividad y estadísticas</p>
+                            </div>
+                            <div class="toggle-switch">
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h5>Actualizaciones del sistema</h5>
+                                <p>Recibir notificaciones sobre actualizaciones y mantenimiento</p>
+                            </div>
+                            <div class="toggle-switch">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>⚙️</span>
+                                Configuración de Email
+                            </h3>
+                        </div>
+                        
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label for="smtpServer">Servidor SMTP</label>
+                                <input type="text" id="smtpServer" class="form-control" 
+                                       placeholder="smtp.gmail.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="smtpPort">Puerto SMTP</label>
+                                <input type="number" id="smtpPort" class="form-control" 
+                                       placeholder="587">
+                            </div>
+                        </div>
+                        
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label for="emailUsername">Usuario de Email</label>
+                                <input type="email" id="emailUsername" class="form-control" 
+                                       placeholder="noreply@casanuvera.cl">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="emailPassword">Contraseña de Email</label>
+                                <input type="password" id="emailPassword" class="form-control" 
+                                       placeholder="••••••••">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integrations Settings -->
+                <div id="integrationsTab" class="tab-panel">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>🗺️</span>
+                                Google Maps
+                            </h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="googleMapsApi">Clave API de Google Maps</label>
+                            <div class="api-key-display">
+                                <span id="mapsApiKey">AIzaSyC4R6AN7SmvrHb9EON...</span>
+                                <button class="copy-btn" onclick="copyApiKey('maps')">Copiar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>📊</span>
+                                Google Analytics
+                            </h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="googleAnalyticsId">ID de Google Analytics</label>
+                            <input type="text" id="googleAnalyticsId" class="form-control" 
+                                   placeholder="G-XXXXXXXXXX">
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>💬</span>
+                                Chat en Línea
+                            </h3>
+                        </div>
+                        
+                        <div class="toggle-switch">
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <span>Habilitar chat en línea</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="chatProvider">Proveedor de Chat</label>
+                            <select id="chatProvider" class="form-control">
+                                <option value="whatsapp">WhatsApp</option>
+                                <option value="messenger">Facebook Messenger</option>
+                                <option value="zendesk">Zendesk</option>
+                                <option value="intercom">Intercom</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div id="securityTab" class="tab-panel">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>🔑</span>
+                                Cambiar Contraseña
+                            </h3>
+                        </div>
+                        
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label for="currentPassword">Contraseña Actual</label>
+                                <input type="password" id="currentPassword" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newPassword">Nueva Contraseña</label>
+                                <input type="password" id="newPassword" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirmar Nueva Contraseña</label>
+                            <input type="password" id="confirmPassword" class="form-control">
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary" onclick="changePassword()">
+                            🔒 Cambiar Contraseña
+                        </button>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>💾</span>
+                                Backup y Restauración
+                            </h3>
+                        </div>
+                        
+                        <div class="backup-info">
+                            <div class="backup-date">Último backup: 14 de Julio, 2025 - 09:30 AM</div>
+                            <div class="backup-size">Tamaño: 15.2 MB</div>
+                        </div>
+                        
+                        <div class="backup-actions">
+                            <button type="button" class="btn btn-primary" onclick="createBackup()">
+                                💾 Crear Backup
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="downloadBackup()">
+                                📥 Descargar Backup
+                            </button>
+                            <button type="button" class="btn btn-warning" onclick="restoreBackup()">
+                                🔄 Restaurar Backup
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span>⚠️</span>
+                                Zona de Peligro
+                            </h3>
+                        </div>
+                        
+                        <div class="danger-zone">
+                            <h4>Eliminar Todos los Datos</h4>
+                            <p>Esta acción eliminará permanentemente todas las propiedades, contactos y configuraciones. Esta acción no se puede deshacer.</p>
+                            <button type="button" class="btn btn-danger" onclick="confirmDataDeletion()">
+                                🗑️ Eliminar Todos los Datos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="text-center" style="margin-top: 2rem;">
+                <button type="button" class="btn btn-primary" onclick="saveSettings()">
+                    💾 Guardar Configuración
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Cargando configuración...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="admin-scripts.js"></script>
+    
+    <script>
+        class SettingsManager {
+            constructor() {
+                this.currentTab = 'general';
+                this.settings = {};
+                this.init();
+            }
+
+            init() {
+                console.log('⚙️ Inicializando configuración...');
+                
+                // Verificar autenticación
+                if (!window.checkAdminSession || !window.checkAdminSession()) {
+                    this.showAuthWarning();
+                    return;
+                }
+
+                // Cargar configuración guardada
+                this.loadSettings();
+                
+                this.hideLoading();
+            }
+
+            showAuthWarning() {
+                document.getElementById('authWarning').style.display = 'block';
+                document.getElementById('settingsContent').style.display = 'none';
+                this.hideLoading();
+            }
+
+            loadSettings() {
+                // Cargar desde localStorage o usar valores por defecto
+                const savedSettings = localStorage.getItem('casaNuveraSettings');
+                if (savedSettings) {
+                    try {
+                        this.settings = JSON.parse(savedSettings);
+                        this.populateForm();
+                    } catch (e) {
+                        console.warn('Error al cargar configuración guardada');
+                    }
+                }
+            }
+
+            populateForm() {
+                // Poblar formularios con valores guardados
+                Object.keys(this.settings).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = this.settings[key];
+                        } else {
+                            element.value = this.settings[key];
+                        }
+                    }
+                });
+            }
+
+            saveSettings() {
+                console.log('💾 Guardando configuración...');
+                
+                // Recopilar todos los valores del formulario
+                const formData = new FormData();
+                const inputs = document.querySelectorAll('#settingsContent input, #settingsContent select, #settingsContent textarea');
+                
+                inputs.forEach(input => {
+                    if (input.type === 'checkbox') {
+                        this.settings[input.id] = input.checked;
+                    } else if (input.type !== 'file') {
+                        this.settings[input.id] = input.value;
+                    }
+                });
+
+                // Guardar en localStorage
+                localStorage.setItem('casaNuveraSettings', JSON.stringify(this.settings));
+                
+                // Simular guardado en servidor
+                window.showNotification('Configuración guardada exitosamente', 'success');
+                
+                // En una implementación real, aquí se enviaría al servidor
+                console.log('Configuración guardada:', this.settings);
+            }
+
+            hideLoading() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+            }
+        }
+
+        // Funciones globales
+        function showTab(tabName) {
+            // Ocultar todas las pestañas
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Desactivar todos los botones
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Mostrar pestaña seleccionada
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            if (window.settingsManager) {
+                window.settingsManager.currentTab = tabName;
+            }
+        }
+
+        function copyApiKey(type) {
+            const keyElement = document.getElementById(type + 'ApiKey');
+            if (keyElement) {
+                navigator.clipboard.writeText(keyElement.textContent);
+                window.showNotification('Clave API copiada al portapapeles', 'success', 2000);
+            }
+        }
+
+        function changePassword() {
+            const current = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            
+            if (!current || !newPass || !confirm) {
+                window.showNotification('Por favor completa todos los campos', 'warning');
+                return;
+            }
+            
+            if (newPass !== confirm) {
+                window.showNotification('Las contraseñas no coinciden', 'error');
+                return;
+            }
+            
+            if (newPass.length < 6) {
+                window.showNotification('La contraseña debe tener al menos 6 caracteres', 'warning');
+                return;
+            }
+            
+            // Simular cambio de contraseña
+            window.showNotification('Contraseña actualizada exitosamente', 'success');
+            
+            // Limpiar campos
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+
+        function createBackup() {
+            window.showNotification('Creando backup...', 'info');
+            
+            setTimeout(() => {
+                window.showNotification('Backup creado exitosamente', 'success');
+                // Actualizar fecha de último backup
+                document.querySelector('.backup-date').textContent = 
+                    `Último backup: ${new Date().toLocaleDateString('es-CL')} - ${new Date().toLocaleTimeString('es-CL')}`;
+            }, 2000);
+        }
+
+        function downloadBackup() {
+            window.showNotification('Descargando backup...', 'info');
+            // Simular descarga
+            setTimeout(() => {
+                window.showNotification('Backup descargado', 'success');
+            }, 1000);
+        }
+
+        function restoreBackup() {
+            window.showConfirm(
+                '¿Estás seguro de que deseas restaurar el backup? Esto sobrescribirá los datos actuales.',
+                () => {
+                    window.showNotification('Restaurando backup...', 'info');
+                    setTimeout(() => {
+                        window.showNotification('Backup restaurado exitosamente', 'success');
+                    }, 3000);
+                }
+            );
+        }
+
+        function confirmDataDeletion() {
+            window.showConfirm(
+                '⚠️ ADVERTENCIA: Esta acción eliminará TODOS los datos de Casa Nuvera de forma PERMANENTE. ¿Estás absolutamente seguro?',
+                () => {
+                    window.showConfirm(
+                        '🚨 ÚLTIMA CONFIRMACIÓN: Todos los datos serán eliminados PARA SIEMPRE. ¿Continuar?',
+                        () => {
+                            window.showNotification('Eliminando todos los datos...', 'info');
+                            setTimeout(() => {
+                                window.showNotification('Todos los datos han sido eliminados', 'success');
+                                // En una implementación real, redirigir a setup inicial
+                            }, 3000);
+                        }
+                    );
+                }
+            );
+        }
+
+        function saveSettings() {
+            if (window.settingsManager) {
+                window.settingsManager.saveSettings();
+            }
+        }
+
+        // Inicializar cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', () => {
+            window.settingsManager = new SettingsManager();
+        });
+    </script>
+</body>
+</html>
