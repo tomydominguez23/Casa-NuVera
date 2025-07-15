@@ -501,7 +501,7 @@
             
             if (isLoggedIn()) {
                 console.log('✅ Sesión válida encontrada, redirigiendo...');
-                window.location.href = 'subir-propiedades.html';
+                window.location.href = 'admin-dashboard.html';
                 return;
             }
 
@@ -578,7 +578,7 @@
                     // Redirect after success
                     setTimeout(() => {
                         console.log('🚀 Redirigiendo al panel de administración...');
-                        window.location.href = 'subir-propiedades.html';
+                        window.location.href = 'admin-dashboard.html';
                     }, 2000);
                 } else {
                     console.log('❌ Credenciales inválidas para:', username);
@@ -664,7 +664,7 @@
         // Forgot password handler
         document.querySelector('.forgot-password').addEventListener('click', function(e) {
             e.preventDefault();
-            alert('Para recuperar su contraseña, contacte al administrador del sistema:\n\n📧 Email: admin@casanuvera.cl\n📱 WhatsApp: +56 9 1234 5678\n\nEquipo Casa Nuvera');
+            alert('Para recuperar su contraseña, contacte al administrador del sistema:\\n\\n📧 Email: admin@casanuvera.cl\\n📱 WhatsApp: +56 9 1234 5678\\n\\nEquipo Casa Nuvera');
         });
 
         // Security: Clear sensitive data on page unload
