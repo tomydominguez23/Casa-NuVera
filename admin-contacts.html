@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Contactos - Casa Nuvera</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <style>
+        /* Estilos específicos para gestión de contactos */
+        .contacts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .contacts-filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .contact-item {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .contact-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f8f9fa;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-avatar {
+            width: 50px;
+            height: 50px;
+            background: #3498db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .contact-details h4 {
+            margin: 0 0 0.25rem 0;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .contact-details p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .contact-meta {
+            text-align: right;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .contact-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+        }
+
+        .status-new {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-replied {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .contact-content {
+            padding: 1.5rem;
+        }
+
+        .contact-subject {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .contact-message {
+            color: #5a6c7d;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .contact-property {
+            background: #e8f4f8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #bee5eb;
+        }
+
+        .property-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-details {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f8f9fa;
+        }
+
+        .contact-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .no-contacts {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .no-contacts-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Modal para responder */
+        .reply-modal .modal-content {
+            max-width: 600px;
+        }
+
+        .reply-form .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .reply-form textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .original-message {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #6c757d;
+        }
+
+        .original-message h5 {
+            margin: 0 0 0.5rem 0;
+            color: #2c3e50;
+        }
+
+        .original-message p {
+            margin: 0;
+            color: #5a6c7d;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .contacts-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .contact-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .contact-meta {
+                text-align: center;
+            }
+
+            .contact-actions {
+                flex-direction: column;
+            }
+
+            .contacts-filters .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Casa Nuvera</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span>☰</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="admin-dashboard.html" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="admin-properties.html" class="menu-item">
+                <span class="menu-icon">🏘️</span>
+                <span class="menu-text">Propiedades</span>
+            </a>
+            <a href="subir-propiedades.html" class="menu-item">
+                <span class="menu-icon">➕</span>
+                <span class="menu-text">Nueva Propiedad</span>
+            </a>
+            <a href="admin-contacts.html" class="menu-item active">
+                <span class="menu-icon">📧</span>
+                <span class="menu-text">Contactos</span>
+            </a>
+            <a href="admin-analytics.html" class="menu-item">
+                <span class="menu-icon">📈</span>
+                <span class="menu-text">Análisis</span>
+            </a>
+            <a href="admin-settings.html" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-text">Configuración</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="index.html" class="menu-item">
+                <span class="menu-icon">🌐</span>
+                <span class="menu-text">Ver Sitio Web</span>
+            </a>
+            <a href="#" class="menu-item" onclick="logoutAdmin()">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">Cerrar Sesión</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <h1>Gestión de Contactos</h1>
+                <p>Administra las consultas y mensajes de los clientes</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-name" id="userName">Administrador</span>
+                    <span class="user-role">Casa Nuvera</span>
+                </div>
+                <div class="user-avatar">👨‍💼</div>
+            </div>
+        </header>
+
+        <!-- Auth Warning -->
+        <div class="auth-warning" id="authWarning" style="display: none;">
+            <h2>🔐 Acceso Restringido</h2>
+            <p>Esta página requiere autenticación de administrador.</p>
+            <a href="admin-login.html" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
+
+        <!-- Contacts Content -->
+        <div class="dashboard-content" id="contactsContent">
+            <!-- Header de Contactos -->
+            <div class="contacts-header">
+                <div>
+                    <h2>Todas las Consultas</h2>
+                    <p id="contactsCount">0 consultas encontradas</p>
+                </div>
+                <button class="btn btn-primary" onclick="refreshContacts()">
+                    🔄 Actualizar
+                </button>
+            </div>
+
+            <!-- Estadísticas de Contactos -->
+            <div class="contact-stats">
+                <div class="stat-card info">
+                    <div class="stat-header">
+                        <div class="stat-icon">📧</div>
+                    </div>
+                    <div class="stat-value" id="totalContacts">0</div>
+                    <div class="stat-label">Total Consultas</div>
+                </div>
+                
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <div class="stat-icon">✅</div>
+                    </div>
+                    <div class="stat-value" id="newContacts">0</div>
+                    <div class="stat-label">Nuevas</div>
+                </div>
+                
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <div class="stat-icon">⏰</div>
+                    </div>
+                    <div class="stat-value" id="pendingContacts">0</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+                
+                <div class="stat-card info">
+                    <div class="stat-header">
+                        <div class="stat-icon">💬</div>
+                    </div>
+                    <div class="stat-value" id="repliedContacts">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="contacts-filters">
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label for="filterStatus">Estado</label>
+                        <select id="filterStatus" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="new">Nuevas</option>
+                            <option value="replied">Respondidas</option>
+                            <option value="pending">Pendientes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="filterType">Tipo de Consulta</label>
+                        <select id="filterType" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="property">Consulta por Propiedad</option>
+                            <option value="general">Consulta General</option>
+                            <option value="valuation">Tasación</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="searchContacts">Buscar</label>
+                        <input type="text" id="searchContacts" class="form-control" 
+                               placeholder="Buscar por nombre o email...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button type="button" class="btn btn-secondary" onclick="clearContactFilters()">
+                            🔄 Limpiar Filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Contactos -->
+            <div id="contactsList">
+                <!-- Los contactos se cargan dinámicamente aquí -->
+            </div>
+
+            <!-- No hay contactos -->
+            <div class="no-contacts" id="noContacts" style="display: none;">
+                <div class="no-contacts-icon">📧</div>
+                <h3>No hay consultas</h3>
+                <p>No se encontraron consultas que coincidan con los filtros seleccionados.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para Responder -->
+    <div class="modal reply-modal" id="replyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Responder Consulta</h3>
+                <button class="modal-close" onclick="closeReplyModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="original-message" id="originalMessage">
+                    <!-- Mensaje original se carga aquí -->
+                </div>
+                
+                <form class="reply-form" id="replyForm">
+                    <div class="form-group">
+                        <label for="replySubject">Asunto</label>
+                        <input type="text" id="replySubject" class="form-control" 
+                               placeholder="Re: Consulta sobre propiedad">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="replyMessage">Mensaje</label>
+                        <textarea id="replyMessage" class="form-control" 
+                                  placeholder="Escribe tu respuesta aquí..." required></textarea>
+                    </div>
+                    
+                    <input type="hidden" id="contactId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeReplyModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="sendReply()">
+                    📧 Enviar Respuesta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Cargando contactos...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="admin-scripts.js"></script>
+    
+    <script>
+        class ContactsManager {
+            constructor() {
+                this.contacts = [];
+                this.filteredContacts = [];
+                this.filters = {
+                    status: '',
+                    type: '',
+                    search: ''
+                };
+                
+                this.init();
+            }
+
+            async init() {
+                console.log('📧 Inicializando gestor de contactos...');
+                
+                // Verificar autenticación
+                if (!window.checkAdminSession || !window.checkAdminSession()) {
+                    this.showAuthWarning();
+                    return;
+                }
+
+                // Configurar eventos
+                this.setupEventListeners();
+                
+                // Cargar contactos (demo por ahora)
+                this.loadDemoContacts();
+                
+                this.hideLoading();
+            }
+
+            showAuthWarning() {
+                document.getElementById('authWarning').style.display = 'block';
+                document.getElementById('contactsContent').style.display = 'none';
+                this.hideLoading();
+            }
+
+            setupEventListeners() {
+                // Filtros
+                document.getElementById('filterStatus').addEventListener('change', (e) => {
+                    this.filters.status = e.target.value;
+                    this.applyFilters();
+                });
+
+                document.getElementById('filterType').addEventListener('change', (e) => {
+                    this.filters.type = e.target.value;
+                    this.applyFilters();
+                });
+
+                document.getElementById('searchContacts').addEventListener('input', (e) => {
+                    this.filters.search = e.target.value.toLowerCase();
+                    this.applyFilters();
+                });
+            }
+
+            loadDemoContacts() {
+                // Datos de ejemplo mientras se implementa la base de datos
+                this.contacts = [
+                    {
+                        id: 1,
+                        name: 'María González',
+                        email: 'maria.gonzalez@email.com',
+                        phone: '+56 9 1234 5678',
+                        subject: 'Consulta sobre casa en Las Condes',
+                        message: 'Hola, me interesa conocer más detalles sobre la casa en Las Condes que vi en su sitio web. ¿Podríamos coordinar una visita?',
+                        property_id: 1,
+                        property_title: 'Casa moderna en Las Condes',
+                        status: 'new',
+                        type: 'property',
+                        created_at: '2025-07-14T10:30:00',
+                        replied_at: null
+                    },
+                    {
+                        id: 2,
+                        name: 'Carlos Rodríguez',
+                        email: 'carlos.rodriguez@empresa.cl',
+                        phone: '+56 9 8765 4321',
+                        subject: 'Tasación de propiedad comercial',
+                        message: 'Buenos días, necesito una tasación para un local comercial ubicado en Providencia. ¿Realizan este tipo de servicios?',
+                        property_id: null,
+                        property_title: null,
+                        status: 'replied',
+                        type: 'valuation',
+                        created_at: '2025-07-13T15:45:00',
+                        replied_at: '2025-07-13T18:20:00'
+                    },
+                    {
+                        id: 3,
+                        name: 'Ana Martínez',
+                        email: 'ana.martinez@gmail.com',
+                        phone: '+56 9 5555 7777',
+                        subject: 'Departamento en arriendo',
+                        message: 'Hola, estoy buscando un departamento de 2 dormitorios en Providencia o Ñuñoa. Mi presupuesto es de hasta $600.000 mensuales.',
+                        property_id: 2,
+                        property_title: 'Departamento en Providencia',
+                        status: 'pending',
+                        type: 'property',
+                        created_at: '2025-07-12T09:15:00',
+                        replied_at: null
+                    },
+                    {
+                        id: 4,
+                        name: 'Pedro Silva',
+                        email: 'pedro.silva@hotmail.com',
+                        phone: '+56 9 3333 9999',
+                        subject: 'Información general',
+                        message: '¿Qué comisión cobran por la venta de una propiedad? ¿Incluye marketing y publicidad?',
+                        property_id: null,
+                        property_title: null,
+                        status: 'new',
+                        type: 'general',
+                        created_at: '2025-07-11T14:20:00',
+                        replied_at: null
+                    }
+                ];
+                
+                this.filteredContacts = [...this.contacts];
+                this.updateStats();
+                this.renderContacts();
+            }
+
+            updateStats() {
+                const total = this.contacts.length;
+                const newCount = this.contacts.filter(c => c.status === 'new').length;
+                const pending = this.contacts.filter(c => c.status === 'pending').length;
+                const replied = this.contacts.filter(c => c.status === 'replied').length;
+
+                document.getElementById('totalContacts').textContent = total;
+                document.getElementById('newContacts').textContent = newCount;
+                document.getElementById('pendingContacts').textContent = pending;
+                document.getElementById('repliedContacts').textContent = replied;
+                
+                document.getElementById('contactsCount').textContent = 
+                    `${this.filteredContacts.length} consultas encontradas`;
+            }
+
+            applyFilters() {
+                this.filteredContacts = this.contacts.filter(contact => {
+                    // Filtro por estado
+                    if (this.filters.status && contact.status !== this.filters.status) {
+                        return false;
+                    }
+                    
+                    // Filtro por tipo
+                    if (this.filters.type && contact.type !== this.filters.type) {
+                        return false;
+                    }
+                    
+                    // Filtro por búsqueda
+                    if (this.filters.search) {
+                        const searchTerm = this.filters.search;
+                        return contact.name.toLowerCase().includes(searchTerm) ||
+                               contact.email.toLowerCase().includes(searchTerm) ||
+                               contact.subject.toLowerCase().includes(searchTerm);
+                    }
+                    
+                    return true;
+                });
+
+                this.renderContacts();
+                this.updateStats();
+            }
+
+            renderContacts() {
+                const list = document.getElementById('contactsList');
+                const noContacts = document.getElementById('noContacts');
+
+                if (this.filteredContacts.length === 0) {
+                    list.innerHTML = '';
+                    noContacts.style.display = 'block';
+                    return;
+                }
+
+                noContacts.style.display = 'none';
+                list.innerHTML = this.filteredContacts.map(contact => 
+                    this.createContactCard(contact)
+                ).join('');
+            }
+
+            createContactCard(contact) {
+                const initials = contact.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const formattedDate = this.formatDate(contact.created_at);
+                const statusText = {
+                    'new': 'Nueva',
+                    'replied': 'Respondida',
+                    'pending': 'Pendiente'
+                };
+                
+                return `
+                    <div class="contact-item">
+                        <div class="contact-header">
+                            <div class="contact-info">
+                                <div class="contact-avatar">${initials}</div>
+                                <div class="contact-details">
+                                    <h4>${contact.name}</h4>
+                                    <p>📧 ${contact.email}</p>
+                                    <p>📱 ${contact.phone}</p>
+                                </div>
+                            </div>
+                            <div class="contact-meta">
+                                <div>${formattedDate}</div>
+                                <div class="contact-status status-${contact.status}">
+                                    ${statusText[contact.status]}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-content">
+                            <div class="contact-subject">${contact.subject}</div>
+                            
+                            ${contact.property_title ? `
+                                <div class="contact-property">
+                                    <div class="property-title">🏠 Consulta sobre: ${contact.property_title}</div>
+                                    <div class="property-details">ID: #${contact.property_id}</div>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="contact-message">
+                                ${contact.message}
+                            </div>
+                            
+                            <div class="contact-actions">
+                                <button class="btn btn-primary" onclick="replyToContact(${contact.id})">
+                                    📧 Responder
+                                </button>
+                                <button class="btn btn-secondary" onclick="markAsRead(${contact.id})">
+                                    ✅ Marcar como Leída
+                                </button>
+                                <a href="tel:${contact.phone}" class="btn btn-success">
+                                    📞 Llamar
+                                </a>
+                                <button class="btn btn-danger" onclick="deleteContact(${contact.id})">
+                                    🗑️ Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('es-CL', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            getContactById(id) {
+                return this.contacts.find(c => c.id === id);
+            }
+
+            updateContactStatus(id, status) {
+                const contact = this.getContactById(id);
+                if (contact) {
+                    contact.status = status;
+                    if (status === 'replied') {
+                        contact.replied_at = new Date().toISOString();
+                    }
+                    this.applyFilters();
+                    window.showNotification('Estado actualizado', 'success');
+                }
+            }
+
+            deleteContactById(id) {
+                this.contacts = this.contacts.filter(c => c.id !== id);
+                this.applyFilters();
+                window.showNotification('Consulta eliminada', 'success');
+            }
+
+            hideLoading() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+            }
+        }
+
+        // Funciones globales
+        function replyToContact(id) {
+            const contact = window.contactsManager.getContactById(id);
+            if (!contact) return;
+
+            // Llenar el modal con los datos del contacto
+            document.getElementById('contactId').value = id;
+            document.getElementById('replySubject').value = `Re: ${contact.subject}`;
+            
+            // Mostrar mensaje original
+            document.getElementById('originalMessage').innerHTML = `
+                <h5>Mensaje original de ${contact.name}:</h5>
+                <p>${contact.message}</p>
+            `;
+            
+            // Mostrar modal
+            document.getElementById('replyModal').classList.add('active');
+        }
+
+        function closeReplyModal() {
+            document.getElementById('replyModal').classList.remove('active');
+            document.getElementById('replyForm').reset();
+        }
+
+        function sendReply() {
+            const contactId = document.getElementById('contactId').value;
+            const subject = document.getElementById('replySubject').value;
+            const message = document.getElementById('replyMessage').value;
+            
+            if (!message.trim()) {
+                window.showNotification('Por favor escribe un mensaje', 'warning');
+                return;
+            }
+            
+            // Simular envío de email
+            console.log('Enviando respuesta:', { contactId, subject, message });
+            
+            // Actualizar estado del contacto
+            window.contactsManager.updateContactStatus(parseInt(contactId), 'replied');
+            
+            // Cerrar modal
+            closeReplyModal();
+            
+            window.showNotification('Respuesta enviada exitosamente', 'success');
+        }
+
+        function markAsRead(id) {
+            window.contactsManager.updateContactStatus(id, 'replied');
+        }
+
+        function deleteContact(id) {
+            window.showConfirm(
+                '¿Estás seguro de que deseas eliminar esta consulta?',
+                () => {
+                    window.contactsManager.deleteContactById(id);
+                }
+            );
+        }
+
+        function clearContactFilters() {
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterType').value = '';
+            document.getElementById('searchContacts').value = '';
+            
+            if (window.contactsManager) {
+                window.contactsManager.filters = {
+                    status: '',
+                    type: '',
+                    search: ''
+                };
+                window.contactsManager.applyFilters();
+            }
+        }
+
+        function refreshContacts() {
+            window.showNotification('Contactos actualizados', 'info');
+            // En el futuro, aquí se recargarían desde la base de datos
+        }
+
+        // Inicializar cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', () => {
+            window.contactsManager = new ContactsManager();
+        });
+    </script>
+</body>
+</html>
