@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis y Reportes - Casa Nuvera</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <style>
+        /* Estilos específicos para análisis y reportes */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .chart-period {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .period-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .period-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .chart-content {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            background: #f8f9fa;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+        }
+
+        .chart-placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-color, #3498db);
+        }
+
+        .metric-card.success::before { background: #27ae60; }
+        .metric-card.warning::before { background: #f39c12; }
+        .metric-card.danger::before { background: #e74c3c; }
+        .metric-card.info::before { background: #3498db; }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-change {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .metric-change.positive {
+            color: #27ae60;
+        }
+
+        .metric-change.negative {
+            color: #e74c3c;
+        }
+
+        .metric-change.neutral {
+            color: #7f8c8d;
+        }
+
+        .reports-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .report-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .report-card {
+            border: 2px solid #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .report-card:hover {
+            border-color: #3498db;
+            transform: translateY(-2px);
+        }
+
+        .report-card.selected {
+            border-color: #3498db;
+            background: #f0f8ff;
+        }
+
+        .report-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .report-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .date-range-selector {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+            margin-bottom: 2rem;
+        }
+
+        .top-properties {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .top-properties-header {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .property-ranking {
+            padding: 0;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f8f9fa;
+            transition: background-color 0.3s;
+        }
+
+        .ranking-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+
+        .ranking-position {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-right: 1rem;
+            min-width: 30px;
+        }
+
+        .ranking-property {
+            flex: 1;
+        }
+
+        .ranking-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+
+        .ranking-details {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .ranking-metric {
+            text-align: right;
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .analytics-filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .chart-period {
+                flex-wrap: wrap;
+            }
+            
+            .reports-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .date-range-selector {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .metrics-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Simulated chart styles */
+        .bar-chart {
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            height: 200px;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .bar {
+            background: linear-gradient(180deg, #3498db, #2980b9);
+            border-radius: 4px 4px 0 0;
+            min-width: 30px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        .line-chart {
+            position: relative;
+            height: 200px;
+            padding: 20px;
+        }
+
+        .line-chart::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200"><path d="M20,150 Q50,120 80,130 T140,100 T200,80 T280,60" stroke="%233498db" stroke-width="3" fill="none"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Casa Nuvera</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span>☰</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="admin-dashboard.html" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="admin-properties.html" class="menu-item">
+                <span class="menu-icon">🏘️</span>
+                <span class="menu-text">Propiedades</span>
+            </a>
+            <a href="subir-propiedades.html" class="menu-item">
+                <span class="menu-icon">➕</span>
+                <span class="menu-text">Nueva Propiedad</span>
+            </a>
+            <a href="admin-contacts.html" class="menu-item">
+                <span class="menu-icon">📧</span>
+                <span class="menu-text">Contactos</span>
+            </a>
+            <a href="admin-analytics.html" class="menu-item active">
+                <span class="menu-icon">📈</span>
+                <span class="menu-text">Análisis</span>
+            </a>
+            <a href="admin-settings.html" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-text">Configuración</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="index.html" class="menu-item">
+                <span class="menu-icon">🌐</span>
+                <span class="menu-text">Ver Sitio Web</span>
+            </a>
+            <a href="#" class="menu-item" onclick="logoutAdmin()">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">Cerrar Sesión</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <h1>Análisis y Reportes</h1>
+                <p>Estadísticas detalladas y reportes de rendimiento</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-name" id="userName">Administrador</span>
+                    <span class="user-role">Casa Nuvera</span>
+                </div>
+                <div class="user-avatar">👨‍💼</div>
+            </div>
+        </header>
+
+        <!-- Auth Warning -->
+        <div class="auth-warning" id="authWarning" style="display: none;">
+            <h2>🔐 Acceso Restringido</h2>
+            <p>Esta página requiere autenticación de administrador.</p>
+            <a href="admin-login.html" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
+
+        <!-- Analytics Content -->
+        <div class="dashboard-content" id="analyticsContent">
+            <!-- Filtros de Analytics -->
+            <div class="analytics-filters">
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label for="analyticsDateFrom">Fecha Desde</label>
+                        <input type="date" id="analyticsDateFrom" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="analyticsDateTo">Fecha Hasta</label>
+                        <input type="date" id="analyticsDateTo" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="analyticsType">Tipo de Propiedad</label>
+                        <select id="analyticsType" class="form-control">
+                            <option value="">Todas</option>
+                            <option value="venta">Venta</option>
+                            <option value="arriendo">Arriendo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button type="button" class="btn btn-primary" onclick="updateAnalytics()">
+                            📊 Actualizar Análisis
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métricas Principales -->
+            <div class="metrics-row">
+                <div class="metric-card info">
+                    <div class="metric-value" id="totalViews">2,847</div>
+                    <div class="metric-label">Visitas Totales</div>
+                    <div class="metric-change positive">↗ +12.5% vs mes anterior</div>
+                </div>
+                
+                <div class="metric-card success">
+                    <div class="metric-value" id="totalLeads">156</div>
+                    <div class="metric-label">Consultas Recibidas</div>
+                    <div class="metric-change positive">↗ +8.3% vs mes anterior</div>
+                </div>
+                
+                <div class="metric-card warning">
+                    <div class="metric-value" id="conversionRate">5.5%</div>
+                    <div class="metric-label">Tasa de Conversión</div>
+                    <div class="metric-change negative">↘ -2.1% vs mes anterior</div>
+                </div>
+                
+                <div class="metric-card danger">
+                    <div class="metric-value" id="avgTimeOnSite">3:24</div>
+                    <div class="metric-label">Tiempo Promedio</div>
+                    <div class="metric-change positive">↗ +15.2% vs mes anterior</div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="analytics-grid">
+                <!-- Gráfico de Visitas -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Visitas por Día</h3>
+                        <div class="chart-period">
+                            <button class="period-btn active" onclick="setPeriod('7d')">7D</button>
+                            <button class="period-btn" onclick="setPeriod('30d')">30D</button>
+                            <button class="period-btn" onclick="setPeriod('90d')">90D</button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div class="line-chart">
+                            <!-- Gráfico de línea simulado -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Propiedades por Tipo -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Consultas por Tipo</h3>
+                    </div>
+                    <div class="chart-content">
+                        <div class="bar-chart">
+                            <div class="bar" style="height: 80%;">
+                                <div class="bar-label">Venta</div>
+                            </div>
+                            <div class="bar" style="height: 60%;">
+                                <div class="bar-label">Arriendo</div>
+                            </div>
+                            <div class="bar" style="height: 40%;">
+                                <div class="bar-label">Temporal</div>
+                            </div>
+                            <div class="bar" style="height: 25%;">
+                                <div class="bar-label">Tasación</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Ubicaciones -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Consultas por Comuna</h3>
+                    </div>
+                    <div class="chart-content">
+                        <div class="bar-chart">
+                            <div class="bar" style="height: 90%;">
+                                <div class="bar-label">Las Condes</div>
+                            </div>
+                            <div class="bar" style="height: 70%;">
+                                <div class="bar-label">Providencia</div>
+                            </div>
+                            <div class="bar" style="height: 50%;">
+                                <div class="bar-label">Vitacura</div>
+                            </div>
+                            <div class="bar" style="height: 35%;">
+                                <div class="bar-label">Ñuñoa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Propiedades -->
+                <div class="top-properties">
+                    <div class="top-properties-header">
+                        <h3>Propiedades Más Consultadas</h3>
+                    </div>
+                    <div class="property-ranking">
+                        <div class="ranking-item">
+                            <div class="ranking-position">1</div>
+                            <div class="ranking-property">
+                                <div class="ranking-title">Casa moderna en Las Condes</div>
+                                <div class="ranking-details">Las Condes • 3 dorm • 2 baños</div>
+                            </div>
+                            <div class="ranking-metric">47 vistas</div>
+                        </div>
+                        <div class="ranking-item">
+                            <div class="ranking-position">2</div>
+                            <div class="ranking-property">
+                                <div class="ranking-title">Departamento en Providencia</div>
+                                <div class="ranking-details">Providencia • 2 dorm • 1 baño</div>
+                            </div>
+                            <div class="ranking-metric">32 vistas</div>
+                        </div>
+                        <div class="ranking-item">
+                            <div class="ranking-position">3</div>
+                            <div class="ranking-property">
+                                <div class="ranking-title">Oficina en El Golf</div>
+                                <div class="ranking-details">Las Condes • 85 m²</div>
+                            </div>
+                            <div class="ranking-metric">28 vistas</div>
+                        </div>
+                        <div class="ranking-item">
+                            <div class="ranking-position">4</div>
+                            <div class="ranking-property">
+                                <div class="ranking-title">Casa con jardín en Ñuñoa</div>
+                                <div class="ranking-details">Ñuñoa • 4 dorm • 3 baños</div>
+                            </div>
+                            <div class="ranking-metric">22 vistas</div>
+                        </div>
+                        <div class="ranking-item">
+                            <div class="ranking-position">5</div>
+                            <div class="ranking-property">
+                                <div class="ranking-title">Departamento en Vitacura</div>
+                                <div class="ranking-details">Vitacura • 3 dorm • 2 baños</div>
+                            </div>
+                            <div class="ranking-metric">19 vistas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Reportes -->
+            <div class="reports-section">
+                <div class="reports-header">
+                    <h2>Generar Reportes</h2>
+                    <button class="btn btn-primary" onclick="generateReport()">
+                        📄 Generar Reporte
+                    </button>
+                </div>
+                
+                <div class="report-options">
+                    <div class="report-card" onclick="selectReport('monthly')">
+                        <div class="report-icon">📊</div>
+                        <div class="report-title">Reporte Mensual</div>
+                        <div class="report-description">Estadísticas completas del mes actual</div>
+                    </div>
+                    
+                    <div class="report-card" onclick="selectReport('properties')">
+                        <div class="report-icon">🏘️</div>
+                        <div class="report-title">Reporte de Propiedades</div>
+                        <div class="report-description">Análisis detallado por propiedad</div>
+                    </div>
+                    
+                    <div class="report-card" onclick="selectReport('leads')">
+                        <div class="report-icon">👥</div>
+                        <div class="report-title">Reporte de Consultas</div>
+                        <div class="report-description">Análisis de leads y conversiones</div>
+                    </div>
+                    
+                    <div class="report-card" onclick="selectReport('performance')">
+                        <div class="report-icon">📈</div>
+                        <div class="report-title">Reporte de Rendimiento</div>
+                        <div class="report-description">Métricas de performance del sitio</div>
+                    </div>
+                </div>
+                
+                <div class="date-range-selector">
+                    <div class="form-group">
+                        <label for="reportDateFrom">Fecha Desde</label>
+                        <input type="date" id="reportDateFrom" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reportDateTo">Fecha Hasta</label>
+                        <input type="date" id="reportDateTo" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reportFormat">Formato</label>
+                        <select id="reportFormat" class="form-control">
+                            <option value="pdf">PDF</option>
+                            <option value="excel">Excel</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Cargando análisis...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="admin-scripts.js"></script>
+    
+    <script>
+        class AnalyticsManager {
+            constructor() {
+                this.selectedReport = null;
+                this.currentPeriod = '7d';
+                this.init();
+            }
+
+            init() {
+                console.log('📈 Inicializando análisis y reportes...');
+                
+                // Verificar autenticación
+                if (!window.checkAdminSession || !window.checkAdminSession()) {
+                    this.showAuthWarning();
+                    return;
+                }
+
+                // Configurar fechas por defecto
+                this.setDefaultDates();
+                
+                // Simular carga de datos
+                this.loadAnalyticsData();
+                
+                this.hideLoading();
+            }
+
+            showAuthWarning() {
+                document.getElementById('authWarning').style.display = 'block';
+                document.getElementById('analyticsContent').style.display = 'none';
+                this.hideLoading();
+            }
+
+            setDefaultDates() {
+                const today = new Date();
+                const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+                
+                document.getElementById('analyticsDateTo').value = today.toISOString().split('T')[0];
+                document.getElementById('analyticsDateFrom').value = lastMonth.toISOString().split('T')[0];
+                
+                document.getElementById('reportDateTo').value = today.toISOString().split('T')[0];
+                document.getElementById('reportDateFrom').value = lastMonth.toISOString().split('T')[0];
+            }
+
+            loadAnalyticsData() {
+                // Simular carga de datos analíticos
+                console.log('📊 Cargando datos analíticos...');
+                
+                // En una implementación real, aquí se cargarían datos de:
+                // - Google Analytics
+                // - Base de datos de propiedades
+                // - Logs del servidor
+                // - Herramientas de tracking
+                
+                this.updateMetrics({
+                    totalViews: 2847,
+                    totalLeads: 156,
+                    conversionRate: 5.5,
+                    avgTimeOnSite: '3:24'
+                });
+                
+                window.showNotification('Datos analíticos actualizados', 'success', 2000);
+            }
+
+            updateMetrics(metrics) {
+                document.getElementById('totalViews').textContent = metrics.totalViews.toLocaleString();
+                document.getElementById('totalLeads').textContent = metrics.totalLeads.toLocaleString();
+                document.getElementById('conversionRate').textContent = metrics.conversionRate + '%';
+                document.getElementById('avgTimeOnSite').textContent = metrics.avgTimeOnSite;
+            }
+
+            generateReport() {
+                if (!this.selectedReport) {
+                    window.showNotification('Por favor selecciona un tipo de reporte', 'warning');
+                    return;
+                }
+
+                const dateFrom = document.getElementById('reportDateFrom').value;
+                const dateTo = document.getElementById('reportDateTo').value;
+                const format = document.getElementById('reportFormat').value;
+
+                if (!dateFrom || !dateTo) {
+                    window.showNotification('Por favor selecciona un rango de fechas', 'warning');
+                    return;
+                }
+
+                console.log('📄 Generando reporte:', {
+                    type: this.selectedReport,
+                    dateFrom,
+                    dateTo,
+                    format
+                });
+
+                // Simular generación de reporte
+                window.showNotification('Generando reporte...', 'info');
+                
+                setTimeout(() => {
+                    window.showNotification(`Reporte ${this.selectedReport} generado exitosamente`, 'success');
+                    
+                    // Simular descarga
+                    const link = document.createElement('a');
+                    link.href = '#';
+                    link.download = `casa-nuvera-${this.selectedReport}-${dateFrom}-${dateTo}.${format}`;
+                    link.textContent = `Descargar reporte`;
+                    
+                    // En una implementación real, aquí se generaría y descargaría el archivo
+                    console.log('📁 Reporte listo para descargar:', link.download);
+                }, 2000);
+            }
+
+            hideLoading() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+            }
+        }
+
+        // Funciones globales
+        function setPeriod(period) {
+            // Actualizar botones activos
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Actualizar período en el manager
+            if (window.analyticsManager) {
+                window.analyticsManager.currentPeriod = period;
+            }
+            
+            window.showNotification(`Período actualizado: ${period}`, 'info', 1500);
+        }
+
+        function selectReport(reportType) {
+            // Limpiar selección previa
+            document.querySelectorAll('.report-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar nuevo reporte
+            event.currentTarget.classList.add('selected');
+            
+            if (window.analyticsManager) {
+                window.analyticsManager.selectedReport = reportType;
+            }
+            
+            const reportNames = {
+                'monthly': 'Reporte Mensual',
+                'properties': 'Reporte de Propiedades',
+                'leads': 'Reporte de Consultas',
+                'performance': 'Reporte de Rendimiento'
+            };
+            
+            window.showNotification(`${reportNames[reportType]} seleccionado`, 'info', 1500);
+        }
+
+        function updateAnalytics() {
+            const dateFrom = document.getElementById('analyticsDateFrom').value;
+            const dateTo = document.getElementById('analyticsDateTo').value;
+            const type = document.getElementById('analyticsType').value;
+            
+            console.log('🔄 Actualizando análisis:', { dateFrom, dateTo, type });
+            
+            window.showNotification('Actualizando análisis...', 'info');
+            
+            // Simular actualización
+            setTimeout(() => {
+                if (window.analyticsManager) {
+                    window.analyticsManager.loadAnalyticsData();
+                }
+            }, 1000);
+        }
+
+        function generateReport() {
+            if (window.analyticsManager) {
+                window.analyticsManager.generateReport();
+            }
+        }
+
+        // Inicializar cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', () => {
+            window.analyticsManager = new AnalyticsManager();
+        });
+    </script>
+</body>
+</html>
