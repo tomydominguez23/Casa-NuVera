@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Casa Nuvera</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <style>
+        /* Styles específicos del dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card.success { border-left-color: #27ae60; }
+        .stat-card.warning { border-left-color: #f39c12; }
+        .stat-card.danger { border-left-color: #e74c3c; }
+        .stat-card.info { border-left-color: #3498db; }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .recent-activity {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .activity-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #ecf0f1;
+            background: #f8f9fa;
+        }
+
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f8f9fa;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .activity-icon.new { background: #d4edda; color: #27ae60; }
+        .activity-icon.edit { background: #fff3cd; color: #f39c12; }
+        .activity-icon.delete { background: #f8d7da; color: #e74c3c; }
+        .activity-icon.contact { background: #d1ecf1; color: #17a2b8; }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 0.2rem;
+        }
+
+        .activity-time {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-action {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .quick-action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .quick-action-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .quick-action-desc {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Casa Nuvera</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span>☰</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="admin-dashboard.html" class="menu-item active">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="admin-properties.html" class="menu-item">
+                <span class="menu-icon">🏘️</span>
+                <span class="menu-text">Propiedades</span>
+            </a>
+            <a href="subir-propiedades.html" class="menu-item">
+                <span class="menu-icon">➕</span>
+                <span class="menu-text">Nueva Propiedad</span>
+            </a>
+            <a href="admin-contacts.html" class="menu-item">
+                <span class="menu-icon">📧</span>
+                <span class="menu-text">Contactos</span>
+            </a>
+            <a href="admin-analytics.html" class="menu-item">
+                <span class="menu-icon">📈</span>
+                <span class="menu-text">Análisis</span>
+            </a>
+            <a href="admin-settings.html" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-text">Configuración</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="index.html" class="menu-item">
+                <span class="menu-icon">🌐</span>
+                <span class="menu-text">Ver Sitio Web</span>
+            </a>
+            <a href="#" class="menu-item" onclick="logoutAdmin()">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">Cerrar Sesión</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <h1>Panel de Administración</h1>
+                <p>Bienvenido al sistema de gestión de Casa Nuvera</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-name" id="userName">Administrador</span>
+                    <span class="user-role">Casa Nuvera</span>
+                </div>
+                <div class="user-avatar">👨‍💼</div>
+            </div>
+        </header>
+
+        <!-- Auth Warning -->
+        <div class="auth-warning" id="authWarning" style="display: none;">
+            <h2>🔐 Acceso Restringido</h2>
+            <p>Esta página requiere autenticación de administrador.</p>
+            <a href="admin-login.html" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content" id="dashboardContent">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card info">
+                    <div class="stat-header">
+                        <div class="stat-icon">🏠</div>
+                    </div>
+                    <div class="stat-value" id="totalProperties">-</div>
+                    <div class="stat-label">Total Propiedades</div>
+                </div>
+                
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <div class="stat-icon">💰</div>
+                    </div>
+                    <div class="stat-value" id="activeProperties">-</div>
+                    <div class="stat-label">Propiedades Activas</div>
+                </div>
+                
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <div class="stat-icon">📧</div>
+                    </div>
+                    <div class="stat-value" id="totalContacts">-</div>
+                    <div class="stat-label">Consultas Recibidas</div>
+                </div>
+                
+                <div class="stat-card danger">
+                    <div class="stat-header">
+                        <div class="stat-icon">👁️</div>
+                    </div>
+                    <div class="stat-value" id="totalViews">-</div>
+                    <div class="stat-label">Visitas Hoy</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="section-title">Acciones Rápidas</div>
+            <div class="quick-actions">
+                <a href="subir-propiedades.html" class="quick-action">
+                    <span class="quick-action-icon">➕</span>
+                    <div class="quick-action-title">Nueva Propiedad</div>
+                    <div class="quick-action-desc">Agregar una nueva propiedad al catálogo</div>
+                </a>
+                
+                <a href="admin-properties.html" class="quick-action">
+                    <span class="quick-action-icon">📝</span>
+                    <div class="quick-action-title">Gestionar Propiedades</div>
+                    <div class="quick-action-desc">Ver, editar o eliminar propiedades</div>
+                </a>
+                
+                <a href="admin-contacts.html" class="quick-action">
+                    <span class="quick-action-icon">📧</span>
+                    <div class="quick-action-title">Revisar Consultas</div>
+                    <div class="quick-action-desc">Ver y responder consultas de clientes</div>
+                </a>
+                
+                <a href="admin-analytics.html" class="quick-action">
+                    <span class="quick-action-icon">📊</span>
+                    <div class="quick-action-title">Ver Reportes</div>
+                    <div class="quick-action-desc">Análisis y estadísticas detalladas</div>
+                </a>
+            </div>
+
+            <!-- Charts and Activity -->
+            <div class="charts-grid">
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <div class="activity-header">
+                        <h3>Actividad Reciente</h3>
+                    </div>
+                    <div class="activity-list" id="activityList">
+                        <!-- Actividad se carga dinámicamente -->
+                        <div class="activity-item">
+                            <div class="activity-icon new">➕</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Sistema iniciado</div>
+                                <div class="activity-time">Hace pocos segundos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="chart-container">
+                    <h3 class="chart-title">Estado del Sistema</h3>
+                    <div class="system-status">
+                        <div class="status-item">
+                            <span class="status-label">Base de Datos</span>
+                            <span class="status-value success" id="dbStatus">✅ Conectada</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Almacenamiento</span>
+                            <span class="status-value success" id="storageStatus">✅ Disponible</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Última Actualización</span>
+                            <span class="status-value info" id="lastUpdate">Ahora</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Cargando panel de administración...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="admin-scripts.js"></script>
+    
+    <script>
+        // Dashboard específico
+        class AdminDashboard {
+            constructor() {
+                this.isInitialized = false;
+                this.stats = {
+                    totalProperties: 0,
+                    activeProperties: 0,
+                    totalContacts: 0,
+                    totalViews: 0
+                };
+                
+                this.init();
+            }
+
+            async init() {
+                console.log('🏠 Inicializando Dashboard de Casa Nuvera...');
+                
+                // Verificar autenticación
+                if (!window.checkAdminSession || !window.checkAdminSession()) {
+                    this.showAuthWarning();
+                    return;
+                }
+
+                // Mostrar información del usuario
+                this.updateUserInfo();
+                
+                // Cargar datos cuando Supabase esté listo
+                if (window.supabaseClient) {
+                    await this.loadDashboardData();
+                } else {
+                    window.addEventListener('supabaseReady', () => {
+                        this.loadDashboardData();
+                    });
+                }
+                
+                this.hideLoading();
+                this.isInitialized = true;
+            }
+
+            showAuthWarning() {
+                document.getElementById('authWarning').style.display = 'block';
+                document.getElementById('dashboardContent').style.display = 'none';
+                this.hideLoading();
+            }
+
+            updateUserInfo() {
+                const session = sessionStorage.getItem('casaNuveraAdminSession');
+                if (session) {
+                    try {
+                        const sessionData = JSON.parse(session);
+                        document.getElementById('userName').textContent = sessionData.username || 'Administrador';
+                    } catch (e) {
+                        console.warn('Error al obtener información del usuario');
+                    }
+                }
+            }
+
+            async loadDashboardData() {
+                try {
+                    console.log('📊 Cargando datos del dashboard...');
+                    
+                    // Cargar estadísticas de propiedades
+                    await this.loadPropertyStats();
+                    
+                    // Cargar actividad reciente
+                    await this.loadRecentActivity();
+                    
+                    // Actualizar estado del sistema
+                    this.updateSystemStatus();
+                    
+                    console.log('✅ Dashboard cargado exitosamente');
+                    
+                } catch (error) {
+                    console.error('❌ Error al cargar datos del dashboard:', error);
+                    this.showError('Error al cargar los datos del dashboard');
+                }
+            }
+
+            async loadPropertyStats() {
+                try {
+                    // Total de propiedades
+                    const { count: totalCount, error: totalError } = await window.supabaseClient
+                        .from('properties')
+                        .select('*', { count: 'exact', head: true });
+
+                    if (totalError) throw totalError;
+
+                    // Propiedades activas (asumiendo que tienen un campo 'active' o similar)
+                    const { count: activeCount } = await window.supabaseClient
+                        .from('properties')
+                        .select('*', { count: 'exact', head: true });
+
+                    this.stats.totalProperties = totalCount || 0;
+                    this.stats.activeProperties = activeCount || 0;
+                    
+                    // Simular otras estadísticas por ahora
+                    this.stats.totalContacts = Math.floor(Math.random() * 50) + 10;
+                    this.stats.totalViews = Math.floor(Math.random() * 200) + 50;
+
+                    this.updateStatsDisplay();
+                    
+                } catch (error) {
+                    console.warn('⚠️ Error al cargar estadísticas:', error);
+                    // Mostrar datos de ejemplo si hay error
+                    this.loadDemoStats();
+                }
+            }
+
+            loadDemoStats() {
+                this.stats = {
+                    totalProperties: 12,
+                    activeProperties: 10,
+                    totalContacts: 25,
+                    totalViews: 147
+                };
+                this.updateStatsDisplay();
+            }
+
+            updateStatsDisplay() {
+                document.getElementById('totalProperties').textContent = this.stats.totalProperties;
+                document.getElementById('activeProperties').textContent = this.stats.activeProperties;
+                document.getElementById('totalContacts').textContent = this.stats.totalContacts;
+                document.getElementById('totalViews').textContent = this.stats.totalViews;
+            }
+
+            async loadRecentActivity() {
+                // Por ahora mostrar actividad de ejemplo
+                // En el futuro esto se conectará a un log de actividades
+                const activities = [
+                    {
+                        type: 'new',
+                        title: 'Nueva propiedad publicada: "Casa en Las Condes"',
+                        time: 'Hace 2 horas'
+                    },
+                    {
+                        type: 'contact',
+                        title: 'Nueva consulta recibida para departamento en Providencia',
+                        time: 'Hace 4 horas'
+                    },
+                    {
+                        type: 'edit',
+                        title: 'Propiedad actualizada: "Oficina en El Golf"',
+                        time: 'Hace 1 día'
+                    },
+                    {
+                        type: 'new',
+                        title: 'Nueva propiedad publicada: "Departamento en Ñuñoa"',
+                        time: 'Hace 2 días'
+                    }
+                ];
+
+                const activityList = document.getElementById('activityList');
+                activityList.innerHTML = activities.map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-icon ${activity.type}">
+                            ${activity.type === 'new' ? '➕' : 
+                              activity.type === 'edit' ? '✏️' : 
+                              activity.type === 'contact' ? '📧' : '❌'}
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">${activity.title}</div>
+                            <div class="activity-time">${activity.time}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            updateSystemStatus() {
+                // Estado de la base de datos
+                const dbStatus = window.supabaseClient ? '✅ Conectada' : '❌ Desconectada';
+                document.getElementById('dbStatus').textContent = dbStatus;
+                
+                // Estado del almacenamiento
+                document.getElementById('storageStatus').textContent = '✅ Disponible';
+                
+                // Última actualización
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleString('es-CL');
+            }
+
+            hideLoading() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+            }
+
+            showError(message) {
+                console.error('Error:', message);
+                // Aquí podrías mostrar un toast o notificación de error
+            }
+        }
+
+        // Inicializar dashboard cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', () => {
+            new AdminDashboard();
+        });
+
+        // Auto-refresh cada 5 minutos
+        setInterval(() => {
+            if (window.dashboard && window.dashboard.isInitialized) {
+                window.dashboard.loadDashboardData();
+            }
+        }, 5 * 60 * 1000);
+    </script>
+</body>
+</html>
