@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casa Nuvera | Innovative Real Estate // Est. 2019</title>
+    <title>Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</title>
     <link rel="stylesheet" href="property-styles.css">
     <link rel="stylesheet" href="css/property-grid-dark.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -128,45 +128,11 @@
             background: var(--dark-gray) !important;
         }
 
-        /* Botón flotante para subir propiedades */
-        .floating-upload-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: linear-gradient(135deg, var(--elegant-beige), var(--warm-beige));
-            color: var(--primary-black);
-            padding: 1rem 1.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 10px 30px rgba(245, 245, 220, 0.3);
-            transition: all 0.3s ease;
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            animation: pulse-beige 3s infinite;
-        }
-
-        .floating-upload-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(245, 245, 220, 0.4);
-            background: linear-gradient(135deg, var(--warm-beige), var(--elegant-beige));
-        }
-
-        @keyframes pulse-beige {
-            0%, 100% { box-shadow: 0 10px 30px rgba(245, 245, 220, 0.3); }
-            50% { box-shadow: 0 15px 40px rgba(245, 245, 220, 0.5); }
-        }
-
         /* Hero Section con imagen de fondo full */
         .hero {
             height: 100vh;
             background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
-                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752024246180_1.jpg');
+                        url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop&crop=center');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -262,28 +228,6 @@
             color: var(--primary-black);
         }
 
-        .btn-upload {
-            background: linear-gradient(135deg, var(--elegant-beige), var(--warm-beige));
-            color: var(--primary-black);
-            border: 2px solid var(--elegant-beige);
-            padding: 1.2rem 2.5rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 5px 20px rgba(245, 245, 220, 0.3);
-        }
-
-        .btn-upload:hover {
-            background: linear-gradient(135deg, var(--warm-beige), var(--elegant-beige));
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(245, 245, 220, 0.4);
-        }
-
         /* Navigation Grid sin fondo */
         .nav-grid {
             padding: 0;
@@ -294,7 +238,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
         }
 
         .nav-item {
@@ -332,14 +276,6 @@
         .nav-item:nth-child(3) {
             background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
                         url('https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&crop=center');
-            background-size: cover;
-            background-position: center;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
-        }
-
-        .nav-item:nth-child(4) {
-            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
-                        url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop&crop=center');
             background-size: cover;
             background-position: center;
             border-right: none;
@@ -396,108 +332,92 @@
             font-size: 0.9rem;
         }
 
-        /* Sección especial de venta */
-        .sell-section {
-            background: linear-gradient(135deg, var(--charcoal), var(--dark-gray));
-            padding: 6rem 2rem;
-            text-align: center;
+        /* About Features Section */
+        .about-features-section {
+            padding: 8rem 2rem;
+            background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
+                        url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&h=1080&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: white;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        .sell-container {
+        .about-features-container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-
-        .sell-section h2 {
-            font-size: 3rem;
-            font-weight: 300;
-            margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .sell-section p {
-            font-size: 1.3rem;
-            margin-bottom: 3rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .sell-features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
         }
 
-        .sell-feature {
+        .about-features-content h2 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            color: white;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .about-features-content p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .about-features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .about-feature {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             padding: 2rem;
-            border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .sell-feature h4 {
-            font-size: 1.2rem;
+        .about-feature h4 {
+            font-size: 1.1rem;
             margin-bottom: 0.5rem;
             font-weight: 600;
-        }
-
-        .sell-actions {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-sell-primary {
-            background: var(--elegant-beige);
-            color: var(--primary-black);
-            border: 2px solid var(--elegant-beige);
-            padding: 1.2rem 3rem;
-            font-size: 1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            border-radius: 50px;
-        }
-
-        .btn-sell-primary:hover {
-            background: transparent;
             color: var(--elegant-beige);
-            transform: translateY(-2px);
         }
 
-        .btn-sell-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-            padding: 1.2rem 3rem;
-            font-size: 1rem;
+        .about-feature p {
+            font-size: 0.9rem;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .about-feature .btn-feature {
+            color: var(--elegant-beige);
+            text-decoration: none;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
             display: inline-block;
-            border-radius: 50px;
         }
 
-        .btn-sell-secondary:hover {
-            background: white;
-            color: var(--charcoal);
-            transform: translateY(-2px);
+        .about-image {
+            height: 500px;
+            background: linear-gradient(var(--overlay-light), var(--overlay-light)), 
+                        url('https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        /* Featured Properties - IMPORTANTE: Override para fondo oscuro */
+        /* Featured Properties con fondo oscuro */
         .featured-section {
             padding: 0 !important;
             background: transparent !important;
@@ -546,7 +466,7 @@
         .stats-section {
             padding: 6rem 2rem;
             background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
-                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752024245431_0.jpg');
+                        url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1920&h=1080&fit=crop&crop=center');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -585,11 +505,11 @@
             opacity: 0.8;
         }
 
-        /* About Section con fondo de imagen */
-        .about-section {
+        /* Nueva sección inmobiliaria */
+        .new-era-section {
             padding: 8rem 2rem;
             background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
-                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752025283665_0.jpg');
+                        url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&h=1080&fit=crop&crop=center');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -597,7 +517,7 @@
             filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        .about-container {
+        .new-era-container {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
@@ -606,7 +526,7 @@
             align-items: center;
         }
 
-        .about-content h2 {
+        .new-era-content h2 {
             font-size: 2.8rem;
             font-weight: 300;
             margin-bottom: 2rem;
@@ -615,44 +535,44 @@
             letter-spacing: -1px;
         }
 
-        .about-content p {
+        .new-era-content p {
             font-size: 1.2rem;
             color: rgba(255, 255, 255, 0.9);
             margin-bottom: 2rem;
             line-height: 1.6;
         }
 
-        .about-features {
+        .new-era-technologies {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 2rem;
             margin-top: 3rem;
         }
 
-        .about-feature {
+        .tech-feature {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             padding: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .about-feature h4 {
+        .tech-feature h4 {
             font-size: 1.1rem;
             margin-bottom: 0.5rem;
             font-weight: 600;
             color: var(--elegant-beige);
         }
 
-        .about-feature p {
+        .tech-feature p {
             font-size: 0.9rem;
             margin: 0;
             opacity: 0.8;
         }
 
-        .about-image {
+        .new-era-image {
             height: 500px;
             background: linear-gradient(var(--overlay-light), var(--overlay-light)), 
-                        url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop&crop=center');
+                        url('https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=600&fit=crop&crop=center');
             background-size: cover;
             background-position: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -749,7 +669,7 @@
         /* Footer con fondo de imagen */
         .footer {
             background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
-                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752027032204_0.jpg');
+                        url('https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=1920&h=1080&fit=crop&crop=center');
             background-size: cover;
             background-position: center;
             padding: 4rem 2rem 2rem;
@@ -848,7 +768,8 @@
                 border-bottom: none;
             }
 
-            .about-container {
+            .about-features-container,
+            .new-era-container {
                 grid-template-columns: 1fr;
                 gap: 3rem;
             }
@@ -880,31 +801,11 @@
                 background-attachment: scroll;
             }
 
-            .stats-section {
-                background-attachment: scroll;
-            }
-
-            .about-section {
-                background-attachment: scroll;
-            }
-
+            .stats-section,
+            .about-features-section,
+            .new-era-section,
             .contact-section {
                 background-attachment: scroll;
-            }
-
-            .floating-upload-btn {
-                bottom: 1rem;
-                right: 1rem;
-                padding: 0.8rem 1.2rem;
-                font-size: 0.8rem;
-            }
-
-            .sell-features {
-                grid-template-columns: 1fr;
-            }
-
-            .sell-actions {
-                flex-direction: column;
             }
         }
 
@@ -929,12 +830,6 @@
     </style>
 </head>
 <body>
-    <!-- Botón flotante para subir propiedades -->
-    <a href="subir-propiedades.html" class="floating-upload-btn">
-        <span>🏠</span>
-        Subir Propiedad
-    </a>
-
     <!-- Header flotante -->
     <header class="header">
         <div class="nav-container">
@@ -947,12 +842,11 @@
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.html" class="active">Inicio</a></li>
-                    <li><a href="compras.html">Comprar</a></li>
-                    <li><a href="arriendos.html">Arrendar</a></li>
+                    <li><a href="#compra">Comprar</a></li>
                     <li><a href="#servicios">Servicios</a></li>
                     <li><a href="#nosotros">Nosotros</a></li>
                     <li><a href="#contacto">Contacto</a></li>
-                    <li><a href="subir-imagenes.html" class="nav-cta">Gestionar</a></li>
+                    <li><a href="admin-login.html" class="nav-cta">Gestionar</a></li>
                 </ul>
             </nav>
         </div>
@@ -961,12 +855,11 @@
     <!-- Hero Section con imagen de fondo full -->
     <section class="hero parallax">
         <div class="hero-content fade-in">
-            <div class="hero-tagline">Casa Nuvera | Innovative Real Estate // Est. 2019</div>
-            <h1>Challenging the boundaries set by traditional real estate</h1>
-            <p class="hero-description">Somos un equipo de diseñadores y creativos que están abriendo camino hacia la libertad creativa para propietarios en todas partes. Desde nuestras propiedades líderes en la industria hasta nuevas innovaciones en el mercado inmobiliario.</p>
+            <div class="hero-tagline">Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</div>
+            <h1>descubramos juntos tu nuevo hogar</h1>
+            <p class="hero-description">Somos una corredora Boutique Familiar, que nace con el fin de ampliar la visibilidad de propiedades con gran potencial en todo el gran Santiago. Nuestro trabajo se enmarca en brindar calidad en el servicio de corretaje, desde la funcionalidad, innovación y proyección de cada espacio que ofrecemos.</p>
             <div class="hero-actions">
-                <a href="#servicios" class="btn-primary">Explorar Propiedades</a>
-                <a href="subir-propiedades.html" class="btn-upload">🏠 Subir Propiedad</a>
+                <a href="#compra" class="btn-primary">Explorar Propiedades</a>
                 <a href="#contacto" class="btn-secondary">Contactar Ahora</a>
             </div>
         </div>
@@ -975,21 +868,12 @@
     <!-- Navigation Grid con fondos de imagen -->
     <section class="nav-grid" id="servicios">
         <div class="nav-container-grid">
-            <a href="compras.html" class="nav-item">
+            <a href="#compra" class="nav-item">
                 <div class="nav-item-content">
                     <div class="nav-item-label">Compra</div>
                     <h3>Propiedades en Venta</h3>
                     <p>Casas y departamentos cuidadosamente seleccionados en las mejores ubicaciones de Santiago.</p>
                     <span class="nav-item-link">Explorar Propiedades →</span>
-                </div>
-            </a>
-
-            <a href="arriendos.html" class="nav-item">
-                <div class="nav-item-content">
-                    <div class="nav-item-label">Arriendo</div>
-                    <h3>Propiedades en Arriendo</h3>
-                    <p>Opciones de arriendo flexibles y convenientes para estilos de vida modernos.</p>
-                    <span class="nav-item-link">Ver Arriendos →</span>
                 </div>
             </a>
 
@@ -1002,59 +886,47 @@
                 </div>
             </a>
 
-            <a href="subir-propiedades.html" class="nav-item">
+            <a href="#vende" class="nav-item">
                 <div class="nav-item-content">
                     <div class="nav-item-label">Vende</div>
-                    <h3>Subir Propiedad</h3>
-                    <p>Publica tu propiedad de manera rápida y sencilla en nuestra plataforma.</p>
-                    <span class="nav-item-link">Publicar Ahora →</span>
+                    <h3>Vende tu propiedad</h3>
+                    <p>Te ayudamos a vender tu propiedad de manera rápida y al mejor precio del mercado.</p>
+                    <span class="nav-item-link">Más información →</span>
                 </div>
             </a>
         </div>
     </section>
 
-    <!-- Sección especial para vender propiedades -->
-    <section class="sell-section">
-        <div class="sell-container">
-            <h2>¿Tienes una propiedad para vender o arrendar?</h2>
-            <p>Únete a Casa Nuvera y llega a miles de compradores potenciales. Proceso simple, resultados excepcionales.</p>
+    <!-- About Features Section - Apoyo integral y Experiencia digital -->
+    <section class="about-features-section parallax">
+        <div class="about-features-container">
+            <div class="about-features-content fade-in">
+                <h2>Innovando el sector inmobiliario</h2>
+                <p>En Casa Nuvera combinamos la experiencia tradicional con las herramientas más avanzadas del mercado.</p>
+                
+                <div class="about-features-grid">
+                    <div class="about-feature">
+                        <h4>Apoyo integral</h4>
+                        <p>Contamos con un equipo interdisciplinario que te acompañarán en todas las etapas de compra y venta.</p>
+                    </div>
+                    <div class="about-feature">
+                        <h4>Experiencia digital</h4>
+                        <p>Integramos la tecnología de hoy al sector inmobiliario, creando experiencias digitales que transforman la manera de encontrar tu nuevo hogar.</p>
+                        <a href="#redefiniendo" class="btn-feature">conocer más →</a>
+                    </div>
+                </div>
+            </div>
             
-            <div class="sell-features">
-                <div class="sell-feature">
-                    <h4>🚀 Publicación Rápida</h4>
-                    <p>Sube tu propiedad en minutos con nuestro formulario intuitivo</p>
-                </div>
-                <div class="sell-feature">
-                    <h4>📸 Galería Premium</h4>
-                    <p>Muestra tu propiedad con imágenes de alta calidad</p>
-                </div>
-                <div class="sell-feature">
-                    <h4>📊 Mayor Visibilidad</h4>
-                    <p>Tu propiedad será vista por miles de potenciales compradores</p>
-                </div>
-                <div class="sell-feature">
-                    <h4>💼 Asesoría Experta</h4>
-                    <p>Nuestro equipo te acompañará en todo el proceso</p>
-                </div>
-            </div>
-
-            <div class="sell-actions">
-                <a href="subir-propiedades.html" class="btn-sell-primary">
-                    🏠 Subir Mi Propiedad
-                </a>
-                <a href="#contacto" class="btn-sell-secondary">
-                    💬 Consultar Asesor
-                </a>
-            </div>
+            <div class="about-image fade-in"></div>
         </div>
     </section>
 
     <!-- Featured Properties con fondo oscuro -->
-    <section class="featured-section">
+    <section class="featured-section" id="compra">
         <div class="featured-container">
             <div class="section-header fade-in">
                 <div class="section-tagline">Propiedades Destacadas</div>
-                <h2 class="section-title">The world's finest properties designed to maximize those lifestyle dreams</h2>
+                <h2 class="section-title">Tu nuevo hogar te está esperando, ven a descubrirlo</h2>
             </div>
 
             <div id="featuredProperties">
@@ -1079,7 +951,7 @@
                 <span class="stat-label">Clientes Satisfechos</span>
             </div>
             <div class="stat-item fade-in">
-                <span class="stat-number">15+</span>
+                <span class="stat-number">5+</span>
                 <span class="stat-label">Años de Experiencia</span>
             </div>
             <div class="stat-item fade-in">
@@ -1089,35 +961,35 @@
         </div>
     </section>
 
-    <!-- About Section con fondo de imagen -->
-    <section class="about-section parallax" id="nosotros">
-        <div class="about-container">
-            <div class="about-content fade-in">
-                <h2>Redefiniendo el mercado inmobiliario</h2>
-                <p>Con años de experiencia y una visión innovadora, Casa Nuvera transforma la manera en que las personas encuentran y adquieren propiedades.</p>
-                <p>Nuestro enfoque combina tecnología avanzada con un servicio personalizado excepcional.</p>
+    <!-- Nueva Era Inmobiliaria Section -->
+    <section class="new-era-section parallax" id="redefiniendo">
+        <div class="new-era-container">
+            <div class="new-era-content fade-in">
+                <h2>La nueva era de lo inmobiliario comienza aquí</h2>
+                <h3 style="font-size: 1.8rem; font-weight: 300; margin-bottom: 2rem; color: var(--elegant-beige);">Revolucionando la manera de encontrar tu hogar</h3>
+                <p>Porque entendemos que la tarea de encontrar tu próximo hogar es difícil, ya que implica tiempo y recursos. Acá en Casa Nuvera te brindamos las mejores herramientas para adquirir la propiedad que anhelas.</p>
                 
-                <div class="about-features">
-                    <div class="about-feature">
-                        <h4>Innovación</h4>
-                        <p>Tecnología de vanguardia en cada proceso</p>
+                <div class="new-era-technologies">
+                    <div class="tech-feature">
+                        <h4>Tour virtuales última generación</h4>
+                        <p>Recorre propiedades desde la comodidad de tu hogar con tecnología 360°</p>
                     </div>
-                    <div class="about-feature">
-                        <h4>Experiencia</h4>
-                        <p>Más de 15 años en el mercado inmobiliario</p>
+                    <div class="tech-feature">
+                        <h4>IA aplicada al sector inmobiliario</h4>
+                        <p>Algoritmos inteligentes que encuentran la propiedad perfecta para ti</p>
                     </div>
-                    <div class="about-feature">
-                        <h4>Confianza</h4>
-                        <p>Miles de clientes satisfechos nos respaldan</p>
+                    <div class="tech-feature">
+                        <h4>Integración de tecnologías</h4>
+                        <p>En un mercado competitivo, aplicamos las mejores herramientas para facilitar la venta de tu propiedad.</p>
                     </div>
-                    <div class="about-feature">
-                        <h4>Excelencia</h4>
-                        <p>Compromiso total con la calidad de servicio</p>
+                    <div class="tech-feature">
+                        <h4>Plataforma digital</h4>
+                        <p>Gestiona todo el proceso de compra o venta desde nuestra plataforma</p>
                     </div>
                 </div>
             </div>
             
-            <div class="about-image fade-in"></div>
+            <div class="new-era-image fade-in"></div>
         </div>
     </section>
 
@@ -1125,7 +997,7 @@
     <section class="contact-section parallax" id="contacto">
         <div class="contact-container">
             <h2 class="fade-in">¿Listo para encontrar tu próximo hogar?</h2>
-            <p class="fade-in">Nuestro equipo de expertos está aquí para ayudarte en cada paso del proceso. Desde la búsqueda inicial hasta el cierre de la transacción.</p>
+            <p class="fade-in">Nuestro equipo está aquí para ayudar en cada paso del proceso. Desde la búsqueda inicial hasta la inscripción de la propiedad a tu nombre.</p>
             
             <div class="contact-grid">
                 <div class="contact-item fade-in">
@@ -1135,11 +1007,6 @@
                 <div class="contact-item fade-in">
                     <h4>Email</h4>
                     <p><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></p>
-                </div>
-                <div class="contact-item fade-in">
-                    <h4>Oficina</h4>
-                    <p>Av. Apoquindo 1234</p>
-                    <p>Las Condes, Santiago</p>
                 </div>
             </div>
         </div>
@@ -1152,9 +1019,8 @@
                 <div class="footer-section">
                     <h4>Propiedades</h4>
                     <ul>
-                        <li><a href="compras.html">Comprar</a></li>
-                        <li><a href="arriendos.html">Arrendar</a></li>
-                        <li><a href="subir-propiedades.html">🏠 Subir Propiedad</a></li>
+                        <li><a href="#compra">Hogares para descubrir</a></li>
+                        <li><a href="#compra">Encuentra propiedades en venta cuidadosamente seleccionadas en el gran Santiago</a></li>
                         <li><a href="#servicios">Tasaciones</a></li>
                     </ul>
                 </div>
@@ -1174,7 +1040,7 @@
                     <ul>
                         <li><a href="#contacto">Contacto</a></li>
                         <li><a href="#" onclick="alert('Próximamente: Centro de ayuda con guías y tutoriales')">Centro de Ayuda</a></li>
-                        <li><a href="subir-imagenes.html">Gestionar Contenido</a></li>
+                        <li><a href="admin-login.html">Gestionar Contenido</a></li>
                         <li><a href="#" onclick="alert('Próximamente: Términos y condiciones')">Términos</a></li>
                     </ul>
                 </div>
@@ -1184,14 +1050,13 @@
                     <ul>
                         <li><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></li>
                         <li><a href="tel:+56912345678">+56 9 1234 5678</a></li>
-                        <li>Av. Apoquindo 1234</li>
-                        <li>Las Condes, Santiago</li>
+                        <li>Santiago, Chile</li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <div class="footer-tagline">Casa Nuvera | Innovative Real Estate // Est. 2019</div>
+                <div class="footer-tagline">Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</div>
                 <div>&copy; 2025 Casa Nuvera. Todos los derechos reservados.</div>
             </div>
         </div>
