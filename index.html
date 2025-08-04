@@ -228,17 +228,19 @@
             color: var(--primary-black);
         }
 
-        /* Navigation Grid con 4 imágenes SIN BORDES */
+        /* Navigation Grid SIN ESPACIOS GRISES */
         .nav-grid {
             padding: 0;
             background: transparent;
+            margin: 0;
         }
 
         .nav-container-grid {
-            max-width: 1400px;
-            margin: 0 auto;
+            max-width: 100%;
+            margin: 0;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
+            gap: 0; /* Sin espacios entre imágenes */
         }
 
         .nav-item {
@@ -254,6 +256,7 @@
             align-items: flex-end;
             background-size: cover;
             background-position: center;
+            margin: 0; /* Sin márgenes */
         }
 
         .nav-item:nth-child(1) {
@@ -886,7 +889,7 @@
         </div>
     </section>
 
-    <!-- Navigation Grid con 4 imágenes SIN BORDES y SIN "Apoyo integral" en la primera -->
+    <!-- Navigation Grid SIN ESPACIOS GRISES -->
     <section class="nav-grid" id="servicios">
         <div class="nav-container-grid">
             <!-- 1. Propiedades en Venta - SIN "Apoyo integral" -->
