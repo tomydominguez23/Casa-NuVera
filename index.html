@@ -228,7 +228,7 @@
             color: var(--primary-black);
         }
 
-        /* Navigation Grid sin fondo */
+        /* Navigation Grid con 4 imágenes */
         .nav-grid {
             padding: 0;
             background: transparent;
@@ -238,7 +238,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
         }
 
         .nav-item {
@@ -278,6 +278,14 @@
                         url('https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&crop=center');
             background-size: cover;
             background-position: center;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+        }
+
+        .nav-item:nth-child(4) {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
             border-right: none;
             filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
@@ -312,7 +320,7 @@
         }
 
         .nav-item h3 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 1rem;
             color: white;
@@ -321,27 +329,24 @@
         .nav-item p {
             color: rgba(255, 255, 255, 0.8);
             line-height: 1.6;
-            margin-bottom: 2rem;
-        }
-
-        /* Nuevas viñetas para el nav-item */
-        .nav-item-features {
             margin-bottom: 1.5rem;
+            font-size: 0.9rem;
         }
 
+        /* Viñetas específicas */
         .nav-item-feature {
             margin-bottom: 1rem;
         }
 
         .nav-item-feature h4 {
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 600;
             color: var(--elegant-beige);
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
         }
 
         .nav-item-feature p {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.8);
             line-height: 1.4;
             margin: 0;
@@ -766,12 +771,20 @@
             }
 
             .nav-container-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .nav-item {
-                border-right: none;
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .nav-item:nth-child(2n) {
+                border-right: none;
+            }
+
+            .nav-item:nth-child(3), .nav-item:nth-child(4) {
+                border-bottom: none;
             }
 
             .stats-container {
@@ -888,60 +901,70 @@
         </div>
     </section>
 
-    <!-- Navigation Grid con fondos de imagen y viñetas -->
+    <!-- Navigation Grid con 4 imágenes y textos específicos -->
     <section class="nav-grid" id="servicios">
         <div class="nav-container-grid">
+            <!-- 1. Propiedades en Venta -->
             <a href="compras.html" class="nav-item">
                 <div class="nav-item-content">
                     <div class="nav-item-label">Compra</div>
                     <h3>Propiedades en Venta</h3>
                     <p>Casas y departamentos cuidadosamente seleccionados en las mejores ubicaciones de Santiago.</p>
                     
-                    <div class="nav-item-features">
-                        <div class="nav-item-feature">
-                            <h4>• Apoyo integral</h4>
-                            <p>Contamos con un equipo interdisciplinario que te acompañarán en todas las etapas de compra y venta.</p>
-                        </div>
+                    <div class="nav-item-feature">
+                        <h4>Apoyo integral</h4>
+                        <p>Contamos con un equipo interdisciplinario que te acompañarán en todas las etapas de compra y venta.</p>
                     </div>
                     
                     <span class="nav-item-link">Explorar Propiedades →</span>
                 </div>
             </a>
 
+            <!-- 2. Asesoría Inmobiliaria -->
             <a href="#contacto" class="nav-item">
                 <div class="nav-item-content">
                     <div class="nav-item-label">Servicios</div>
                     <h3>Asesoría Inmobiliaria</h3>
                     <p>Consultoría profesional y servicios integrales para maximizar tu inversión.</p>
                     
-                    <div class="nav-item-features">
-                        <div class="nav-item-feature">
-                            <h4>• Apoyo integral</h4>
-                            <p>Contamos con un equipo interdisciplinario que te acompañarán en todas las etapas de compra y venta.</p>
-                        </div>
+                    <div class="nav-item-feature">
+                        <h4>Apoyo integral</h4>
+                        <p>Contamos con un equipo interdisciplinario que te acompañarán en todas las etapas de compra y venta.</p>
                     </div>
                     
                     <span class="nav-item-link">Conocer Más →</span>
                 </div>
             </a>
 
+            <!-- 3. Vende tu propiedad -->
             <a href="#contacto" class="nav-item">
                 <div class="nav-item-content">
                     <div class="nav-item-label">Vende</div>
                     <h3>Vende tu propiedad</h3>
                     <p>Te ayudamos a vender tu propiedad de manera rápida y al mejor precio del mercado.</p>
                     
-                    <div class="nav-item-features">
-                        <div class="nav-item-feature">
-                            <h4>• Experiencia digital</h4>
-                            <p>Integramos la tecnología de hoy al sector inmobiliario, creando experiencias digitales que transforman la manera de encontrar tu nuevo hogar.</p>
-                        </div>
-                        <div class="nav-item-feature">
-                            <h4>• <a href="#redefiniendo" style="color: var(--elegant-beige); text-decoration: none;">conocer más</a></h4>
-                        </div>
+                    <div class="nav-item-feature">
+                        <h4>Experiencia digital</h4>
+                        <p>Integramos la tecnología de hoy al sector inmobiliario, creando experiencias digitales que transforman la manera de encontrar tu nuevo hogar.</p>
                     </div>
                     
                     <span class="nav-item-link">Más información →</span>
+                </div>
+            </a>
+
+            <!-- 4. Conocer más -->
+            <a href="#redefiniendo" class="nav-item">
+                <div class="nav-item-content">
+                    <div class="nav-item-label">Información</div>
+                    <h3>Conocer más</h3>
+                    <p>Descubre cómo estamos redefiniendo el mercado inmobiliario con tecnología e innovación.</p>
+                    
+                    <div class="nav-item-feature">
+                        <h4>Conocer más</h4>
+                        <p>Redefiniendo el mercado inmobiliario con las mejores herramientas tecnológicas del sector.</p>
+                    </div>
+                    
+                    <span class="nav-item-link">Ver más →</span>
                 </div>
             </a>
         </div>
