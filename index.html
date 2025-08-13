@@ -446,29 +446,28 @@
             filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        /* Featured Properties con fondo oscuro */
+        /* Featured Properties - Nueva sección estilo portal inmobiliario */
         .featured-section {
-            padding: 0 !important;
-            background: transparent !important;
-            color: white;
+            padding: 6rem 2rem;
+            background: #f8f9fa;
+            color: #333;
         }
 
         .featured-container {
-            max-width: 100%;
-            margin: 0;
+            max-width: 1400px;
+            margin: 0 auto;
             width: 100%;
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 0;
-            padding: 4rem 2rem 2rem;
-            background: var(--background-gray) !important;
+            margin-bottom: 4rem;
+            padding: 0;
         }
 
         .section-tagline {
             font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7) !important;
+            color: #6c757d;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 1rem;
@@ -478,63 +477,172 @@
         .section-title {
             font-size: 2.8rem;
             font-weight: 300;
-            color: white !important;
+            color: #333;
             line-height: 1.2;
             letter-spacing: -1px;
         }
 
-        /* IMPORTANTE: Asegurar que el grid de propiedades se vea correctamente */
+        /* Nuevo grid de propiedades estilo portal inmobiliario */
         #featuredProperties {
-            background: #1a1a1a !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            min-height: 400px;
+            background: transparent;
+            padding: 0;
+            margin: 0;
         }
 
-        /* Stats Section con fondo de imagen */
-        .stats-section {
-            padding: 6rem 2rem;
-            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
-                        url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1920&h=1080&fit=crop&crop=center');
+        .properties-grid-portal {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .property-card-portal {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .property-card-portal:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .property-image-portal {
+            height: 220px;
+            background: #f8f9fa;
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .property-image-portal img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .property-card-portal:hover .property-image-portal img {
+            transform: scale(1.05);
+        }
+
+        .property-badge-portal {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #007bff;
             color: white;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
-        }
-
-        .stats-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 3rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            padding: 3rem 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 300;
-            margin-bottom: 0.5rem;
-            display: block;
-            color: var(--elegant-beige);
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.8;
+            letter-spacing: 0.5px;
         }
 
-        /* Nueva sección inmobiliaria */
+        .property-badge-portal.venta {
+            background: #28a745;
+        }
+
+        .property-info-portal {
+            padding: 1.5rem;
+        }
+
+        .property-price-portal {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-title-portal {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .property-location-portal {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .property-features-portal {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .property-contact-portal {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .whatsapp-btn {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .whatsapp-btn:hover {
+            background: #20c457;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .property-code {
+            font-size: 0.8rem;
+            color: #adb5bd;
+            font-weight: 500;
+        }
+
+        /* Placeholder para propiedades sin imagen */
+        .property-image-portal.no-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #6c757d;
+        }
+
+        .placeholder-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+
+        /* Nueva Era Inmobiliaria Section */
         .new-era-section {
             padding: 8rem 2rem;
             background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
@@ -775,21 +883,9 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .stat-item {
-                border-right: 1px solid rgba(255, 255, 255, 0.2);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            }
-
-            .stat-item:nth-child(2n) {
-                border-right: none;
-            }
-
-            .stat-item:nth-child(3), .stat-item:nth-child(4) {
-                border-bottom: none;
+            .properties-grid-portal {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
 
             .about-features-container,
@@ -825,7 +921,6 @@
                 background-attachment: scroll;
             }
 
-            .stats-section,
             .about-features-section,
             .new-era-section,
             .contact-section {
@@ -850,6 +945,33 @@
         /* Parallax effect */
         .parallax {
             background-attachment: fixed;
+        }
+
+        /* Loading States */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: #666;
+            min-height: 400px;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -977,7 +1099,7 @@
         </div>
     </section>
 
-    <!-- Featured Properties con fondo oscuro -->
+    <!-- Featured Properties - Nueva sección estilo portal inmobiliario -->
     <section class="featured-section" id="compra">
         <div class="featured-container">
             <div class="section-header fade-in">
@@ -991,28 +1113,6 @@
                     <div class="loading-spinner"></div>
                     <p>Cargando propiedades destacadas...</p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section con fondo de imagen -->
-    <section class="stats-section parallax">
-        <div class="stats-container">
-            <div class="stat-item fade-in">
-                <span class="stat-number">500+</span>
-                <span class="stat-label">Propiedades Vendidas</span>
-            </div>
-            <div class="stat-item fade-in">
-                <span class="stat-number">1000+</span>
-                <span class="stat-label">Clientes Satisfechos</span>
-            </div>
-            <div class="stat-item fade-in">
-                <span class="stat-number">5+</span>
-                <span class="stat-label">Años de Experiencia</span>
-            </div>
-            <div class="stat-item fade-in">
-                <span class="stat-number">95%</span>
-                <span class="stat-label">Tasa de Satisfacción</span>
             </div>
         </div>
     </section>
