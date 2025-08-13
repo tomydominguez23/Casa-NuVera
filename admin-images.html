@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Imágenes - Casa Nuvera</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <style>
+        /* Estilos específicos para gestión de imágenes */
+        .images-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .upload-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .upload-area {
+            border: 3px dashed #3498db;
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-area.dragover {
+            border-color: #27ae60;
+            background: #e8f5e8;
+            transform: scale(1.02);
+        }
+
+        .upload-area:hover {
+            border-color: #2c3e50;
+            background: #ecf0f1;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-subtext {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+
+        .upload-button:hover {
+            background: #2980b9;
+        }
+
+        .upload-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .progress-container {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #27ae60;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 0.5rem;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .gallery-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .gallery-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .gallery-stats {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            min-height: 200px;
+        }
+
+        .image-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .image-info {
+            padding: 1rem;
+        }
+
+        .image-name {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .image-size {
+            color: #7f8c8d;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-date {
+            color: #7f8c8d;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .image-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-copy {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #2980b9;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-subtext {
+            font-size: 0.9rem;
+        }
+
+        .loading-gallery {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #ecf0f1;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message, .error-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #27ae60;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #e74c3c;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Modal para vista previa */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+        }
+
+        .modal-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 2rem;
+        }
+
+        .modal-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .close-modal:hover {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+            
+            .images-container {
+                padding: 1rem;
+            }
+            
+            .image-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Casa Nuvera</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span>☰</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="admin-dashboard.html" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="admin-properties.html" class="menu-item">
+                <span class="menu-icon">🏘️</span>
+                <span class="menu-text">Propiedades</span>
+            </a>
+            <a href="subir-propiedades.html" class="menu-item">
+                <span class="menu-icon">➕</span>
+                <span class="menu-text">Nueva Propiedad</span>
+            </a>
+            <a href="admin-images.html" class="menu-item active">
+                <span class="menu-icon">🖼️</span>
+                <span class="menu-text">Gestión de Imágenes</span>
+            </a>
+            <a href="admin-contacts.html" class="menu-item">
+                <span class="menu-icon">📧</span>
+                <span class="menu-text">Contactos</span>
+            </a>
+            <a href="admin-analytics.html" class="menu-item">
+                <span class="menu-icon">📈</span>
+                <span class="menu-text">Análisis</span>
+            </a>
+            <a href="admin-settings.html" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-text">Configuración</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="index.html" class="menu-item">
+                <span class="menu-icon">🌐</span>
+                <span class="menu-text">Ver Sitio Web</span>
+            </a>
+            <a href="#" class="menu-item" onclick="logoutAdmin()">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">Cerrar Sesión</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <h1>Gestión de Imágenes</h1>
+                <p>Sube y gestiona las imágenes de tu sitio web</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-name" id="userName">Administrador</span>
+                    <span class="user-role">Casa Nuvera</span>
+                </div>
+                <div class="user-avatar">👨‍💼</div>
+            </div>
+        </header>
+
+        <!-- Auth Warning -->
+        <div class="auth-warning" id="authWarning" style="display: none;">
+            <h2>🔐 Acceso Restringido</h2>
+            <p>Esta página requiere autenticación de administrador.</p>
+            <a href="admin-login.html" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
+
+        <!-- Images Content -->
+        <div class="images-container" id="imagesContent">
+            <!-- Messages -->
+            <div class="success-message" id="successMessage"></div>
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <h2>📤 Subir Nuevas Imágenes</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">🖼️</div>
+                    <div class="upload-text">Arrastra y suelta imágenes aquí</div>
+                    <div class="upload-subtext">o haz clic para seleccionar archivos</div>
+                    <div class="upload-subtext">Formatos soportados: JPG, PNG, WEBP (máx. 5MB)</div>
+                    <input type="file" 
+                           class="file-input" 
+                           id="fileInput" 
+                           accept="image/*" 
+                           multiple>
+                </div>
+                <button class="upload-button" id="uploadButton" disabled>
+                    📤 Subir Imágenes
+                </button>
+
+                <!-- Progress Bar -->
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Subiendo...</div>
+                </div>
+            </div>
+
+            <!-- Gallery Section -->
+            <div class="gallery-section">
+                <div class="gallery-header">
+                    <h2 class="gallery-title">🖼️ Galería de Imágenes</h2>
+                    <div class="gallery-stats" id="galleryStats">
+                        Cargando...
+                    </div>
+                </div>
+                
+                <div class="gallery-grid" id="galleryGrid">
+                    <div class="loading-gallery">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para vista previa -->
+    <div class="modal" id="imageModal">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <div class="modal-content">
+            <img class="modal-image" id="modalImage" src="" alt="Vista previa">
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Cargando gestión de imágenes...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="admin-scripts.js"></script>
+    
+    <script>
+        class ImageManager {
+            constructor() {
+                this.isInitialized = false;
+                this.selectedFiles = [];
+                this.images = [];
+                this.bucketName = 'imagenes-sitio';
+                
+                this.init();
+            }
+
+            async init() {
+                console.log('🖼️ Inicializando Gestión de Imágenes...');
+                
+                // Verificar autenticación
+                if (!window.checkAdminSession || !window.checkAdminSession()) {
+                    this.showAuthWarning();
+                    return;
+                }
+
+                // Inicializar eventos
+                this.initializeEvents();
+                
+                // Cargar imágenes cuando Supabase esté listo
+                if (window.supabaseClient) {
+                    await this.loadImages();
+                } else {
+                    window.addEventListener('supabaseReady', () => {
+                        this.loadImages();
+                    });
+                }
+                
+                this.hideLoading();
+                this.isInitialized = true;
+            }
+
+            showAuthWarning() {
+                document.getElementById('authWarning').style.display = 'block';
+                document.getElementById('imagesContent').style.display = 'none';
+                this.hideLoading();
+            }
+
+            initializeEvents() {
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.getElementById('fileInput');
+                const uploadButton = document.getElementById('uploadButton');
+                const modal = document.getElementById('imageModal');
+                const closeModal = document.getElementById('closeModal');
+
+                // Drag and drop events
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+
+                uploadArea.addEventListener('dragleave', () => {
+                    uploadArea.classList.remove('dragover');
+                });
+
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    this.handleFiles(e.dataTransfer.files);
+                });
+
+                // File input change
+                fileInput.addEventListener('change', (e) => {
+                    this.handleFiles(e.target.files);
+                });
+
+                // Upload button
+                uploadButton.addEventListener('click', () => {
+                    this.uploadFiles();
+                });
+
+                // Modal events
+                closeModal.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+
+                // Keyboard events
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+
+            handleFiles(files) {
+                this.selectedFiles = Array.from(files).filter(file => {
+                    // Validar tipo de archivo
+                    if (!file.type.startsWith('image/')) {
+                        this.showError(`${file.name} no es una imagen válida`);
+                        return false;
+                    }
+                    
+                    // Validar tamaño (5MB máximo)
+                    if (file.size > 5 * 1024 * 1024) {
+                        this.showError(`${file.name} es demasiado grande (máx. 5MB)`);
+                        return false;
+                    }
+                    
+                    return true;
+                });
+
+                if (this.selectedFiles.length > 0) {
+                    document.getElementById('uploadButton').disabled = false;
+                    this.showSuccess(`${this.selectedFiles.length} archivo(s) seleccionado(s)`);
+                } else {
+                    document.getElementById('uploadButton').disabled = true;
+                }
+            }
+
+            async uploadFiles() {
+                if (this.selectedFiles.length === 0) return;
+
+                const uploadButton = document.getElementById('uploadButton');
+                const progressContainer = document.getElementById('progressContainer');
+                const progressFill = document.getElementById('progressFill');
+                const progressText = document.getElementById('progressText');
+
+                uploadButton.disabled = true;
+                progressContainer.style.display = 'block';
+
+                try {
+                    let uploadedCount = 0;
+                    
+                    for (let i = 0; i < this.selectedFiles.length; i++) {
+                        const file = this.selectedFiles[i];
+                        const fileName = `imagen_${Date.now()}_${i}.${file.type.split('/')[1]}`;
+                        
+                        // Actualizar progreso
+                        const progress = ((i + 1) / this.selectedFiles.length) * 100;
+                        progressFill.style.width = `${progress}%`;
+                        progressText.textContent = `Subiendo ${file.name}...`;
+
+                        // Subir archivo
+                        const { data, error } = await window.supabaseClient.storage
+                            .from(this.bucketName)
+                            .upload(fileName, file);
+
+                        if (error) {
+                            console.error('Error subiendo archivo:', error);
+                            this.showError(`Error subiendo ${file.name}: ${error.message}`);
+                        } else {
+                            uploadedCount++;
+                            console.log('Archivo subido:', data);
+                        }
+                    }
+
+                    // Completar progreso
+                    progressFill.style.width = '100%';
+                    progressText.textContent = 'Completado!';
+
+                    if (uploadedCount > 0) {
+                        this.showSuccess(`${uploadedCount} imagen(es) subida(s) exitosamente`);
+                        await this.loadImages(); // Recargar galería
+                    }
+
+                } catch (error) {
+                    console.error('Error en subida:', error);
+                    this.showError('Error durante la subida de archivos');
+                } finally {
+                    // Resetear formulario
+                    setTimeout(() => {
+                        uploadButton.disabled = false;
+                        progressContainer.style.display = 'none';
+                        progressFill.style.width = '0%';
+                        this.selectedFiles = [];
+                        document.getElementById('fileInput').value = '';
+                        uploadButton.disabled = true;
+                    }, 2000);
+                }
+            }
+
+            async loadImages() {
+                const galleryGrid = document.getElementById('galleryGrid');
+                const galleryStats = document.getElementById('galleryStats');
+
+                try {
+                    // Mostrar loading
+                    galleryGrid.innerHTML = `
+                        <div class="loading-gallery">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    `;
+
+                    // Obtener lista de archivos
+                    const { data: files, error } = await window.supabaseClient.storage
+                        .from(this.bucketName)
+                        .list('', {
+                            limit: 100,
+                            sortBy: { column: 'created_at', order: 'desc' }
+                        });
+
+                    if (error) throw error;
+
+                    this.images = files || [];
+                    
+                    // Actualizar estadísticas
+                    galleryStats.textContent = `${this.images.length} imagen(es)`;
+
+                    if (this.images.length === 0) {
+                        this.showEmptyState();
+                    } else {
+                        await this.renderGallery();
+                    }
+
+                } catch (error) {
+                    console.error('Error cargando imágenes:', error);
+                    this.showError('Error al cargar las imágenes');
+                    this.showEmptyState();
+                }
+            }
+
+            showEmptyState() {
+                const galleryGrid = document.getElementById('galleryGrid');
+                galleryGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📸</div>
+                        <div class="empty-text">No hay imágenes</div>
+                        <div class="empty-subtext">Sube tu primera imagen usando el área de arriba</div>
+                    </div>
+                `;
+            }
+
+            async renderGallery() {
+                const galleryGrid = document.getElementById('galleryGrid');
+                
+                const imageCards = await Promise.all(
+                    this.images.map(async (image) => {
+                        const imageUrl = this.getImageUrl(image.name);
+                        const fileSize = this.formatFileSize(image.metadata?.size || 0);
+                        const uploadDate = new Date(image.created_at).toLocaleDateString('es-CL');
+
+                        return `
+                            <div class="image-card">
+                                <img src="${imageUrl}" 
+                                     alt="${image.name}" 
+                                     class="image-preview"
+                                     onclick="imageManager.showImageModal('${imageUrl}', '${image.name}')"
+                                     loading="lazy">
+                                <div class="image-info">
+                                    <div class="image-name">${image.name}</div>
+                                    <div class="image-size">${fileSize}</div>
+                                    <div class="image-date">${uploadDate}</div>
+                                    <div class="image-actions">
+                                        <button class="action-btn btn-copy" onclick="imageManager.copyImageUrl('${imageUrl}')">
+                                            📋 Copiar URL
+                                        </button>
+                                        <button class="action-btn btn-delete" onclick="imageManager.deleteImage('${image.name}')">
+                                            🗑️ Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    })
+                );
+
+                galleryGrid.innerHTML = imageCards.join('');
+            }
+
+            getImageUrl(fileName) {
+                const { data } = window.supabaseClient.storage
+                    .from(this.bucketName)
+                    .getPublicUrl(fileName);
+                
+                return data.publicUrl;
+            }
+
+            showImageModal(imageUrl, imageName) {
+                const modal = document.getElementById('imageModal');
+                const modalImage = document.getElementById('modalImage');
+                
+                modalImage.src = imageUrl;
+                modalImage.alt = imageName;
+                modal.style.display = 'block';
+            }
+
+            async copyImageUrl(imageUrl) {
+                try {
+                    await navigator.clipboard.writeText(imageUrl);
+                    this.showSuccess('URL copiada al portapapeles');
+                } catch (error) {
+                    console.error('Error copiando URL:', error);
+                    this.showError('Error al copiar la URL');
+                }
+            }
+
+            async deleteImage(fileName) {
+                if (!confirm(`¿Estás seguro de que quieres eliminar "${fileName}"?`)) {
+                    return;
+                }
+
+                try {
+                    const { error } = await window.supabaseClient.storage
+                        .from(this.bucketName)
+                        .remove([fileName]);
+
+                    if (error) throw error;
+
+                    this.showSuccess('Imagen eliminada exitosamente');
+                    await this.loadImages(); // Recargar galería
+
+                } catch (error) {
+                    console.error('Error eliminando imagen:', error);
+                    this.showError('Error al eliminar la imagen');
+                }
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            showSuccess(message) {
+                const successDiv = document.getElementById('successMessage');
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    successDiv.style.display = 'none';
+                }, 5000);
+                
+                // Ocultar mensaje de error si está visible
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+
+            showError(message) {
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+                
+                // Ocultar mensaje de éxito si está visible
+                document.getElementById('successMessage').style.display = 'none';
+            }
+
+            hideLoading() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+            }
+        }
+
+        // Crear instancia global
+        let imageManager;
+
+        // Inicializar cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', () => {
+            imageManager = new ImageManager();
+        });
+    </script>
+</body>
+</html>
