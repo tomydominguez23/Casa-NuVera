@@ -1,4 +1,4 @@
-// property-loader.js - Sistema completo con estilo Portal Inmobiliario
+// property-loader.js - Sistema IDÉNTICO a PortalInmobiliario.com
 
 class PropertyLoader {
     constructor() {
@@ -83,6 +83,54 @@ class PropertyLoader {
                 published: true,
                 created_at: new Date().toISOString(),
                 main_image: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=800&h=600&fit=crop&crop=center"
+            },
+            {
+                id: 4,
+                title: "Departamento en Arriendo",
+                description: "Departamento En Arriendo En Chicureo",
+                address: "Chicureo",
+                commune: "Chicureo",
+                region: "Santiago",
+                neighborhood: "Chicureo",
+                price: 63,
+                currency: "UF",
+                property_type: "arriendo",
+                category: "Departamento",
+                bedrooms: 0,
+                bathrooms: 0,
+                total_area: 0,
+                parking_spaces: 0,
+                expenses: 0,
+                contact_phone: "+56912345678",
+                contact_email: "contacto@casanuvera.cl",
+                featured: true,
+                published: true,
+                created_at: new Date().toISOString(),
+                main_image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center"
+            },
+            {
+                id: 5,
+                title: "Impecable Departamento E...",
+                description: "Impecable Departamento En Arriendo",
+                address: "Chicureo",
+                commune: "Chicureo",
+                region: "Santiago",
+                neighborhood: "Chicureo",
+                price: 1450000,
+                currency: "CLP",
+                property_type: "arriendo",
+                category: "Departamento",
+                bedrooms: 0,
+                bathrooms: 0,
+                total_area: 0,
+                parking_spaces: 0,
+                expenses: 0,
+                contact_phone: "+56912345678",
+                contact_email: "contacto@casanuvera.cl",
+                featured: true,
+                published: true,
+                created_at: new Date().toISOString(),
+                main_image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop&crop=center"
             }
         ];
     }
@@ -218,71 +266,40 @@ class PropertyLoader {
     }
 
     // Obtener propiedades destacadas
-    getFeaturedProperties(limit = 3) {
+    getFeaturedProperties(limit = 5) {
         return this.filteredProperties
             .filter(p => p.featured)
             .slice(0, limit);
     }
 
-    // Generar HTML estilo Portal Inmobiliario
+    // Generar HTML IDÉNTICO a PortalInmobiliario.com
     generatePropertyHTML(property) {
         const formatPrice = (precio, moneda) => {
             const formatted = new Intl.NumberFormat('es-CL').format(precio);
             switch(moneda) {
-                case 'CLP': return `$${formatted}`;
+                case 'CLP': return `$ ${formatted}`;
                 case 'UF': return `UF ${formatted}`;
-                case 'USD': return `US$${formatted}`;
+                case 'USD': return `US$ ${formatted}`;
                 default: return `${moneda} ${formatted}`;
             }
         };
 
-        const getBadgeText = (tipo) => {
-            switch(tipo) {
-                case 'venta': 
-                case 'compra': 
-                case 'sale': return 'VENTA';
-                case 'arriendo': 
-                case 'rent': return 'ARRIENDO';
-                default: return 'DISPONIBLE';
-            }
-        };
-
         const imageUrl = this.getPropertyMainImage(property);
-        const propertyCode = `CV-${property.id.toString().padStart(4, '0')}`;
 
         return `
-            <div class="property-card-portal" data-id="${property.id}" onclick="goToProperty(${property.id})">
-                <div class="property-image-portal">
+            <div class="portal-property-card" data-id="${property.id}" onclick="goToProperty(${property.id})">
+                <div class="portal-property-image">
                     ${imageUrl ? 
-                        `<img src="${imageUrl}" alt="${property.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'placeholder-icon\\'>🏠</div><div>Sin imagen disponible</div>'">` : 
-                        `<div class="placeholder-icon">🏠</div><div>Sin imagen disponible</div>`
+                        `<img src="${imageUrl}" alt="${property.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'no-image-placeholder\\'>Sin imagen</div>'">` : 
+                        `<div class="no-image-placeholder">Sin imagen</div>`
                     }
-                    
-                    <div class="property-badge-portal ${property.property_type}">
-                        ${getBadgeText(property.property_type)}
-                    </div>
                 </div>
                 
-                <div class="property-info-portal">
-                    <div class="property-price-portal">${formatPrice(property.price, property.currency)}</div>
-                    <div class="property-title-portal">${property.title}</div>
-                    <div class="property-location-portal">
-                        📍 ${property.commune}${property.neighborhood ? `, ${property.neighborhood}` : ''}
-                    </div>
-                    
-                    <div class="property-features-portal">
-                        ${property.bedrooms > 0 ? `<div class="feature-item">🛏️ ${property.bedrooms} dorm</div>` : ''} 
-                        ${property.bathrooms > 0 ? `<div class="feature-item">🚿 ${property.bathrooms} baños</div>` : ''}
-                        ${property.total_area > 0 ? `<div class="feature-item">📐 ${property.total_area}m²</div>` : ''}
-                        ${property.parking_spaces > 0 ? `<div class="feature-item">🚗 ${property.parking_spaces} est.</div>` : ''}
-                    </div>
-                    
-                    <div class="property-contact-portal">
-                        <div class="property-code">${propertyCode}</div>
-                        <a href="#" class="whatsapp-btn" onclick="event.stopPropagation(); contactProperty('${property.id}')">
-                            💬 WhatsApp
-                        </a>
-                    </div>
+                <div class="portal-property-content">
+                    <div class="portal-property-price">${formatPrice(property.price, property.currency)}</div>
+                    <div class="portal-property-title">${property.title}</div>
+                    <div class="portal-property-subtitle">${property.description || property.address}</div>
+                    <div class="portal-property-location">${property.commune}</div>
                 </div>
             </div>
         `;
@@ -297,7 +314,7 @@ class PropertyLoader {
         return `https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center`;
     }
 
-    // Renderizar propiedades destacadas con el nuevo estilo
+    // Renderizar propiedades destacadas con el estilo exacto de PortalInmobiliario
     async renderProperties(containerId, tipo = null, limit = null, showFilters = false) {
         const container = document.getElementById(containerId);
         if (!container) {
@@ -325,7 +342,7 @@ class PropertyLoader {
         // Para propiedades destacadas, filtrar solo las destacadas
         let propertiesToShow = [];
         if (containerId === 'featuredProperties') {
-            propertiesToShow = this.getFeaturedProperties(limit || 3);
+            propertiesToShow = this.getFeaturedProperties(limit || 5);
         } else {
             propertiesToShow = this.filteredProperties;
         }
@@ -349,7 +366,7 @@ class PropertyLoader {
             `;
         } else {
             html += `
-                <div class="properties-grid-portal">
+                <div class="portal-properties-grid">
                     ${propertiesToShow.map(property => this.generatePropertyHTML(property)).join('')}
                 </div>
             `;
@@ -371,7 +388,7 @@ class PropertyLoader {
         // Re-renderizar propiedades destacadas
         const featuredContainer = document.getElementById('featuredProperties');
         if (featuredContainer) {
-            await this.renderProperties('featuredProperties', null, 3, false);
+            await this.renderProperties('featuredProperties', null, 5, false);
         }
         
         console.log('✅ Propiedades refrescadas');
@@ -434,7 +451,7 @@ window.propertyLoader = new PropertyLoader();
 
 // Auto-inicializar
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏠 Inicializando Property Loader estilo Portal Inmobiliario...');
+    console.log('🏠 Inicializando Property Loader IDÉNTICO a PortalInmobiliario...');
     
     setTimeout(async () => {
         try {
@@ -442,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (featuredContainer) {
                 console.log('📋 Cargando propiedades destacadas...');
-                await window.propertyLoader.renderProperties('featuredProperties', null, 3, false);
+                await window.propertyLoader.renderProperties('featuredProperties', null, 5, false);
             }
             
         } catch (error) {
@@ -451,4 +468,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1000);
 });
 
-console.log('✅ Property Loader estilo Portal Inmobiliario cargado - Casa Nuvera');
+console.log('✅ Property Loader IDÉNTICO a PortalInmobiliario.com cargado - Casa Nuvera');
