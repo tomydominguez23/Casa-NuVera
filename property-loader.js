@@ -1,4 +1,4 @@
-// property-loader.js - Sistema IDÉNTICO a PortalInmobiliario.com
+// property-loader.js - Sistema con scroll horizontal como en la imagen
 
 class PropertyLoader {
     constructor() {
@@ -14,80 +14,8 @@ class PropertyLoader {
         return [
             {
                 id: 1,
-                title: "Casa Moderna Las Condes",
-                description: "Hermosa casa moderna con acabados premium y excelente ubicación en sector exclusivo.",
-                address: "Av. Las Condes 1234",
-                commune: "Las Condes",
-                region: "Santiago",
-                neighborhood: "Sector exclusivo",
-                price: 8500,
-                currency: "UF",
-                property_type: "venta",
-                category: "Casa",
-                bedrooms: 4,
-                bathrooms: 3,
-                total_area: 250,
-                parking_spaces: 2,
-                expenses: 150000,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
-                featured: true,
-                published: true,
-                created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=600&fit=crop&crop=center"
-            },
-            {
-                id: 2,
-                title: "Departamento Providencia",
-                description: "Departamento con vista panorámica en el corazón de Providencia, ubicación privilegiada.",
-                address: "Av. Providencia 567",
-                commune: "Providencia",
-                region: "Santiago",
-                neighborhood: "Centro Providencia",
-                price: 5200,
-                currency: "UF",
-                property_type: "venta",
-                category: "Departamento",
-                bedrooms: 2,
-                bathrooms: 2,
-                total_area: 120,
-                parking_spaces: 1,
-                expenses: 80000,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
-                featured: true,
-                published: true,
-                created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop&crop=center"
-            },
-            {
-                id: 3,
-                title: "Casa Familiar Vitacura",
-                description: "Amplia casa familiar con jardín y piscina en sector exclusivo de Vitacura.",
-                address: "Calle Los Almendros 890",
-                commune: "Vitacura",
-                region: "Santiago",
-                neighborhood: "Sector residencial",
-                price: 12000,
-                currency: "UF",
-                property_type: "venta",
-                category: "Casa",
-                bedrooms: 5,
-                bathrooms: 4,
-                total_area: 350,
-                parking_spaces: 3,
-                expenses: 200000,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
-                featured: true,
-                published: true,
-                created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=800&h=600&fit=crop&crop=center"
-            },
-            {
-                id: 4,
                 title: "Departamento en Arriendo",
-                description: "Departamento En Arriendo En Chicureo",
+                description: "Departamento En Arriendo",
                 address: "Chicureo",
                 commune: "Chicureo",
                 region: "Santiago",
@@ -109,8 +37,8 @@ class PropertyLoader {
                 main_image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center"
             },
             {
-                id: 5,
-                title: "Impecable Departamento E...",
+                id: 2,
+                title: "Departamento en Arriendo",
                 description: "Impecable Departamento En Arriendo",
                 address: "Chicureo",
                 commune: "Chicureo",
@@ -131,6 +59,78 @@ class PropertyLoader {
                 published: true,
                 created_at: new Date().toISOString(),
                 main_image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop&crop=center"
+            },
+            {
+                id: 3,
+                title: "Departamento en Arriendo",
+                description: "Arriendo Hermosa Casa Chicureo",
+                address: "Chicureo",
+                commune: "Chicureo",
+                region: "Santiago",
+                neighborhood: "Chicureo",
+                price: 1990000,
+                currency: "CLP",
+                property_type: "arriendo",
+                category: "Departamento",
+                bedrooms: 0,
+                bathrooms: 0,
+                total_area: 0,
+                parking_spaces: 0,
+                expenses: 0,
+                contact_phone: "+56912345678",
+                contact_email: "contacto@casanuvera.cl",
+                featured: true,
+                published: true,
+                created_at: new Date().toISOString(),
+                main_image: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=800&h=600&fit=crop&crop=center"
+            },
+            {
+                id: 4,
+                title: "Departamento en Arriendo",
+                description: "Precioso Townhouse En Arriendo",
+                address: "Chicureo",
+                commune: "Chicureo",
+                region: "Santiago",
+                neighborhood: "Chicureo",
+                price: 1100000,
+                currency: "CLP",
+                property_type: "arriendo",
+                category: "Departamento",
+                bedrooms: 0,
+                bathrooms: 0,
+                total_area: 0,
+                parking_spaces: 0,
+                expenses: 0,
+                contact_phone: "+56912345678",
+                contact_email: "contacto@casanuvera.cl",
+                featured: true,
+                published: true,
+                created_at: new Date().toISOString(),
+                main_image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center"
+            },
+            {
+                id: 5,
+                title: "Departamento en Arriendo",
+                description: "Hermoso Depto 4 D + 4 B + Estudio",
+                address: "Chicureo",
+                commune: "Chicureo",
+                region: "Santiago",
+                neighborhood: "Chicureo",
+                price: 2500000,
+                currency: "CLP",
+                property_type: "arriendo",
+                category: "Departamento",
+                bedrooms: 4,
+                bathrooms: 4,
+                total_area: 0,
+                parking_spaces: 0,
+                expenses: 0,
+                contact_phone: "+56912345678",
+                contact_email: "contacto@casanuvera.cl",
+                featured: true,
+                published: true,
+                created_at: new Date().toISOString(),
+                main_image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&crop=center"
             }
         ];
     }
@@ -272,7 +272,7 @@ class PropertyLoader {
             .slice(0, limit);
     }
 
-    // Generar HTML IDÉNTICO a PortalInmobiliario.com
+    // Generar HTML con scroll horizontal como en la imagen
     generatePropertyHTML(property) {
         const formatPrice = (precio, moneda) => {
             const formatted = new Intl.NumberFormat('es-CL').format(precio);
@@ -298,7 +298,7 @@ class PropertyLoader {
                 <div class="portal-property-content">
                     <div class="portal-property-price">${formatPrice(property.price, property.currency)}</div>
                     <div class="portal-property-title">${property.title}</div>
-                    <div class="portal-property-subtitle">${property.description || property.address}</div>
+                    <div class="portal-property-subtitle">${property.description}</div>
                     <div class="portal-property-location">${property.commune}</div>
                 </div>
             </div>
@@ -314,7 +314,34 @@ class PropertyLoader {
         return `https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center`;
     }
 
-    // Renderizar propiedades destacadas con el estilo exacto de PortalInmobiliario
+    // Aplicar filtros de búsqueda
+    applySearchFilters(filters) {
+        this.currentFilters = filters;
+        
+        this.filteredProperties = this.properties.filter(property => {
+            // Filtro por tipo de operación
+            if (filters.operation && property.property_type !== filters.operation) {
+                return false;
+            }
+            
+            // Filtro por tipo de propiedad
+            if (filters.type && property.category !== filters.type) {
+                return false;
+            }
+            
+            // Filtro por ubicación
+            if (filters.location && !property.commune.toLowerCase().includes(filters.location.toLowerCase())) {
+                return false;
+            }
+            
+            return true;
+        });
+
+        // Re-renderizar propiedades filtradas
+        this.renderProperties('featuredProperties', null, 5, false);
+    }
+
+    // Renderizar propiedades con scroll horizontal
     async renderProperties(containerId, tipo = null, limit = null, showFilters = false) {
         const container = document.getElementById(containerId);
         if (!container) {
@@ -326,7 +353,7 @@ class PropertyLoader {
         container.innerHTML = `
             <div class="loading-container">
                 <div class="loading-spinner"></div>
-                <p>Cargando propiedades...</p>
+                <p>Cargando propiedades destacadas...</p>
             </div>
         `;
 
@@ -352,7 +379,7 @@ class PropertyLoader {
             propertiesToShow = propertiesToShow.slice(0, limit);
         }
 
-        // Generar HTML
+        // Generar HTML con scroll horizontal
         let html = '';
 
         // Renderizar propiedades
@@ -366,8 +393,10 @@ class PropertyLoader {
             `;
         } else {
             html += `
-                <div class="portal-properties-grid">
-                    ${propertiesToShow.map(property => this.generatePropertyHTML(property)).join('')}
+                <div class="properties-scroll-container">
+                    <div class="portal-properties-horizontal">
+                        ${propertiesToShow.map(property => this.generatePropertyHTML(property)).join('')}
+                    </div>
                 </div>
             `;
         }
@@ -451,7 +480,7 @@ window.propertyLoader = new PropertyLoader();
 
 // Auto-inicializar
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏠 Inicializando Property Loader IDÉNTICO a PortalInmobiliario...');
+    console.log('🏠 Inicializando Property Loader con scroll horizontal...');
     
     setTimeout(async () => {
         try {
@@ -468,4 +497,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1000);
 });
 
-console.log('✅ Property Loader IDÉNTICO a PortalInmobiliario.com cargado - Casa Nuvera');
+console.log('✅ Property Loader con scroll horizontal cargado - Casa Nuvera');
