@@ -1,4 +1,4 @@
-// property-loader.js - Sistema completo con filtros estilo PortalInmobiliario
+// property-loader.js - Sistema completo con estilo Portal Inmobiliario
 
 class PropertyLoader {
     constructor() {
@@ -83,78 +83,6 @@ class PropertyLoader {
                 published: true,
                 created_at: new Date().toISOString(),
                 main_image: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=800&h=600&fit=crop&crop=center"
-            },
-            {
-                id: 4,
-                title: "Departamento en Arriendo Ñuñoa",
-                description: "Cómodo departamento para arriendo en excelente ubicación cerca de Plaza Ñuñoa.",
-                address: "Av. Ñuñoa 345",
-                commune: "Ñuñoa",
-                region: "Santiago",
-                neighborhood: "Plaza Ñuñoa",
-                price: 650000,
-                currency: "CLP",
-                property_type: "arriendo",
-                category: "Departamento",
-                bedrooms: 2,
-                bathrooms: 1,
-                total_area: 80,
-                parking_spaces: 1,
-                expenses: 45000,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
-                featured: false,
-                published: true,
-                created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center"
-            },
-            {
-                id: 5,
-                title: "Casa en Arriendo San Miguel",
-                description: "Casa amplia para arriendo familiar en barrio tranquilo de San Miguel.",
-                address: "Calle San Miguel 123",
-                commune: "San Miguel",
-                region: "Santiago",
-                neighborhood: "Centro San Miguel",
-                price: 850000,
-                currency: "CLP",
-                property_type: "arriendo",
-                category: "Casa",
-                bedrooms: 3,
-                bathrooms: 2,
-                total_area: 150,
-                parking_spaces: 2,
-                expenses: 0,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
-                featured: false,
-                published: true,
-                created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&crop=center"
-            },
-            {
-                id: 6,
-                title: "Oficina Las Condes",
-                description: "Moderna oficina en edificio corporativo premium.",
-                address: "Av. El Bosque Norte 500",
-                commune: "Las Condes",
-                region: "Santiago",
-                neighborhood: "El Golf",
-                price: 3500,
-                currency: "UF",
-                property_type: "venta",
-                category: "Oficina",
-                bedrooms: 0,
-                bathrooms: 2,
-                total_area: 95,
-                parking_spaces: 2,
-                expenses: 120000,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
-                featured: false,
-                published: true,
-                created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop&crop=center"
             }
         ];
     }
@@ -289,203 +217,6 @@ class PropertyLoader {
         }));
     }
 
-    // FILTROS ESTILO PORTAL INMOBILIARIO
-    generateFiltersHTML(containerId) {
-        const communes = [...new Set(this.properties.map(p => p.commune))].sort();
-        const categories = [...new Set(this.properties.map(p => p.category))].sort();
-        
-        return `
-            <div class="filters-section">
-                <div class="filters-container">
-                    <div class="filters-grid">
-                        <div class="filter-group">
-                            <label class="filter-label">Tipo de Operación</label>
-                            <select class="filter-select" id="filter-operation">
-                                <option value="">Todas</option>
-                                <option value="venta">Venta</option>
-                                <option value="arriendo">Arriendo</option>
-                            </select>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label class="filter-label">Tipo de Propiedad</label>
-                            <select class="filter-select" id="filter-category">
-                                <option value="">Todas</option>
-                                ${categories.map(cat => `<option value="${cat}">${cat}</option>`).join('')}
-                            </select>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label class="filter-label">Comuna</label>
-                            <select class="filter-select" id="filter-commune">
-                                <option value="">Todas las comunas</option>
-                                ${communes.map(commune => `<option value="${commune}">${commune}</option>`).join('')}
-                            </select>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label class="filter-label">Dormitorios</label>
-                            <select class="filter-select" id="filter-bedrooms">
-                                <option value="">Cualquier cantidad</option>
-                                <option value="1">1 dormitorio</option>
-                                <option value="2">2 dormitorios</option>
-                                <option value="3">3 dormitorios</option>
-                                <option value="4">4 dormitorios</option>
-                                <option value="5">5+ dormitorios</option>
-                            </select>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label class="filter-label">Baños</label>
-                            <select class="filter-select" id="filter-bathrooms">
-                                <option value="">Cualquier cantidad</option>
-                                <option value="1">1 baño</option>
-                                <option value="2">2 baños</option>
-                                <option value="3">3 baños</option>
-                                <option value="4">4+ baños</option>
-                            </select>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label class="filter-label">Precio</label>
-                            <div class="price-range">
-                                <input type="number" class="filter-input" id="filter-price-min" placeholder="Mínimo">
-                                <span class="price-separator">-</span>
-                                <input type="number" class="filter-input" id="filter-price-max" placeholder="Máximo">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="filters-actions">
-                        <button class="filter-btn secondary" onclick="propertyLoader.clearFilters('${containerId}')">
-                            Limpiar Filtros
-                        </button>
-                        <button class="filter-btn primary" onclick="propertyLoader.applyFilters('${containerId}')">
-                            Buscar Propiedades
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="results-count" id="results-count">
-                <strong>${this.filteredProperties.length}</strong> propiedades encontradas
-            </div>
-        `;
-    }
-
-    // Aplicar filtros
-    applyFilters(containerId) {
-        const filters = {
-            operation: document.getElementById('filter-operation')?.value || '',
-            category: document.getElementById('filter-category')?.value || '',
-            commune: document.getElementById('filter-commune')?.value || '',
-            bedrooms: document.getElementById('filter-bedrooms')?.value || '',
-            bathrooms: document.getElementById('filter-bathrooms')?.value || '',
-            priceMin: document.getElementById('filter-price-min')?.value || '',
-            priceMax: document.getElementById('filter-price-max')?.value || ''
-        };
-
-        this.currentFilters = filters;
-        this.filteredProperties = this.properties.filter(property => {
-            // Filtro por tipo de operación
-            if (filters.operation && !property.property_type.includes(filters.operation)) {
-                return false;
-            }
-
-            // Filtro por categoría
-            if (filters.category && property.category !== filters.category) {
-                return false;
-            }
-
-            // Filtro por comuna
-            if (filters.commune && property.commune !== filters.commune) {
-                return false;
-            }
-
-            // Filtro por dormitorios
-            if (filters.bedrooms) {
-                const bedroomsFilter = parseInt(filters.bedrooms);
-                if (bedroomsFilter === 5 && property.bedrooms < 5) {
-                    return false;
-                } else if (bedroomsFilter < 5 && property.bedrooms !== bedroomsFilter) {
-                    return false;
-                }
-            }
-
-            // Filtro por baños
-            if (filters.bathrooms) {
-                const bathroomsFilter = parseInt(filters.bathrooms);
-                if (bathroomsFilter === 4 && property.bathrooms < 4) {
-                    return false;
-                } else if (bathroomsFilter < 4 && property.bathrooms !== bathroomsFilter) {
-                    return false;
-                }
-            }
-
-            // Filtro por precio mínimo
-            if (filters.priceMin && property.price < parseInt(filters.priceMin)) {
-                return false;
-            }
-
-            // Filtro por precio máximo
-            if (filters.priceMax && property.price > parseInt(filters.priceMax)) {
-                return false;
-            }
-
-            return true;
-        });
-
-        // Actualizar contador de resultados
-        const resultsCount = document.getElementById('results-count');
-        if (resultsCount) {
-            resultsCount.innerHTML = `<strong>${this.filteredProperties.length}</strong> propiedades encontradas`;
-        }
-
-        // Re-renderizar propiedades filtradas
-        this.renderFilteredProperties(containerId);
-    }
-
-    // Limpiar filtros
-    clearFilters(containerId) {
-        // Limpiar campos
-        const filterElements = [
-            'filter-operation', 'filter-category', 'filter-commune',
-            'filter-bedrooms', 'filter-bathrooms', 'filter-price-min', 'filter-price-max'
-        ];
-
-        filterElements.forEach(id => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.value = '';
-            }
-        });
-
-        // Resetear filtros
-        this.currentFilters = {};
-        this.filteredProperties = [...this.properties];
-
-        // Actualizar contador
-        const resultsCount = document.getElementById('results-count');
-        if (resultsCount) {
-            resultsCount.innerHTML = `<strong>${this.filteredProperties.length}</strong> propiedades encontradas`;
-        }
-
-        // Re-renderizar todas las propiedades
-        this.renderFilteredProperties(containerId);
-    }
-
-    // Filtrar propiedades por tipo
-    getPropertiesByType(tipo) {
-        return this.filteredProperties.filter(property => {
-            if (tipo === 'compra') {
-                return ['venta', 'compra', 'sale'].includes(property.property_type);
-            } else if (tipo === 'arriendo') {
-                return ['arriendo', 'rent', 'arriendo-temporal'].includes(property.property_type);
-            }
-            return false;
-        });
-    }
-
     // Obtener propiedades destacadas
     getFeaturedProperties(limit = 3) {
         return this.filteredProperties
@@ -493,7 +224,7 @@ class PropertyLoader {
             .slice(0, limit);
     }
 
-    // Generar HTML compacto para propiedades
+    // Generar HTML estilo Portal Inmobiliario
     generatePropertyHTML(property) {
         const formatPrice = (precio, moneda) => {
             const formatted = new Intl.NumberFormat('es-CL').format(precio);
@@ -517,47 +248,40 @@ class PropertyLoader {
         };
 
         const imageUrl = this.getPropertyMainImage(property);
+        const propertyCode = `CV-${property.id.toString().padStart(4, '0')}`;
 
         return `
-            <div class="property-card" data-id="${property.id}" onclick="goToProperty(${property.id})">
-                <div class="property-image">
+            <div class="property-card-portal" data-id="${property.id}" onclick="goToProperty(${property.id})">
+                <div class="property-image-portal">
                     ${imageUrl ? 
-                        `<img src="${imageUrl}" alt="${property.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'placeholder-image\\'><div class=\\'placeholder-icon\\'>🏠</div><div class=\\'placeholder-text\\'>Sin imagen</div></div>'">` : 
-                        `<div class="placeholder-image">
-                            <div class="placeholder-icon">🏠</div>
-                            <div class="placeholder-text">Sin imagen</div>
-                        </div>`
+                        `<img src="${imageUrl}" alt="${property.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'placeholder-icon\\'>🏠</div><div>Sin imagen disponible</div>'">` : 
+                        `<div class="placeholder-icon">🏠</div><div>Sin imagen disponible</div>`
                     }
                     
-                    <div class="property-badge ${property.featured ? 'featured' : ''}">
-                        ${property.featured ? '⭐ ' : ''}${getBadgeText(property.property_type)}
-                    </div>
-                    
-                    <div class="property-overlay">
-                        <div class="property-details-btn">👁️ Ver Detalles</div>
+                    <div class="property-badge-portal ${property.property_type}">
+                        ${getBadgeText(property.property_type)}
                     </div>
                 </div>
                 
-                <div class="property-info">
-                    <div class="property-price">${formatPrice(property.price, property.currency)}</div>
-                    <div class="property-title">${property.title}</div>
-                    <div class="property-location">📍 ${property.commune}</div>
-                    
-                    <div class="property-features">
-                        ${property.bedrooms > 0 ? `🛏️ ${property.bedrooms} dorm` : ''} 
-                        ${property.bathrooms > 0 ? ` • 🚿 ${property.bathrooms} baños` : ''}
-                        ${property.total_area > 0 ? ` • 📐 ${property.total_area}m²` : ''}
+                <div class="property-info-portal">
+                    <div class="property-price-portal">${formatPrice(property.price, property.currency)}</div>
+                    <div class="property-title-portal">${property.title}</div>
+                    <div class="property-location-portal">
+                        📍 ${property.commune}${property.neighborhood ? `, ${property.neighborhood}` : ''}
                     </div>
                     
-                    ${property.expenses ? 
-                        `<div class="property-expenses">💰 G.C: $${new Intl.NumberFormat('es-CL').format(property.expenses)}</div>` : 
-                        ''
-                    }
+                    <div class="property-features-portal">
+                        ${property.bedrooms > 0 ? `<div class="feature-item">🛏️ ${property.bedrooms} dorm</div>` : ''} 
+                        ${property.bathrooms > 0 ? `<div class="feature-item">🚿 ${property.bathrooms} baños</div>` : ''}
+                        ${property.total_area > 0 ? `<div class="feature-item">📐 ${property.total_area}m²</div>` : ''}
+                        ${property.parking_spaces > 0 ? `<div class="feature-item">🚗 ${property.parking_spaces} est.</div>` : ''}
+                    </div>
                     
-                    <div class="property-contact">
-                        <button class="contact-btn" onclick="event.stopPropagation(); contactProperty('${property.id}')">
+                    <div class="property-contact-portal">
+                        <div class="property-code">${propertyCode}</div>
+                        <a href="#" class="whatsapp-btn" onclick="event.stopPropagation(); contactProperty('${property.id}')">
                             💬 WhatsApp
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -573,29 +297,7 @@ class PropertyLoader {
         return `https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center`;
     }
 
-    // Renderizar propiedades filtradas
-    renderFilteredProperties(containerId) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-
-        const propertiesHTML = `
-            <div class="properties-grid">
-                ${this.filteredProperties.map(property => this.generatePropertyHTML(property)).join('')}
-            </div>
-        `;
-
-        // Solo actualizar la sección del grid, no los filtros
-        const existingGrid = container.querySelector('.properties-grid');
-        if (existingGrid) {
-            existingGrid.outerHTML = propertiesHTML;
-        } else {
-            container.innerHTML += propertiesHTML;
-        }
-
-        console.log(`✅ ${this.filteredProperties.length} propiedades filtradas renderizadas`);
-    }
-
-    // Renderizar propiedades con filtros
+    // Renderizar propiedades destacadas con el nuevo estilo
     async renderProperties(containerId, tipo = null, limit = null, showFilters = false) {
         const container = document.getElementById(containerId);
         if (!container) {
@@ -620,12 +322,12 @@ class PropertyLoader {
             }
         }
 
-        // Filtrar propiedades según el tipo
-        let propertiesToShow = tipo ? this.getPropertiesByType(tipo) : this.filteredProperties;
-        
         // Para propiedades destacadas, filtrar solo las destacadas
+        let propertiesToShow = [];
         if (containerId === 'featuredProperties') {
             propertiesToShow = this.getFeaturedProperties(limit || 3);
+        } else {
+            propertiesToShow = this.filteredProperties;
         }
         
         // Aplicar límite si se especifica
@@ -636,11 +338,6 @@ class PropertyLoader {
         // Generar HTML
         let html = '';
 
-        // Agregar filtros si se solicita
-        if (showFilters) {
-            html += this.generateFiltersHTML(containerId);
-        }
-
         // Renderizar propiedades
         if (propertiesToShow.length === 0) {
             html += `
@@ -648,14 +345,11 @@ class PropertyLoader {
                     <div class="no-properties-icon">🏠</div>
                     <h3>No se encontraron propiedades</h3>
                     <p>Intenta ajustar los filtros de búsqueda.</p>
-                    <div class="no-properties-actions">
-                        <button onclick="propertyLoader.clearFilters('${containerId}')" class="refresh-btn">🔄 Limpiar Filtros</button>
-                    </div>
                 </div>
             `;
         } else {
             html += `
-                <div class="properties-grid">
+                <div class="properties-grid-portal">
                     ${propertiesToShow.map(property => this.generatePropertyHTML(property)).join('')}
                 </div>
             `;
@@ -674,22 +368,10 @@ class PropertyLoader {
         this.useFallbackData = false;
         await this.loadProperties();
         
-        // Re-renderizar todas las secciones
-        const containers = ['featuredProperties', 'compraProperties', 'arriendoProperties', 'propertiesGrid'];
-        
-        for (const containerId of containers) {
-            const container = document.getElementById(containerId);
-            if (container) {
-                if (containerId === 'featuredProperties') {
-                    await this.renderProperties(containerId, null, 3, false);
-                } else if (containerId === 'compraProperties') {
-                    await this.renderProperties(containerId, 'compra', null, true);
-                } else if (containerId === 'arriendoProperties') {
-                    await this.renderProperties(containerId, 'arriendo', null, true);
-                } else {
-                    await this.renderProperties(containerId, null, null, true);
-                }
-            }
+        // Re-renderizar propiedades destacadas
+        const featuredContainer = document.getElementById('featuredProperties');
+        if (featuredContainer) {
+            await this.renderProperties('featuredProperties', null, 3, false);
         }
         
         console.log('✅ Propiedades refrescadas');
@@ -752,33 +434,15 @@ window.propertyLoader = new PropertyLoader();
 
 // Auto-inicializar
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏠 Inicializando Property Loader con filtros estilo PortalInmobiliario...');
+    console.log('🏠 Inicializando Property Loader estilo Portal Inmobiliario...');
     
     setTimeout(async () => {
         try {
             const featuredContainer = document.getElementById('featuredProperties');
-            const compraContainer = document.getElementById('compraProperties');
-            const arriendoContainer = document.getElementById('arriendoProperties');
-            const propertiesGrid = document.getElementById('propertiesGrid');
 
             if (featuredContainer) {
                 console.log('📋 Cargando propiedades destacadas...');
                 await window.propertyLoader.renderProperties('featuredProperties', null, 3, false);
-            }
-            
-            if (compraContainer) {
-                console.log('🏠 Cargando propiedades en venta con filtros...');
-                await window.propertyLoader.renderProperties('compraProperties', 'compra', null, true);
-            }
-            
-            if (arriendoContainer) {
-                console.log('🏘️ Cargando propiedades en arriendo con filtros...');
-                await window.propertyLoader.renderProperties('arriendoProperties', 'arriendo', null, true);
-            }
-
-            if (propertiesGrid) {
-                console.log('🏘️ Cargando todas las propiedades con filtros...');
-                await window.propertyLoader.renderProperties('propertiesGrid', null, null, true);
             }
             
         } catch (error) {
@@ -787,4 +451,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1000);
 });
 
-console.log('✅ Property Loader con filtros PortalInmobiliario cargado - Casa Nuvera');
+console.log('✅ Property Loader estilo Portal Inmobiliario cargado - Casa Nuvera');
