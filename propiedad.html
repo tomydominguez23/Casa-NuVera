@@ -7,6 +7,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- 🚀 Widget WhatsApp -->
+    <link rel="stylesheet" href="whatsapp-widget.css">
+    
     <style>
         * {
             margin: 0;
@@ -554,6 +557,8 @@
 
     <!-- Scripts -->
     <script src="supabase.js"></script>
+    <!-- 🤖 Widget WhatsApp -->
+    <script src="whatsapp-widget.js"></script>
     <script>
         class PropertyDetailPage {
             constructor() {
@@ -875,7 +880,7 @@
 
             contactWhatsApp() {
                 const property = this.property;
-                const message = `Hola! Estoy interesado/a en la propiedad "${property.title}".\n\n💰 Precio: ${this.formatPrice(property.price)}\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\n📍 ${property.region}\n🔗 ${window.location.href}\n\n¿Podrías darme más información?`;
+                const message = `Hola! Estoy interesado/a en la propiedad "${property.title}".\\n\\n💰 Precio: ${this.formatPrice(property.price)}\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📍 ${property.region}\\n🔗 ${window.location.href}\\n\\n¿Podrías darme más información?`;
 
                 const phoneNumber = '+56912345678';
                 const whatsappURL = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
@@ -885,13 +890,13 @@
             }
 
             showPhone() {
-                alert('📞 Teléfono: +56 9 1234 5678\n\nPuedes llamarnos directamente o contactarnos por WhatsApp.');
+                alert('📞 Teléfono: +56 9 1234 5678\\n\\nPuedes llamarnos directamente o contactarnos por WhatsApp.');
             }
 
             contactEmail() {
                 const property = this.property;
                 const subject = `Consulta por propiedad: ${property.title}`;
-                const body = `Hola,\n\nEstoy interesado/a en la propiedad "${property.title}".\n\nPrecio: ${this.formatPrice(property.price)}\nUbicación: ${property.region}\nCódigo: #${property.id}\n\n¿Podrían darme más información?\n\nSaludos.`;
+                const body = `Hola,\\n\\nEstoy interesado/a en la propiedad "${property.title}".\\n\\nPrecio: ${this.formatPrice(property.price)}\\nUbicación: ${property.region}\\nCódigo: #${property.id}\\n\\n¿Podrían darme más información?\\n\\nSaludos.`;
 
                 const mailtoURL = `mailto:hola@casanuvera.cl?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                 window.location.href = mailtoURL;
