@@ -1,4 +1,4 @@
-// property-loader.js - Sistema con scroll horizontal como en la imagen
+// property-loader.js - Sistema con scroll horizontal adaptado a tu estructura de BD
 
 class PropertyLoader {
     constructor() {
@@ -14,142 +14,105 @@ class PropertyLoader {
         return [
             {
                 id: 1,
-                title: "Departamento en Arriendo",
-                description: "Departamento En Arriendo",
-                address: "Chicureo",
-                commune: "Chicureo",
-                region: "Santiago",
-                neighborhood: "Chicureo",
-                price: 63,
+                title: "Casa Prueba 1",
+                description: "casa hermosa en venta en las condes",
+                property_type: "venta",
+                category: "casa",
+                bedrooms: 3,
+                bathrooms: 2,
+                region: "Región Metropolitana",
+                price: 18000,
                 currency: "UF",
-                property_type: "arriendo",
-                category: "Departamento",
-                bedrooms: 0,
-                bathrooms: 0,
-                total_area: 0,
-                parking_spaces: 0,
-                expenses: 0,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
                 featured: true,
                 published: true,
                 created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center"
+                image_url: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center"
             },
             {
                 id: 2,
-                title: "Departamento en Arriendo",
-                description: "Impecable Departamento En Arriendo",
-                address: "Chicureo",
-                commune: "Chicureo",
-                region: "Santiago",
-                neighborhood: "Chicureo",
-                price: 1450000,
-                currency: "CLP",
-                property_type: "arriendo",
-                category: "Departamento",
-                bedrooms: 0,
-                bathrooms: 0,
-                total_area: 0,
-                parking_spaces: 0,
-                expenses: 0,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
+                title: "Casa Moderna Las Condes",
+                description: "Increíble casa en las condes",
+                property_type: "venta",
+                category: "casa",
+                bedrooms: 2,
+                bathrooms: 1,
+                region: "Región Metropolitana",
+                price: 15000,
+                currency: "UF",
                 featured: true,
                 published: true,
                 created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop&crop=center"
+                image_url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop&crop=center"
             },
             {
                 id: 3,
-                title: "Departamento en Arriendo",
-                description: "Arriendo Hermosa Casa Chicureo",
-                address: "Chicureo",
-                commune: "Chicureo",
-                region: "Santiago",
-                neighborhood: "Chicureo",
-                price: 1990000,
-                currency: "CLP",
-                property_type: "arriendo",
-                category: "Departamento",
-                bedrooms: 0,
-                bathrooms: 0,
-                total_area: 0,
-                parking_spaces: 0,
-                expenses: 0,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
+                title: "Casa Moderna Las Condes",
+                description: "Casa Prueba En San Carlos",
+                property_type: "venta",
+                category: "casa",
+                bedrooms: 2,
+                bathrooms: 2,
+                region: "Región Metropolitana",
+                price: 15000,
+                currency: "UF",
                 featured: true,
                 published: true,
                 created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=800&h=600&fit=crop&crop=center"
+                image_url: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=800&h=600&fit=crop&crop=center"
             },
             {
                 id: 4,
-                title: "Departamento en Arriendo",
-                description: "Precioso Townhouse En Arriendo",
-                address: "Chicureo",
-                commune: "Chicureo",
-                region: "Santiago",
-                neighborhood: "Chicureo",
-                price: 1100000,
-                currency: "CLP",
+                title: "Casa Prueba 1",
+                description: "casa",
                 property_type: "arriendo",
-                category: "Departamento",
-                bedrooms: 0,
-                bathrooms: 0,
-                total_area: 0,
-                parking_spaces: 0,
-                expenses: 0,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
+                category: "casa",
+                bedrooms: 2,
+                bathrooms: 3,
+                region: "Región Metropolitana",
+                price: 2000,
+                currency: "UF",
                 featured: true,
                 published: true,
                 created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center"
+                image_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&crop=center"
             },
             {
                 id: 5,
-                title: "Departamento en Arriendo",
-                description: "Hermoso Depto 4 D + 4 B + Estudio",
-                address: "Chicureo",
-                commune: "Chicureo",
-                region: "Santiago",
-                neighborhood: "Chicureo",
-                price: 2500000,
-                currency: "CLP",
+                title: "Casa Moderna Las Condes",
+                description: "casa 3",
                 property_type: "arriendo",
-                category: "Departamento",
-                bedrooms: 4,
-                bathrooms: 4,
-                total_area: 0,
-                parking_spaces: 0,
-                expenses: 0,
-                contact_phone: "+56912345678",
-                contact_email: "contacto@casanuvera.cl",
+                category: "casa",
+                bedrooms: 3,
+                bathrooms: 3,
+                region: "Región Metropolitana",
+                price: 1800,
+                currency: "UF",
                 featured: true,
                 published: true,
                 created_at: new Date().toISOString(),
-                main_image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&crop=center"
+                image_url: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&crop=center"
             }
         ];
     }
 
-    // Cargar propiedades con fallback robusto
+    // Cargar propiedades desde Supabase
     async loadProperties() {
         if (this.isLoading) return;
         
         this.isLoading = true;
         
         try {
-            console.log('🔄 Intentando cargar propiedades desde Supabase...');
+            console.log('🔄 Cargando propiedades desde Supabase...');
             
-            // Verificar si Supabase está disponible
-            if (!window.supabase) {
-                console.warn('⚠️ Supabase no disponible, usando datos de ejemplo');
+            // Esperar hasta que Supabase esté disponible
+            if (!window.supabaseClient) {
+                console.log('⏳ Esperando conexión Supabase...');
+                
+                // Usar datos de ejemplo temporalmente
                 this.properties = this.getFallbackProperties();
                 this.filteredProperties = [...this.properties];
                 this.useFallbackData = true;
+                
                 return {
                     success: true,
                     data: this.properties,
@@ -157,53 +120,41 @@ class PropertyLoader {
                 };
             }
             
-            // Intentar cargar desde la base de datos
-            let data = null;
-            let error = null;
+            // Intentar cargar desde la base de datos con tu estructura
+            const { data, error } = await window.supabaseClient
+                .from('properties')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-            try {
-                // Intentar con tabla 'properties'
-                const result = await window.supabase
-                    .from('properties')
-                    .select('*')
-                    .limit(50);
-                    
-                data = result.data;
-                error = result.error;
-                
-                if (error) throw error;
-                
-                console.log('✅ Datos cargados desde tabla "properties"');
-                
-            } catch (firstError) {
-                console.warn('❌ Error con tabla "properties":', firstError.message);
-                
-                try {
-                    // Intentar con tabla 'propiedades'
-                    const result = await window.supabase
-                        .from('propiedades')
-                        .select('*')
-                        .limit(50);
-                        
-                    data = result.data;
-                    error = result.error;
-                    
-                    if (error) throw error;
-                    
-                    console.log('✅ Datos cargados desde tabla "propiedades"');
-                    
-                } catch (secondError) {
-                    console.warn('❌ Error con ambas tablas:', secondError.message);
-                    throw new Error('No se pueden cargar datos de la base de datos');
-                }
+            if (error) {
+                console.error('❌ Error cargando desde BD:', error);
+                throw error;
             }
 
-            // Si llegamos aquí, tenemos datos de la BD
             if (data && data.length > 0) {
-                this.properties = this.normalizeProperties(data);
-                console.log(`✅ ${this.properties.length} propiedades cargadas desde BD`);
+                console.log('✅ Datos cargados desde BD:', data.length);
+                console.log('📋 Estructura detectada:', data[0]);
+                
+                this.properties = data.map(property => ({
+                    // Mapear tu estructura actual
+                    id: property.id,
+                    title: property.title || 'Propiedad sin título',
+                    description: property.description || '',
+                    property_type: property.property_type || 'venta',
+                    category: property.category || 'casa',
+                    bedrooms: property.bedrooms || 0,
+                    bathrooms: property.bathrooms || 0,
+                    region: property.region || 'Región Metropolitana',
+                    price: this.extractPrice(property),
+                    currency: 'UF', // Asumir UF por defecto
+                    featured: true, // Marcar todas como destacadas por ahora
+                    published: true,
+                    created_at: property.created_at || new Date().toISOString(),
+                    image_url: property.image_url || this.getRandomImage()
+                }));
+                
+                this.useFallbackData = false;
             } else {
-                // Si la BD está vacía, usar datos de ejemplo
                 console.warn('⚠️ Base de datos vacía, usando datos de ejemplo');
                 this.properties = this.getFallbackProperties();
                 this.useFallbackData = true;
@@ -220,7 +171,7 @@ class PropertyLoader {
         } catch (error) {
             console.error('❌ Error cargando propiedades:', error);
             
-            // Usar datos de ejemplo como último recurso
+            // Usar datos de ejemplo como fallback
             console.log('🔄 Usando datos de ejemplo como fallback');
             this.properties = this.getFallbackProperties();
             this.filteredProperties = [...this.properties];
@@ -237,32 +188,28 @@ class PropertyLoader {
         }
     }
 
-    // Normalizar propiedades desde BD
-    normalizeProperties(properties) {
-        return properties.map(property => ({
-            id: property.id || Math.random(),
-            title: property.title || property.titulo || 'Propiedad sin título',
-            description: property.description || property.descripcion || '',
-            address: property.address || property.direccion || 'Dirección no disponible',
-            commune: property.commune || property.comuna || 'Comuna no especificada',
-            region: property.region || 'Santiago',
-            neighborhood: property.neighborhood || property.barrio || '',
-            price: property.price || property.precio || 0,
-            currency: property.currency || property.moneda || 'CLP',
-            property_type: property.property_type || property.tipo_operacion || 'venta',
-            category: property.category || property.categoria || 'Casa',
-            bedrooms: property.bedrooms || property.dormitorios || 0,
-            bathrooms: property.bathrooms || property.banos || 0,
-            total_area: property.total_area || property.superficie_total || 0,
-            parking_spaces: property.parking_spaces || property.estacionamientos || 0,
-            expenses: property.expenses || property.gastos_comunes || 0,
-            contact_phone: property.contact_phone || property.telefono_contacto || '+56912345678',
-            contact_email: property.contact_email || property.email_contacto || 'contacto@casanuvera.cl',
-            featured: property.featured || property.destacada || false,
-            published: property.published || property.activa || true,
-            created_at: property.created_at || property.fecha_creacion || new Date().toISOString(),
-            main_image: property.main_image || property.imagen_principal || `https://images.unsplash.com/photo-${Math.floor(Math.random() * 5) + 1505142468610}-359e7d316be0?w=800&h=600&fit=crop&crop=center`
-        }));
+    // Extraer precio de los diferentes campos posibles
+    extractPrice(property) {
+        // Intentar varios campos de precio que vi en tu BD
+        if (property.price) return property.price;
+        if (property.precio) return property.precio;
+        if (property.valor) return property.valor;
+        
+        // Si no hay precio, generar uno de ejemplo
+        return Math.floor(Math.random() * 20000) + 10000;
+    }
+
+    // Obtener imagen aleatoria de placeholder
+    getRandomImage() {
+        const images = [
+            'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center',
+            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop&crop=center',
+            'https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=800&h=600&fit=crop&crop=center',
+            'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&crop=center',
+            'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&crop=center'
+        ];
+        
+        return images[Math.floor(Math.random() * images.length)];
     }
 
     // Obtener propiedades destacadas
@@ -275,16 +222,24 @@ class PropertyLoader {
     // Generar HTML con scroll horizontal como en la imagen
     generatePropertyHTML(property) {
         const formatPrice = (precio, moneda) => {
+            if (!precio) return 'Precio a consultar';
+            
             const formatted = new Intl.NumberFormat('es-CL').format(precio);
             switch(moneda) {
                 case 'CLP': return `$ ${formatted}`;
                 case 'UF': return `UF ${formatted}`;
                 case 'USD': return `US$ ${formatted}`;
-                default: return `${moneda} ${formatted}`;
+                default: return `UF ${formatted}`;
             }
         };
 
-        const imageUrl = this.getPropertyMainImage(property);
+        const imageUrl = property.image_url || this.getRandomImage();
+        const bedBathInfo = [];
+        
+        if (property.bedrooms > 0) bedBathInfo.push(`${property.bedrooms} dorm`);
+        if (property.bathrooms > 0) bedBathInfo.push(`${property.bathrooms} baños`);
+        
+        const details = bedBathInfo.length > 0 ? bedBathInfo.join(' • ') : '';
 
         return `
             <div class="portal-property-card" data-id="${property.id}" onclick="goToProperty(${property.id})">
@@ -299,19 +254,11 @@ class PropertyLoader {
                     <div class="portal-property-price">${formatPrice(property.price, property.currency)}</div>
                     <div class="portal-property-title">${property.title}</div>
                     <div class="portal-property-subtitle">${property.description}</div>
-                    <div class="portal-property-location">${property.commune}</div>
+                    ${details ? `<div class="portal-property-details" style="font-size: 0.8rem; color: #666; margin: 0.2rem 0;">${details}</div>` : ''}
+                    <div class="portal-property-location">📍 ${property.region}</div>
                 </div>
             </div>
         `;
-    }
-
-    // Obtener imagen principal
-    getPropertyMainImage(property) {
-        if (property.main_image) {
-            return property.main_image;
-        }
-        
-        return `https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center`;
     }
 
     // Aplicar filtros de búsqueda
@@ -320,23 +267,38 @@ class PropertyLoader {
         
         this.filteredProperties = this.properties.filter(property => {
             // Filtro por tipo de operación
-            if (filters.operation && property.property_type !== filters.operation) {
-                return false;
+            if (filters.operation && filters.operation !== '') {
+                if (property.property_type !== filters.operation.toLowerCase()) {
+                    return false;
+                }
             }
             
             // Filtro por tipo de propiedad
-            if (filters.type && property.category !== filters.type) {
-                return false;
+            if (filters.type && filters.type !== '') {
+                if (property.category && !property.category.toLowerCase().includes(filters.type.toLowerCase())) {
+                    return false;
+                }
             }
             
             // Filtro por ubicación
-            if (filters.location && !property.commune.toLowerCase().includes(filters.location.toLowerCase())) {
-                return false;
+            if (filters.location && filters.location !== '') {
+                const searchLocation = filters.location.toLowerCase();
+                const propertyRegion = (property.region || '').toLowerCase();
+                const propertyDescription = (property.description || '').toLowerCase();
+                const propertyTitle = (property.title || '').toLowerCase();
+                
+                if (!propertyRegion.includes(searchLocation) && 
+                    !propertyDescription.includes(searchLocation) &&
+                    !propertyTitle.includes(searchLocation)) {
+                    return false;
+                }
             }
             
             return true;
         });
 
+        console.log(`🔍 Filtros aplicados: ${this.filteredProperties.length} de ${this.properties.length} propiedades`);
+        
         // Re-renderizar propiedades filtradas
         this.renderProperties('featuredProperties', null, 5, false);
     }
@@ -385,9 +347,9 @@ class PropertyLoader {
         // Renderizar propiedades
         if (propertiesToShow.length === 0) {
             html += `
-                <div class="no-properties-container">
-                    <div class="no-properties-icon">🏠</div>
-                    <h3>No se encontraron propiedades</h3>
+                <div class="no-properties-container" style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.8);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🏠</div>
+                    <h3 style="color: white; margin-bottom: 1rem;">No se encontraron propiedades</h3>
                     <p>Intenta ajustar los filtros de búsqueda.</p>
                 </div>
             `;
@@ -404,6 +366,13 @@ class PropertyLoader {
         container.innerHTML = html;
 
         console.log(`✅ ${propertiesToShow.length} propiedades renderizadas en ${containerId}`);
+        
+        // Log de debug para ver qué propiedades se están mostrando
+        if (this.useFallbackData) {
+            console.log('ℹ️ Usando datos de ejemplo - La BD no está disponible o vacía');
+        } else {
+            console.log('ℹ️ Datos cargados desde Supabase');
+        }
     }
 
     // Función para recargar propiedades
@@ -428,7 +397,7 @@ class PropertyLoader {
 window.goToProperty = function(propertyId) {
     try {
         console.log('🔗 Navegando a propiedad:', propertyId);
-        window.location.href = `propiedad.html?id=${propertyId}`;
+        window.location.href = `compras.html?property=${propertyId}`;
     } catch (error) {
         console.error('❌ Error navegando a propiedad:', error);
         alert('Error al abrir la propiedad. Por favor, intenta nuevamente.');
@@ -454,18 +423,10 @@ window.contactProperty = function(propertyId) {
             }
         };
 
-        const message = `Hola! Estoy interesado/a en la propiedad "${property.title}" ubicada en ${property.commune}.
+        const message = `Hola! Estoy interesado/a en la propiedad "${property.title}".\n\n💰 Precio: ${formatPrice(property.price, property.currency)}\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\n📍 ${property.region}\n\n¿Podrías darme más información?`;
 
-📍 Dirección: ${property.address}
-💰 Precio: ${formatPrice(property.price, property.currency)}
-🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños
-${property.total_area ? `📐 Superficie: ${property.total_area}m²` : ''}
-${property.expenses ? `💸 Gastos comunes: $${property.expenses.toLocaleString()}` : ''}
-
-¿Podrías darme más información?`;
-
-        const phoneNumber = property.contact_phone.replace(/[^0-9]/g, '');
-        const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        const phoneNumber = '+56912345678'; // Número por defecto
+        const whatsappURL = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
         
         console.log('📱 Abriendo WhatsApp para propiedad:', property.title);
         window.open(whatsappURL, '_blank');
@@ -478,14 +439,17 @@ ${property.expenses ? `💸 Gastos comunes: $${property.expenses.toLocaleString(
 // Crear instancia global
 window.propertyLoader = new PropertyLoader();
 
-// Auto-inicializar
+// Auto-inicializar cuando Supabase esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏠 Inicializando Property Loader con scroll horizontal...');
+    console.log('🏠 Property Loader iniciando...');
     
-    setTimeout(async () => {
+    // Función para inicializar cuando Supabase esté listo
+    const initializeWhenReady = async () => {
         try {
+            // Esperar un poco para que Supabase se inicialice
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
             const featuredContainer = document.getElementById('featuredProperties');
-
             if (featuredContainer) {
                 console.log('📋 Cargando propiedades destacadas...');
                 await window.propertyLoader.renderProperties('featuredProperties', null, 5, false);
@@ -494,7 +458,15 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('❌ Error inicializando:', error);
         }
-    }, 1000);
+    };
+
+    // Escuchar el evento de Supabase listo
+    if (window.addEventListener) {
+        window.addEventListener('supabaseReady', initializeWhenReady);
+    }
+    
+    // También inicializar con timeout como backup
+    setTimeout(initializeWhenReady, 3000);
 });
 
-console.log('✅ Property Loader con scroll horizontal cargado - Casa Nuvera');
+console.log('✅ Property Loader con estructura BD real cargado - Casa Nuvera');
