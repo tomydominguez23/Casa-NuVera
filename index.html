@@ -433,8 +433,13 @@
         /* Featured Properties - CON BUSCADOR Y SCROLL HORIZONTAL */
         .featured-section {
             padding: 4rem 2rem;
-            background: #ffffff;
-            color: #333;
+            background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1755190497533_0.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
         .featured-container {
@@ -451,7 +456,7 @@
 
         .section-tagline {
             font-size: 0.85rem;
-            color: #888;
+            color: rgba(255, 255, 255, 0.8);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 1rem;
@@ -461,19 +466,20 @@
         .section-title {
             font-size: 2.2rem;
             font-weight: 400;
-            color: #333;
+            color: white;
             line-height: 1.3;
             margin-bottom: 0;
         }
 
         /* BUSCADOR IGUAL A LA IMAGEN */
         .property-search-bar {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             padding: 1.5rem;
             margin-bottom: 2rem;
-            border: 1px solid #e9ecef;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .search-filters {
@@ -594,17 +600,17 @@
         }
 
         .properties-scroll-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 4px;
         }
 
         .properties-scroll-container::-webkit-scrollbar-thumb {
-            background: #ccc;
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 4px;
         }
 
         .properties-scroll-container::-webkit-scrollbar-thumb:hover {
-            background: #999;
+            background: rgba(255, 255, 255, 0.7);
         }
 
         .portal-properties-horizontal {
@@ -615,20 +621,21 @@
         }
 
         .portal-property-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             transition: all 0.3s ease;
             cursor: pointer;
-            border: 1px solid #e8e8e8;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             width: 280px;
             flex-shrink: 0;
         }
 
         .portal-property-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
         .portal-property-image {
@@ -999,7 +1006,8 @@
             .stats-section,
             .about-features-section,
             .new-era-section,
-            .contact-section {
+            .contact-section,
+            .featured-section {
                 background-attachment: scroll;
             }
         }
@@ -1031,13 +1039,13 @@
             justify-content: center;
             padding: 4rem 2rem;
             text-align: center;
-            color: #666;
+            color: rgba(255, 255, 255, 0.8);
             min-height: 200px;
         }
 
         .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #007bff;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -1174,8 +1182,8 @@
         </div>
     </section>
 
-    <!-- Featured Properties - CON BUSCADOR Y SCROLL HORIZONTAL -->
-    <section class="featured-section" id="compra">
+    <!-- Featured Properties - CON BUSCADOR Y SCROLL HORIZONTAL CON TU IMAGEN DE FONDO -->
+    <section class="featured-section parallax" id="compra">
         <div class="featured-container">
             <div class="section-header fade-in">
                 <div class="section-tagline">Propiedades Destacadas</div>
