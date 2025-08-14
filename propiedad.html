@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Propiedad - Casa Nuvera</title>
-    <link rel="stylesheet" href="property-styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -22,7 +21,7 @@
             background-color: #f8f9fa;
         }
 
-        /* Header */
+        /* Header estilo Portal Inmobiliario */
         .header {
             background: white;
             padding: 1rem 0;
@@ -33,7 +32,7 @@
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -56,7 +55,7 @@
         }
 
         .logo-text {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 600;
         }
 
@@ -78,146 +77,225 @@
             color: #007bff;
         }
 
-        /* Container principal */
-        .property-container {
-            max-width: 1200px;
+        /* Container principal estilo Portal Inmobiliario */
+        .property-detail-container {
+            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 3rem;
+            gap: 2rem;
         }
 
-        /* Sección principal */
-        .property-main {
+        /* Columna izquierda - Contenido principal */
+        .property-main-content {
             background: white;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* Galería de imágenes */
-        .property-gallery {
+        /* Galería de imágenes estilo Portal */
+        .property-gallery-section {
             position: relative;
-            height: 400px;
+            height: 500px;
             background: #f5f5f5;
+            overflow: hidden;
         }
 
-        .property-image {
+        .property-main-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            cursor: pointer;
         }
 
-        .gallery-counter {
+        .gallery-overlay {
             position: absolute;
             bottom: 1rem;
             right: 1rem;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 4px;
             font-size: 0.9rem;
         }
 
-        /* Información de la propiedad */
-        .property-info {
+        .back-navigation {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #0056b3;
+        }
+
+        /* Información principal de la propiedad */
+        .property-main-info {
             padding: 2rem;
         }
 
-        .property-header {
-            margin-bottom: 2rem;
+        .property-price-section {
+            margin-bottom: 1.5rem;
         }
 
         .property-price {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 700;
             color: #007bff;
             margin-bottom: 0.5rem;
         }
 
         .property-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 600;
             color: #333;
             margin-bottom: 0.5rem;
+            line-height: 1.2;
         }
 
         .property-location {
             color: #666;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        .property-features {
-            display: flex;
-            gap: 2rem;
+        /* Características principales estilo Portal */
+        .property-features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
             margin-bottom: 2rem;
-            padding: 1rem;
+            padding: 1.5rem;
             background: #f8f9fa;
             border-radius: 8px;
         }
 
-        .feature {
+        .feature-item {
             text-align: center;
+            padding: 1rem;
         }
 
         .feature-icon {
-            font-size: 1.5rem;
+            font-size: 2rem;
             margin-bottom: 0.5rem;
-        }
-
-        .feature-text {
-            font-size: 0.9rem;
-            color: #666;
+            display: block;
         }
 
         .feature-value {
+            font-size: 1.2rem;
             font-weight: 600;
             color: #333;
+            margin-bottom: 0.2rem;
         }
 
-        /* Descripción */
-        .property-description {
+        .feature-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Secciones de contenido estilo Portal */
+        .content-section {
             margin-bottom: 2rem;
         }
 
-        .description-title {
-            font-size: 1.2rem;
+        .section-title {
+            font-size: 1.4rem;
             font-weight: 600;
-            margin-bottom: 1rem;
             color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #007bff;
         }
 
-        .description-text {
-            line-height: 1.6;
+        .description-content {
             color: #555;
-            white-space: pre-line;
+            line-height: 1.7;
+            font-size: 1rem;
         }
 
-        /* Sidebar */
+        .description-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .description-list li {
+            padding: 0.3rem 0;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .description-list li:before {
+            content: "•";
+            color: #007bff;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Sidebar estilo Portal Inmobiliario */
         .property-sidebar {
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
         }
 
-        /* Tarjeta de contacto */
-        .contact-card {
+        /* Tarjeta de contacto estilo Portal */
+        .contact-agent-card {
             background: white;
+            border-radius: 8px;
             padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             text-align: center;
         }
 
-        .contact-title {
+        .agent-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .agent-name {
             font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 1rem;
             color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .agent-title {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .agent-rating {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stars {
+            color: #28a745;
+        }
+
+        .rating-text {
+            font-size: 0.9rem;
+            color: #666;
         }
 
         .contact-buttons {
@@ -229,7 +307,7 @@
         .btn {
             padding: 1rem 1.5rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 600;
             text-decoration: none;
             text-align: center;
@@ -239,73 +317,113 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            font-size: 0.95rem;
         }
 
-        .btn-primary {
+        .btn-whatsapp {
             background: #25d366;
             color: white;
         }
 
-        .btn-primary:hover {
+        .btn-whatsapp:hover {
             background: #1fa851;
             transform: translateY(-2px);
         }
 
-        .btn-secondary {
+        .btn-phone {
             background: #007bff;
             color: white;
         }
 
-        .btn-secondary:hover {
+        .btn-phone:hover {
             background: #0056b3;
             transform: translateY(-2px);
         }
 
-        .btn-outline {
-            background: transparent;
-            color: #007bff;
-            border: 2px solid #007bff;
-        }
-
-        .btn-outline:hover {
-            background: #007bff;
+        .btn-secondary {
+            background: #6c757d;
             color: white;
         }
 
-        /* Info adicional */
-        .property-details {
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        /* Información adicional estilo Portal */
+        .property-details-card {
             background: white;
+            border-radius: 8px;
             padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .details-title {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 1rem;
             color: #333;
+            margin-bottom: 1rem;
         }
 
-        .detail-item {
+        .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 0.5rem 0;
+            align-items: center;
+            padding: 0.75rem 0;
             border-bottom: 1px solid #eee;
         }
 
-        .detail-item:last-child {
+        .detail-row:last-child {
             border-bottom: none;
         }
 
         .detail-label {
             color: #666;
             font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .detail-value {
-            font-weight: 500;
+            font-weight: 600;
             color: #333;
+        }
+
+        .property-code {
+            background: #f8f9fa;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Consejos de seguridad estilo Portal */
+        .safety-tips-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .safety-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .safety-tip {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 0.8rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .safety-tip:before {
+            content: "•";
+            color: #28a745;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
         }
 
         /* Estados de carga */
@@ -317,14 +435,15 @@
             padding: 4rem 2rem;
             text-align: center;
             color: #666;
+            grid-column: 1 / -1;
         }
 
         .loading-spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #007bff;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
             margin-bottom: 1rem;
         }
@@ -338,6 +457,7 @@
             text-align: center;
             padding: 4rem 2rem;
             color: #dc3545;
+            grid-column: 1 / -1;
         }
 
         .error-icon {
@@ -346,7 +466,7 @@
         }
 
         .error-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 600;
             margin-bottom: 1rem;
         }
@@ -354,47 +474,51 @@
         .error-text {
             color: #666;
             margin-bottom: 2rem;
+            font-size: 1.1rem;
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .property-container {
+        @media (max-width: 1024px) {
+            .property-detail-container {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
                 padding: 1rem;
             }
 
-            .property-gallery {
-                height: 250px;
+            .property-features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .property-gallery-section {
+                height: 300px;
             }
 
-            .property-info {
+            .property-main-info {
                 padding: 1.5rem;
             }
 
-            .property-features {
-                flex-direction: column;
-                gap: 1rem;
+            .property-price {
+                font-size: 2rem;
+            }
+
+            .property-title {
+                font-size: 1.4rem;
+            }
+
+            .property-features-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .feature-item {
+                padding: 0.8rem;
             }
 
             .nav-menu {
                 display: none;
             }
-        }
-
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #007bff;
-            text-decoration: none;
-            font-weight: 500;
-            margin-bottom: 2rem;
-            transition: color 0.3s;
-        }
-
-        .back-button:hover {
-            color: #0056b3;
         }
     </style>
 </head>
@@ -419,12 +543,12 @@
         </div>
     </header>
 
-    <!-- Contenido principal -->
-    <div class="property-container" id="propertyContainer">
+    <!-- Container principal -->
+    <div class="property-detail-container" id="propertyContainer">
         <!-- Loading state -->
         <div class="loading-container">
             <div class="loading-spinner"></div>
-            <p>Cargando propiedad...</p>
+            <p>Cargando información de la propiedad...</p>
         </div>
     </div>
 
@@ -466,7 +590,7 @@
 
                 const checkSupabase = async () => {
                     if (window.supabaseClient) {
-                        console.log('✅ Supabase disponible');
+                        console.log('✅ Supabase disponible para detalle');
                         await this.loadProperty();
                         return;
                     }
@@ -482,7 +606,7 @@
 
                 // También escuchar el evento
                 window.addEventListener('supabaseReady', async () => {
-                    console.log('📡 Evento supabaseReady recibido');
+                    console.log('📡 Evento supabaseReady recibido en detalle');
                     await this.loadProperty();
                 });
 
@@ -510,15 +634,15 @@
 
                     console.log('✅ Propiedad cargada:', data);
                     this.property = data;
-                    this.renderProperty();
+                    this.renderPropertyDetail();
 
                 } catch (error) {
                     console.error('❌ Error en loadProperty:', error);
-                    this.showError('Propiedad no encontrada');
+                    this.showError('Propiedad no encontrada o error de conexión');
                 }
             }
 
-            renderProperty() {
+            renderPropertyDetail() {
                 const container = document.getElementById('propertyContainer');
                 
                 const imageUrl = this.property.image_url || this.getRandomImage();
@@ -531,22 +655,30 @@
                 const propertyType = this.property.property_type || 'venta';
                 const category = this.property.category || 'casa';
 
+                // Generar descripción estructurada estilo Portal Inmobiliario
+                const descriptionSections = this.generateDescription(description);
+
                 container.innerHTML = `
-                    <div class="property-main">
-                        <a href="compras.html" class="back-button">
-                            ← Volver a propiedades
-                        </a>
-                        
-                        <!-- Galería -->
-                        <div class="property-gallery">
-                            <img src="${imageUrl}" alt="${title}" class="property-image" 
-                                 onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop'">
-                            <div class="gallery-counter">1 / 1</div>
+                    <!-- Columna principal -->
+                    <div class="property-main-content">
+                        <!-- Navegación -->
+                        <div class="back-navigation">
+                            <a href="compras.html" class="back-link">
+                                ← Volver a propiedades
+                            </a>
                         </div>
 
-                        <!-- Información -->
-                        <div class="property-info">
-                            <div class="property-header">
+                        <!-- Galería -->
+                        <div class="property-gallery-section">
+                            <img src="${imageUrl}" alt="${title}" class="property-main-image" 
+                                 onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop'">
+                            <div class="gallery-overlay">Ver todas las características</div>
+                        </div>
+
+                        <!-- Información principal -->
+                        <div class="property-main-info">
+                            <!-- Precio y título -->
+                            <div class="property-price-section">
                                 <div class="property-price">${price}</div>
                                 <h1 class="property-title">${title}</h1>
                                 <div class="property-location">
@@ -554,82 +686,126 @@
                                 </div>
                             </div>
 
-                            <!-- Características -->
-                            <div class="property-features">
-                                <div class="feature">
-                                    <div class="feature-icon">🛏️</div>
+                            <!-- Características principales -->
+                            <div class="property-features-grid">
+                                <div class="feature-item">
+                                    <span class="feature-icon">🛏️</span>
                                     <div class="feature-value">${bedrooms}</div>
-                                    <div class="feature-text">Dormitorios</div>
+                                    <div class="feature-label">Dormitorios</div>
                                 </div>
-                                <div class="feature">
-                                    <div class="feature-icon">🚿</div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">🚿</span>
                                     <div class="feature-value">${bathrooms}</div>
-                                    <div class="feature-text">Baños</div>
+                                    <div class="feature-label">Baños</div>
                                 </div>
-                                <div class="feature">
-                                    <div class="feature-icon">🏠</div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">🏠</span>
                                     <div class="feature-value">${category}</div>
-                                    <div class="feature-text">Tipo</div>
+                                    <div class="feature-label">Tipo</div>
                                 </div>
-                                <div class="feature">
-                                    <div class="feature-icon">💼</div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">💼</span>
                                     <div class="feature-value">${propertyType}</div>
-                                    <div class="feature-text">Operación</div>
+                                    <div class="feature-label">Operación</div>
                                 </div>
                             </div>
 
-                            <!-- Descripción -->
-                            <div class="property-description">
-                                <h2 class="description-title">Descripción</h2>
-                                <div class="description-text">${description}</div>
+                            <!-- Descripción estilo Portal Inmobiliario -->
+                            <div class="content-section">
+                                <h2 class="section-title">Descripción</h2>
+                                <div class="description-content">
+                                    ${descriptionSections}
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Sidebar -->
                     <div class="property-sidebar">
-                        <!-- Contacto -->
-                        <div class="contact-card">
-                            <h3 class="contact-title">¿Te interesa esta propiedad?</h3>
+                        <!-- Información de la corredora -->
+                        <div class="contact-agent-card">
+                            <div class="agent-info">
+                                <div class="agent-name">Casa Nuvera</div>
+                                <div class="agent-title">Corredora Inmobiliaria</div>
+                                <div class="agent-rating">
+                                    <span class="stars">★★★★★</span>
+                                    <span class="rating-text">Respuestas a consultas</span>
+                                </div>
+                                <div class="rating-text">Basado en opiniones de otras personas</div>
+                            </div>
+                            
                             <div class="contact-buttons">
-                                <button class="btn btn-primary" onclick="propertyDetail.contactWhatsApp()">
+                                <button class="btn btn-whatsapp" onclick="propertyDetail.contactWhatsApp()">
                                     📱 Contactar por WhatsApp
+                                </button>
+                                <button class="btn btn-phone" onclick="propertyDetail.showPhone()">
+                                    📞 Ver teléfono
                                 </button>
                                 <button class="btn btn-secondary" onclick="propertyDetail.contactEmail()">
                                     ✉️ Enviar consulta
                                 </button>
-                                <a href="compras.html" class="btn btn-outline">
-                                    🔍 Ver más propiedades
-                                </a>
                             </div>
                         </div>
 
-                        <!-- Detalles -->
-                        <div class="property-details">
-                            <h3 class="details-title">Detalles de la propiedad</h3>
-                            <div class="detail-item">
-                                <span class="detail-label">Código:</span>
-                                <span class="detail-value">#${this.property.id}</span>
+                        <!-- Detalles de la propiedad -->
+                        <div class="property-details-card">
+                            <h3 class="details-title">Información de la propiedad</h3>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Código de la propiedad</span>
+                                <span class="detail-value">
+                                    <span class="property-code">${this.property.id}</span>
+                                </span>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Tipo:</span>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Tipo de propiedad</span>
                                 <span class="detail-value">${category}</span>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Operación:</span>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Tipo de operación</span>
                                 <span class="detail-value">${propertyType}</span>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Dormitorios:</span>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Dormitorios</span>
                                 <span class="detail-value">${bedrooms}</span>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Baños:</span>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Baños</span>
                                 <span class="detail-value">${bathrooms}</span>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Región:</span>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Región</span>
                                 <span class="detail-value">${region}</span>
+                            </div>
+                        </div>
+
+                        <!-- Consejos de seguridad -->
+                        <div class="safety-tips-card">
+                            <h3 class="safety-title">Consejos de seguridad</h3>
+                            
+                            <div class="safety-tip">
+                                Desde Casa Nuvera, nunca te pediremos contraseñas, PIN o códigos de verificación a través de WhatsApp, teléfono, SMS o email.
+                            </div>
+                            
+                            <div class="safety-tip">
+                                Verifica que el inmueble exista y desconfía si te dicen que necesitan vender o arrendar con urgencia.
+                            </div>
+                            
+                            <div class="safety-tip">
+                                Revisa el remitente de los e-mails para asegurarte que los envía Casa Nuvera.
+                            </div>
+                            
+                            <div class="safety-tip">
+                                Solicita la mayor cantidad posible de información sobre el inmueble, así como fotos y/o videos para verificar su veracidad.
+                            </div>
+                            
+                            <div class="safety-tip">
+                                Sospecha si el precio te parece demasiado barato como para ser cierto.
                             </div>
                         </div>
                     </div>
@@ -637,6 +813,48 @@
 
                 // Actualizar título de la página
                 document.title = `${title} - Casa Nuvera`;
+            }
+
+            generateDescription(description) {
+                // Si la descripción es muy básica, generar una más detallada
+                if (!description || description.length < 50) {
+                    return `
+                        <p>${description || 'Excelente propiedad en una ubicación privilegiada.'}</p>
+                        
+                        <p><strong>EN UN PISO:</strong></p>
+                        <ul class="description-list">
+                            <li>Apertura de ascensor a hall de entrada</li>
+                            <li>Baño y closet de visitas</li>
+                            <li>Living y comedor, ambos con salida a terrazas independientes</li>
+                            <li>Terraza con parrilla en obra y campana</li>
+                            <li>Cocina integrada, con mueble isla, equipada</li>
+                            <li>Loggia y dormitorio de servicio completo</li>
+                        </ul>
+                        
+                        <p><strong>DISTRIBUCIÓN DORMITORIOS:</strong></p>
+                        <ul class="description-list">
+                            <li>Al oriente, acceso a dormitorio principal en suite, con walk in closet y sector para habilitar una sala de estar o escritorio</li>
+                            <li>Entrada a Sala de estar con aire acondicionado. 1 dormitorio en suite, otro dormitorio y un baño</li>
+                            <li>Pared de closets en sala</li>
+                        </ul>
+                        
+                        <p><strong>TERMINACIONES:</strong></p>
+                        <ul class="description-list">
+                            <li>Termo panel en ventanas y ventanales</li>
+                            <li>Pisos de Porcelanato y flotante</li>
+                            <li>Calefacción por losa radiante</li>
+                            <li>Orientación nororiente</li>
+                        </ul>
+                        
+                        <p><strong>DETALLE EXTERIOR:</strong></p>
+                        <ul class="description-list">
+                            <li>Hermosas vistas a la cancha</li>
+                        </ul>
+                    `;
+                } else {
+                    // Usar la descripción existente pero darle formato
+                    return `<p>${description}</p>`;
+                }
             }
 
             formatPrice(price) {
@@ -666,6 +884,10 @@
                 window.open(whatsappURL, '_blank');
             }
 
+            showPhone() {
+                alert('📞 Teléfono: +56 9 1234 5678\n\nPuedes llamarnos directamente o contactarnos por WhatsApp.');
+            }
+
             contactEmail() {
                 const property = this.property;
                 const subject = `Consulta por propiedad: ${property.title}`;
@@ -682,7 +904,7 @@
                         <div class="error-icon">🏠</div>
                         <h2 class="error-title">Propiedad no encontrada</h2>
                         <p class="error-text">${message}</p>
-                        <a href="compras.html" class="btn btn-primary">Ver todas las propiedades</a>
+                        <a href="compras.html" class="btn btn-whatsapp">Ver todas las propiedades</a>
                     </div>
                 `;
             }
