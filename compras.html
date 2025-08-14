@@ -114,22 +114,6 @@
             color: var(--charcoal);
         }
 
-        .nav-cta {
-            background: var(--charcoal) !important;
-            color: white !important;
-            padding: 0.8rem 1.5rem;
-            border-radius: 0;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.85rem;
-        }
-
-        .nav-cta:hover {
-            background: var(--dark-gray) !important;
-        }
-
         /* Hero Section con nueva imagen de fondo */
         .hero {
             height: 60vh;
@@ -308,6 +292,72 @@
             color: var(--secondary-gray) !important;
         }
 
+        /* Footer */
+        .footer {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=1920&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            padding: 4rem 2rem 2rem;
+            color: white;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            color: var(--elegant-beige);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--elegant-beige);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-tagline {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-menu {
@@ -327,11 +377,20 @@
                 gap: 1rem;
                 align-items: flex-start;
             }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Header flotante -->
+    <!-- Header flotante SIN Gestionar -->
     <header class="header">
         <div class="nav-container">
             <a href="index.html" class="logo">
@@ -344,11 +403,9 @@
                 <ul class="nav-menu">
                     <li><a href="index.html">Inicio</a></li>
                     <li><a href="compras.html" class="active">Comprar</a></li>
-                    <li><a href="arriendos.html">Arrendar</a></li>
                     <li><a href="index.html#servicios">Servicios</a></li>
                     <li><a href="index.html#nosotros">Nosotros</a></li>
                     <li><a href="index.html#contacto">Contacto</a></li>
-                    <li><a href="admin-login.html" class="nav-cta">Gestionar</a></li>
                 </ul>
             </nav>
         </div>
@@ -391,6 +448,56 @@
             </div>
         </div>
     </section>
+
+    <!-- Footer con enlace Gestionar -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Propiedades</h4>
+                    <ul>
+                        <li><a href="compras.html">Hogares para descubrir</a></li>
+                        <li><a href="compras.html">Encuentra propiedades en venta cuidadosamente seleccionadas en el gran Santiago</a></li>
+                        <li><a href="#servicios">Tasaciones</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Servicios</h4>
+                    <ul>
+                        <li><a href="#servicios">Asesoría</a></li>
+                        <li><a href="#contacto">Consultoría</a></li>
+                        <li><a href="#servicios">Inversiones</a></li>
+                        <li><a href="#contacto">Financiamiento</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Soporte</h4>
+                    <ul>
+                        <li><a href="#contacto">Contacto</a></li>
+                        <li><a href="#" onclick="alert('Próximamente: Centro de ayuda con guías y tutoriales')">Centro de Ayuda</a></li>
+                        <li><a href="admin-login.html">Gestionar Contenido</a></li>
+                        <li><a href="#" onclick="alert('Próximamente: Términos y condiciones')">Términos</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></li>
+                        <li><a href="tel:+56912345678">+56 9 1234 5678</a></li>
+                        <li>Santiago, Chile</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-tagline">Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</div>
+                <div>&copy; 2025 Casa Nuvera. Todos los derechos reservados.</div>
+            </div>
+        </div>
+    </footer>
 
     <!-- Scripts -->
     <script src="supabase.js"></script>
