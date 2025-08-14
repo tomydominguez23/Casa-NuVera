@@ -214,37 +214,60 @@ class WhatsAppWidget {
         // Insertar en el DOM
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
         
-        // Cargar mensajes iniciales
+        // Cargar mensajes iniciales después de un pequeño delay
         setTimeout(() => {
             this.loadInitialMessages();
         }, 1000);
     }
 
     /* ================================
-       GESTIÓN DE MENSAJES AUTOMÁTICOS
+       GESTIÓN DE MENSAJES AUTOMÁTICOS - CORREGIDO
        ================================ */
     loadInitialMessages() {
+        console.log('📝 Cargando mensajes iniciales para página:', this.currentPage);
+        
         const template = this.messageTemplates[this.currentPage];
+        if (!template) {
+            console.error('❌ No se encontró template para página:', this.currentPage);
+            return;
+        }
+
         const messagesContainer = document.getElementById('whatsappMessages');
+        if (!messagesContainer) {
+            console.error('❌ No se encontró contenedor de mensajes');
+            return;
+        }
         
         // Limpiar mensajes previos
         messagesContainer.innerHTML = '';
         
         // Mensaje de bienvenida
+        console.log('✅ Agregando mensaje de bienvenida:', template.welcome);
         this.addMessage(template.welcome, 'bot', true);
         
-        // Mensaje de introducción
+        // Mensaje de introducción después de un delay
         setTimeout(() => {
+            console.log('✅ Agregando mensaje de introducción:', template.intro);
             this.addMessage(template.intro, 'bot');
-            this.loadQuickActions(template.quickActions);
+            
+            // Cargar acciones rápidas después de otro delay
+            setTimeout(() => {
+                this.loadQuickActions(template.quickActions);
+            }, 1000);
         }, 1500);
     }
 
     loadQuickActions(actions) {
+        console.log('🎯 Cargando acciones rápidas:', actions);
+        
         const actionsContainer = document.getElementById('whatsappActions');
+        if (!actionsContainer) {
+            console.error('❌ No se encontró contenedor de acciones');
+            return;
+        }
         
         let actionsHTML = actions.map(action => 
-            `<div class="quick-action" onclick="whatsappWidget.selectQuickAction('${action}')">${action}</div>`
+            `<div class="quick-action" onclick="whatsappWidget.selectQuickAction('${action.replace(/'/g, "\\'")}')">${action}</div>`
         ).join('');
         
         actionsHTML += `
@@ -257,16 +280,24 @@ class WhatsAppWidget {
         `;
         
         actionsContainer.innerHTML = actionsHTML;
+        console.log('✅ Acciones rápidas cargadas');
     }
 
     addMessage(text, sender = 'bot', isFirst = false) {
+        console.log('💬 Agregando mensaje:', text, 'de:', sender);
+        
         const messagesContainer = document.getElementById('whatsappMessages');
+        if (!messagesContainer) {
+            console.error('❌ No se encontró contenedor de mensajes');
+            return;
+        }
+        
         const time = new Date().toLocaleTimeString('es-CL', { 
             hour: '2-digit', 
             minute: '2-digit' 
         });
         
-        // Mostrar indicador de escritura si es bot
+        // Mostrar indicador de escritura si es bot y no es el primer mensaje
         if (sender === 'bot' && !isFirst) {
             this.showTypingIndicator();
             setTimeout(() => {
@@ -279,24 +310,36 @@ class WhatsAppWidget {
     }
 
     appendMessage(text, sender, time) {
+        console.log('📝 Insertando mensaje en DOM:', text);
+        
         const messagesContainer = document.getElementById('whatsappMessages');
+        if (!messagesContainer) {
+            console.error('❌ No se encontró contenedor de mensajes en appendMessage');
+            return;
+        }
         
         const messageHTML = `
             <div class="message ${sender}">
                 ${sender === 'bot' ? '<div class="whatsapp-avatar">CN</div>' : ''}
                 <div class="message-bubble">
-                    <p class="message-text">${text}</p>
+                    <div class="message-text">${text}</div>
                     <div class="message-time">${time}</div>
                 </div>
             </div>
         `;
         
+        console.log('🔧 HTML del mensaje:', messageHTML);
+        
         messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        console.log('✅ Mensaje insertado correctamente');
     }
 
     showTypingIndicator() {
         const messagesContainer = document.getElementById('whatsappMessages');
+        if (!messagesContainer) return;
+        
         const typingHTML = `
             <div class="typing-indicator" id="typingIndicator">
                 <div class="whatsapp-avatar">CN</div>
@@ -320,6 +363,7 @@ class WhatsAppWidget {
        INTERACCIONES DEL USUARIO
        ================================ */
     selectQuickAction(action) {
+        console.log('🎯 Acción seleccionada:', action);
         this.addMessage(action, 'user');
         
         // Respuesta automática basada en la acción
