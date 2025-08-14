@@ -242,7 +242,7 @@ class PropertyLoader {
         const details = bedBathInfo.length > 0 ? bedBathInfo.join(' • ') : '';
 
         return `
-            <div class="portal-property-card" data-id="${property.id}" onclick="goToProperty(${property.id})">
+            <div class="portal-property-card" data-id="${property.id}" onclick="window.goToProperty(${property.id})">
                 <div class="portal-property-image">
                     ${imageUrl ? 
                         `<img src="${imageUrl}" alt="${property.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'no-image-placeholder\\'>Sin imagen</div>'">` : 
@@ -393,11 +393,12 @@ class PropertyLoader {
     }
 }
 
-// Funciones globales
+// FUNCIONES GLOBALES CORREGIDAS
 window.goToProperty = function(propertyId) {
     try {
         console.log('🔗 Navegando a propiedad:', propertyId);
-        window.location.href = `compras.html?property=${propertyId}`;
+        // Navegar a la página de detalle
+        window.location.href = `propiedad.html?id=${propertyId}`;
     } catch (error) {
         console.error('❌ Error navegando a propiedad:', error);
         alert('Error al abrir la propiedad. Por favor, intenta nuevamente.');
@@ -406,7 +407,12 @@ window.goToProperty = function(propertyId) {
 
 window.contactProperty = function(propertyId) {
     try {
-        const property = window.propertyLoader.properties.find(p => p.id == propertyId);
+        // Buscar la propiedad
+        let property = null;
+        if (window.propertyLoader && window.propertyLoader.properties) {
+            property = window.propertyLoader.properties.find(p => p.id == propertyId);
+        }
+        
         if (!property) {
             console.error('❌ Propiedad no encontrada:', propertyId);
             alert('Propiedad no encontrada');
@@ -419,7 +425,7 @@ window.contactProperty = function(propertyId) {
                 case 'CLP': return `$${formatted}`;
                 case 'UF': return `UF ${formatted}`;
                 case 'USD': return `US$${formatted}`;
-                default: return `${moneda} ${formatted}`;
+                default: return `UF ${formatted}`;
             }
         };
 
