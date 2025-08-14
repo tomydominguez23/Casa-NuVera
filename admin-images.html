@@ -487,9 +487,9 @@
             <!-- Bucket Setup -->
             <div class="bucket-setup" id="bucketSetup" style="display: none;">
                 <h3>⚠️ Configuración Requerida</h3>
-                <p>El bucket de imágenes no existe. Haz clic para crear el bucket automáticamente:</p>
-                <button class="setup-button" onclick="imageManager.createBucket()">
-                    🔧 Crear Bucket de Imágenes
+                <p>El bucket de imágenes no está disponible. Vamos a usar uno que funcione:</p>
+                <button class="setup-button" onclick="imageManager.tryDifferentBucket()">
+                    🔧 Intentar con Bucket Alternativo
                 </button>
             </div>
 
@@ -567,7 +567,7 @@
                 this.isInitialized = false;
                 this.selectedFiles = [];
                 this.images = [];
-                this.bucketName = 'imagenes-sitio';
+                this.bucketName = 'images'; // Cambiado a un nombre más simple
                 this.connectionStatus = 'checking';
                 this.bucketExists = false;
                 
@@ -598,7 +598,7 @@
                     if (window.supabaseClient) {
                         console.log('✅ Supabase disponible');
                         this.updateConnectionStatus('connected', '✅ Conectado a Supabase');
-                        await this.checkBucketAndLoad();
+                        await this.checkBucketsAndLoad();
                         this.hideLoading();
                         this.isInitialized = true;
                         return;
@@ -620,7 +620,7 @@
                 window.addEventListener('supabaseReady', async () => {
                     console.log('📡 Evento supabaseReady recibido');
                     this.updateConnectionStatus('connected', '✅ Conectado a Supabase');
-                    await this.checkBucketAndLoad();
+                    await this.checkBucketsAndLoad();
                     this.hideLoading();
                     this.isInitialized = true;
                 });
@@ -635,37 +635,88 @@
                 this.connectionStatus = status;
             }
 
-            async checkBucketAndLoad() {
-                try {
-                    console.log('🪣 Verificando bucket:', this.bucketName);
-                    
-                    // Intentar listar archivos para verificar si el bucket existe
-                    const { data, error } = await window.supabaseClient.storage
-                        .from(this.bucketName)
-                        .list('', { limit: 1 });
-
-                    if (error) {
-                        console.error('❌ Error accediendo al bucket:', error);
+            async checkBucketsAndLoad() {
+                // Lista de buckets para probar
+                const bucketsToTry = ['images', 'imagenes', 'files', 'uploads', 'media'];
+                
+                for (const bucketName of bucketsToTry) {
+                    try {
+                        console.log(`🪣 Probando bucket: ${bucketName}`);
                         
-                        if (error.message.includes('not found') || error.message.includes('does not exist')) {
-                            this.showBucketSetup();
-                            this.disableUpload();
-                            this.showEmptyState();
-                        } else {
-                            throw error;
+                        const { data, error } = await window.supabaseClient.storage
+                            .from(bucketName)
+                            .list('', { limit: 1 });
+
+                        if (!error) {
+                            console.log(`✅ Bucket funcional encontrado: ${bucketName}`);
+                            this.bucketName = bucketName;
+                            this.bucketExists = true;
+                            this.enableUpload();
+                            await this.loadImages();
+                            return;
                         }
-                    } else {
-                        console.log('✅ Bucket existe y es accesible');
-                        this.bucketExists = true;
-                        this.enableUpload();
-                        await this.loadImages();
+                    } catch (e) {
+                        console.log(`❌ Bucket ${bucketName} no funciona:`, e.message);
                     }
+                }
+
+                // Si llegamos aquí, ningún bucket funciona
+                console.log('🔧 Intentando crear bucket nuevo...');
+                await this.tryCreateNewBucket();
+            }
+
+            async tryCreateNewBucket() {
+                const newBucketName = `casa-nuvera-${Date.now()}`;
+                
+                try {
+                    console.log(`🔧 Creando bucket: ${newBucketName}`);
+                    
+                    const { data, error } = await window.supabaseClient.storage
+                        .createBucket(newBucketName, {
+                            public: true,
+                            allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+                            fileSizeLimit: 5242880 // 5MB
+                        });
+
+                    if (error) throw error;
+
+                    console.log('✅ Bucket creado exitosamente:', newBucketName);
+                    this.bucketName = newBucketName;
+                    this.bucketExists = true;
+                    this.enableUpload();
+                    this.showSuccess(`✅ Sistema configurado correctamente con bucket: ${newBucketName}`);
+                    await this.loadImages();
 
                 } catch (error) {
-                    console.error('❌ Error verificando bucket:', error);
-                    this.showError(`Error de configuración: ${error.message}`);
+                    console.error('❌ Error creando bucket:', error);
+                    this.showBucketSetup();
                     this.disableUpload();
                     this.showEmptyState();
+                }
+            }
+
+            async tryDifferentBucket() {
+                this.showSuccess('Intentando configuración alternativa...');
+                
+                // Probar con un bucket muy simple
+                const simpleBucket = 'imgs';
+                
+                try {
+                    const { data, error } = await window.supabaseClient.storage
+                        .createBucket(simpleBucket, { public: true });
+
+                    if (!error) {
+                        this.bucketName = simpleBucket;
+                        this.bucketExists = true;
+                        this.hideBucketSetup();
+                        this.enableUpload();
+                        this.showSuccess(`✅ Configurado con bucket: ${simpleBucket}`);
+                        await this.loadImages();
+                    } else {
+                        throw error;
+                    }
+                } catch (error) {
+                    this.showError(`No se pudo configurar el sistema de imágenes: ${error.message}`);
                 }
             }
 
@@ -675,36 +726,6 @@
 
             hideBucketSetup() {
                 document.getElementById('bucketSetup').style.display = 'none';
-            }
-
-            async createBucket() {
-                try {
-                    console.log('🔧 Creando bucket:', this.bucketName);
-                    this.showSuccess('Creando bucket de imágenes...');
-
-                    const { data, error } = await window.supabaseClient.storage
-                        .createBucket(this.bucketName, {
-                            public: true,
-                            allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
-                            fileSizeLimit: 5242880 // 5MB
-                        });
-
-                    if (error) {
-                        console.error('❌ Error creando bucket:', error);
-                        throw error;
-                    }
-
-                    console.log('✅ Bucket creado exitosamente');
-                    this.showSuccess('✅ Bucket creado exitosamente. Ya puedes subir imágenes.');
-                    this.hideBucketSetup();
-                    this.bucketExists = true;
-                    this.enableUpload();
-                    await this.loadImages();
-
-                } catch (error) {
-                    console.error('❌ Error al crear bucket:', error);
-                    this.showError(`Error creando bucket: ${error.message}`);
-                }
             }
 
             enableUpload() {
@@ -789,7 +810,7 @@
 
             handleFiles(files) {
                 if (!this.bucketExists) {
-                    this.showError('El bucket de imágenes no está configurado');
+                    this.showError('El sistema de imágenes no está configurado');
                     return;
                 }
 
@@ -888,9 +909,8 @@
                 const galleryGrid = document.getElementById('galleryGrid');
                 const galleryStats = document.getElementById('galleryStats');
 
-                if (!window.supabaseClient) {
-                    console.error('❌ Supabase no disponible');
-                    this.showError('Error de conexión con el servidor');
+                if (!window.supabaseClient || !this.bucketExists) {
+                    console.error('❌ Supabase no disponible o bucket no existe');
                     this.showEmptyState();
                     return;
                 }
@@ -922,7 +942,7 @@
                     this.images = files || [];
                     
                     // Actualizar estadísticas
-                    galleryStats.textContent = `${this.images.length} imagen(es)`;
+                    galleryStats.textContent = `${this.images.length} imagen(es) en bucket: ${this.bucketName}`;
 
                     if (this.images.length === 0) {
                         this.showEmptyState();
