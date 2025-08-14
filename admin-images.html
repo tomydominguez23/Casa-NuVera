@@ -13,6 +13,48 @@
             padding: 2rem;
         }
 
+        .connection-status {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .status-connected {
+            background: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724;
+        }
+
+        .status-error {
+            background: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24;
+        }
+
+        .bucket-setup {
+            background: #fff3cd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid #ffeaa7;
+        }
+
+        .setup-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .setup-button:hover {
+            background: #0056b3;
+        }
+
         .upload-section {
             background: white;
             padding: 2rem;
@@ -41,6 +83,12 @@
         .upload-area:hover {
             border-color: #2c3e50;
             background: #ecf0f1;
+        }
+
+        .upload-area.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f5f5f5;
         }
 
         .upload-icon {
@@ -431,12 +479,26 @@
 
         <!-- Images Content -->
         <div class="images-container" id="imagesContent">
+            <!-- Connection Status -->
+            <div class="connection-status" id="connectionStatus">
+                🔄 Verificando conexión con Supabase...
+            </div>
+
+            <!-- Bucket Setup -->
+            <div class="bucket-setup" id="bucketSetup" style="display: none;">
+                <h3>⚠️ Configuración Requerida</h3>
+                <p>El bucket de imágenes no existe. Haz clic para crear el bucket automáticamente:</p>
+                <button class="setup-button" onclick="imageManager.createBucket()">
+                    🔧 Crear Bucket de Imágenes
+                </button>
+            </div>
+
             <!-- Messages -->
             <div class="success-message" id="successMessage"></div>
             <div class="error-message" id="errorMessage"></div>
 
             <!-- Upload Section -->
-            <div class="upload-section">
+            <div class="upload-section" id="uploadSection">
                 <h2>📤 Subir Nuevas Imágenes</h2>
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">🖼️</div>
@@ -506,6 +568,8 @@
                 this.selectedFiles = [];
                 this.images = [];
                 this.bucketName = 'imagenes-sitio';
+                this.connectionStatus = 'checking';
+                this.bucketExists = false;
                 
                 this.init();
             }
@@ -527,13 +591,14 @@
             }
 
             async waitForSupabase() {
-                const maxRetries = 50; // 5 segundos máximo
+                const maxRetries = 100; // 10 segundos máximo
                 let retries = 0;
 
                 const checkSupabase = async () => {
                     if (window.supabaseClient) {
-                        console.log('✅ Supabase disponible, cargando imágenes...');
-                        await this.loadImages();
+                        console.log('✅ Supabase disponible');
+                        this.updateConnectionStatus('connected', '✅ Conectado a Supabase');
+                        await this.checkBucketAndLoad();
                         this.hideLoading();
                         this.isInitialized = true;
                         return;
@@ -545,7 +610,8 @@
                         setTimeout(checkSupabase, 100);
                     } else {
                         console.error('❌ Tiempo agotado esperando Supabase');
-                        this.showError('Error de conexión. Por favor, recarga la página.');
+                        this.updateConnectionStatus('error', '❌ Error de conexión. Recarga la página.');
+                        this.disableUpload();
                         this.hideLoading();
                     }
                 };
@@ -553,12 +619,108 @@
                 // También escuchar el evento personalizado
                 window.addEventListener('supabaseReady', async () => {
                     console.log('📡 Evento supabaseReady recibido');
-                    await this.loadImages();
+                    this.updateConnectionStatus('connected', '✅ Conectado a Supabase');
+                    await this.checkBucketAndLoad();
                     this.hideLoading();
                     this.isInitialized = true;
                 });
 
                 checkSupabase();
+            }
+
+            updateConnectionStatus(status, message) {
+                const statusDiv = document.getElementById('connectionStatus');
+                statusDiv.textContent = message;
+                statusDiv.className = `connection-status status-${status}`;
+                this.connectionStatus = status;
+            }
+
+            async checkBucketAndLoad() {
+                try {
+                    console.log('🪣 Verificando bucket:', this.bucketName);
+                    
+                    // Intentar listar archivos para verificar si el bucket existe
+                    const { data, error } = await window.supabaseClient.storage
+                        .from(this.bucketName)
+                        .list('', { limit: 1 });
+
+                    if (error) {
+                        console.error('❌ Error accediendo al bucket:', error);
+                        
+                        if (error.message.includes('not found') || error.message.includes('does not exist')) {
+                            this.showBucketSetup();
+                            this.disableUpload();
+                            this.showEmptyState();
+                        } else {
+                            throw error;
+                        }
+                    } else {
+                        console.log('✅ Bucket existe y es accesible');
+                        this.bucketExists = true;
+                        this.enableUpload();
+                        await this.loadImages();
+                    }
+
+                } catch (error) {
+                    console.error('❌ Error verificando bucket:', error);
+                    this.showError(`Error de configuración: ${error.message}`);
+                    this.disableUpload();
+                    this.showEmptyState();
+                }
+            }
+
+            showBucketSetup() {
+                document.getElementById('bucketSetup').style.display = 'block';
+            }
+
+            hideBucketSetup() {
+                document.getElementById('bucketSetup').style.display = 'none';
+            }
+
+            async createBucket() {
+                try {
+                    console.log('🔧 Creando bucket:', this.bucketName);
+                    this.showSuccess('Creando bucket de imágenes...');
+
+                    const { data, error } = await window.supabaseClient.storage
+                        .createBucket(this.bucketName, {
+                            public: true,
+                            allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+                            fileSizeLimit: 5242880 // 5MB
+                        });
+
+                    if (error) {
+                        console.error('❌ Error creando bucket:', error);
+                        throw error;
+                    }
+
+                    console.log('✅ Bucket creado exitosamente');
+                    this.showSuccess('✅ Bucket creado exitosamente. Ya puedes subir imágenes.');
+                    this.hideBucketSetup();
+                    this.bucketExists = true;
+                    this.enableUpload();
+                    await this.loadImages();
+
+                } catch (error) {
+                    console.error('❌ Error al crear bucket:', error);
+                    this.showError(`Error creando bucket: ${error.message}`);
+                }
+            }
+
+            enableUpload() {
+                const uploadArea = document.getElementById('uploadArea');
+                const uploadSection = document.getElementById('uploadSection');
+                uploadArea.classList.remove('disabled');
+                uploadSection.style.opacity = '1';
+                uploadSection.style.pointerEvents = 'auto';
+            }
+
+            disableUpload() {
+                const uploadArea = document.getElementById('uploadArea');
+                const uploadSection = document.getElementById('uploadSection');
+                uploadArea.classList.add('disabled');
+                uploadSection.style.opacity = '0.5';
+                uploadSection.style.pointerEvents = 'none';
             }
 
             showAuthWarning() {
@@ -577,7 +739,9 @@
                 // Drag and drop events
                 uploadArea.addEventListener('dragover', (e) => {
                     e.preventDefault();
-                    uploadArea.classList.add('dragover');
+                    if (!uploadArea.classList.contains('disabled')) {
+                        uploadArea.classList.add('dragover');
+                    }
                 });
 
                 uploadArea.addEventListener('dragleave', () => {
@@ -587,12 +751,16 @@
                 uploadArea.addEventListener('drop', (e) => {
                     e.preventDefault();
                     uploadArea.classList.remove('dragover');
-                    this.handleFiles(e.dataTransfer.files);
+                    if (!uploadArea.classList.contains('disabled')) {
+                        this.handleFiles(e.dataTransfer.files);
+                    }
                 });
 
                 // File input change
                 fileInput.addEventListener('change', (e) => {
-                    this.handleFiles(e.target.files);
+                    if (!uploadArea.classList.contains('disabled')) {
+                        this.handleFiles(e.target.files);
+                    }
                 });
 
                 // Upload button
@@ -620,6 +788,11 @@
             }
 
             handleFiles(files) {
+                if (!this.bucketExists) {
+                    this.showError('El bucket de imágenes no está configurado');
+                    return;
+                }
+
                 this.selectedFiles = Array.from(files).filter(file => {
                     // Validar tipo de archivo
                     if (!file.type.startsWith('image/')) {
@@ -645,7 +818,7 @@
             }
 
             async uploadFiles() {
-                if (this.selectedFiles.length === 0) return;
+                if (this.selectedFiles.length === 0 || !this.bucketExists) return;
 
                 if (!window.supabaseClient) {
                     this.showError('Error de conexión. Recarga la página.');
@@ -678,7 +851,7 @@
                             .upload(fileName, file);
 
                         if (error) {
-                            console.error('Error subiendo archivo:', error);
+                            console.error('❌ Error subiendo archivo:', error);
                             this.showError(`Error subiendo ${file.name}: ${error.message}`);
                         } else {
                             uploadedCount++;
