@@ -511,7 +511,7 @@
             }
 
             async init() {
-                console.log('🖼️ Inicializando Gestión de Imágenes...');
+                console.log('🖼️ Inicializando Gestión de Imágenes - Casa Nuvera...');
                 
                 // Verificar autenticación
                 if (!window.checkAdminSession || !window.checkAdminSession()) {
@@ -522,17 +522,43 @@
                 // Inicializar eventos
                 this.initializeEvents();
                 
-                // Cargar imágenes cuando Supabase esté listo
-                if (window.supabaseClient) {
+                // Esperar a que Supabase esté listo
+                this.waitForSupabase();
+            }
+
+            async waitForSupabase() {
+                const maxRetries = 50; // 5 segundos máximo
+                let retries = 0;
+
+                const checkSupabase = async () => {
+                    if (window.supabaseClient) {
+                        console.log('✅ Supabase disponible, cargando imágenes...');
+                        await this.loadImages();
+                        this.hideLoading();
+                        this.isInitialized = true;
+                        return;
+                    }
+
+                    retries++;
+                    if (retries < maxRetries) {
+                        console.log(`⏳ Esperando Supabase... (${retries}/${maxRetries})`);
+                        setTimeout(checkSupabase, 100);
+                    } else {
+                        console.error('❌ Tiempo agotado esperando Supabase');
+                        this.showError('Error de conexión. Por favor, recarga la página.');
+                        this.hideLoading();
+                    }
+                };
+
+                // También escuchar el evento personalizado
+                window.addEventListener('supabaseReady', async () => {
+                    console.log('📡 Evento supabaseReady recibido');
                     await this.loadImages();
-                } else {
-                    window.addEventListener('supabaseReady', () => {
-                        this.loadImages();
-                    });
-                }
-                
-                this.hideLoading();
-                this.isInitialized = true;
+                    this.hideLoading();
+                    this.isInitialized = true;
+                });
+
+                checkSupabase();
             }
 
             showAuthWarning() {
@@ -621,6 +647,11 @@
             async uploadFiles() {
                 if (this.selectedFiles.length === 0) return;
 
+                if (!window.supabaseClient) {
+                    this.showError('Error de conexión. Recarga la página.');
+                    return;
+                }
+
                 const uploadButton = document.getElementById('uploadButton');
                 const progressContainer = document.getElementById('progressContainer');
                 const progressFill = document.getElementById('progressFill');
@@ -641,7 +672,7 @@
                         progressFill.style.width = `${progress}%`;
                         progressText.textContent = `Subiendo ${file.name}...`;
 
-                        // Subir archivo
+                        // Subir archivo a Supabase Storage
                         const { data, error } = await window.supabaseClient.storage
                             .from(this.bucketName)
                             .upload(fileName, file);
@@ -651,7 +682,7 @@
                             this.showError(`Error subiendo ${file.name}: ${error.message}`);
                         } else {
                             uploadedCount++;
-                            console.log('Archivo subido:', data);
+                            console.log('✅ Archivo subido:', fileName);
                         }
                     }
 
@@ -665,7 +696,7 @@
                     }
 
                 } catch (error) {
-                    console.error('Error en subida:', error);
+                    console.error('❌ Error en subida:', error);
                     this.showError('Error durante la subida de archivos');
                 } finally {
                     // Resetear formulario
@@ -684,7 +715,16 @@
                 const galleryGrid = document.getElementById('galleryGrid');
                 const galleryStats = document.getElementById('galleryStats');
 
+                if (!window.supabaseClient) {
+                    console.error('❌ Supabase no disponible');
+                    this.showError('Error de conexión con el servidor');
+                    this.showEmptyState();
+                    return;
+                }
+
                 try {
+                    console.log('📋 Cargando imágenes del bucket:', this.bucketName);
+                    
                     // Mostrar loading
                     galleryGrid.innerHTML = `
                         <div class="loading-gallery">
@@ -692,7 +732,7 @@
                         </div>
                     `;
 
-                    // Obtener lista de archivos
+                    // Obtener lista de archivos del bucket
                     const { data: files, error } = await window.supabaseClient.storage
                         .from(this.bucketName)
                         .list('', {
@@ -700,8 +740,12 @@
                             sortBy: { column: 'created_at', order: 'desc' }
                         });
 
-                    if (error) throw error;
+                    if (error) {
+                        console.error('❌ Error al listar archivos:', error);
+                        throw error;
+                    }
 
+                    console.log('📁 Archivos encontrados:', files?.length || 0);
                     this.images = files || [];
                     
                     // Actualizar estadísticas
@@ -714,8 +758,8 @@
                     }
 
                 } catch (error) {
-                    console.error('Error cargando imágenes:', error);
-                    this.showError('Error al cargar las imágenes');
+                    console.error('❌ Error cargando imágenes:', error);
+                    this.showError(`Error al cargar las imágenes: ${error.message}`);
                     this.showEmptyState();
                 }
             }
@@ -734,41 +778,46 @@
             async renderGallery() {
                 const galleryGrid = document.getElementById('galleryGrid');
                 
-                const imageCards = await Promise.all(
-                    this.images.map(async (image) => {
-                        const imageUrl = this.getImageUrl(image.name);
-                        const fileSize = this.formatFileSize(image.metadata?.size || 0);
-                        const uploadDate = new Date(image.created_at).toLocaleDateString('es-CL');
+                const imageCards = this.images.map((image) => {
+                    const imageUrl = this.getImageUrl(image.name);
+                    const fileSize = this.formatFileSize(image.metadata?.size || 0);
+                    const uploadDate = new Date(image.created_at).toLocaleDateString('es-CL');
 
-                        return `
-                            <div class="image-card">
-                                <img src="${imageUrl}" 
-                                     alt="${image.name}" 
-                                     class="image-preview"
-                                     onclick="imageManager.showImageModal('${imageUrl}', '${image.name}')"
-                                     loading="lazy">
-                                <div class="image-info">
-                                    <div class="image-name">${image.name}</div>
-                                    <div class="image-size">${fileSize}</div>
-                                    <div class="image-date">${uploadDate}</div>
-                                    <div class="image-actions">
-                                        <button class="action-btn btn-copy" onclick="imageManager.copyImageUrl('${imageUrl}')">
-                                            📋 Copiar URL
-                                        </button>
-                                        <button class="action-btn btn-delete" onclick="imageManager.deleteImage('${image.name}')">
-                                            🗑️ Eliminar
-                                        </button>
-                                    </div>
+                    return `
+                        <div class="image-card">
+                            <img src="${imageUrl}" 
+                                 alt="${image.name}" 
+                                 class="image-preview"
+                                 onclick="imageManager.showImageModal('${imageUrl}', '${image.name}')"
+                                 loading="lazy"
+                                 onerror="console.error('Error cargando imagen:', '${image.name}')">
+                            <div class="image-info">
+                                <div class="image-name">${image.name}</div>
+                                <div class="image-size">${fileSize}</div>
+                                <div class="image-date">${uploadDate}</div>
+                                <div class="image-actions">
+                                    <button class="action-btn btn-copy" onclick="imageManager.copyImageUrl('${imageUrl}')">
+                                        📋 Copiar URL
+                                    </button>
+                                    <button class="action-btn btn-delete" onclick="imageManager.deleteImage('${image.name}')">
+                                        🗑️ Eliminar
+                                    </button>
                                 </div>
                             </div>
-                        `;
-                    })
-                );
+                        </div>
+                    `;
+                });
 
                 galleryGrid.innerHTML = imageCards.join('');
+                console.log('✅ Galería renderizada con', this.images.length, 'imágenes');
             }
 
             getImageUrl(fileName) {
+                if (!window.supabaseClient) {
+                    console.error('❌ Supabase no disponible para obtener URL');
+                    return '';
+                }
+
                 const { data } = window.supabaseClient.storage
                     .from(this.bucketName)
                     .getPublicUrl(fileName);
@@ -800,6 +849,11 @@
                     return;
                 }
 
+                if (!window.supabaseClient) {
+                    this.showError('Error de conexión. Recarga la página.');
+                    return;
+                }
+
                 try {
                     const { error } = await window.supabaseClient.storage
                         .from(this.bucketName)
@@ -811,8 +865,8 @@
                     await this.loadImages(); // Recargar galería
 
                 } catch (error) {
-                    console.error('Error eliminando imagen:', error);
-                    this.showError('Error al eliminar la imagen');
+                    console.error('❌ Error eliminando imagen:', error);
+                    this.showError(`Error al eliminar la imagen: ${error.message}`);
                 }
             }
 
@@ -826,7 +880,7 @@
 
             showSuccess(message) {
                 const successDiv = document.getElementById('successMessage');
-                successDiv.textContent = message;
+                successDiv.textContent = `✅ ${message}`;
                 successDiv.style.display = 'block';
                 
                 setTimeout(() => {
@@ -839,12 +893,12 @@
 
             showError(message) {
                 const errorDiv = document.getElementById('errorMessage');
-                errorDiv.textContent = message;
+                errorDiv.textContent = `❌ ${message}`;
                 errorDiv.style.display = 'block';
                 
                 setTimeout(() => {
                     errorDiv.style.display = 'none';
-                }, 5000);
+                }, 7000);
                 
                 // Ocultar mensaje de éxito si está visible
                 document.getElementById('successMessage').style.display = 'none';
@@ -863,6 +917,7 @@
 
         // Inicializar cuando la página esté lista
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('🏠 Casa Nuvera - Gestión de Imágenes iniciando...');
             imageManager = new ImageManager();
         });
     </script>
