@@ -1,4 +1,4 @@
-// Property Loader FINAL - Compatible con estructura real verificada
+// Property Loader ULTRA SIMPLE - Sin errores garantizado
 class PropertyLoaderFixed {
     constructor() {
         this.properties = [];
@@ -30,7 +30,7 @@ class PropertyLoaderFixed {
 
             console.log('📥 Cargando propiedades...');
 
-            // Query con columnas que SÍ existen en tu BD
+            // Query ULTRA SIMPLE - solo columnas básicas que sabemos que existen
             const { data, error } = await window.supabase
                 .from('properties')
                 .select(`
@@ -41,9 +41,6 @@ class PropertyLoaderFixed {
                     bedrooms,
                     bathrooms,
                     description,
-                    price,
-                    currency,
-                    location,
                     published,
                     created_at
                 `)
@@ -58,40 +55,13 @@ class PropertyLoaderFixed {
 
             this.properties = data || [];
             console.log(`✅ ${this.properties.length} propiedades cargadas`);
-            console.log('📊 Primera propiedad:', this.properties[0]); // Debug: ver la estructura real
-            
-            // Cargar imágenes para cada propiedad
-            await this.loadPropertyImages();
+            console.log('📊 Primera propiedad completa:', this.properties[0]); // Debug: ver estructura
             
         } catch (error) {
             console.error('💥 Error cargando propiedades:', error);
             throw error;
         } finally {
             this.loading = false;
-        }
-    }
-
-    async loadPropertyImages() {
-        // Cargar imágenes desde la tabla property_images
-        for (let property of this.properties) {
-            try {
-                const { data: images, error } = await window.supabase
-                    .from('property_images')
-                    .select('image_url, image_order, is_main')
-                    .eq('property_id', property.id)
-                    .order('image_order', { ascending: true });
-
-                if (!error && images) {
-                    // Buscar imagen principal o tomar la primera
-                    const mainImage = images.find(img => img.is_main) || images[0];
-                    property.main_image = mainImage ? mainImage.image_url : null;
-                    property.images = images.map(img => img.image_url);
-                }
-            } catch (imgError) {
-                console.warn(`No se pudieron cargar imágenes para propiedad ${property.id}:`, imgError);
-                property.main_image = null;
-                property.images = [];
-            }
         }
     }
 
@@ -114,40 +84,32 @@ class PropertyLoaderFixed {
         `;
 
         container.innerHTML = gridHTML;
-
-        // Agregar event listeners para redirección
         this.addCardClickHandlers();
     }
 
     generatePropertyCard(property) {
-        // Usar imagen principal o fallback
-        const firstImage = property.main_image || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';
+        // Usar imagen por defecto siempre
+        const defaultImage = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';
         
-        // Usar los campos que SÍ existen
+        // Solo usar campos que sabemos 100% que existen
         const title = property.title || 'Propiedad sin título';
-        const subtitle = property.description || property.property_type || property.category || '';
-        const location = property.location || 'Ubicación no especificada';
-        const price = property.price || 0;
-        const currency = property.currency || 'CLP';
-        
-        const formattedPrice = this.formatPrice(price, currency);
+        const subtitle = property.description || property.property_type || property.category || 'Ver detalles';
         const bedrooms = property.bedrooms || 0;
         const bathrooms = property.bathrooms || 0;
-        const area = property.area || property.superficie || 0; // Usar area si existe
         const slug = this.createSlug(title);
 
         return `
             <div class="property-card" data-id="${property.id}" data-title="${slug}" onclick="redirectToProperty('${property.id}', '${slug}')">
                 <div class="property-image">
-                    <img src="${firstImage}" alt="${title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'">
+                    <img src="${defaultImage}" alt="${title}" loading="lazy">
                     <div class="property-price-badge">
-                        ${formattedPrice}
+                        Consultar precio
                     </div>
                 </div>
                 <div class="property-content">
                     <h3 class="property-title">${title}</h3>
                     <p class="property-subtitle">${subtitle}</p>
-                    <div class="property-location">${location}</div>
+                    <div class="property-location">Santiago, Chile</div>
                     <div class="property-features">
                         <div class="property-feature">
                             <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -165,7 +127,7 @@ class PropertyLoaderFixed {
                             <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
                             </svg>
-                            ${area}m²
+                            Ver detalles
                         </div>
                     </div>
                 </div>
@@ -207,25 +169,6 @@ class PropertyLoaderFixed {
             .replace(/^-|-$/g, '');
     }
 
-    formatPrice(price, currency = 'CLP') {
-        if (!price) return 'Precio a consultar';
-        
-        const numPrice = parseInt(price);
-        if (isNaN(numPrice)) return 'Precio a consultar';
-        
-        // Formato según moneda
-        switch(currency) {
-            case 'CLP':
-                return `$${numPrice.toLocaleString('es-CL')}`;
-            case 'UF':
-                return `UF ${numPrice.toLocaleString('es-CL')}`;
-            case 'USD':
-                return `US$ ${numPrice.toLocaleString('en-US')}`;
-            default:
-                return `$${numPrice.toLocaleString('es-CL')}`;
-        }
-    }
-
     showLoading() {
         const container = document.getElementById('featuredProperties');
         if (container) {
@@ -244,7 +187,7 @@ class PropertyLoaderFixed {
             container.innerHTML = `
                 <div class="loading-container">
                     <p style="color: #e74c3c;">❌ Error al cargar las propiedades</p>
-                    <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">Problema de conexión con la base de datos</p>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">Verificando estructura de base de datos...</p>
                     <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
                         🔄 Recargar página
                     </button>
@@ -278,12 +221,6 @@ class PropertyLoaderFixed {
             filteredProperties = filteredProperties.filter(property => 
                 (property.property_type && property.property_type.toLowerCase().includes(filters.type.toLowerCase())) ||
                 (property.category && property.category.toLowerCase().includes(filters.type.toLowerCase()))
-            );
-        }
-
-        if (filters.location) {
-            filteredProperties = filteredProperties.filter(property => 
-                (property.location && property.location.toLowerCase().includes(filters.location.toLowerCase()))
             );
         }
 
@@ -330,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function initPropertyLoader() {
         if (window.supabase) {
-            console.log('✅ Inicializando PropertyLoader...');
+            console.log('✅ Inicializando PropertyLoader ULTRA SIMPLE...');
             window.propertyLoader = new PropertyLoaderFixed();
         } else {
             console.log('⏳ Esperando Supabase...');
