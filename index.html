@@ -964,6 +964,33 @@
             letter-spacing: 1px;
         }
 
+        /* Loading States */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--secondary-gray);
+            min-height: 200px;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--secondary-gray);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-menu {
@@ -1055,33 +1082,6 @@
         /* Parallax effect */
         .parallax {
             background-attachment: fixed;
-        }
-
-        /* Loading States */
-        .loading-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem 2rem;
-            text-align: center;
-            color: var(--secondary-gray);
-            min-height: 200px;
-        }
-
-        .loading-spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-top: 4px solid var(--secondary-gray);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -1372,7 +1372,7 @@
     <!-- Scripts -->
     <script src="supabase.js"></script>
     <script src="property-handler.js"></script>
-    <script src="property-loader-new.js"></script>
+    <script src="property-loader-fixed.js"></script>
     <!-- 🤖 Widget WhatsApp -->
     <script src="whatsapp-widget.js"></script>
 
