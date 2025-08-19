@@ -1,4 +1,4 @@
-// Property Loader CORREGIDO - Compatible con base de datos actual
+// Property Loader CORREGIDO - Compatible con estructura real de BD
 class PropertyLoaderFixed {
     constructor() {
         this.properties = [];
@@ -30,25 +30,10 @@ class PropertyLoaderFixed {
 
             console.log('📥 Cargando propiedades...');
 
-            // Query simplificado - usar solo las columnas que sabemos que existen
+            // Query MUY SIMPLE - solo las columnas básicas que seguro existen
             const { data, error } = await window.supabase
                 .from('properties')
-                .select(`
-                    id,
-                    title,
-                    subtitle,
-                    location,
-                    price,
-                    currency,
-                    property_type,
-                    bedrooms,
-                    bathrooms,
-                    area,
-                    parking,
-                    published,
-                    images,
-                    created_at
-                `)
+                .select('*')
                 .eq('published', true)
                 .order('created_at', { ascending: false })
                 .limit(6);
@@ -60,7 +45,7 @@ class PropertyLoaderFixed {
 
             this.properties = data || [];
             console.log(`✅ ${this.properties.length} propiedades cargadas`);
-            console.log('Propiedades:', this.properties);
+            console.log('📊 Estructura de propiedades:', this.properties[0]); // Debug: ver la estructura real
             
         } catch (error) {
             console.error('💥 Error cargando propiedades:', error);
@@ -95,26 +80,35 @@ class PropertyLoaderFixed {
     }
 
     generatePropertyCard(property) {
+        // Usar los nombres de campo que realmente existen en tu BD
         const images = this.parseImages(property.images);
         const firstImage = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';
-        const formattedPrice = this.formatPrice(property.price, property.currency);
-        const bedrooms = property.bedrooms || 0;
-        const bathrooms = property.bathrooms || 0;
-        const area = property.area || 0;
-        const slug = this.createSlug(property.title);
+        
+        // Adaptarse a los nombres reales de las columnas
+        const title = property.title || property.name || property.property_title || 'Propiedad sin título';
+        const subtitle = property.subtitle || property.description || property.property_type || '';
+        const location = property.location || property.address || property.comuna || 'Ubicación no especificada';
+        const price = property.price || property.precio || 0;
+        const currency = property.currency || property.moneda || 'CLP';
+        
+        const formattedPrice = this.formatPrice(price, currency);
+        const bedrooms = property.bedrooms || property.dormitorios || property.habitaciones || 0;
+        const bathrooms = property.bathrooms || property.baños || property.banos || 0;
+        const area = property.area || property.superficie || property.metros || 0;
+        const slug = this.createSlug(title);
 
         return `
             <div class="property-card" data-id="${property.id}" data-title="${slug}" onclick="redirectToProperty('${property.id}', '${slug}')">
                 <div class="property-image">
-                    <img src="${firstImage}" alt="${property.title || 'Propiedad'}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'">
+                    <img src="${firstImage}" alt="${title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'">
                     <div class="property-price-badge">
                         ${formattedPrice}
                     </div>
                 </div>
                 <div class="property-content">
-                    <h3 class="property-title">${property.title || 'Propiedad sin título'}</h3>
-                    <p class="property-subtitle">${property.subtitle || property.property_type || 'Propiedad'}</p>
-                    <div class="property-location">${property.location || 'Ubicación no especificada'}</div>
+                    <h3 class="property-title">${title}</h3>
+                    <p class="property-subtitle">${subtitle}</p>
+                    <div class="property-location">${location}</div>
                     <div class="property-features">
                         <div class="property-feature">
                             <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -231,10 +225,14 @@ class PropertyLoaderFixed {
             container.innerHTML = `
                 <div class="loading-container">
                     <p style="color: #e74c3c;">❌ Error al cargar las propiedades</p>
-                    <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">Verifique la conexión a internet y recargue la página</p>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">Problema de conexión con la base de datos</p>
                     <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                        🔄 Recargar
+                        🔄 Recargar página
                     </button>
+                    <br>
+                    <a href="compras.html" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #27ae60; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
+                        📋 Ver todas las propiedades
+                    </a>
                 </div>
             `;
         }
@@ -259,13 +257,16 @@ class PropertyLoaderFixed {
 
         if (filters.type) {
             filteredProperties = filteredProperties.filter(property => 
-                property.property_type?.toLowerCase().includes(filters.type.toLowerCase())
+                (property.property_type && property.property_type.toLowerCase().includes(filters.type.toLowerCase())) ||
+                (property.tipo && property.tipo.toLowerCase().includes(filters.type.toLowerCase()))
             );
         }
 
         if (filters.location) {
             filteredProperties = filteredProperties.filter(property => 
-                property.location?.toLowerCase().includes(filters.location.toLowerCase())
+                (property.location && property.location.toLowerCase().includes(filters.location.toLowerCase())) ||
+                (property.address && property.address.toLowerCase().includes(filters.location.toLowerCase())) ||
+                (property.comuna && property.comuna.toLowerCase().includes(filters.location.toLowerCase()))
             );
         }
 
