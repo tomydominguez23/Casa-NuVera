@@ -6,6 +6,7 @@
     <title>Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</title>
     <link rel="stylesheet" href="property-styles.css">
     <link rel="stylesheet" href="css/property-grid-dark.css">
+    <link rel="stylesheet" href="css/property-featured-styles.css">
     <!-- 🚀 Widget WhatsApp -->
     <link rel="stylesheet" href="whatsapp-widget.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -432,7 +433,7 @@
             filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        /* Featured Properties - NUEVO DISEÑO COMO LA IMAGEN */
+        /* Featured Properties - NUEVO DISEÑO */
         .featured-section {
             padding: 6rem 2rem;
             background: #ffffff;
@@ -468,7 +469,7 @@
             margin-bottom: 0;
         }
 
-        /* BUSCADOR COMO EN LA IMAGEN */
+        /* BUSCADOR */
         .property-search-bar {
             background: rgba(248, 248, 248, 1);
             border-radius: 16px;
@@ -488,13 +489,6 @@
         .search-group {
             display: flex;
             flex-direction: column;
-        }
-
-        .search-group label {
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 0.3rem;
-            font-weight: 500;
         }
 
         .search-select,
@@ -529,12 +523,6 @@
         .search-checkbox-label {
             font-size: 0.9rem;
             color: #666;
-        }
-
-        .search-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
         }
 
         .search-btn {
@@ -573,11 +561,7 @@
             display: inline-block;
         }
 
-        .search-link:hover {
-            text-decoration: underline;
-        }
-
-        /* NUEVA ESTRUCTURA DE GRID COMO EN LA IMAGEN */
+        /* GRID DE PROPIEDADES */
         #featuredProperties {
             background: transparent;
             padding: 0;
@@ -591,7 +575,7 @@
             padding: 0;
         }
 
-        /* CARDS CON DISEÑO EXACTO DE LA IMAGEN */
+        /* CARDS DE PROPIEDADES */
         .property-card {
             background: white;
             border-radius: 16px;
@@ -608,7 +592,6 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
-        /* IMAGEN CON PRECIO BADGE */
         .property-image {
             height: 220px;
             background: #f5f5f5;
@@ -629,19 +612,6 @@
             transform: scale(1.05);
         }
 
-        .no-image-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
-            color: #999;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        /* BADGE DE PRECIO EN ESQUINA SUPERIOR */
         .property-price-badge {
             position: absolute;
             top: 12px;
@@ -656,7 +626,6 @@
             z-index: 2;
         }
 
-        /* CONTENIDO DE LA CARD */
         .property-content {
             padding: 20px;
         }
@@ -684,7 +653,6 @@
             overflow: hidden;
         }
 
-        /* UBICACIÓN CON ICONO */
         .property-location {
             display: flex;
             align-items: center;
@@ -700,7 +668,6 @@
             font-size: 0.8rem;
         }
 
-        /* ICONOS EN LA PARTE INFERIOR */
         .property-features {
             display: flex;
             justify-content: space-between;
@@ -724,7 +691,7 @@
             opacity: 0.7;
         }
 
-        /* Stats Section - SOLO imagen de fondo, SIN recuadros */
+        /* Stats Section */
         .stats-section {
             padding: 6rem 2rem;
             background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
@@ -734,10 +701,9 @@
             background-attachment: fixed;
             color: white;
             filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
-            /* Solo imagen de fondo, sin contenido */
         }
 
-        /* Nueva Era Inmobiliaria Section */
+        /* Nueva Era Section */
         .new-era-section {
             padding: 8rem 2rem;
             background: linear-gradient(var(--overlay-medium), var(--overlay-medium)), 
@@ -811,7 +777,7 @@
             filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
         }
 
-        /* Contact Section con fondo de imagen */
+        /* Contact Section */
         .contact-section {
             padding: 8rem 2rem;
             background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
@@ -898,7 +864,7 @@
             line-height: 1.2;
         }
 
-        /* Footer con fondo de imagen */
+        /* Footer */
         .footer {
             background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
                         url('https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=1920&h=600&fit=crop&crop=center');
@@ -1009,10 +975,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .search-buttons {
-                flex-direction: column;
-            }
-
             .properties-grid-container {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
@@ -1079,14 +1041,13 @@
             }
         }
 
-        /* Parallax effect */
         .parallax {
             background-attachment: fixed;
         }
     </style>
 </head>
 <body>
-    <!-- Header flotante SIN botón Gestionar -->
+    <!-- Header flotante -->
     <header class="header">
         <div class="nav-container">
             <a href="index.html" class="logo">
@@ -1107,7 +1068,7 @@
         </div>
     </header>
 
-    <!-- Hero Section con imagen de fondo full -->
+    <!-- Hero Section -->
     <section class="hero parallax">
         <div class="hero-content fade-in">
             <div class="hero-tagline">Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</div>
@@ -1120,71 +1081,60 @@
         </div>
     </section>
 
-    <!-- Navigation Grid SIN ESPACIOS GRISES -->
+    <!-- Navigation Grid -->
     <section class="nav-grid" id="servicios">
         <div class="nav-container-grid">
-            <!-- 1. Propiedades en Venta - SIN "Apoyo integral" -->
             <a href="compras.html" class="nav-item">
                 <div class="nav-item-content">
                     <div class="nav-item-label">Compra</div>
                     <h3>Propiedades en Venta</h3>
                     <p>Casas y departamentos cuidadosamente seleccionados en las mejores ubicaciones de Santiago.</p>
-                    
                     <span class="nav-item-link">Explorar Propiedades →</span>
                 </div>
             </a>
 
-            <!-- 2. Asesoría Inmobiliaria -->
             <a href="#contacto" class="nav-item">
                 <div class="nav-item-content">
                     <div class="nav-item-label">Servicios</div>
                     <h3>Asesoría Inmobiliaria</h3>
                     <p>Consultoría profesional y servicios integrales para maximizar tu inversión.</p>
-                    
                     <div class="nav-item-feature">
                         <h4>Apoyo integral</h4>
                         <p>Contamos con un equipo interdisciplinario que te acompañarán en todas las etapas de compra y venta.</p>
                     </div>
-                    
                     <span class="nav-item-link">Conocer Más →</span>
                 </div>
             </a>
 
-            <!-- 3. Vende tu propiedad -->
             <a href="#contacto" class="nav-item">
                 <div class="nav-item-content">
                     <div class="nav-item-label">Vende</div>
                     <h3>Vende tu propiedad</h3>
                     <p>Te ayudamos a vender tu propiedad de manera rápida y al mejor precio del mercado.</p>
-                    
                     <div class="nav-item-feature">
                         <h4>Experiencia digital</h4>
                         <p>Integramos la tecnología de hoy al sector inmobiliario, creando experiencias digitales que transforman la manera de encontrar tu nuevo hogar.</p>
                     </div>
-                    
                     <span class="nav-item-link">Más información →</span>
                 </div>
             </a>
 
-            <!-- 4. Conocer más -->
             <a href="#redefiniendo" class="nav-item">
                 <div class="nav-item-content">
                     <div class="nav-item-label">Información</div>
                     <h3>Conocer más</h3>
                     <p>Descubre cómo estamos redefiniendo el mercado inmobiliario con tecnología e innovación.</p>
-                    
                     <div class="nav-item-feature">
                         <h4>Conocer más</h4>
                         <p>Redefiniendo el mercado inmobiliario con las mejores herramientas tecnológicas del sector.</p>
                     </div>
-                    
                     <span class="nav-item-link">Ver más →</span>
                 </div>
             </a>
         </div>
     </section>
 
-    <!-- About Features Section - Apoyo integral y Experiencia digital -->
+    <!-- About Features Section -->
     <section class="about-features-section parallax">
         <div class="about-features-container">
             <div class="about-features-content fade-in">
@@ -1208,7 +1158,7 @@
         </div>
     </section>
 
-    <!-- Featured Properties - NUEVO DISEÑO COMO LA IMAGEN -->
+    <!-- Featured Properties -->
     <section class="featured-section" id="compra">
         <div class="featured-container">
             <div class="section-header fade-in">
@@ -1216,7 +1166,7 @@
                 <h2 class="section-title">Tu nuevo hogar te está esperando, ven a descubrirlo</h2>
             </div>
 
-            <!-- BUSCADOR COMO EN LA IMAGEN -->
+            <!-- Buscador -->
             <div class="property-search-bar fade-in">
                 <div class="search-filters">
                     <div class="search-group">
@@ -1254,7 +1204,6 @@
             </div>
 
             <div id="featuredProperties">
-                <!-- Las propiedades se cargarán aquí dinámicamente CON NUEVO DISEÑO -->
                 <div class="loading-container">
                     <div class="loading-spinner"></div>
                     <p>Cargando propiedades destacadas...</p>
@@ -1263,12 +1212,10 @@
         </div>
     </section>
 
-    <!-- Stats Section - SOLO imagen de fondo, SIN recuadros -->
-    <section class="stats-section parallax">
-        <!-- Solo imagen de fondo, sin contenido -->
-    </section>
+    <!-- Stats Section -->
+    <section class="stats-section parallax"></section>
 
-    <!-- Nueva Era Inmobiliaria Section CON TU IMAGEN -->
+    <!-- Nueva Era Section -->
     <section class="new-era-section parallax" id="redefiniendo">
         <div class="new-era-container">
             <div class="new-era-content fade-in">
@@ -1300,7 +1247,7 @@
         </div>
     </section>
 
-    <!-- Contact Section con fondo de imagen -->
+    <!-- Contact Section -->
     <section class="contact-section parallax" id="contacto">
         <div class="contact-container">
             <h2 class="fade-in">¿Listo para encontrar tu próximo hogar?</h2>
@@ -1319,7 +1266,7 @@
         </div>
     </section>
 
-    <!-- Footer con fondo de imagen y botón Gestionar -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-content">
@@ -1373,7 +1320,6 @@
     <script src="supabase.js"></script>
     <script src="property-handler.js"></script>
     <script src="property-loader-fixed.js"></script>
-    <!-- 🤖 Widget WhatsApp -->
     <script src="whatsapp-widget.js"></script>
 
     <script>
@@ -1386,9 +1332,7 @@
             
             console.log('Filtros de búsqueda:', { operation, type, location, projects });
             
-            // Aquí puedes implementar la lógica de filtrado
             if (window.propertyLoader) {
-                // Aplicar filtros al property loader
                 window.propertyLoader.applySearchFilters({
                     operation,
                     type,
@@ -1431,7 +1375,7 @@
             });
         });
 
-        // Parallax effect (optional)
+        // Parallax effect
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
             const parallaxElements = document.querySelectorAll('.parallax');
