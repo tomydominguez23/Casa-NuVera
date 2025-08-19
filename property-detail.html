@@ -302,6 +302,33 @@
             animation: rotate 2s linear infinite;
         }
 
+        /* Tours Multiple - si hay varios tours */
+        .tours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tour-item-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .tour-item-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -595,6 +622,10 @@
                 padding: 1rem 2rem;
                 font-size: 1rem;
             }
+
+            .tours-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -659,12 +690,21 @@
 
                     <!-- Tour 360° Section -->
                     <div class="tour-360-section" id="tour360Section" style="display: none;">
-                        <h3>🌐 Tour Virtual 360°</h3>
-                        <p>Explora esta propiedad como si estuvieras ahí. Navega por cada rincón y descubre todos los detalles.</p>
-                        <button class="tour-360-btn" onclick="openTour360()">
-                            <span class="tour-360-icon">🔄</span>
-                            Ver Tour Virtual 360°
-                        </button>
+                        <h3 id="tourSectionTitle">🌐 Tour Virtual 360°</h3>
+                        <p id="tourSectionDescription">Explora esta propiedad como si estuvieras ahí. Navega por cada rincón y descubre todos los detalles.</p>
+                        
+                        <!-- Botón único o múltiples tours -->
+                        <div id="singleTourContainer">
+                            <button class="tour-360-btn" onclick="openTour360()">
+                                <span class="tour-360-icon">🔄</span>
+                                <span id="tourButtonText">Ver Tour Virtual 360°</span>
+                            </button>
+                        </div>
+
+                        <!-- Grid para múltiples tours -->
+                        <div id="multipleTourContainer" class="tours-grid" style="display: none;">
+                            <!-- Se llenará dinámicamente con JavaScript -->
+                        </div>
                     </div>
 
                     <!-- Description -->
@@ -728,7 +768,8 @@
         let currentProperty = null;
         let currentImageIndex = 0;
         let propertyImages = [];
-        let tourUrl = null;
+        let propertyTours = [];
+        let currentTourUrl = null;
 
         // Obtener ID de la propiedad desde URL (soporte para ID y slug)
         function getPropertyIdFromURL() {
@@ -801,9 +842,8 @@
                     propertyImages = [{ image_url: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop', is_main: true }];
                 }
 
-                // Cargar tour 360° (por ahora usar el tour por defecto)
-                // TODO: En el futuro esto vendrá de la base de datos
-                tourUrl = 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1';
+                // Cargar tours 360° desde la base de datos
+                await loadPropertyTours(propertyId);
 
                 showLoading(false);
                 renderPropertyDetails();
@@ -812,6 +852,55 @@
                 console.error('💥 Error al cargar propiedad:', error);
                 showError(error.message);
                 showLoading(false);
+            }
+        }
+
+        async function loadPropertyTours(propertyId) {
+            try {
+                console.log('🌐 Cargando tours 360° para propiedad:', propertyId);
+                
+                const { data: tours, error } = await window.supabase
+                    .from('property_tours')
+                    .select('*')
+                    .eq('property_id', propertyId)
+                    .eq('is_active', true)
+                    .order('order_index', { ascending: true });
+
+                if (error) {
+                    console.warn('⚠️ Error cargando tours:', error);
+                    // Fallback al tour por defecto
+                    propertyTours = [{
+                        id: 'default',
+                        tour_url: 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1',
+                        tour_title: 'Tour Virtual 360°',
+                        is_active: true,
+                        order_index: 1
+                    }];
+                } else if (tours && tours.length > 0) {
+                    propertyTours = tours;
+                    console.log('✅ Tours cargados:', tours.length);
+                } else {
+                    // Si no hay tours en BD, usar el tour por defecto
+                    propertyTours = [{
+                        id: 'default',
+                        tour_url: 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1',
+                        tour_title: 'Tour Virtual 360°',
+                        is_active: true,
+                        order_index: 1
+                    }];
+                    console.log('ℹ️ Usando tour por defecto (no hay tours en BD)');
+                }
+
+            } catch (error) {
+                console.error('💥 Error cargando tours:', error);
+                // Fallback al tour por defecto
+                propertyTours = [{
+                    id: 'default',
+                    tour_url: 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1',
+                    tour_title: 'Tour Virtual 360°',
+                    is_active: true,
+                    order_index: 1
+                }];
             }
         }
 
@@ -948,11 +1037,40 @@
 
         function renderTour360Section() {
             const tour360Section = document.getElementById('tour360Section');
+            const singleTourContainer = document.getElementById('singleTourContainer');
+            const multipleTourContainer = document.getElementById('multipleTourContainer');
             
-            // Mostrar sección de tour solo si hay URL disponible
-            if (tourUrl) {
-                document.getElementById('tourModalTitle').textContent = `Tour Virtual - ${currentProperty.title}`;
+            // Mostrar sección solo si hay tours disponibles
+            if (propertyTours && propertyTours.length > 0) {
                 tour360Section.style.display = 'block';
+                
+                if (propertyTours.length === 1) {
+                    // Un solo tour - mostrar botón principal
+                    const tour = propertyTours[0];
+                    currentTourUrl = tour.tour_url;
+                    
+                    document.getElementById('tourButtonText').textContent = tour.tour_title;
+                    document.getElementById('tourModalTitle').textContent = `${tour.tour_title} - ${currentProperty.title}`;
+                    
+                    singleTourContainer.style.display = 'block';
+                    multipleTourContainer.style.display = 'none';
+                    
+                } else {
+                    // Múltiples tours - mostrar grid
+                    document.getElementById('tourSectionTitle').textContent = '🌐 Tours Virtuales 360°';
+                    document.getElementById('tourSectionDescription').textContent = 'Explora esta propiedad con múltiples tours virtuales. Descubre cada área en detalle.';
+                    
+                    const toursHTML = propertyTours.map((tour, index) => `
+                        <button class="tour-item-btn" onclick="openSpecificTour('${tour.tour_url}', '${tour.tour_title}')">
+                            🔄 ${tour.tour_title}
+                        </button>
+                    `).join('');
+                    
+                    multipleTourContainer.innerHTML = toursHTML;
+                    
+                    singleTourContainer.style.display = 'none';
+                    multipleTourContainer.style.display = 'grid';
+                }
             }
         }
 
@@ -984,14 +1102,25 @@
 
         // Funciones Tour 360°
         function openTour360() {
+            if (propertyTours.length === 1) {
+                openSpecificTour(propertyTours[0].tour_url, propertyTours[0].tour_title);
+            } else {
+                alert('Error: No se encontró el tour virtual');
+            }
+        }
+
+        function openSpecificTour(tourUrl, tourTitle) {
             if (!tourUrl) {
-                alert('Tour virtual no disponible para esta propiedad');
+                alert('Tour virtual no disponible');
                 return;
             }
 
             const modal = document.getElementById('tourModal');
             const iframe = document.getElementById('tourIframe');
             const loading = document.getElementById('tourLoading');
+
+            // Actualizar título del modal
+            document.getElementById('tourModalTitle').textContent = `${tourTitle} - ${currentProperty.title}`;
 
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1074,14 +1203,15 @@
 
             const operationType = currentProperty.property_type === 'venta' ? 'comprar' : 'arrendar';
 
+            const tourMessage = propertyTours.length > 0 ? 
+                `\n🌐 ${propertyTours.length > 1 ? 'Vi los tours virtuales 360°' : 'Vi el tour virtual 360°'} y me interesa conocer más detalles.` : '';
+
             const message = `Hola! Estoy interesado/a en ${operationType} la propiedad "${currentProperty.title}".
 
 📍 Dirección: ${currentProperty.address}, ${currentProperty.commune}
 💰 Precio: ${formatPrice(currentProperty.price, currentProperty.currency)}
 🏠 Características: ${features.join(', ')}
-${currentProperty.expenses ? `💸 Gastos comunes: $${currentProperty.expenses.toLocaleString()}` : ''}
-
-${tourUrl ? '🌐 Vi el tour virtual 360° y me interesa conocer más detalles.' : ''}
+${currentProperty.expenses ? `💸 Gastos comunes: $${currentProperty.expenses.toLocaleString()}` : ''}${tourMessage}
 
 ¿Podrías darme más información?
 
