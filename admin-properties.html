@@ -133,11 +133,31 @@
             color: #856404;
         }
 
+        /* Tours 360° Badge */
+        .tours-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+
+        .tours-badge.no-tours {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
         .property-actions {
             display: flex;
             gap: 0.5rem;
             margin-top: 1rem;
             justify-content: space-between;
+            flex-wrap: wrap;
         }
 
         .action-btn {
@@ -151,6 +171,9 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            flex: 1;
+            justify-content: center;
+            min-width: 0;
         }
 
         .action-btn.edit {
@@ -165,6 +188,11 @@
 
         .action-btn.view {
             background: #95a5a6;
+            color: white;
+        }
+
+        .action-btn.tours {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
@@ -219,6 +247,158 @@
             letter-spacing: 0.5px;
         }
 
+        /* Modal Tours 360° */
+        .tours-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .tours-modal.active {
+            display: flex;
+        }
+
+        .tours-modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .tours-modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .tours-modal-body {
+            padding: 1.5rem;
+        }
+
+        .tours-list {
+            margin-bottom: 2rem;
+        }
+
+        .tour-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+        }
+
+        .tour-info {
+            flex: 1;
+        }
+
+        .tour-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .tour-url {
+            font-size: 0.8rem;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .tour-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tour-btn {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tour-btn.preview {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .tour-btn.edit {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .tour-btn.delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .add-tour-form {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-tours {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+
         @media (max-width: 768px) {
             .properties-header {
                 flex-direction: column;
@@ -240,6 +420,19 @@
 
             .properties-stats {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .property-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                flex: none;
+            }
+
+            .tours-modal-content {
+                margin: 0.5rem;
+                max-height: 95vh;
             }
         }
     </style>
@@ -300,7 +493,7 @@
         <header class="content-header">
             <div class="header-left">
                 <h1>Gestión de Propiedades</h1>
-                <p>Administra todas las propiedades de Casa Nuvera</p>
+                <p>Administra todas las propiedades y tours 360° de Casa Nuvera</p>
             </div>
             <div class="header-right">
                 <div class="user-info">
@@ -348,6 +541,10 @@
                 <div class="stat-item">
                     <div class="stat-number" id="arriendoProperties">0</div>
                     <div class="stat-label">Arriendo</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="toursCount">0</div>
+                    <div class="stat-label">Tours 360°</div>
                 </div>
             </div>
 
@@ -420,6 +617,47 @@
         </div>
     </main>
 
+    <!-- Modal Tours 360° -->
+    <div class="tours-modal" id="toursModal">
+        <div class="tours-modal-content">
+            <div class="tours-modal-header">
+                <h3 id="toursModalTitle">Tours 360° - Propiedad</h3>
+                <button class="modal-close" onclick="closeToursModal()">×</button>
+            </div>
+            <div class="tours-modal-body">
+                <!-- Lista de tours existentes -->
+                <div class="tours-list" id="toursList">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+
+                <!-- Formulario para agregar nuevo tour -->
+                <div class="add-tour-form">
+                    <h4>🌐 Agregar Nuevo Tour 360°</h4>
+                    <form id="addTourForm">
+                        <div class="form-group">
+                            <label for="tourTitle">Título del Tour</label>
+                            <input type="text" id="tourTitle" class="form-control" placeholder="Ej: Tour Principal, Cocina y Baños, etc." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tourUrl">URL de Kuula</label>
+                            <input type="url" id="tourUrl" class="form-control" placeholder="https://kuula.co/share/collection/..." required>
+                            <small style="color: #6c757d; margin-top: 0.5rem; display: block;">
+                                💡 Copia la URL completa desde Kuula (Share → Embed → src del iframe)
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="tourOrder">Orden</label>
+                            <input type="number" id="tourOrder" class="form-control" value="1" min="1">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            ➕ Agregar Tour
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Loading -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
@@ -436,6 +674,8 @@
             constructor() {
                 this.properties = [];
                 this.filteredProperties = [];
+                this.propertyTours = {};
+                this.currentPropertyId = null;
                 this.filters = {
                     type: '',
                     category: '',
@@ -461,9 +701,11 @@
                 // Cargar propiedades cuando Supabase esté listo
                 if (window.supabaseClient) {
                     await this.loadProperties();
+                    await this.loadAllTours();
                 } else {
-                    window.addEventListener('supabaseReady', () => {
-                        this.loadProperties();
+                    window.addEventListener('supabaseReady', async () => {
+                        await this.loadProperties();
+                        await this.loadAllTours();
                     });
                 }
                 
@@ -497,6 +739,12 @@
                     this.filters.search = e.target.value.toLowerCase();
                     this.applyFilters();
                 });
+
+                // Form de agregar tour
+                document.getElementById('addTourForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addTour();
+                });
             }
 
             async loadProperties() {
@@ -520,11 +768,38 @@
                     
                 } catch (error) {
                     console.error('❌ Error al cargar propiedades:', error);
-                    
-                    // Mostrar datos de ejemplo si hay error
                     this.loadDemoProperties();
-                    
                     window.showNotification('Error al cargar propiedades. Mostrando datos de ejemplo.', 'warning');
+                }
+            }
+
+            async loadAllTours() {
+                try {
+                    console.log('🌐 Cargando tours 360°...');
+                    
+                    const { data, error } = await window.supabaseClient
+                        .from('property_tours')
+                        .select('*')
+                        .order('property_id, order_index');
+
+                    if (error) throw error;
+
+                    // Organizar tours por property_id
+                    this.propertyTours = {};
+                    if (data) {
+                        data.forEach(tour => {
+                            if (!this.propertyTours[tour.property_id]) {
+                                this.propertyTours[tour.property_id] = [];
+                            }
+                            this.propertyTours[tour.property_id].push(tour);
+                        });
+                    }
+
+                    console.log(`✅ Tours cargados para ${Object.keys(this.propertyTours).length} propiedades`);
+                    this.renderProperties(); // Re-renderizar para mostrar badges de tours
+
+                } catch (error) {
+                    console.error('❌ Error al cargar tours:', error);
                 }
             }
 
@@ -572,11 +847,13 @@
                 const active = this.properties.filter(p => p.status === 'active').length;
                 const venta = this.properties.filter(p => p.property_type === 'venta').length;
                 const arriendo = this.properties.filter(p => p.property_type === 'arriendo').length;
+                const totalTours = Object.values(this.propertyTours).reduce((sum, tours) => sum + tours.length, 0);
 
                 document.getElementById('totalProperties').textContent = total;
                 document.getElementById('activeProperties').textContent = active;
                 document.getElementById('ventaProperties').textContent = venta;
                 document.getElementById('arriendoProperties').textContent = arriendo;
+                document.getElementById('toursCount').textContent = totalTours;
                 
                 document.getElementById('propertiesCount').textContent = 
                     `${this.filteredProperties.length} propiedades encontradas`;
@@ -633,6 +910,8 @@
             createPropertyCard(property) {
                 const formattedPrice = this.formatPrice(property.price, property.currency);
                 const formattedDate = this.formatDate(property.created_at);
+                const tours = this.propertyTours[property.id] || [];
+                const toursCount = tours.length;
                 
                 return `
                     <div class="property-card">
@@ -642,7 +921,12 @@
                               property.category === 'oficina' ? '🏬' : '🏘️'}
                         </div>
                         <div class="property-content">
-                            <h3 class="property-title">${property.title}</h3>
+                            <h3 class="property-title">
+                                ${property.title}
+                                <span class="tours-badge ${toursCount === 0 ? 'no-tours' : ''}">
+                                    🌐 ${toursCount} tour${toursCount !== 1 ? 's' : ''}
+                                </span>
+                            </h3>
                             <div class="property-location">
                                 📍 ${property.address}, ${property.commune}
                             </div>
@@ -676,6 +960,9 @@
                                 <a href="property-detail.html?id=${property.id}" class="action-btn view">
                                     👁️ Ver
                                 </a>
+                                <button class="action-btn tours" onclick="manageTours(${property.id}, '${property.title}')">
+                                    🌐 Tours
+                                </button>
                                 <button class="action-btn edit" onclick="editProperty(${property.id})">
                                     ✏️ Editar
                                 </button>
@@ -721,6 +1008,163 @@
                 });
             }
 
+            // Gestión de Tours 360°
+            async openToursModal(propertyId, propertyTitle) {
+                this.currentPropertyId = propertyId;
+                document.getElementById('toursModalTitle').textContent = `Tours 360° - ${propertyTitle}`;
+                
+                await this.loadPropertyTours(propertyId);
+                this.renderToursList();
+                
+                document.getElementById('toursModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeToursModal() {
+                document.getElementById('toursModal').classList.remove('active');
+                document.body.style.overflow = 'auto';
+                this.currentPropertyId = null;
+                
+                // Limpiar formulario
+                document.getElementById('addTourForm').reset();
+                document.getElementById('tourOrder').value = '1';
+            }
+
+            async loadPropertyTours(propertyId) {
+                try {
+                    const { data, error } = await window.supabaseClient
+                        .from('property_tours')
+                        .select('*')
+                        .eq('property_id', propertyId)
+                        .order('order_index');
+
+                    if (error) throw error;
+
+                    this.propertyTours[propertyId] = data || [];
+                    
+                } catch (error) {
+                    console.error('Error al cargar tours de la propiedad:', error);
+                    this.propertyTours[propertyId] = [];
+                }
+            }
+
+            renderToursList() {
+                const container = document.getElementById('toursList');
+                const tours = this.propertyTours[this.currentPropertyId] || [];
+
+                if (tours.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-tours">
+                            <p>🌐 No hay tours 360° configurados para esta propiedad</p>
+                            <p>Agrega el primer tour usando el formulario de abajo</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = tours.map(tour => `
+                    <div class="tour-item">
+                        <div class="tour-info">
+                            <div class="tour-title">${tour.tour_title}</div>
+                            <div class="tour-url">${tour.tour_url}</div>
+                            <small style="color: #6c757d;">Orden: ${tour.order_index} | ${tour.is_active ? 'Activo' : 'Inactivo'}</small>
+                        </div>
+                        <div class="tour-actions">
+                            <button class="tour-btn preview" onclick="previewTour('${tour.tour_url}')">
+                                👁️ Vista Previa
+                            </button>
+                            <button class="tour-btn edit" onclick="editTour('${tour.id}')">
+                                ✏️ Editar
+                            </button>
+                            <button class="tour-btn delete" onclick="deleteTour('${tour.id}')">
+                                🗑️ Eliminar
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            async addTour() {
+                try {
+                    const title = document.getElementById('tourTitle').value.trim();
+                    const url = document.getElementById('tourUrl').value.trim();
+                    const order = parseInt(document.getElementById('tourOrder').value) || 1;
+
+                    if (!title || !url) {
+                        window.showNotification('Por favor completa todos los campos', 'error');
+                        return;
+                    }
+
+                    // Validar URL de Kuula
+                    if (!url.includes('kuula.co')) {
+                        window.showNotification('La URL debe ser de Kuula (kuula.co)', 'error');
+                        return;
+                    }
+
+                    const { data, error } = await window.supabaseClient
+                        .from('property_tours')
+                        .insert({
+                            property_id: this.currentPropertyId,
+                            tour_url: url,
+                            tour_title: title,
+                            order_index: order,
+                            is_active: true
+                        })
+                        .select();
+
+                    if (error) throw error;
+
+                    // Actualizar lista local
+                    if (!this.propertyTours[this.currentPropertyId]) {
+                        this.propertyTours[this.currentPropertyId] = [];
+                    }
+                    this.propertyTours[this.currentPropertyId].push(data[0]);
+
+                    // Re-renderizar
+                    this.renderToursList();
+                    this.renderProperties();
+                    this.updateStats();
+
+                    // Limpiar formulario
+                    document.getElementById('addTourForm').reset();
+                    document.getElementById('tourOrder').value = '1';
+
+                    window.showNotification('Tour 360° agregado exitosamente', 'success');
+
+                } catch (error) {
+                    console.error('Error al agregar tour:', error);
+                    window.showNotification('Error al agregar tour', 'error');
+                }
+            }
+
+            async deleteTourById(tourId) {
+                try {
+                    const { error } = await window.supabaseClient
+                        .from('property_tours')
+                        .delete()
+                        .eq('id', tourId);
+
+                    if (error) throw error;
+
+                    // Actualizar lista local
+                    if (this.propertyTours[this.currentPropertyId]) {
+                        this.propertyTours[this.currentPropertyId] = 
+                            this.propertyTours[this.currentPropertyId].filter(t => t.id !== tourId);
+                    }
+
+                    // Re-renderizar
+                    this.renderToursList();
+                    this.renderProperties();
+                    this.updateStats();
+
+                    window.showNotification('Tour eliminado exitosamente', 'success');
+
+                } catch (error) {
+                    console.error('Error al eliminar tour:', error);
+                    window.showNotification('Error al eliminar tour', 'error');
+                }
+            }
+
             async deletePropertyById(id) {
                 try {
                     const { error } = await window.supabaseClient
@@ -732,6 +1176,7 @@
                     
                     // Remover de la lista local
                     this.properties = this.properties.filter(p => p.id !== id);
+                    delete this.propertyTours[id];
                     this.applyFilters();
                     
                     window.showNotification('Propiedad eliminada exitosamente', 'success');
@@ -766,6 +1211,38 @@
             );
         }
 
+        function manageTours(propertyId, propertyTitle) {
+            if (window.propertiesManager) {
+                window.propertiesManager.openToursModal(propertyId, propertyTitle);
+            }
+        }
+
+        function closeToursModal() {
+            if (window.propertiesManager) {
+                window.propertiesManager.closeToursModal();
+            }
+        }
+
+        function previewTour(tourUrl) {
+            window.open(tourUrl, '_blank', 'width=1200,height=800');
+        }
+
+        function editTour(tourId) {
+            // TODO: Implementar edición de tours
+            window.showNotification('Función de edición en desarrollo', 'info');
+        }
+
+        function deleteTour(tourId) {
+            window.showConfirm(
+                '¿Estás seguro de que deseas eliminar este tour? Esta acción no se puede deshacer.',
+                () => {
+                    if (window.propertiesManager) {
+                        window.propertiesManager.deleteTourById(tourId);
+                    }
+                }
+            );
+        }
+
         function clearFilters() {
             document.getElementById('filterType').value = '';
             document.getElementById('filterCategory').value = '';
@@ -782,6 +1259,13 @@
                 window.propertiesManager.applyFilters();
             }
         }
+
+        // Cerrar modal al hacer click fuera
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tours-modal')) {
+                closeToursModal();
+            }
+        });
 
         // Inicializar cuando la página esté lista
         document.addEventListener('DOMContentLoaded', () => {
