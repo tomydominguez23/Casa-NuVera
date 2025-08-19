@@ -105,6 +105,52 @@
             min-height: 100vh;
         }
 
+        /* NUEVO: Property Header - TÍTULO ARRIBA DE LAS IMÁGENES */
+        .property-header-section {
+            padding: 2rem;
+            background: white;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .property-header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .property-badge-detail {
+            display: inline-block;
+            background: var(--green-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .property-title-detail {
+            font-size: 2.8rem;
+            font-weight: 300;
+            color: var(--primary-black);
+            margin-bottom: 0.8rem;
+            line-height: 1.2;
+        }
+
+        .property-location-detail {
+            font-size: 1.2rem;
+            color: var(--secondary-gray);
+            margin-bottom: 1rem;
+        }
+
+        .property-price-detail {
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: var(--green-accent);
+            margin-bottom: 0;
+        }
+
         /* Property Gallery */
         .property-gallery {
             height: 60vh;
@@ -172,46 +218,6 @@
         /* Left Column */
         .property-main {
             background: white;
-        }
-
-        .property-header {
-            margin-bottom: 2rem;
-            padding-bottom: 2rem;
-            border-bottom: 2px solid var(--light-gray);
-        }
-
-        .property-badge-detail {
-            display: inline-block;
-            background: var(--green-accent);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 1rem;
-        }
-
-        .property-title-detail {
-            font-size: 2.5rem;
-            font-weight: 300;
-            color: var(--primary-black);
-            margin-bottom: 0.5rem;
-            line-height: 1.2;
-        }
-
-        .property-location-detail {
-            font-size: 1.2rem;
-            color: var(--secondary-gray);
-            margin-bottom: 1rem;
-        }
-
-        .property-price-detail {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--green-accent);
-            margin-bottom: 1rem;
         }
 
         /* Features Grid */
@@ -531,6 +537,147 @@
             font-size: 1.2rem;
         }
 
+        /* NUEVA SECCIÓN: Propiedades Similares */
+        .similar-properties-section {
+            background: #f8f9fa;
+            padding: 4rem 0;
+        }
+
+        .similar-properties-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .similar-properties-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .similar-properties-header h3 {
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--primary-black);
+            margin-bottom: 1rem;
+        }
+
+        .similar-properties-header p {
+            font-size: 1.1rem;
+            color: var(--secondary-gray);
+        }
+
+        /* Grid de propiedades similares - mismo diseño que las cards principales */
+        .similar-properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .similar-property-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .similar-property-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .similar-property-image {
+            height: 220px;
+            background: #f5f5f5;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .similar-property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .similar-property-card:hover .similar-property-image img {
+            transform: scale(1.05);
+        }
+
+        .similar-property-price-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .similar-property-content {
+            padding: 20px;
+        }
+
+        .similar-property-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .similar-property-location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .similar-property-location::before {
+            content: "📍";
+            font-size: 0.8rem;
+        }
+
+        .similar-property-features {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .similar-property-feature {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .similar-property-feature-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+        }
+
         /* Loading */
         .loading-container {
             display: flex;
@@ -575,18 +722,18 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            .property-details {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-                padding: 2rem 1rem;
-            }
-
             .property-title-detail {
                 font-size: 2rem;
             }
 
             .property-price-detail {
                 font-size: 2.2rem;
+            }
+
+            .property-details {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem 1rem;
             }
 
             .features-grid {
@@ -626,6 +773,16 @@
             .tours-grid {
                 grid-template-columns: 1fr;
             }
+
+            .similar-properties-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .similar-property-card {
+                margin: 0 auto;
+                max-width: 320px;
+            }
         }
     </style>
 </head>
@@ -662,6 +819,16 @@
 
         <!-- Property Content -->
         <div id="propertyContent" style="display: none;">
+            <!-- NUEVO: Property Header - TÍTULO ARRIBA DE LAS IMÁGENES -->
+            <section class="property-header-section">
+                <div class="property-header-container">
+                    <div class="property-badge-detail" id="propertyBadge">DISPONIBLE</div>
+                    <h1 class="property-title-detail" id="propertyTitle">Cargando...</h1>
+                    <div class="property-location-detail" id="propertyLocation">📍 Cargando ubicación...</div>
+                    <div class="property-price-detail" id="propertyPrice">Cargando precio...</div>
+                </div>
+            </section>
+
             <!-- Property Gallery -->
             <section class="property-gallery" id="propertyGallery">
                 <div class="gallery-main">
@@ -676,13 +843,6 @@
             <section class="property-details">
                 <!-- Left Column -->
                 <div class="property-main">
-                    <div class="property-header">
-                        <div class="property-badge-detail" id="propertyBadge">DISPONIBLE</div>
-                        <h1 class="property-title-detail" id="propertyTitle">Cargando...</h1>
-                        <div class="property-location-detail" id="propertyLocation">📍 Cargando ubicación...</div>
-                        <div class="property-price-detail" id="propertyPrice">Cargando precio...</div>
-                    </div>
-
                     <!-- Features Grid -->
                     <div class="features-grid" id="featuresGrid">
                         <!-- Features will be populated by JavaScript -->
@@ -740,6 +900,19 @@
                     </div>
                 </div>
             </section>
+
+            <!-- NUEVA SECCIÓN: Propiedades Similares -->
+            <section class="similar-properties-section" id="similarPropertiesSection" style="display: none;">
+                <div class="similar-properties-container">
+                    <div class="similar-properties-header">
+                        <h3 id="similarPropertiesTitle">Propiedades similares en la zona</h3>
+                        <p id="similarPropertiesSubtitle">Descubre más opciones en la misma comuna</p>
+                    </div>
+                    <div class="similar-properties-grid" id="similarPropertiesGrid">
+                        <!-- Similar properties will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
@@ -770,6 +943,7 @@
         let propertyImages = [];
         let propertyTours = [];
         let currentTourUrl = null;
+        let similarProperties = [];
 
         // Obtener ID de la propiedad desde URL (soporte para ID y slug)
         function getPropertyIdFromURL() {
@@ -779,7 +953,7 @@
             
             // Si tenemos slug, extraer ID del final del slug (formato: nombre-propiedad-123)
             if (slug) {
-                const matches = slug.match(/-(\d+)$/);
+                const matches = slug.match(/-(\\d+)$/);
                 return matches ? matches[1] : null;
             }
             
@@ -820,7 +994,7 @@
                     .from('properties')
                     .select('*')
                     .eq('id', propertyId)
-                    .eq('published', true)
+                    .eq('status', 'published')
                     .single();
 
                 if (propertyError || !property) {
@@ -830,20 +1004,22 @@
                 currentProperty = property;
 
                 // Cargar imágenes
-                const { data: images, error: imagesError } = await window.supabase
-                    .from('property_images')
-                    .select('image_url, is_main')
-                    .eq('property_id', propertyId)
-                    .order('is_main', { ascending: false });
-
+                const images = parseImages(property.images);
                 if (images && images.length > 0) {
-                    propertyImages = images;
+                    propertyImages = images.map(img => ({ image_url: img, is_main: false }));
+                    propertyImages[0].is_main = true;
                 } else {
-                    propertyImages = [{ image_url: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop', is_main: true }];
+                    propertyImages = [{ 
+                        image_url: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop', 
+                        is_main: true 
+                    }];
                 }
 
                 // Cargar tours 360° desde la base de datos
                 await loadPropertyTours(propertyId);
+
+                // Cargar propiedades similares
+                await loadSimilarProperties(property.location);
 
                 showLoading(false);
                 renderPropertyDetails();
@@ -853,6 +1029,23 @@
                 showError(error.message);
                 showLoading(false);
             }
+        }
+
+        function parseImages(imagesField) {
+            if (!imagesField) return [];
+            
+            try {
+                if (typeof imagesField === 'string') {
+                    return JSON.parse(imagesField);
+                }
+                if (Array.isArray(imagesField)) {
+                    return imagesField;
+                }
+            } catch (error) {
+                console.error('Error parsing images:', error);
+            }
+            
+            return [];
         }
 
         async function loadPropertyTours(propertyId) {
@@ -904,6 +1097,190 @@
             }
         }
 
+        async function loadSimilarProperties(currentLocation) {
+            try {
+                console.log('🔍 Cargando propiedades similares en:', currentLocation);
+                
+                // Extraer comuna de la ubicación actual
+                const currentCommune = extractCommune(currentLocation);
+                
+                if (!currentCommune) {
+                    console.log('ℹ️ No se pudo extraer comuna, buscando propiedades cercanas');
+                    return;
+                }
+
+                // Buscar propiedades en la misma comuna
+                const { data: properties, error } = await window.supabase
+                    .from('properties')
+                    .select('*')
+                    .eq('status', 'published')
+                    .neq('id', currentProperty.id)
+                    .ilike('location', `%${currentCommune}%`)
+                    .limit(3);
+
+                if (error) {
+                    console.warn('⚠️ Error cargando propiedades similares:', error);
+                    return;
+                }
+
+                if (properties && properties.length > 0) {
+                    similarProperties = properties;
+                    console.log(`✅ ${properties.length} propiedades similares encontradas en ${currentCommune}`);
+                    renderSimilarProperties();
+                } else {
+                    console.log('ℹ️ No se encontraron propiedades similares en la misma comuna');
+                    // Si no hay propiedades en la misma comuna, buscar en comunas cercanas
+                    await loadNearbyProperties();
+                }
+
+            } catch (error) {
+                console.error('💥 Error cargando propiedades similares:', error);
+            }
+        }
+
+        async function loadNearbyProperties() {
+            try {
+                console.log('🔍 Buscando propiedades en comunas cercanas...');
+                
+                // Lista de comunas cercanas típicas de Santiago
+                const nearbyCommunes = ['Las Condes', 'Providencia', 'Ñuñoa', 'Vitacura', 'Lo Barnechea', 'La Reina', 'Macul', 'Peñalolén'];
+                
+                const { data: properties, error } = await window.supabase
+                    .from('properties')
+                    .select('*')
+                    .eq('status', 'published')
+                    .neq('id', currentProperty.id)
+                    .limit(3);
+
+                if (error) {
+                    console.warn('⚠️ Error cargando propiedades cercanas:', error);
+                    return;
+                }
+
+                if (properties && properties.length > 0) {
+                    similarProperties = properties;
+                    console.log(`✅ ${properties.length} propiedades cercanas encontradas`);
+                    
+                    // Actualizar título para indicar que son propiedades cercanas
+                    document.getElementById('similarPropertiesTitle').textContent = 'Propiedades destacadas';
+                    document.getElementById('similarPropertiesSubtitle').textContent = 'Otras opciones que podrían interesarte';
+                    
+                    renderSimilarProperties();
+                }
+
+            } catch (error) {
+                console.error('💥 Error cargando propiedades cercanas:', error);
+            }
+        }
+
+        function extractCommune(location) {
+            if (!location) return null;
+            
+            // Lista de comunas de Santiago para hacer matching
+            const communes = [
+                'Las Condes', 'Providencia', 'Ñuñoa', 'Vitacura', 'Lo Barnechea', 
+                'La Reina', 'Macul', 'Peñalolén', 'Santiago', 'San Miguel', 
+                'La Florida', 'Maipú', 'Puente Alto', 'Quilicura', 'Huechuraba',
+                'Colina', 'Lampa', 'Pudahuel', 'Cerrillos', 'Estación Central'
+            ];
+            
+            const locationLower = location.toLowerCase();
+            
+            for (const commune of communes) {
+                if (locationLower.includes(commune.toLowerCase())) {
+                    return commune;
+                }
+            }
+            
+            return null;
+        }
+
+        function renderSimilarProperties() {
+            if (similarProperties.length === 0) return;
+            
+            const similarPropertiesSection = document.getElementById('similarPropertiesSection');
+            const similarPropertiesGrid = document.getElementById('similarPropertiesGrid');
+            
+            const propertiesHTML = similarProperties.map(property => {
+                const images = parseImages(property.images);
+                const firstImage = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';
+                const formattedPrice = formatPrice(property.price);
+                const bedrooms = property.bedrooms || 0;
+                const bathrooms = property.bathrooms || 0;
+                const area = property.area || 0;
+
+                return `
+                    <div class="similar-property-card" onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
+                        <div class="similar-property-image">
+                            <img src="${firstImage}" alt="${property.title}" loading="lazy">
+                            <div class="similar-property-price-badge">
+                                ${formattedPrice}
+                            </div>
+                        </div>
+                        <div class="similar-property-content">
+                            <h4 class="similar-property-title">${property.title || 'Propiedad sin título'}</h4>
+                            <div class="similar-property-location">${property.location || 'Ubicación no especificada'}</div>
+                            <div class="similar-property-features">
+                                <div class="similar-property-feature">
+                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2L2 7v10c0 5.55 3.84 9 9 9s9-3.45 9-9V7l-10-5z"/>
+                                    </svg>
+                                    ${bedrooms} hab
+                                </div>
+                                <div class="similar-property-feature">
+                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M8 14c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/>
+                                    </svg>
+                                    ${bathrooms} baños
+                                </div>
+                                <div class="similar-property-feature">
+                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                                    </svg>
+                                    ${area}m²
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            similarPropertiesGrid.innerHTML = propertiesHTML;
+            similarPropertiesSection.style.display = 'block';
+        }
+
+        function goToProperty(propertyId, slug) {
+            const url = `property-detail.html?id=${propertyId}&slug=${slug}`;
+            window.location.href = url;
+        }
+
+        function createSlug(title) {
+            if (!title) return 'propiedad';
+            
+            return title
+                .toLowerCase()
+                .replace(/[áàäâ]/g, 'a')
+                .replace(/[éèëê]/g, 'e')
+                .replace(/[íìïî]/g, 'i')
+                .replace(/[óòöô]/g, 'o')
+                .replace(/[úùüû]/g, 'u')
+                .replace(/[ñ]/g, 'n')
+                .replace(/[ç]/g, 'c')
+                .replace(/[^a-z0-9]/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+        }
+
+        function formatPrice(price) {
+            if (!price) return 'Precio a consultar';
+            
+            const numPrice = parseInt(price);
+            if (isNaN(numPrice)) return 'Precio a consultar';
+            
+            // Formato chileno con puntos como separadores de miles
+            return `$${numPrice.toLocaleString('es-CL')}`;
+        }
+
         function renderPropertyDetails() {
             if (!currentProperty) return;
 
@@ -948,16 +1325,6 @@
         }
 
         function renderPropertyInfo() {
-            const formatPrice = (price, currency) => {
-                const numPrice = parseFloat(price);
-                switch(currency) {
-                    case 'CLP': return `$${numPrice.toLocaleString('es-CL')}`;
-                    case 'UF': return `UF ${numPrice.toLocaleString('es-CL')}`;
-                    case 'USD': return `US$ ${numPrice.toLocaleString('en-US')}`;
-                    default: return `${currency || '$'} ${numPrice.toLocaleString()}`;
-                }
-            };
-
             const getBadgeText = (type) => {
                 switch(type) {
                     case 'venta': return 'EN VENTA';
@@ -970,11 +1337,11 @@
             // Update header
             document.getElementById('propertyBadge').textContent = getBadgeText(currentProperty.property_type);
             document.getElementById('propertyTitle').textContent = currentProperty.title;
-            document.getElementById('propertyLocation').textContent = `📍 ${currentProperty.address}, ${currentProperty.commune}, ${currentProperty.region}`;
-            document.getElementById('propertyPrice').textContent = formatPrice(currentProperty.price, currentProperty.currency);
+            document.getElementById('propertyLocation').textContent = `📍 ${currentProperty.location}`;
+            document.getElementById('propertyPrice').textContent = formatPrice(currentProperty.price);
 
             // Update contact price
-            document.getElementById('contactPrice').textContent = formatPrice(currentProperty.price, currentProperty.currency);
+            document.getElementById('contactPrice').textContent = formatPrice(currentProperty.price);
 
             // Render features
             const featuresGrid = document.getElementById('featuresGrid');
@@ -996,27 +1363,19 @@
                 });
             }
 
-            if (currentProperty.total_area) {
+            if (currentProperty.area) {
                 features.push({
                     icon: '📐',
-                    value: `${currentProperty.total_area}m²`,
-                    label: 'Superficie Total'
+                    value: `${currentProperty.area}m²`,
+                    label: 'Superficie'
                 });
             }
 
-            if (currentProperty.parking_spaces > 0) {
+            if (currentProperty.parking && currentProperty.parking > 0) {
                 features.push({
                     icon: '🚗',
-                    value: currentProperty.parking_spaces,
+                    value: currentProperty.parking,
                     label: 'Estacionamientos'
-                });
-            }
-
-            if (currentProperty.expenses && currentProperty.expenses > 0) {
-                features.push({
-                    icon: '💰',
-                    value: `$${currentProperty.expenses.toLocaleString()}`,
-                    label: 'Gastos Comunes'
                 });
             }
 
@@ -1183,23 +1542,13 @@
         function contactViaWhatsApp() {
             if (!currentProperty) return;
 
-            const formatPrice = (price, currency) => {
-                const numPrice = parseFloat(price);
-                switch(currency) {
-                    case 'CLP': return `$${numPrice.toLocaleString('es-CL')}`;
-                    case 'UF': return `UF ${numPrice.toLocaleString('es-CL')}`;
-                    case 'USD': return `US$ ${numPrice.toLocaleString('en-US')}`;
-                    default: return `${currency || '$'} ${numPrice.toLocaleString()}`;
-                }
-            };
-
             const features = [];
             if (currentProperty.bedrooms !== null && currentProperty.bedrooms !== undefined) {
                 features.push(`${currentProperty.bedrooms === 0 ? 'Studio' : currentProperty.bedrooms + ' dormitorios'}`);
             }
             if (currentProperty.bathrooms) features.push(`${currentProperty.bathrooms} baños`);
-            if (currentProperty.total_area) features.push(`${currentProperty.total_area}m²`);
-            if (currentProperty.parking_spaces > 0) features.push(`${currentProperty.parking_spaces} estacionamientos`);
+            if (currentProperty.area) features.push(`${currentProperty.area}m²`);
+            if (currentProperty.parking > 0) features.push(`${currentProperty.parking} estacionamientos`);
 
             const operationType = currentProperty.property_type === 'venta' ? 'comprar' : 'arrendar';
 
@@ -1208,10 +1557,9 @@
 
             const message = `Hola! Estoy interesado/a en ${operationType} la propiedad "${currentProperty.title}".
 
-📍 Dirección: ${currentProperty.address}, ${currentProperty.commune}
-💰 Precio: ${formatPrice(currentProperty.price, currentProperty.currency)}
-🏠 Características: ${features.join(', ')}
-${currentProperty.expenses ? `💸 Gastos comunes: $${currentProperty.expenses.toLocaleString()}` : ''}${tourMessage}
+📍 Dirección: ${currentProperty.location}
+💰 Precio: ${formatPrice(currentProperty.price)}
+🏠 Características: ${features.join(', ')}${tourMessage}
 
 ¿Podrías darme más información?
 
