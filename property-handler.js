@@ -1,5 +1,5 @@
-// property-handler.js - Corregido para estructura real de Casa Nuvera
-console.log('🔄 Cargando Property Handler (Corregido)...');
+// property-handler.js - Corregido para estructura real de Casa Nuvera con Tours 360°
+console.log('🔄 Cargando Property Handler (Corregido con Tours 360°)...');
 
 class PropertyHandler {
     constructor() {
@@ -7,8 +7,8 @@ class PropertyHandler {
         this.uploadProgress = 0;
     }
 
-    // Función principal para enviar propiedad
-    async submitProperty(formData, files = []) {
+    // Función principal para enviar propiedad (actualizada para incluir tours)
+    async submitProperty(formData, files = [], tours = []) {
         if (this.isSubmitting) {
             return { success: false, message: 'Ya hay una propiedad siendo enviada' };
         }
@@ -21,6 +21,7 @@ class PropertyHandler {
         
         try {
             console.log('📤 Enviando propiedad a Supabase...', formData);
+            console.log('🌐 Tours incluidos:', tours);
 
             // 1. Preparar datos para la base de datos (SIN imágenes primero)
             const propertyData = this.preparePropertyData(formData);
@@ -44,7 +45,12 @@ class PropertyHandler {
                 await this.uploadAndLinkImages(data.id, files);
             }
 
-            // 4. Recargar propiedades en la página si existe el loader
+            // 4. Guardar tours 360° si existen
+            if (tours && tours.length > 0) {
+                await this.saveTours(data.id, tours);
+            }
+
+            // 5. Recargar propiedades en la página si existe el loader
             if (window.propertyLoader) {
                 setTimeout(() => {
                     window.propertyLoader.refreshProperties();
@@ -65,6 +71,46 @@ class PropertyHandler {
             };
         } finally {
             this.isSubmitting = false;
+        }
+    }
+
+    // Nueva función para guardar tours 360°
+    async saveTours(propertyId, tours) {
+        try {
+            console.log(`🌐 Guardando ${tours.length} tours para propiedad ${propertyId}...`);
+
+            if (!tours || tours.length === 0) {
+                console.log('ℹ️ No hay tours para guardar');
+                return;
+            }
+
+            // Preparar datos de tours para insertar
+            const tourRecords = tours.map(tour => ({
+                property_id: propertyId,
+                tour_url: tour.tour_url,
+                tour_title: tour.tour_title || 'Tour Virtual 360°',
+                order_index: tour.order_index || 1,
+                is_active: tour.is_active !== false // Default true
+            }));
+
+            // Insertar tours en la base de datos
+            const { data, error } = await window.supabase
+                .from('property_tours')
+                .insert(tourRecords)
+                .select();
+
+            if (error) {
+                console.error('❌ Error insertando tours:', error);
+                throw new Error(`Error guardando tours: ${error.message}`);
+            }
+
+            console.log(`✅ ${data.length} tours guardados exitosamente:`, data);
+            return { success: true, data };
+
+        } catch (error) {
+            console.error('❌ Error en saveTours:', error);
+            // No lanzar error para no interrumpir el proceso principal
+            return { success: false, error: error.message };
         }
     }
 
@@ -226,7 +272,7 @@ class PropertyHandler {
         }
     }
 
-    // Función para obtener propiedades (útil para debugging)
+    // Función para obtener propiedades con tours (útil para debugging)
     async getProperties(limit = 10) {
         try {
             const { data, error } = await window.supabase
@@ -237,6 +283,13 @@ class PropertyHandler {
                         image_url,
                         image_order,
                         is_main
+                    ),
+                    property_tours(
+                        id,
+                        tour_url,
+                        tour_title,
+                        order_index,
+                        is_active
                     )
                 `)
                 .eq('published', true)
@@ -247,7 +300,7 @@ class PropertyHandler {
                 throw error;
             }
 
-            console.log(`📋 ${data?.length || 0} propiedades obtenidas con imágenes`);
+            console.log(`📋 ${data?.length || 0} propiedades obtenidas con imágenes y tours`);
             return { success: true, data: data || [] };
 
         } catch (error) {
@@ -256,14 +309,24 @@ class PropertyHandler {
         }
     }
 
-    // Función para eliminar propiedad (admin)
+    // Función para eliminar propiedad (admin) - actualizada para tours
     async deleteProperty(propertyId) {
         try {
             if (!propertyId) {
                 throw new Error('ID de propiedad requerido');
             }
 
-            // Eliminar imágenes primero
+            // Eliminar tours primero
+            const { error: toursError } = await window.supabase
+                .from('property_tours')
+                .delete()
+                .eq('property_id', propertyId);
+
+            if (toursError) {
+                console.warn('⚠️ Error eliminando tours:', toursError);
+            }
+
+            // Eliminar imágenes
             const { error: imagesError } = await window.supabase
                 .from('property_images')
                 .delete()
@@ -294,6 +357,35 @@ class PropertyHandler {
 
         } catch (error) {
             console.error('❌ Error eliminando propiedad:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Nueva función para gestionar tours de una propiedad
+    async updatePropertyTours(propertyId, tours) {
+        try {
+            console.log(`🌐 Actualizando tours para propiedad ${propertyId}...`);
+
+            // Eliminar tours existentes
+            const { error: deleteError } = await window.supabase
+                .from('property_tours')
+                .delete()
+                .eq('property_id', propertyId);
+
+            if (deleteError) {
+                console.warn('⚠️ Error eliminando tours existentes:', deleteError);
+            }
+
+            // Insertar nuevos tours si existen
+            if (tours && tours.length > 0) {
+                const result = await this.saveTours(propertyId, tours);
+                return result;
+            }
+
+            return { success: true, message: 'Tours actualizados' };
+
+        } catch (error) {
+            console.error('❌ Error actualizando tours:', error);
             return { success: false, error: error.message };
         }
     }
@@ -340,9 +432,9 @@ class PropertyHandler {
 // Crear instancia global
 window.propertyHandler = new PropertyHandler();
 
-// Función de conveniencia para el formulario
-window.submitProperty = async function(formData, files) {
-    return await window.propertyHandler.submitProperty(formData, files);
+// Función de conveniencia para el formulario (actualizada)
+window.submitProperty = async function(formData, files, tours) {
+    return await window.propertyHandler.submitProperty(formData, files, tours);
 };
 
 // Auto-validar conexión cuando se carga
@@ -356,4 +448,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-console.log('✅ Property Handler cargado correctamente - Casa Nuvera (Estructura Real)');
+console.log('✅ Property Handler cargado correctamente - Casa Nuvera con Tours 360°');
