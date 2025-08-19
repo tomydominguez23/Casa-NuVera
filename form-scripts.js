@@ -2,6 +2,7 @@
 // REEMPLAZA todo el JavaScript que tienes en subir-propiedad.html con este código
 
 let uploadedFiles = [];
+let propertyTours = []; // Nueva variable global para tours
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🧪 Modo Casa Nuvera - Formulario iniciado');
@@ -36,11 +37,148 @@ function initializeApp() {
     setupFormValidation();
     setupFormSubmit();
     setupRegionCommune();
+    setupToursSection();
     
     document.getElementById('formContainer').style.display = 'block';
     document.getElementById('authWarning').style.display = 'none';
     
     console.log('✅ Aplicación inicializada correctamente');
+}
+
+// Nueva función para configurar la sección de tours
+function setupToursSection() {
+    console.log('🌐 Configurando sección de Tours 360°...');
+    
+    // Auto-completar URL cuando se escribe el título
+    const tourTitleInput = document.getElementById('tourTitle');
+    const tourUrlInput = document.getElementById('tourUrl');
+    
+    if (tourTitleInput && tourUrlInput) {
+        tourTitleInput.addEventListener('input', function() {
+            if (!tourUrlInput.value && this.value) {
+                // URL por defecto con tu tour actual
+                tourUrlInput.value = 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1';
+            }
+        });
+    }
+    
+    // Inicializar orden
+    updateTourOrder();
+}
+
+// Función para agregar tour (llamada desde HTML)
+function addTour() {
+    const titleInput = document.getElementById('tourTitle');
+    const urlInput = document.getElementById('tourUrl');
+    const orderInput = document.getElementById('tourOrder');
+
+    const title = titleInput.value.trim();
+    const url = urlInput.value.trim();
+    const order = parseInt(orderInput.value) || 1;
+
+    // Validaciones
+    if (!title) {
+        alert('Por favor ingresa un título para el tour');
+        titleInput.focus();
+        return;
+    }
+
+    if (!url) {
+        alert('Por favor ingresa la URL de Kuula');
+        urlInput.focus();
+        return;
+    }
+
+    if (!url.includes('kuula.co')) {
+        alert('La URL debe ser de Kuula (kuula.co)');
+        urlInput.focus();
+        return;
+    }
+
+    // Agregar tour a la lista
+    const newTour = {
+        id: Date.now(), // ID temporal
+        tour_title: title,
+        tour_url: url,
+        order_index: order,
+        is_active: true
+    };
+
+    propertyTours.push(newTour);
+    
+    // Limpiar formulario
+    titleInput.value = '';
+    urlInput.value = '';
+    updateTourOrder();
+
+    // Re-renderizar lista
+    renderToursList();
+
+    console.log('✅ Tour agregado:', newTour);
+}
+
+// Función para eliminar tour
+function removeTour(tourId) {
+    propertyTours = propertyTours.filter(tour => tour.id !== tourId);
+    renderToursList();
+    updateTourOrder();
+    console.log('🗑️ Tour eliminado:', tourId);
+}
+
+// Función para previsualizar tour
+function previewTour(tourUrl) {
+    window.open(tourUrl, '_blank', 'width=1200,height=800');
+}
+
+// Función para renderizar lista de tours
+function renderToursList() {
+    const container = document.getElementById('toursList');
+    
+    if (propertyTours.length === 0) {
+        container.innerHTML = `
+            <div class="empty-tours">
+                <p>🏠 No hay tours virtuales agregados</p>
+                <p>Agrega tu primer tour 360° usando el formulario de abajo</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = propertyTours.map(tour => `
+        <div class="tour-item">
+            <div class="tour-info">
+                <div class="tour-title">${tour.tour_title}</div>
+                <div class="tour-url">${tour.tour_url}</div>
+                <small>Orden: ${tour.order_index}</small>
+            </div>
+            <div class="tour-actions">
+                <button class="tour-btn preview" onclick="previewTour('${tour.tour_url}')">
+                    👁️ Vista Previa
+                </button>
+                <button class="tour-btn delete" onclick="removeTour(${tour.id})">
+                    🗑️ Eliminar
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Función para actualizar el número de orden automáticamente
+function updateTourOrder() {
+    const orderInput = document.getElementById('tourOrder');
+    if (orderInput) {
+        orderInput.value = propertyTours.length + 1;
+    }
+}
+
+// Función para obtener tours para guardar en BD
+function getToursForSaving() {
+    return propertyTours.map(tour => ({
+        tour_title: tour.tour_title,
+        tour_url: tour.tour_url,
+        order_index: tour.order_index,
+        is_active: true
+    }));
 }
 
 function setupFileUpload() {
@@ -202,8 +340,9 @@ async function handleFormSubmit(event) {
     try {
         const formData = getFormData();
         console.log('📤 Enviando formulario:', formData);
+        console.log('🌐 Tours incluidos:', getToursForSaving());
         
-        const result = await window.propertyHandler.submitProperty(formData, uploadedFiles);
+        const result = await window.propertyHandler.submitProperty(formData, uploadedFiles, getToursForSaving());
         
         showLoading(false);
         
@@ -272,7 +411,10 @@ function showSuccess() {
 function resetForm() {
     document.getElementById('propertyForm').reset();
     uploadedFiles = [];
+    propertyTours = []; // Limpiar tours también
     updateFileDisplay();
+    renderToursList();
+    updateTourOrder();
     
     document.querySelectorAll('.field-error').forEach(error => error.remove());
     document.querySelectorAll('.form-control').forEach(field => {
@@ -301,6 +443,8 @@ function showPreview() {
                 .feature { background: #ecf0f1; padding: 5px 10px; border-radius: 3px; font-size: 0.9rem; }
                 .images { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 20px 0; }
                 .images img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; }
+                .tours { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 8px; }
+                .tour-item { background: rgba(255,255,255,0.1); padding: 10px; margin: 10px 0; border-radius: 5px; }
             </style>
         </head>
         <body>
@@ -338,6 +482,20 @@ function showPreview() {
                     ${formData.features.map(feature => `<span class="feature">${feature}</span>`).join('')}
                 </div>
             </div>
+            
+            ${propertyTours.length > 0 ? `
+                <div class="section">
+                    <div class="tours">
+                        <h3>🌐 Tours Virtuales 360° (${propertyTours.length})</h3>
+                        ${propertyTours.map(tour => `
+                            <div class="tour-item">
+                                <strong>${tour.tour_title}</strong><br>
+                                <small>${tour.tour_url}</small>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
             
             <div class="section">
                 <h3>📸 Imágenes (${uploadedFiles.length})</h3>
@@ -435,4 +593,4 @@ function setupRegionCommune() {
     }
 }
 
-console.log('✅ Form Script cargado correctamente - Casa Nuvera');
+console.log('✅ Form Script cargado correctamente - Casa Nuvera con Tours 360°');
