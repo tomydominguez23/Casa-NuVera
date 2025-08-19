@@ -1,4 +1,4 @@
-// Property Loader CORREGIDO - Compatible con estructura real de BD
+// Property Loader FINAL - Compatible con estructura real verificada
 class PropertyLoaderFixed {
     constructor() {
         this.properties = [];
@@ -30,10 +30,23 @@ class PropertyLoaderFixed {
 
             console.log('📥 Cargando propiedades...');
 
-            // Query MUY SIMPLE - solo las columnas básicas que seguro existen
+            // Query con columnas que SÍ existen en tu BD
             const { data, error } = await window.supabase
                 .from('properties')
-                .select('*')
+                .select(`
+                    id,
+                    title,
+                    property_type,
+                    category,
+                    bedrooms,
+                    bathrooms,
+                    description,
+                    price,
+                    currency,
+                    location,
+                    published,
+                    created_at
+                `)
                 .eq('published', true)
                 .order('created_at', { ascending: false })
                 .limit(6);
@@ -45,13 +58,40 @@ class PropertyLoaderFixed {
 
             this.properties = data || [];
             console.log(`✅ ${this.properties.length} propiedades cargadas`);
-            console.log('📊 Estructura de propiedades:', this.properties[0]); // Debug: ver la estructura real
+            console.log('📊 Primera propiedad:', this.properties[0]); // Debug: ver la estructura real
+            
+            // Cargar imágenes para cada propiedad
+            await this.loadPropertyImages();
             
         } catch (error) {
             console.error('💥 Error cargando propiedades:', error);
             throw error;
         } finally {
             this.loading = false;
+        }
+    }
+
+    async loadPropertyImages() {
+        // Cargar imágenes desde la tabla property_images
+        for (let property of this.properties) {
+            try {
+                const { data: images, error } = await window.supabase
+                    .from('property_images')
+                    .select('image_url, image_order, is_main')
+                    .eq('property_id', property.id)
+                    .order('image_order', { ascending: true });
+
+                if (!error && images) {
+                    // Buscar imagen principal o tomar la primera
+                    const mainImage = images.find(img => img.is_main) || images[0];
+                    property.main_image = mainImage ? mainImage.image_url : null;
+                    property.images = images.map(img => img.image_url);
+                }
+            } catch (imgError) {
+                console.warn(`No se pudieron cargar imágenes para propiedad ${property.id}:`, imgError);
+                property.main_image = null;
+                property.images = [];
+            }
         }
     }
 
@@ -80,21 +120,20 @@ class PropertyLoaderFixed {
     }
 
     generatePropertyCard(property) {
-        // Usar los nombres de campo que realmente existen en tu BD
-        const images = this.parseImages(property.images);
-        const firstImage = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';
+        // Usar imagen principal o fallback
+        const firstImage = property.main_image || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';
         
-        // Adaptarse a los nombres reales de las columnas
-        const title = property.title || property.name || property.property_title || 'Propiedad sin título';
-        const subtitle = property.subtitle || property.description || property.property_type || '';
-        const location = property.location || property.address || property.comuna || 'Ubicación no especificada';
-        const price = property.price || property.precio || 0;
-        const currency = property.currency || property.moneda || 'CLP';
+        // Usar los campos que SÍ existen
+        const title = property.title || 'Propiedad sin título';
+        const subtitle = property.description || property.property_type || property.category || '';
+        const location = property.location || 'Ubicación no especificada';
+        const price = property.price || 0;
+        const currency = property.currency || 'CLP';
         
         const formattedPrice = this.formatPrice(price, currency);
-        const bedrooms = property.bedrooms || property.dormitorios || property.habitaciones || 0;
-        const bathrooms = property.bathrooms || property.baños || property.banos || 0;
-        const area = property.area || property.superficie || property.metros || 0;
+        const bedrooms = property.bedrooms || 0;
+        const bathrooms = property.bathrooms || 0;
+        const area = property.area || property.superficie || 0; // Usar area si existe
         const slug = this.createSlug(title);
 
         return `
@@ -168,26 +207,6 @@ class PropertyLoaderFixed {
             .replace(/^-|-$/g, '');
     }
 
-    parseImages(imagesField) {
-        if (!imagesField) return [];
-        
-        try {
-            if (typeof imagesField === 'string') {
-                // Si es string, intentar parsear como JSON
-                const parsed = JSON.parse(imagesField);
-                return Array.isArray(parsed) ? parsed : [];
-            }
-            if (Array.isArray(imagesField)) {
-                return imagesField;
-            }
-        } catch (error) {
-            console.warn('Error parsing images:', error);
-            console.log('Images field:', imagesField);
-        }
-        
-        return [];
-    }
-
     formatPrice(price, currency = 'CLP') {
         if (!price) return 'Precio a consultar';
         
@@ -258,15 +277,13 @@ class PropertyLoaderFixed {
         if (filters.type) {
             filteredProperties = filteredProperties.filter(property => 
                 (property.property_type && property.property_type.toLowerCase().includes(filters.type.toLowerCase())) ||
-                (property.tipo && property.tipo.toLowerCase().includes(filters.type.toLowerCase()))
+                (property.category && property.category.toLowerCase().includes(filters.type.toLowerCase()))
             );
         }
 
         if (filters.location) {
             filteredProperties = filteredProperties.filter(property => 
-                (property.location && property.location.toLowerCase().includes(filters.location.toLowerCase())) ||
-                (property.address && property.address.toLowerCase().includes(filters.location.toLowerCase())) ||
-                (property.comuna && property.comuna.toLowerCase().includes(filters.location.toLowerCase()))
+                (property.location && property.location.toLowerCase().includes(filters.location.toLowerCase()))
             );
         }
 
