@@ -310,6 +310,140 @@
             transform: scale(1.1);
         }
 
+        /* Tours 360° Section */
+        .tours-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .tours-section .section-title {
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tours-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .tours-list {
+            margin-bottom: 2rem;
+        }
+
+        .tour-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tour-info {
+            flex: 1;
+        }
+
+        .tour-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .tour-url {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            word-break: break-all;
+        }
+
+        .tour-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tour-btn {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .tour-btn.preview {
+            background: rgba(23, 162, 184, 0.8);
+        }
+
+        .tour-btn.delete {
+            background: rgba(220, 53, 69, 0.8);
+        }
+
+        .tour-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .add-tour-form {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .add-tour-form h4 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .tours-form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tours-section .form-control {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #333;
+        }
+
+        .tours-section .form-control::placeholder {
+            color: #666;
+        }
+
+        .tours-section .form-control:focus {
+            background: white;
+            border-color: #3498db;
+        }
+
+        .tours-help {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .tours-help strong {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-tours {
+            text-align: center;
+            padding: 2rem 1rem;
+            opacity: 0.8;
+        }
+
         /* Price Input */
         .price-group {
             display: flex;
@@ -385,6 +519,19 @@
         .btn-outline:hover {
             background: #7f8c8d;
             color: white;
+        }
+
+        .btn-tour {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-tour:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
 
         /* Success Message */
@@ -507,6 +654,20 @@
 
             .file-list {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tours-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tour-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .tour-actions {
+                justify-content: space-between;
             }
         }
     </style>
@@ -832,6 +993,60 @@
                     <div class="file-list" id="fileList"></div>
                 </div>
 
+                <!-- Tours 360° -->
+                <div class="form-section">
+                    <div class="tours-section">
+                        <h2 class="section-title">
+                            <span class="section-icon">🌐</span>
+                            Tours Virtuales 360°
+                        </h2>
+                        
+                        <div class="tours-container">
+                            <!-- Lista de tours existentes -->
+                            <div class="tours-list" id="toursList">
+                                <div class="empty-tours">
+                                    <p>🏠 No hay tours virtuales agregados</p>
+                                    <p>Agrega tu primer tour 360° usando el formulario de abajo</p>
+                                </div>
+                            </div>
+
+                            <!-- Formulario para agregar tours -->
+                            <div class="add-tour-form">
+                                <h4>🌐 Agregar Tour Virtual 360°</h4>
+                                <div class="tours-form-grid">
+                                    <div class="form-group">
+                                        <label for="tourTitle">Título del Tour</label>
+                                        <input type="text" id="tourTitle" class="form-control" 
+                                               placeholder="Ej: Tour Principal, Cocina y Baños, etc.">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tourOrder">Orden</label>
+                                        <input type="number" id="tourOrder" class="form-control" 
+                                               value="1" min="1" max="10">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tourUrl">URL de Kuula</label>
+                                    <input type="url" id="tourUrl" class="form-control" 
+                                           placeholder="https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1">
+                                </div>
+                                <button type="button" class="btn-tour" onclick="addTour()">
+                                    ➕ Agregar Tour
+                                </button>
+                            </div>
+
+                            <!-- Información de ayuda -->
+                            <div class="tours-help">
+                                <strong>💡 ¿Cómo obtener la URL de Kuula?</strong>
+                                1. Ve a tu tour en Kuula<br>
+                                2. Haz clic en "Share" → "Embed"<br>
+                                3. Copia la URL completa del iframe (src="...")<br>
+                                4. Pégala en el campo de arriba
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Información de Contacto -->
                 <div class="form-section">
                     <h2 class="section-title">
@@ -892,7 +1107,132 @@
     <!-- 3. Después cargar property-handler -->
     <script src="property-handler.js"></script>
     
-    <!-- 4. Script del formulario CORREGIDO -->
+    <!-- 4. Script del formulario CORREGIDO con Tours 360° -->
     <script src="form-scripts.js"></script>
+
+    <script>
+        // Variables globales para tours
+        let propertyTours = [];
+
+        // Función para agregar tour
+        function addTour() {
+            const titleInput = document.getElementById('tourTitle');
+            const urlInput = document.getElementById('tourUrl');
+            const orderInput = document.getElementById('tourOrder');
+
+            const title = titleInput.value.trim();
+            const url = urlInput.value.trim();
+            const order = parseInt(orderInput.value) || 1;
+
+            // Validaciones
+            if (!title) {
+                alert('Por favor ingresa un título para el tour');
+                titleInput.focus();
+                return;
+            }
+
+            if (!url) {
+                alert('Por favor ingresa la URL de Kuula');
+                urlInput.focus();
+                return;
+            }
+
+            if (!url.includes('kuula.co')) {
+                alert('La URL debe ser de Kuula (kuula.co)');
+                urlInput.focus();
+                return;
+            }
+
+            // Agregar tour a la lista
+            const newTour = {
+                id: Date.now(), // ID temporal
+                tour_title: title,
+                tour_url: url,
+                order_index: order,
+                is_active: true
+            };
+
+            propertyTours.push(newTour);
+            
+            // Limpiar formulario
+            titleInput.value = '';
+            urlInput.value = '';
+            orderInput.value = propertyTours.length + 1;
+
+            // Re-renderizar lista
+            renderToursList();
+
+            console.log('✅ Tour agregado:', newTour);
+        }
+
+        // Función para eliminar tour
+        function removeTour(tourId) {
+            propertyTours = propertyTours.filter(tour => tour.id !== tourId);
+            renderToursList();
+            console.log('🗑️ Tour eliminado:', tourId);
+        }
+
+        // Función para previsualizar tour
+        function previewTour(tourUrl) {
+            window.open(tourUrl, '_blank', 'width=1200,height=800');
+        }
+
+        // Función para renderizar lista de tours
+        function renderToursList() {
+            const container = document.getElementById('toursList');
+            
+            if (propertyTours.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-tours">
+                        <p>🏠 No hay tours virtuales agregados</p>
+                        <p>Agrega tu primer tour 360° usando el formulario de abajo</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = propertyTours.map(tour => `
+                <div class="tour-item">
+                    <div class="tour-info">
+                        <div class="tour-title">${tour.tour_title}</div>
+                        <div class="tour-url">${tour.tour_url}</div>
+                        <small>Orden: ${tour.order_index}</small>
+                    </div>
+                    <div class="tour-actions">
+                        <button class="tour-btn preview" onclick="previewTour('${tour.tour_url}')">
+                            👁️ Vista Previa
+                        </button>
+                        <button class="tour-btn delete" onclick="removeTour(${tour.id})">
+                            🗑️ Eliminar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Función para obtener tours para guardar en BD
+        function getToursForSaving() {
+            return propertyTours.map(tour => ({
+                tour_title: tour.tour_title,
+                tour_url: tour.tour_url,
+                order_index: tour.order_index,
+                is_active: true
+            }));
+        }
+
+        // Autocompletar URL de Kuula al cambiar el título
+        document.getElementById('tourTitle').addEventListener('input', function() {
+            const urlInput = document.getElementById('tourUrl');
+            if (!urlInput.value && this.value) {
+                // URL por defecto con tu tour actual
+                urlInput.value = 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1';
+            }
+        });
+
+        // Auto-incrementar orden
+        document.getElementById('tourOrder').value = propertyTours.length + 1;
+
+        console.log('🌐 Sistema de Tours 360° inicializado');
+    </script>
 </body>
 </html>
