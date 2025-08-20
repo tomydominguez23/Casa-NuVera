@@ -265,6 +265,22 @@
             z-index: 2;
         }
 
+        /* BADGE DESTACADA */
+        .featured-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #ff6b35, #ff8c35);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+
         /* CONTENIDO DE LA CARD */
         .property-content {
             padding: 20px;
@@ -653,13 +669,35 @@
             try {
                 showLoading(true);
                 
-                console.log('📥 Cargando propiedades en venta desde tabla "properties"...');
+                console.log('📥 Cargando propiedades desde tabla "properties" con estructura real...');
                 
-                // Query simplificado - cargar todas las propiedades publicadas
+                // Query con la estructura REAL de tu BD
                 const { data, error } = await window.supabase
                     .from('properties')
-                    .select('*')
-                    .eq('status', 'published')
+                    .select(`
+                        id,
+                        title,
+                        property_type,
+                        category,
+                        bedrooms,
+                        bathrooms,
+                        description,
+                        region,
+                        commune,
+                        address,
+                        neighborhood,
+                        total_area,
+                        built_area,
+                        parking_spaces,
+                        currency,
+                        price,
+                        expenses,
+                        features,
+                        featured,
+                        published,
+                        created_at
+                    `)
+                    .eq('published', true)
                     .order('created_at', { ascending: false });
 
                 if (error) {
@@ -670,6 +708,9 @@
                 allProperties = data || [];
                 console.log(`✅ ${allProperties.length} propiedades cargadas`);
                 
+                // Cargar imágenes para cada propiedad
+                await loadPropertyImages();
+                
                 showLoading(false);
                 renderProperties();
                 
@@ -678,6 +719,36 @@
                 showError(`Error al cargar propiedades: ${error.message}`);
                 showLoading(false);
             }
+        }
+
+        async function loadPropertyImages() {
+            console.log('🖼️ Cargando imágenes de propiedades...');
+            
+            for (let property of allProperties) {
+                try {
+                    const { data: images, error } = await window.supabase
+                        .from('property_images')
+                        .select('image_url, image_order, is_main')
+                        .eq('property_id', property.id)
+                        .order('image_order', { ascending: true });
+
+                    if (!error && images && images.length > 0) {
+                        property.images = images;
+                        // Buscar imagen principal o usar la primera
+                        const mainImage = images.find(img => img.is_main) || images[0];
+                        property.main_image = mainImage?.image_url;
+                    } else {
+                        property.images = [];
+                        property.main_image = null;
+                    }
+                } catch (err) {
+                    console.error(`Error cargando imágenes para propiedad ${property.id}:`, err);
+                    property.images = [];
+                    property.main_image = null;
+                }
+            }
+            
+            console.log('🖼️ Imágenes cargadas para todas las propiedades');
         }
 
         function renderProperties() {
@@ -698,48 +769,46 @@
 
             // Renderizar propiedades con el nuevo diseño
             const propertiesHTML = allProperties.map(property => {
-                const images = parseImages(property.images);
-                const firstImage = images.length > 0 ? images[0] : null;
-                const formattedPrice = formatPrice(property.price);
-                const bedrooms = property.bedrooms || 0;
-                const bathrooms = property.bathrooms || 0;
-                const area = property.area || 0;
+                const formattedPrice = formatPrice(property.price, property.currency);
+                const location = formatLocation(property);
+                const featuredBadge = property.featured ? '<div class="featured-badge">Destacada</div>' : '';
 
                 return `
                     <div class="property-card" onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
                         <div class="property-image">
-                            ${firstImage ? 
-                                `<img src="${firstImage}" alt="${property.title}" loading="lazy">` : 
+                            ${property.main_image ? 
+                                `<img src="${property.main_image}" alt="${property.title}" loading="lazy">` : 
                                 `<div class="no-image-placeholder">Sin imagen disponible</div>`
                             }
                             <div class="property-price-badge">
                                 ${formattedPrice}
                             </div>
+                            ${featuredBadge}
                         </div>
                         <div class="property-content">
                             <h3 class="property-title">${property.title || 'Propiedad sin título'}</h3>
-                            <p class="property-subtitle">${property.subtitle || property.property_type || ''}</p>
-                            <div class="property-location">${property.location || 'Ubicación no especificada'}</div>
+                            <p class="property-subtitle">${property.property_type || property.category || ''}</p>
+                            <div class="property-location">${location}</div>
                             <div class="property-features">
                                 <div class="property-feature">
                                     <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M12 2L2 7v10c0 5.55 3.84 9 9 9s9-3.45 9-9V7l-10-5zM12 4.5L19 8v9c0 4.45-3.55 8-8 8s-8-3.55-8-8V8l8-3.5z"/>
                                         <path d="M8 14h8v2H8v-2zm0-3h8v2H8v-2z"/>
                                     </svg>
-                                    ${bedrooms} hab
+                                    ${property.bedrooms || 0} hab
                                 </div>
                                 <div class="property-feature">
                                     <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M8 14c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm4-6c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zM6 18h12v2H6v-2zm0-4h12v2H6v-2z"/>
                                     </svg>
-                                    ${bathrooms} baños
+                                    ${property.bathrooms || 0} baños
                                 </div>
                                 <div class="property-feature">
                                     <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
                                         <path d="M7 10h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z"/>
                                     </svg>
-                                    ${area}m²
+                                    ${property.total_area || property.built_area || 0}m²
                                 </div>
                             </div>
                         </div>
@@ -756,6 +825,7 @@
 
         function goToProperty(propertyId, slug) {
             const url = `property-detail.html?id=${propertyId}&slug=${slug}`;
+            console.log('🔗 Navegando a:', url);
             window.location.href = url;
         }
 
@@ -776,31 +846,32 @@
                 .replace(/^-|-$/g, '');
         }
 
-        function parseImages(imagesField) {
-            if (!imagesField) return [];
+        function formatLocation(property) {
+            const parts = [];
             
-            try {
-                if (typeof imagesField === 'string') {
-                    return JSON.parse(imagesField);
-                }
-                if (Array.isArray(imagesField)) {
-                    return imagesField;
-                }
-            } catch (error) {
-                console.error('Error parsing images:', error);
-            }
+            if (property.neighborhood) parts.push(property.neighborhood);
+            if (property.commune) parts.push(property.commune);
+            if (property.region && parts.length === 0) parts.push(property.region);
             
-            return [];
+            return parts.length > 0 ? parts.join(', ') : (property.address || 'Ubicación no especificada');
         }
 
-        function formatPrice(price) {
+        function formatPrice(price, currency = 'CLP') {
             if (!price) return 'Precio a consultar';
             
-            const numPrice = parseInt(price);
+            const numPrice = parseFloat(price);
             if (isNaN(numPrice)) return 'Precio a consultar';
             
-            // Formato chileno con puntos como separadores de miles
-            return `$${numPrice.toLocaleString('es-CL')}`;
+            // Formato según moneda
+            switch (currency) {
+                case 'UF':
+                    return `${numPrice.toLocaleString('es-CL')} UF`;
+                case 'USD':
+                    return `US$${numPrice.toLocaleString('en-US')}`;
+                case 'CLP':
+                default:
+                    return `$${numPrice.toLocaleString('es-CL')}`;
+            }
         }
 
         function showLoading(show) {
