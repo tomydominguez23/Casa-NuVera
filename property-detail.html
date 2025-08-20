@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle de Propiedad - Casa Nuvera</title>
+    <title>Detalle de Propiedad | Casa Nuvera</title>
     <link rel="stylesheet" href="property-styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 🚀 Widget WhatsApp -->
+    <link rel="stylesheet" href="whatsapp-widget.css">
     
     <style>
         * {
@@ -29,19 +32,24 @@
             --overlay-medium: rgba(0, 0, 0, 0.4);
             --overlay-light: rgba(0, 0, 0, 0.2);
             --overlay-white: rgba(255, 255, 255, 0.9);
-            --green-accent: #00ff88;
-            --kuula-primary: #007bff;
+            
+            /* NUEVO ESQUEMA ELEGANTE */
+            --elegant-beige: #F5F5DC;
+            --warm-beige: #F0E68C;
+            --dark-gray: #2F2F2F;
+            --light-gray-accent: #D3D3D3;
+            --charcoal: #36454F;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.5;
             color: var(--primary-black);
-            background-color: white;
+            background-color: #ffffff;
             font-weight: 400;
         }
 
-        /* Header */
+        /* Header flotante */
         .header {
             position: fixed;
             top: 0;
@@ -50,7 +58,8 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             z-index: 1000;
-            border-bottom: 1px solid var(--medium-gray);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
 
         .nav-container {
@@ -79,177 +88,204 @@
         .logo-text {
             font-size: 1.3rem;
             font-weight: 600;
+            letter-spacing: -0.5px;
         }
 
-        .back-btn {
-            background: var(--green-accent);
-            color: white;
-            padding: 0.8rem 1.5rem;
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
             text-decoration: none;
-            border-radius: 6px;
+            color: var(--secondary-gray);
             font-weight: 500;
-            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            font-size: 0.9rem;
         }
 
-        .back-btn:hover {
-            background: #00cc6a;
-            transform: translateY(-2px);
+        .nav-menu a:hover {
+            color: var(--charcoal);
         }
 
-        /* Main Content */
-        .main-content {
-            margin-top: 80px;
-            min-height: 100vh;
-        }
-
-        /* NUEVO: Property Header - TÍTULO ARRIBA DE LAS IMÁGENES */
-        .property-header-section {
-            padding: 2rem;
-            background: white;
-            border-bottom: 1px solid var(--medium-gray);
-        }
-
-        .property-header-container {
+        /* Main Container */
+        .property-detail-container {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 6rem 2rem 2rem;
+            background: white;
         }
 
-        .property-badge-detail {
-            display: inline-block;
-            background: var(--green-accent);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 1rem;
+        /* TÍTULO ARRIBA DE LAS IMÁGENES */
+        .property-header {
+            margin-bottom: 2rem;
+            text-align: left;
         }
 
-        .property-title-detail {
-            font-size: 2.8rem;
-            font-weight: 300;
+        .property-title {
+            font-size: 2.5rem;
+            font-weight: 700;
             color: var(--primary-black);
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
             line-height: 1.2;
         }
 
-        .property-location-detail {
-            font-size: 1.2rem;
+        .property-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .property-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
             color: var(--secondary-gray);
+        }
+
+        .location-icon {
+            font-size: 1rem;
+        }
+
+        .property-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        /* Gallery Styles */
+        .property-gallery {
+            margin-bottom: 3rem;
+        }
+
+        .main-image-container {
+            position: relative;
+            height: 500px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .image-counter {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .thumbnails-container {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+        }
+
+        .thumbnail {
+            width: 100px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .thumbnail:hover,
+        .thumbnail.active {
+            opacity: 1;
+            border-color: var(--accent-orange);
+            transform: translateY(-2px);
+        }
+
+        .no-images-placeholder {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--light-gray);
+            border-radius: 16px;
+            color: var(--text-muted);
+        }
+
+        .placeholder-icon {
+            font-size: 4rem;
             margin-bottom: 1rem;
         }
 
-        .property-price-detail {
-            font-size: 3.2rem;
-            font-weight: 700;
-            color: var(--green-accent);
-            margin-bottom: 0;
-        }
-
-        /* Property Gallery */
-        .property-gallery {
-            height: 60vh;
-            position: relative;
-            background: #1a1a1a;
-            overflow: hidden;
-        }
-
-        .gallery-main {
-            height: 100%;
-            position: relative;
-        }
-
-        .gallery-main img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .gallery-nav {
-            position: absolute;
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 0.5rem;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 0.5rem;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .gallery-thumb {
-            width: 60px;
-            height: 40px;
-            border-radius: 4px;
-            overflow: hidden;
-            cursor: pointer;
-            opacity: 0.6;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .gallery-thumb.active {
-            opacity: 1;
-            border-color: var(--green-accent);
-        }
-
-        .gallery-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Property Details */
-        .property-details {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
+        /* Property Content Layout */
+        .property-content {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 4rem;
+            margin-bottom: 4rem;
         }
 
-        /* Left Column */
         .property-main {
-            background: white;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
         }
 
-        /* Features Grid */
+        .property-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Property Features Grid */
+        .property-features {
+            background: var(--light-gray);
+            padding: 2rem;
+            border-radius: 16px;
+        }
+
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 1.5rem;
-            margin: 2rem 0;
-            padding: 2rem;
-            background: var(--light-gray);
-            border-radius: 8px;
+            margin-bottom: 2rem;
         }
 
         .feature-item {
             text-align: center;
-            padding: 1rem;
+            padding: 1.5rem;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .feature-icon {
             font-size: 2rem;
             margin-bottom: 0.5rem;
-            color: var(--green-accent);
         }
 
-        .feature-value {
+        .feature-number {
+            display: block;
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--primary-black);
-            margin-bottom: 0.2rem;
         }
 
         .feature-label {
@@ -259,319 +295,267 @@
             letter-spacing: 0.5px;
         }
 
-        /* Tour 360° Section */
-        .tour-360-section {
-            margin: 2rem 0;
+        /* Property Info Sections */
+        .property-description,
+        .property-details {
+            background: white;
             padding: 2rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
-            text-align: center;
-            color: white;
+            border-radius: 16px;
+            border: 1px solid var(--medium-gray);
         }
 
-        .tour-360-section h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .tour-360-section p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .tour-360-btn {
-            background: white;
-            color: var(--kuula-primary);
-            border: none;
-            padding: 1.2rem 2.5rem;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            text-decoration: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .tour-360-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .tour-360-icon {
-            font-size: 1.3rem;
-            animation: rotate 2s linear infinite;
-        }
-
-        /* Tours Multiple - si hay varios tours */
-        .tours-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .tour-item-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .tour-item-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Modal para Tour 360° */
-        .tour-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .tour-modal.active {
-            display: flex;
-        }
-
-        .tour-modal-content {
-            position: relative;
-            width: 95%;
-            height: 90%;
-            max-width: 1200px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-
-        .tour-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background: var(--kuula-primary);
-            color: white;
-        }
-
-        .tour-modal-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .tour-modal-close {
-            background: none;
-            border: none;
-            color: white;
+        .property-description h3,
+        .property-details h3 {
             font-size: 1.5rem;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s ease;
-        }
-
-        .tour-modal-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .tour-iframe-container {
-            width: 100%;
-            height: calc(100% - 70px);
-            position: relative;
-        }
-
-        .tour-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .tour-loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: var(--secondary-gray);
-        }
-
-        .tour-loading-spinner {
-            border: 4px solid var(--light-gray);
-            border-top: 4px solid var(--kuula-primary);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        /* Description */
-        .property-description {
-            margin: 2rem 0;
-        }
-
-        .property-description h3 {
-            font-size: 1.5rem;
+            font-weight: 600;
             margin-bottom: 1rem;
             color: var(--primary-black);
         }
 
         .property-description p {
             font-size: 1.1rem;
-            line-height: 1.6;
+            line-height: 1.7;
             color: var(--secondary-gray);
-            margin-bottom: 1rem;
         }
 
-        /* Right Column - Contact Card */
-        .contact-card {
-            position: sticky;
-            top: 100px;
-            background: white;
-            border: 2px solid var(--medium-gray);
-            border-radius: 12px;
-            padding: 2rem;
-            height: fit-content;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        .details-grid {
+            display: grid;
+            gap: 1rem;
         }
 
-        .contact-header {
-            text-align: center;
-            margin-bottom: 2rem;
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 8px;
         }
 
-        .contact-header h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+        .detail-label {
+            font-weight: 500;
+            color: var(--secondary-gray);
+        }
+
+        .detail-value {
+            font-weight: 600;
             color: var(--primary-black);
         }
 
-        .contact-price {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--green-accent);
-            margin-bottom: 1rem;
+        /* Tours Section */
+        .property-tours {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--medium-gray);
         }
 
-        .contact-buttons {
+        .property-tours h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-black);
+        }
+
+        .tours-grid {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
 
-        .contact-btn {
-            background: var(--green-accent);
+        .tour-item {
+            width: 100%;
+        }
+
+        .tour-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-orange), #ff8c35);
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-decoration: none;
-            text-align: center;
+            font-size: 1rem;
         }
 
-        .contact-btn:hover {
-            background: #00cc6a;
+        .tour-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
         }
 
-        .contact-btn.secondary {
-            background: transparent;
-            color: var(--primary-black);
-            border: 2px solid var(--medium-gray);
+        .tour-icon {
+            font-size: 1.5rem;
         }
 
-        .contact-btn.secondary:hover {
+        .tour-info {
+            text-align: left;
+        }
+
+        .tour-name {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .tour-label {
+            display: block;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .no-tours-message {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        /* Tour Modal */
+        .tour-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .tour-modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 1200px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .tour-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .tour-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tour-modal-close:hover {
             background: var(--light-gray);
         }
 
-        .contact-info {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--medium-gray);
+        .tour-modal-body {
+            flex: 1;
+            padding: 0;
+        }
+
+        .tour-modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Contact Info */
+        .contact-card {
+            background: var(--light-gray);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .contact-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-black);
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+            gap: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .contact-item a {
+            color: var(--primary-black);
+            text-decoration: none;
+        }
+
+        .contact-item a:hover {
+            color: var(--accent-orange);
         }
 
         .contact-icon {
-            color: var(--green-accent);
             font-size: 1.2rem;
-        }
-
-        /* NUEVA SECCIÓN: Propiedades Similares */
-        .similar-properties-section {
-            background: #f8f9fa;
-            padding: 4rem 0;
-        }
-
-        .similar-properties-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .similar-properties-header {
+            width: 20px;
             text-align: center;
-            margin-bottom: 3rem;
         }
 
-        .similar-properties-header h3 {
+        .contact-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--charcoal);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            background: var(--accent-orange);
+            transform: translateY(-2px);
+        }
+
+        /* Similar Properties */
+        .similar-properties {
+            margin-top: 4rem;
+            padding-top: 4rem;
+            border-top: 2px solid var(--medium-gray);
+        }
+
+        .similar-properties h3 {
             font-size: 2rem;
-            font-weight: 300;
+            font-weight: 600;
+            margin-bottom: 2rem;
             color: var(--primary-black);
-            margin-bottom: 1rem;
         }
 
-        .similar-properties-header p {
-            font-size: 1.1rem;
-            color: var(--secondary-gray);
-        }
-
-        /* Grid de propiedades similares - mismo diseño que las cards principales */
         .similar-properties-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
         }
 
         .similar-property-card {
@@ -581,21 +565,17 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
             cursor: pointer;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            position: relative;
+            border: 1px solid var(--medium-gray);
         }
 
         .similar-property-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-4px);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
         .similar-property-image {
-            height: 220px;
-            background: #f5f5f5;
-            background-size: cover;
-            background-position: center;
-            position: relative;
+            height: 200px;
+            background: var(--light-gray);
             overflow: hidden;
         }
 
@@ -610,184 +590,269 @@
             transform: scale(1.05);
         }
 
-        .similar-property-price-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            z-index: 2;
-        }
-
         .similar-property-content {
-            padding: 20px;
+            padding: 1.5rem;
         }
 
         .similar-property-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 6px;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            margin-bottom: 0.5rem;
+            color: var(--primary-black);
         }
 
         .similar-property-location {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 16px;
-            line-height: 1.2;
-        }
-
-        .similar-property-location::before {
-            content: "📍";
-            font-size: 0.8rem;
-        }
-
-        .similar-property-features {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 16px;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .similar-property-feature {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.8rem;
-            color: #666;
-            font-weight: 500;
-        }
-
-        .similar-property-feature-icon {
-            width: 16px;
-            height: 16px;
-            opacity: 0.7;
-        }
-
-        /* Loading */
-        .loading-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem 2rem;
-            text-align: center;
-            min-height: 50vh;
-        }
-
-        .loading-spinner {
-            border: 4px solid var(--light-gray);
-            border-top: 4px solid var(--green-accent);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
+            font-size: 0.9rem;
+            color: var(--secondary-gray);
             margin-bottom: 1rem;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .similar-property-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
         }
 
+        .similar-property-features {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .no-similar-message {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        /* Additional Features */
+        .additional-features {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .additional-features h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-black);
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            list-style: none;
+        }
+
+        .features-list li {
+            padding: 0.75rem 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--medium-gray);
+            font-size: 0.9rem;
+            color: var(--secondary-gray);
+        }
+
+        .features-list li:before {
+            content: "✓ ";
+            color: var(--accent-orange);
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        /* Error Container */
         .error-container {
             text-align: center;
             padding: 4rem 2rem;
-            min-height: 50vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            color: var(--primary-black);
         }
 
-        .error-container h3 {
-            font-size: 1.5rem;
+        .error-container h2 {
+            font-size: 2rem;
             margin-bottom: 1rem;
             color: #d32f2f;
         }
 
+        .error-container p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: var(--secondary-gray);
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--charcoal);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--primary-black);
+        }
+
+        .btn-secondary:hover {
+            background: var(--medium-gray);
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+                        url('https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=1920&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            padding: 4rem 2rem 2rem;
+            color: white;
+            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            color: var(--elegant-beige);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--elegant-beige);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-tagline {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .property-title-detail {
-                font-size: 2rem;
-            }
-
-            .property-price-detail {
-                font-size: 2.2rem;
-            }
-
-            .property-details {
+        @media (max-width: 1024px) {
+            .property-content {
                 grid-template-columns: 1fr;
                 gap: 2rem;
-                padding: 2rem 1rem;
             }
 
             .features-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-                padding: 1rem;
             }
+        }
 
-            .contact-card {
-                position: static;
-                margin-bottom: 2rem;
-            }
-
-            .gallery-nav {
+        @media (max-width: 768px) {
+            .nav-menu {
                 display: none;
             }
 
-            .property-gallery {
-                height: 40vh;
+            .property-detail-container {
+                padding: 5rem 1rem 2rem;
             }
 
-            .tour-modal-content {
-                width: 98%;
-                height: 95%;
-                margin: 1rem;
+            .property-title {
+                font-size: 2rem;
             }
 
-            .tour-360-section {
-                padding: 1.5rem;
+            .property-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
             }
 
-            .tour-360-btn {
-                padding: 1rem 2rem;
-                font-size: 1rem;
+            .property-price {
+                font-size: 1.5rem;
             }
 
-            .tours-grid {
+            .main-image-container {
+                height: 300px;
+            }
+
+            .features-grid {
                 grid-template-columns: 1fr;
             }
 
             .similar-properties-grid {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
             }
 
-            .similar-property-card {
-                margin: 0 auto;
-                max-width: 320px;
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .tour-modal {
+                padding: 1rem;
+            }
+
+            .tour-modal-content {
+                height: 90vh;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header flotante -->
     <header class="header">
         <div class="nav-container">
             <a href="index.html" class="logo">
@@ -796,806 +861,119 @@
                      class="logo-image">
                 <span class="logo-text">Casa Nuvera</span>
             </a>
-            <a href="javascript:history.back()" class="back-btn">
-                ← Volver al Listado
-            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="compras.html">Comprar</a></li>
+                    <li><a href="index.html#servicios">Servicios</a></li>
+                    <li><a href="index.html#nosotros">Nosotros</a></li>
+                    <li><a href="index.html#contacto">Contacto</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Loading -->
-        <div id="loadingContainer" class="loading-container">
-            <div class="loading-spinner"></div>
-            <p>Cargando detalles de la propiedad...</p>
+    <!-- Main Property Detail Container -->
+    <div class="property-detail-container">
+        <!-- TÍTULO ARRIBA DE LAS IMÁGENES -->
+        <div class="property-header" id="propertyHeader">
+            <!-- Se llena dinámicamente -->
         </div>
 
-        <!-- Error Container -->
-        <div id="errorContainer" class="error-container" style="display: none;">
-            <h3>❌ Error al cargar la propiedad</h3>
-            <p id="errorMessage">No se encontró la propiedad solicitada</p>
-            <a href="javascript:history.back()" class="contact-btn">← Volver al Listado</a>
+        <!-- Property Gallery -->
+        <div class="property-gallery" id="propertyGallery">
+            <!-- Se llena dinámicamente -->
         </div>
 
-        <!-- Property Content -->
-        <div id="propertyContent" style="display: none;">
-            <!-- NUEVO: Property Header - TÍTULO ARRIBA DE LAS IMÁGENES -->
-            <section class="property-header-section">
-                <div class="property-header-container">
-                    <div class="property-badge-detail" id="propertyBadge">DISPONIBLE</div>
-                    <h1 class="property-title-detail" id="propertyTitle">Cargando...</h1>
-                    <div class="property-location-detail" id="propertyLocation">📍 Cargando ubicación...</div>
-                    <div class="property-price-detail" id="propertyPrice">Cargando precio...</div>
-                </div>
-            </section>
-
-            <!-- Property Gallery -->
-            <section class="property-gallery" id="propertyGallery">
-                <div class="gallery-main">
-                    <img id="mainImage" src="" alt="Imagen principal">
-                </div>
-                <div class="gallery-nav" id="galleryNav">
-                    <!-- Thumbnails will be populated by JavaScript -->
-                </div>
-            </section>
-
-            <!-- Property Details -->
-            <section class="property-details">
-                <!-- Left Column -->
-                <div class="property-main">
-                    <!-- Features Grid -->
-                    <div class="features-grid" id="featuresGrid">
-                        <!-- Features will be populated by JavaScript -->
-                    </div>
-
-                    <!-- Tour 360° Section -->
-                    <div class="tour-360-section" id="tour360Section" style="display: none;">
-                        <h3 id="tourSectionTitle">🌐 Tour Virtual 360°</h3>
-                        <p id="tourSectionDescription">Explora esta propiedad como si estuvieras ahí. Navega por cada rincón y descubre todos los detalles.</p>
-                        
-                        <!-- Botón único o múltiples tours -->
-                        <div id="singleTourContainer">
-                            <button class="tour-360-btn" onclick="openTour360()">
-                                <span class="tour-360-icon">🔄</span>
-                                <span id="tourButtonText">Ver Tour Virtual 360°</span>
-                            </button>
-                        </div>
-
-                        <!-- Grid para múltiples tours -->
-                        <div id="multipleTourContainer" class="tours-grid" style="display: none;">
-                            <!-- Se llenará dinámicamente con JavaScript -->
-                        </div>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="property-description">
-                        <h3>Descripción de la Propiedad</h3>
-                        <div id="propertyDescription">
-                            <p>Cargando descripción...</p>
-                        </div>
-                    </div>
+        <!-- Property Content Grid -->
+        <div class="property-content">
+            <!-- Main Content Column -->
+            <div class="property-main">
+                <!-- Property Features -->
+                <div class="property-features" id="propertyFeatures">
+                    <!-- Se llena dinámicamente -->
                 </div>
 
-                <!-- Right Column - Contact Card -->
-                <div class="contact-card">
-                    <div class="contact-header">
-                        <h3>Contactar por esta propiedad</h3>
-                        <div class="contact-price" id="contactPrice">Cargando...</div>
-                    </div>
-
-                    <div class="contact-buttons">
-                        <a href="#" class="contact-btn" id="whatsappBtn">
-                            📱 Contactar por WhatsApp
-                        </a>
-                        <a href="#" class="contact-btn secondary" id="emailBtn">
-                            ✉️ Enviar Email
-                        </a>
-                        <a href="#" class="contact-btn secondary" id="callBtn">
-                            📞 Llamar Ahora
-                        </a>
-                    </div>
-
-                    <div class="contact-info" id="contactInfo">
-                        <!-- Contact details will be populated by JavaScript -->
-                    </div>
+                <!-- Property Info -->
+                <div class="property-info" id="propertyInfo">
+                    <!-- Se llena dinámicamente -->
                 </div>
-            </section>
 
-            <!-- NUEVA SECCIÓN: Propiedades Similares -->
-            <section class="similar-properties-section" id="similarPropertiesSection" style="display: none;">
-                <div class="similar-properties-container">
-                    <div class="similar-properties-header">
-                        <h3 id="similarPropertiesTitle">Propiedades similares en la zona</h3>
-                        <p id="similarPropertiesSubtitle">Descubre más opciones en la misma comuna</p>
-                    </div>
-                    <div class="similar-properties-grid" id="similarPropertiesGrid">
-                        <!-- Similar properties will be populated by JavaScript -->
-                    </div>
+                <!-- Property Tours -->
+                <div class="property-tours" id="propertyTours">
+                    <!-- Se llena dinámicamente -->
                 </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Modal Tour 360° -->
-    <div class="tour-modal" id="tourModal">
-        <div class="tour-modal-content">
-            <div class="tour-modal-header">
-                <h3 class="tour-modal-title" id="tourModalTitle">Tour Virtual 360°</h3>
-                <button class="tour-modal-close" onclick="closeTour360()">×</button>
             </div>
-            <div class="tour-iframe-container">
-                <div class="tour-loading" id="tourLoading">
-                    <div class="tour-loading-spinner"></div>
-                    <p>Cargando tour virtual...</p>
+
+            <!-- Sidebar Column -->
+            <div class="property-sidebar">
+                <!-- Contact Info -->
+                <div class="contact-info" id="contactInfo">
+                    <!-- Se llena dinámicamente -->
                 </div>
-                <iframe class="tour-iframe" id="tourIframe" src="" allowfullscreen allow="xr-spatial-tracking; gyroscope; accelerometer"></iframe>
             </div>
+        </div>
+
+        <!-- Similar Properties -->
+        <div class="similar-properties" id="similarProperties">
+            <!-- Se llena dinámicamente -->
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Propiedades</h4>
+                    <ul>
+                        <li><a href="compras.html">Hogares para descubrir</a></li>
+                        <li><a href="compras.html">Encuentra propiedades en venta cuidadosamente seleccionadas en el gran Santiago</a></li>
+                        <li><a href="#servicios">Tasaciones</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Servicios</h4>
+                    <ul>
+                        <li><a href="#servicios">Asesoría</a></li>
+                        <li><a href="#contacto">Consultoría</a></li>
+                        <li><a href="#servicios">Inversiones</a></li>
+                        <li><a href="#contacto">Financiamiento</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Soporte</h4>
+                    <ul>
+                        <li><a href="#contacto">Contacto</a></li>
+                        <li><a href="#" onclick="alert('Próximamente: Centro de ayuda con guías y tutoriales')">Centro de Ayuda</a></li>
+                        <li><a href="admin-login.html">Gestionar Contenido</a></li>
+                        <li><a href="#" onclick="alert('Próximamente: Términos y condiciones')">Términos</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></li>
+                        <li><a href="tel:+56912345678">+56 9 1234 5678</a></li>
+                        <li>Santiago, Chile</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-tagline">Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</div>
+                <div>&copy; 2025 Casa Nuvera. Todos los derechos reservados.</div>
+            </div>
+        </div>
+    </footer>
+
     <!-- Scripts -->
     <script src="supabase.js"></script>
-
-    <script>
-        // Variables globales
-        let currentProperty = null;
-        let currentImageIndex = 0;
-        let propertyImages = [];
-        let propertyTours = [];
-        let currentTourUrl = null;
-        let similarProperties = [];
-
-        // Obtener ID de la propiedad desde URL (soporte para ID y slug)
-        function getPropertyIdFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            const slug = urlParams.get('slug');
-            
-            // Si tenemos slug, extraer ID del final del slug (formato: nombre-propiedad-123)
-            if (slug) {
-                const matches = slug.match(/-(\\d+)$/);
-                return matches ? matches[1] : null;
-            }
-            
-            return id;
-        }
-
-        // Inicializar página
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🏠 Iniciando página de detalle de propiedad...');
-            
-            const propertyId = getPropertyIdFromURL();
-            if (!propertyId) {
-                showError('ID de propiedad no especificado');
-                return;
-            }
-
-            if (window.supabase) {
-                loadPropertyDetails(propertyId);
-            } else {
-                window.addEventListener('supabaseReady', () => loadPropertyDetails(propertyId));
-                
-                setTimeout(() => {
-                    if (!window.supabase) {
-                        showError('No se pudo conectar con la base de datos');
-                    }
-                }, 5000);
-            }
-        });
-
-        async function loadPropertyDetails(propertyId) {
-            try {
-                showLoading(true);
-                
-                console.log('📥 Cargando detalles de propiedad ID:', propertyId);
-                
-                // Cargar propiedad
-                const { data: property, error: propertyError } = await window.supabase
-                    .from('properties')
-                    .select('*')
-                    .eq('id', propertyId)
-                    .eq('status', 'published')
-                    .single();
-
-                if (propertyError || !property) {
-                    throw new Error('Propiedad no encontrada');
-                }
-
-                currentProperty = property;
-
-                // Cargar imágenes
-                const images = parseImages(property.images);
-                if (images && images.length > 0) {
-                    propertyImages = images.map(img => ({ image_url: img, is_main: false }));
-                    propertyImages[0].is_main = true;
-                } else {
-                    propertyImages = [{ 
-                        image_url: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop', 
-                        is_main: true 
-                    }];
-                }
-
-                // Cargar tours 360° desde la base de datos
-                await loadPropertyTours(propertyId);
-
-                // Cargar propiedades similares
-                await loadSimilarProperties(property.location);
-
-                showLoading(false);
-                renderPropertyDetails();
-                
-            } catch (error) {
-                console.error('💥 Error al cargar propiedad:', error);
-                showError(error.message);
-                showLoading(false);
-            }
-        }
-
-        function parseImages(imagesField) {
-            if (!imagesField) return [];
-            
-            try {
-                if (typeof imagesField === 'string') {
-                    return JSON.parse(imagesField);
-                }
-                if (Array.isArray(imagesField)) {
-                    return imagesField;
-                }
-            } catch (error) {
-                console.error('Error parsing images:', error);
-            }
-            
-            return [];
-        }
-
-        async function loadPropertyTours(propertyId) {
-            try {
-                console.log('🌐 Cargando tours 360° para propiedad:', propertyId);
-                
-                const { data: tours, error } = await window.supabase
-                    .from('property_tours')
-                    .select('*')
-                    .eq('property_id', propertyId)
-                    .eq('is_active', true)
-                    .order('order_index', { ascending: true });
-
-                if (error) {
-                    console.warn('⚠️ Error cargando tours:', error);
-                    // Fallback al tour por defecto
-                    propertyTours = [{
-                        id: 'default',
-                        tour_url: 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1',
-                        tour_title: 'Tour Virtual 360°',
-                        is_active: true,
-                        order_index: 1
-                    }];
-                } else if (tours && tours.length > 0) {
-                    propertyTours = tours;
-                    console.log('✅ Tours cargados:', tours.length);
-                } else {
-                    // Si no hay tours en BD, usar el tour por defecto
-                    propertyTours = [{
-                        id: 'default',
-                        tour_url: 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1',
-                        tour_title: 'Tour Virtual 360°',
-                        is_active: true,
-                        order_index: 1
-                    }];
-                    console.log('ℹ️ Usando tour por defecto (no hay tours en BD)');
-                }
-
-            } catch (error) {
-                console.error('💥 Error cargando tours:', error);
-                // Fallback al tour por defecto
-                propertyTours = [{
-                    id: 'default',
-                    tour_url: 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1',
-                    tour_title: 'Tour Virtual 360°',
-                    is_active: true,
-                    order_index: 1
-                }];
-            }
-        }
-
-        async function loadSimilarProperties(currentLocation) {
-            try {
-                console.log('🔍 Cargando propiedades similares en:', currentLocation);
-                
-                // Extraer comuna de la ubicación actual
-                const currentCommune = extractCommune(currentLocation);
-                
-                if (!currentCommune) {
-                    console.log('ℹ️ No se pudo extraer comuna, buscando propiedades cercanas');
-                    return;
-                }
-
-                // Buscar propiedades en la misma comuna
-                const { data: properties, error } = await window.supabase
-                    .from('properties')
-                    .select('*')
-                    .eq('status', 'published')
-                    .neq('id', currentProperty.id)
-                    .ilike('location', `%${currentCommune}%`)
-                    .limit(3);
-
-                if (error) {
-                    console.warn('⚠️ Error cargando propiedades similares:', error);
-                    return;
-                }
-
-                if (properties && properties.length > 0) {
-                    similarProperties = properties;
-                    console.log(`✅ ${properties.length} propiedades similares encontradas en ${currentCommune}`);
-                    renderSimilarProperties();
-                } else {
-                    console.log('ℹ️ No se encontraron propiedades similares en la misma comuna');
-                    // Si no hay propiedades en la misma comuna, buscar en comunas cercanas
-                    await loadNearbyProperties();
-                }
-
-            } catch (error) {
-                console.error('💥 Error cargando propiedades similares:', error);
-            }
-        }
-
-        async function loadNearbyProperties() {
-            try {
-                console.log('🔍 Buscando propiedades en comunas cercanas...');
-                
-                // Lista de comunas cercanas típicas de Santiago
-                const nearbyCommunes = ['Las Condes', 'Providencia', 'Ñuñoa', 'Vitacura', 'Lo Barnechea', 'La Reina', 'Macul', 'Peñalolén'];
-                
-                const { data: properties, error } = await window.supabase
-                    .from('properties')
-                    .select('*')
-                    .eq('status', 'published')
-                    .neq('id', currentProperty.id)
-                    .limit(3);
-
-                if (error) {
-                    console.warn('⚠️ Error cargando propiedades cercanas:', error);
-                    return;
-                }
-
-                if (properties && properties.length > 0) {
-                    similarProperties = properties;
-                    console.log(`✅ ${properties.length} propiedades cercanas encontradas`);
-                    
-                    // Actualizar título para indicar que son propiedades cercanas
-                    document.getElementById('similarPropertiesTitle').textContent = 'Propiedades destacadas';
-                    document.getElementById('similarPropertiesSubtitle').textContent = 'Otras opciones que podrían interesarte';
-                    
-                    renderSimilarProperties();
-                }
-
-            } catch (error) {
-                console.error('💥 Error cargando propiedades cercanas:', error);
-            }
-        }
-
-        function extractCommune(location) {
-            if (!location) return null;
-            
-            // Lista de comunas de Santiago para hacer matching
-            const communes = [
-                'Las Condes', 'Providencia', 'Ñuñoa', 'Vitacura', 'Lo Barnechea', 
-                'La Reina', 'Macul', 'Peñalolén', 'Santiago', 'San Miguel', 
-                'La Florida', 'Maipú', 'Puente Alto', 'Quilicura', 'Huechuraba',
-                'Colina', 'Lampa', 'Pudahuel', 'Cerrillos', 'Estación Central'
-            ];
-            
-            const locationLower = location.toLowerCase();
-            
-            for (const commune of communes) {
-                if (locationLower.includes(commune.toLowerCase())) {
-                    return commune;
-                }
-            }
-            
-            return null;
-        }
-
-        function renderSimilarProperties() {
-            if (similarProperties.length === 0) return;
-            
-            const similarPropertiesSection = document.getElementById('similarPropertiesSection');
-            const similarPropertiesGrid = document.getElementById('similarPropertiesGrid');
-            
-            const propertiesHTML = similarProperties.map(property => {
-                const images = parseImages(property.images);
-                const firstImage = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';
-                const formattedPrice = formatPrice(property.price);
-                const bedrooms = property.bedrooms || 0;
-                const bathrooms = property.bathrooms || 0;
-                const area = property.area || 0;
-
-                return `
-                    <div class="similar-property-card" onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
-                        <div class="similar-property-image">
-                            <img src="${firstImage}" alt="${property.title}" loading="lazy">
-                            <div class="similar-property-price-badge">
-                                ${formattedPrice}
-                            </div>
-                        </div>
-                        <div class="similar-property-content">
-                            <h4 class="similar-property-title">${property.title || 'Propiedad sin título'}</h4>
-                            <div class="similar-property-location">${property.location || 'Ubicación no especificada'}</div>
-                            <div class="similar-property-features">
-                                <div class="similar-property-feature">
-                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2L2 7v10c0 5.55 3.84 9 9 9s9-3.45 9-9V7l-10-5z"/>
-                                    </svg>
-                                    ${bedrooms} hab
-                                </div>
-                                <div class="similar-property-feature">
-                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M8 14c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/>
-                                    </svg>
-                                    ${bathrooms} baños
-                                </div>
-                                <div class="similar-property-feature">
-                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
-                                    </svg>
-                                    ${area}m²
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            similarPropertiesGrid.innerHTML = propertiesHTML;
-            similarPropertiesSection.style.display = 'block';
-        }
-
-        function goToProperty(propertyId, slug) {
-            const url = `property-detail.html?id=${propertyId}&slug=${slug}`;
-            window.location.href = url;
-        }
-
-        function createSlug(title) {
-            if (!title) return 'propiedad';
-            
-            return title
-                .toLowerCase()
-                .replace(/[áàäâ]/g, 'a')
-                .replace(/[éèëê]/g, 'e')
-                .replace(/[íìïî]/g, 'i')
-                .replace(/[óòöô]/g, 'o')
-                .replace(/[úùüû]/g, 'u')
-                .replace(/[ñ]/g, 'n')
-                .replace(/[ç]/g, 'c')
-                .replace(/[^a-z0-9]/g, '-')
-                .replace(/-+/g, '-')
-                .replace(/^-|-$/g, '');
-        }
-
-        function formatPrice(price) {
-            if (!price) return 'Precio a consultar';
-            
-            const numPrice = parseInt(price);
-            if (isNaN(numPrice)) return 'Precio a consultar';
-            
-            // Formato chileno con puntos como separadores de miles
-            return `$${numPrice.toLocaleString('es-CL')}`;
-        }
-
-        function renderPropertyDetails() {
-            if (!currentProperty) return;
-
-            // Update page title
-            document.title = `${currentProperty.title} - Casa Nuvera`;
-
-            // Render gallery
-            renderGallery();
-
-            // Render property info
-            renderPropertyInfo();
-
-            // Render tour 360° section
-            renderTour360Section();
-
-            // Render contact info
-            renderContactInfo();
-
-            // Show content
-            document.getElementById('propertyContent').style.display = 'block';
-        }
-
-        function renderGallery() {
-            const mainImage = document.getElementById('mainImage');
-            const galleryNav = document.getElementById('galleryNav');
-
-            if (propertyImages.length > 0) {
-                mainImage.src = propertyImages[0].image_url;
-                mainImage.alt = currentProperty.title;
-
-                // Render thumbnails if multiple images
-                if (propertyImages.length > 1) {
-                    galleryNav.innerHTML = propertyImages.map((img, index) => `
-                        <div class="gallery-thumb ${index === 0 ? 'active' : ''}" onclick="changeImage(${index})">
-                            <img src="${img.image_url}" alt="Imagen ${index + 1}">
-                        </div>
-                    `).join('');
-                } else {
-                    galleryNav.style.display = 'none';
-                }
-            }
-        }
-
-        function renderPropertyInfo() {
-            const getBadgeText = (type) => {
-                switch(type) {
-                    case 'venta': return 'EN VENTA';
-                    case 'arriendo': return 'EN ARRIENDO';
-                    case 'arriendo-temporal': return 'ARRIENDO TEMPORAL';
-                    default: return 'DISPONIBLE';
-                }
-            };
-
-            // Update header
-            document.getElementById('propertyBadge').textContent = getBadgeText(currentProperty.property_type);
-            document.getElementById('propertyTitle').textContent = currentProperty.title;
-            document.getElementById('propertyLocation').textContent = `📍 ${currentProperty.location}`;
-            document.getElementById('propertyPrice').textContent = formatPrice(currentProperty.price);
-
-            // Update contact price
-            document.getElementById('contactPrice').textContent = formatPrice(currentProperty.price);
-
-            // Render features
-            const featuresGrid = document.getElementById('featuresGrid');
-            const features = [];
-
-            if (currentProperty.bedrooms !== null && currentProperty.bedrooms !== undefined) {
-                features.push({
-                    icon: '🛏️',
-                    value: currentProperty.bedrooms === 0 ? 'Studio' : currentProperty.bedrooms,
-                    label: currentProperty.bedrooms === 0 ? '' : 'Dormitorios'
-                });
-            }
-
-            if (currentProperty.bathrooms) {
-                features.push({
-                    icon: '🚿',
-                    value: currentProperty.bathrooms,
-                    label: 'Baños'
-                });
-            }
-
-            if (currentProperty.area) {
-                features.push({
-                    icon: '📐',
-                    value: `${currentProperty.area}m²`,
-                    label: 'Superficie'
-                });
-            }
-
-            if (currentProperty.parking && currentProperty.parking > 0) {
-                features.push({
-                    icon: '🚗',
-                    value: currentProperty.parking,
-                    label: 'Estacionamientos'
-                });
-            }
-
-            featuresGrid.innerHTML = features.map(feature => `
-                <div class="feature-item">
-                    <div class="feature-icon">${feature.icon}</div>
-                    <div class="feature-value">${feature.value}</div>
-                    <div class="feature-label">${feature.label}</div>
-                </div>
-            `).join('');
-
-            // Update description
-            document.getElementById('propertyDescription').innerHTML = 
-                currentProperty.description ? 
-                `<p>${currentProperty.description}</p>` : 
-                '<p>No hay descripción disponible para esta propiedad.</p>';
-        }
-
-        function renderTour360Section() {
-            const tour360Section = document.getElementById('tour360Section');
-            const singleTourContainer = document.getElementById('singleTourContainer');
-            const multipleTourContainer = document.getElementById('multipleTourContainer');
-            
-            // Mostrar sección solo si hay tours disponibles
-            if (propertyTours && propertyTours.length > 0) {
-                tour360Section.style.display = 'block';
-                
-                if (propertyTours.length === 1) {
-                    // Un solo tour - mostrar botón principal
-                    const tour = propertyTours[0];
-                    currentTourUrl = tour.tour_url;
-                    
-                    document.getElementById('tourButtonText').textContent = tour.tour_title;
-                    document.getElementById('tourModalTitle').textContent = `${tour.tour_title} - ${currentProperty.title}`;
-                    
-                    singleTourContainer.style.display = 'block';
-                    multipleTourContainer.style.display = 'none';
-                    
-                } else {
-                    // Múltiples tours - mostrar grid
-                    document.getElementById('tourSectionTitle').textContent = '🌐 Tours Virtuales 360°';
-                    document.getElementById('tourSectionDescription').textContent = 'Explora esta propiedad con múltiples tours virtuales. Descubre cada área en detalle.';
-                    
-                    const toursHTML = propertyTours.map((tour, index) => `
-                        <button class="tour-item-btn" onclick="openSpecificTour('${tour.tour_url}', '${tour.tour_title}')">
-                            🔄 ${tour.tour_title}
-                        </button>
-                    `).join('');
-                    
-                    multipleTourContainer.innerHTML = toursHTML;
-                    
-                    singleTourContainer.style.display = 'none';
-                    multipleTourContainer.style.display = 'grid';
-                }
-            }
-        }
-
-        function renderContactInfo() {
-            const phone = currentProperty.contact_phone || '+56 9 1234 5678';
-            const email = currentProperty.contact_email || 'hola@casanuvera.cl';
-
-            // Update contact buttons
-            document.getElementById('whatsappBtn').onclick = () => contactViaWhatsApp();
-            document.getElementById('emailBtn').href = `mailto:${email}`;
-            document.getElementById('callBtn').href = `tel:${phone}`;
-
-            // Update contact info
-            document.getElementById('contactInfo').innerHTML = `
-                <div class="contact-item">
-                    <span class="contact-icon">📞</span>
-                    <span>${phone}</span>
-                </div>
-                <div class="contact-item">
-                    <span class="contact-icon">✉️</span>
-                    <span>${email}</span>
-                </div>
-                <div class="contact-item">
-                    <span class="contact-icon">🏢</span>
-                    <span>Casa Nuvera</span>
-                </div>
-            `;
-        }
-
-        // Funciones Tour 360°
-        function openTour360() {
-            if (propertyTours.length === 1) {
-                openSpecificTour(propertyTours[0].tour_url, propertyTours[0].tour_title);
-            } else {
-                alert('Error: No se encontró el tour virtual');
-            }
-        }
-
-        function openSpecificTour(tourUrl, tourTitle) {
-            if (!tourUrl) {
-                alert('Tour virtual no disponible');
-                return;
-            }
-
-            const modal = document.getElementById('tourModal');
-            const iframe = document.getElementById('tourIframe');
-            const loading = document.getElementById('tourLoading');
-
-            // Actualizar título del modal
-            document.getElementById('tourModalTitle').textContent = `${tourTitle} - ${currentProperty.title}`;
-
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-
-            // Mostrar loading
-            loading.style.display = 'block';
-            iframe.style.display = 'none';
-
-            // Cargar iframe
-            iframe.src = tourUrl;
-            
-            iframe.onload = function() {
-                loading.style.display = 'none';
-                iframe.style.display = 'block';
-            };
-
-            // Cerrar con ESC
-            document.addEventListener('keydown', handleEscKey);
-        }
-
-        function closeTour360() {
-            const modal = document.getElementById('tourModal');
-            const iframe = document.getElementById('tourIframe');
-
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-
-            // Detener el iframe para ahorrar recursos
-            iframe.src = '';
-
-            // Remover listener ESC
-            document.removeEventListener('keydown', handleEscKey);
-        }
-
-        function handleEscKey(event) {
-            if (event.key === 'Escape') {
-                closeTour360();
-            }
-        }
-
-        // Cerrar modal al hacer click fuera
-        document.getElementById('tourModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeTour360();
-            }
-        });
-
-        function changeImage(index) {
-            if (index >= 0 && index < propertyImages.length) {
-                currentImageIndex = index;
-                document.getElementById('mainImage').src = propertyImages[index].image_url;
-
-                // Update active thumbnail
-                document.querySelectorAll('.gallery-thumb').forEach((thumb, i) => {
-                    thumb.classList.toggle('active', i === index);
-                });
-            }
-        }
-
-        function contactViaWhatsApp() {
-            if (!currentProperty) return;
-
-            const features = [];
-            if (currentProperty.bedrooms !== null && currentProperty.bedrooms !== undefined) {
-                features.push(`${currentProperty.bedrooms === 0 ? 'Studio' : currentProperty.bedrooms + ' dormitorios'}`);
-            }
-            if (currentProperty.bathrooms) features.push(`${currentProperty.bathrooms} baños`);
-            if (currentProperty.area) features.push(`${currentProperty.area}m²`);
-            if (currentProperty.parking > 0) features.push(`${currentProperty.parking} estacionamientos`);
-
-            const operationType = currentProperty.property_type === 'venta' ? 'comprar' : 'arrendar';
-
-            const tourMessage = propertyTours.length > 0 ? 
-                `\n🌐 ${propertyTours.length > 1 ? 'Vi los tours virtuales 360°' : 'Vi el tour virtual 360°'} y me interesa conocer más detalles.` : '';
-
-            const message = `Hola! Estoy interesado/a en ${operationType} la propiedad "${currentProperty.title}".
-
-📍 Dirección: ${currentProperty.location}
-💰 Precio: ${formatPrice(currentProperty.price)}
-🏠 Características: ${features.join(', ')}${tourMessage}
-
-¿Podrías darme más información?
-
-Saludos!`;
-
-            const phoneNumber = (currentProperty.contact_phone || '+56912345678').replace(/[^0-9]/g, '');
-            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            
-            window.open(whatsappURL, '_blank');
-        }
-
-        function showLoading(show) {
-            const loadingContainer = document.getElementById('loadingContainer');
-            const propertyContent = document.getElementById('propertyContent');
-            const errorContainer = document.getElementById('errorContainer');
-            
-            if (show) {
-                loadingContainer.style.display = 'flex';
-                propertyContent.style.display = 'none';
-                errorContainer.style.display = 'none';
-            } else {
-                loadingContainer.style.display = 'none';
-            }
-        }
-
-        function showError(message) {
-            const errorContainer = document.getElementById('errorContainer');
-            const errorMessage = document.getElementById('errorMessage');
-            const loadingContainer = document.getElementById('loadingContainer');
-            const propertyContent = document.getElementById('propertyContent');
-            
-            errorMessage.textContent = message;
-            errorContainer.style.display = 'flex';
-            loadingContainer.style.display = 'none';
-            propertyContent.style.display = 'none';
-        }
-    </script>
+    <script src="property-detail-loader-fixed.js"></script>
+    <!-- 🤖 Widget WhatsApp -->
+    <script src="whatsapp-widget.js"></script>
 </body>
 </html>
