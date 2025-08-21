@@ -62,7 +62,7 @@
         }
 
         .back-btn {
-            background: #007bff;
+            background: #00c851;
             color: white;
             padding: 0.5rem 1rem;
             text-decoration: none;
@@ -73,7 +73,7 @@
         }
 
         .back-btn:hover {
-            background: #0056b3;
+            background: #00a83f;
         }
 
         /* Main Content */
@@ -96,7 +96,7 @@
 
         .loading-spinner {
             border: 3px solid #f1f3f4;
-            border-top: 3px solid #007bff;
+            border-top: 3px solid #4285f4;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -129,7 +129,7 @@
             padding: 0;
         }
 
-        /* Gallery minimalista */
+        /* Gallery estilo Portal Inmobiliario */
         .property-gallery {
             height: 500px;
             position: relative;
@@ -164,11 +164,12 @@
             transition: all 0.2s;
             border: 2px solid transparent;
             background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .gallery-thumb.active {
             opacity: 1;
-            border-color: #007bff;
+            border-color: #4285f4;
         }
 
         .gallery-thumb img {
@@ -196,8 +197,8 @@
 
         .property-badge {
             display: inline-block;
-            background: #e3f2fd;
-            color: #1976d2;
+            background: #e8f0fe;
+            color: #1a73e8;
             padding: 0.25rem 0.75rem;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -224,7 +225,7 @@
             gap: 0.25rem;
         }
 
-        /* Features en línea horizontal */
+        /* Features en línea horizontal estilo Portal */
         .property-features {
             display: flex;
             gap: 2rem;
@@ -246,46 +247,83 @@
             color: #333;
         }
 
-        /* Tour 360° minimalista */
+        /* Tour 360° estilo Portal Inmobiliario */
         .tour-section {
             margin: 2rem 0;
-            padding: 1.5rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tour-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: 20px 20px;
+            opacity: 0.3;
         }
 
         .tour-section h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
             font-weight: 600;
-            color: #333;
+            color: white;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .tour-section p {
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            color: #666;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 2;
         }
 
         .tour-btn {
-            background: #007bff;
-            color: white;
+            background: white;
+            color: #667eea;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 500;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
             text-decoration: none;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .tour-btn:hover {
-            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .tour-icon {
+            font-size: 1.2rem;
+            animation: rotate360 2s linear infinite;
+        }
+
+        @keyframes rotate360 {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* Description minimalista */
@@ -335,7 +373,7 @@
         .property-price {
             font-size: 2rem;
             font-weight: 700;
-            color: #333;
+            color: #00c851;
             margin-bottom: 0.5rem;
         }
 
@@ -368,7 +406,7 @@
             color: #333;
         }
 
-        /* Botones de contacto */
+        /* Botones de contacto estilo Portal */
         .contact-buttons {
             display: flex;
             flex-direction: column;
@@ -377,15 +415,13 @@
         }
 
         .contact-btn {
-            background: #25d366;
-            color: white;
             border: none;
             padding: 0.875rem 1.5rem;
             border-radius: 6px;
             font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
             text-decoration: none;
             text-align: center;
             display: flex;
@@ -394,18 +430,24 @@
             gap: 0.5rem;
         }
 
-        .contact-btn:hover {
-            background: #128c7e;
+        .contact-btn.whatsapp {
+            background: #4285f4;
+            color: white;
+        }
+
+        .contact-btn.whatsapp:hover {
+            background: #3367d6;
         }
 
         .contact-btn.secondary {
             background: white;
-            color: #333;
+            color: #666;
             border: 1px solid #dee2e6;
         }
 
         .contact-btn.secondary:hover {
             background: #f8f9fa;
+            color: #333;
         }
 
         /* Info del contacto */
@@ -461,20 +503,20 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 1.5rem;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
+            background: #667eea;
+            color: white;
         }
 
         .tour-modal-title {
             font-size: 1rem;
             font-weight: 600;
-            color: #333;
+            color: white;
         }
 
         .tour-modal-close {
             background: none;
             border: none;
-            color: #666;
+            color: white;
             font-size: 1.5rem;
             cursor: pointer;
             width: 32px;
@@ -487,7 +529,7 @@
         }
 
         .tour-modal-close:hover {
-            background: #e9ecef;
+            background: rgba(255,255,255,0.2);
         }
 
         .tour-iframe-container {
@@ -562,7 +604,7 @@
                 <span class="logo-text">Casa Nuvera</span>
             </a>
             <a href="javascript:history.back()" class="back-btn">
-                ← Volver
+                Volver al Listado
             </a>
         </div>
     </header>
@@ -579,7 +621,7 @@
         <div id="errorContainer" class="error-container" style="display: none;">
             <h3>❌ Error al cargar la propiedad</h3>
             <p id="errorMessage">No se encontró la propiedad solicitada</p>
-            <a href="javascript:history.back()" class="contact-btn">← Volver al Listado</a>
+            <a href="javascript:history.back()" class="contact-btn whatsapp">← Volver al Listado</a>
         </div>
 
         <!-- Property Content -->
@@ -604,7 +646,9 @@
                     <section class="property-info">
                         <div class="property-badge" id="propertyBadge">DISPONIBLE</div>
                         <h1 class="property-title" id="propertyTitle">Cargando...</h1>
-                        <div class="property-location" id="propertyLocation">📍 Cargando ubicación...</div>
+                        <div class="property-location" id="propertyLocation">
+                            <span>Publicado hace 15 días</span>
+                        </div>
 
                         <!-- Features horizontales -->
                         <div class="property-features" id="propertyFeatures">
@@ -613,10 +657,13 @@
 
                         <!-- Tour 360° Section -->
                         <div class="tour-section" id="tourSection">
-                            <h3>🌐 Tour Virtual 360°</h3>
+                            <h3>
+                                <span class="tour-icon">🌐</span>
+                                Tour Virtual 360°
+                            </h3>
                             <p>Explora esta propiedad en detalle con nuestro tour virtual interactivo.</p>
                             <button class="tour-btn" onclick="openTour360()">
-                                <span>🔄</span>
+                                <span class="tour-icon">🔄</span>
                                 Ver Tour Virtual
                             </button>
                         </div>
@@ -636,7 +683,7 @@
                     <!-- Precio -->
                     <div class="price-section">
                         <div class="property-type" id="propertyType">Departamento en Arriendo</div>
-                        <div class="property-price" id="sidebarPrice">Cargando...</div>
+                        <div class="property-price" id="sidebarPrice">$6.000</div>
                         <div class="price-subtitle" id="priceSubtitle">Gastos comunes desde $750.000</div>
                     </div>
 
@@ -647,14 +694,14 @@
 
                     <!-- Botones de contacto -->
                     <div class="contact-buttons">
-                        <a href="#" class="contact-btn" id="whatsappBtn">
-                            📱 WhatsApp
+                        <a href="#" class="contact-btn whatsapp" id="whatsappBtn">
+                            📱 CONTACTAR POR WHATSAPP
                         </a>
                         <a href="#" class="contact-btn secondary" id="emailBtn">
-                            ✉️ Email
+                            ENVIAR EMAIL
                         </a>
                         <a href="#" class="contact-btn secondary" id="callBtn">
-                            📞 Llamar
+                            📞 LLAMAR AHORA
                         </a>
                     </div>
 
@@ -671,7 +718,7 @@
     <div class="tour-modal" id="tourModal">
         <div class="tour-modal-content">
             <div class="tour-modal-header">
-                <h3 class="tour-modal-title">Tour Virtual 360°</h3>
+                <h3 class="tour-modal-title">🌐 Tour Virtual 360°</h3>
                 <button class="tour-modal-close" onclick="closeTour360()">×</button>
             </div>
             <div class="tour-iframe-container">
@@ -731,14 +778,15 @@
                     });
                 }
 
-                // Cargar propiedad
+                // Cargar propiedad con LEFT JOIN para obtener imágenes
+                console.log('🔍 Consultando propiedad con imágenes...');
+                
+                // Primero obtener la propiedad
                 const { data: property, error: propertyError } = await window.supabase
                     .from('properties')
                     .select('*')
                     .eq('id', propertyId)
                     .single();
-
-                console.log('📋 Respuesta de BD:', { property, propertyError });
 
                 if (propertyError || !property) {
                     throw new Error('Propiedad no encontrada');
@@ -747,8 +795,17 @@
                 currentProperty = property;
                 console.log('✅ Propiedad cargada:', property);
 
+                // Intentar cargar imágenes desde property_images
+                const { data: images, error: imagesError } = await window.supabase
+                    .from('property_images')
+                    .select('*')
+                    .eq('property_id', propertyId)
+                    .order('image_order', { ascending: true });
+
+                console.log('🖼️ Imágenes desde BD:', { images, imagesError });
+
                 // Preparar imágenes
-                preparePropertyImages();
+                preparePropertyImages(images);
 
                 showLoading(false);
                 renderPropertyDetails();
@@ -760,28 +817,46 @@
             }
         }
 
-        function preparePropertyImages() {
-            const defaultImage = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';
-            
-            // Try to parse images from different possible fields
-            if (currentProperty.images) {
+        function preparePropertyImages(imagesFromDB) {
+            // Imágenes por defecto del departamento
+            const defaultImages = [
+                'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&h=600&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&h=600&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1560448075-bb485b067938?w=800&h=600&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1560185008-b033106af5c3?w=800&h=600&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1560185009-5bf9f2849488?w=800&h=600&fit=crop&crop=center'
+            ];
+
+            propertyImages = [];
+
+            // Si hay imágenes en la BD, usarlas
+            if (imagesFromDB && imagesFromDB.length > 0) {
+                propertyImages = imagesFromDB.map(img => img.image_url).filter(url => url && url.trim() !== '');
+                console.log('📸 Usando imágenes de la BD:', propertyImages.length);
+            }
+
+            // Si no hay imágenes válidas en BD, usar las del campo images
+            if (propertyImages.length === 0 && currentProperty.images) {
                 try {
                     const images = typeof currentProperty.images === 'string' ? 
                         JSON.parse(currentProperty.images) : currentProperty.images;
                     if (Array.isArray(images) && images.length > 0) {
-                        propertyImages = images;
-                    } else {
-                        propertyImages = [defaultImage];
+                        propertyImages = images.filter(url => url && url.trim() !== '');
+                        console.log('📸 Usando imágenes del campo images:', propertyImages.length);
                     }
                 } catch (e) {
                     console.warn('Error parsing images:', e);
-                    propertyImages = [defaultImage];
                 }
-            } else {
-                propertyImages = [defaultImage];
             }
 
-            console.log('🖼️ Imágenes preparadas:', propertyImages.length);
+            // Si no hay imágenes, usar las por defecto
+            if (propertyImages.length === 0) {
+                propertyImages = defaultImages;
+                console.log('📸 Usando imágenes por defecto:', propertyImages.length);
+            }
+
+            console.log('🖼️ Imágenes finales preparadas:', propertyImages.length);
         }
 
         function renderPropertyDetails() {
@@ -821,6 +896,7 @@
                         <img src="${img}" alt="Imagen ${index + 1}">
                     </div>
                 `).join('');
+                galleryThumbnails.style.display = 'flex';
             } else {
                 galleryThumbnails.style.display = 'none';
             }
@@ -846,16 +922,16 @@
         function renderPropertyInfo() {
             // Helper functions
             const formatPrice = (price) => {
-                if (!price) return 'Consultar precio';
+                if (!price) return '$6.000';
                 const numPrice = parseInt(price);
-                if (isNaN(numPrice)) return 'Consultar precio';
-                return `UF ${Math.round(numPrice / 35000)}`;
+                if (isNaN(numPrice)) return '$6.000';
+                return `$${Math.round(numPrice / 1000)}.000`;
             };
 
             const formatPricePesos = (price) => {
-                if (!price) return 'Consultar precio';
+                if (!price) return '$2.473.973';
                 const numPrice = parseInt(price);
-                if (isNaN(numPrice)) return 'Consultar precio';
+                if (isNaN(numPrice)) return '$2.473.973';
                 return `$${numPrice.toLocaleString('es-CL')}`;
             };
 
@@ -871,23 +947,20 @@
             const getBadgeText = (type) => {
                 switch(type) {
                     case 'venta': return 'EN VENTA';
-                    case 'arriendo': return 'EN ARRIENDO';
+                    case 'arriendo': return 'Departamento en Arriendo';
                     case 'arriendo-temporal': return 'ARRIENDO TEMPORAL';
-                    default: return 'DISPONIBLE';
+                    default: return 'Departamento en Arriendo';
                 }
             };
 
             const getPropertyType = (type, category) => {
-                const typeText = type === 'arriendo' ? 'en Arriendo' : 'en Venta';
-                const categoryText = category || 'Propiedad';
-                return `${categoryText} ${typeText}`;
+                return 'Departamento en Arriendo';
             };
 
             // Update main info
             document.getElementById('propertyBadge').textContent = getBadgeText(currentProperty.property_type);
-            document.getElementById('propertyTitle').textContent = currentProperty.title || 'Propiedad sin título';
-            document.getElementById('propertyLocation').textContent = `📍 ${buildLocation(currentProperty)}`;
-
+            document.getElementById('propertyTitle').textContent = currentProperty.title || 'Departamento En Arriendo De 3 Dorm. En Colina';
+            
             // Update sidebar
             document.getElementById('propertyType').textContent = getPropertyType(currentProperty.property_type, currentProperty.category);
             document.getElementById('sidebarPrice').textContent = formatPrice(currentProperty.price);
@@ -897,26 +970,24 @@
             const propertyFeatures = document.getElementById('propertyFeatures');
             const features = [];
 
-            if (currentProperty.total_area) {
-                features.push({
-                    icon: '📐',
-                    text: `${currentProperty.total_area}m² totales`
-                });
-            }
+            const totalArea = currentProperty.total_area || 260;
+            const bedrooms = currentProperty.bedrooms !== null && currentProperty.bedrooms !== undefined ? currentProperty.bedrooms : 3;
+            const bathrooms = currentProperty.bathrooms || 3;
 
-            if (currentProperty.bedrooms !== null && currentProperty.bedrooms !== undefined) {
-                features.push({
-                    icon: '🛏️',
-                    text: currentProperty.bedrooms === 0 ? 'Studio' : `${currentProperty.bedrooms} dormitorios`
-                });
-            }
+            features.push({
+                icon: '📐',
+                text: `${totalArea}m² totales`
+            });
 
-            if (currentProperty.bathrooms) {
-                features.push({
-                    icon: '🚿',
-                    text: `${currentProperty.bathrooms} baños`
-                });
-            }
+            features.push({
+                icon: '🛏️',
+                text: bedrooms === 0 ? 'Studio' : `${bedrooms} dormitorios`
+            });
+
+            features.push({
+                icon: '🚿',
+                text: `${bathrooms} baños`
+            });
 
             propertyFeatures.innerHTML = features.map(feature => `
                 <div class="feature-item">
@@ -929,12 +1000,10 @@
             const sidebarFeatures = document.getElementById('sidebarFeatures');
             const sidebarFeaturesList = [];
 
-            if (currentProperty.total_area) {
-                sidebarFeaturesList.push({
-                    label: 'Superficie total',
-                    value: `${currentProperty.total_area} m²`
-                });
-            }
+            sidebarFeaturesList.push({
+                label: 'Superficie total',
+                value: `${totalArea} m²`
+            });
 
             if (currentProperty.built_area) {
                 sidebarFeaturesList.push({
@@ -943,19 +1012,15 @@
                 });
             }
 
-            if (currentProperty.bedrooms !== null && currentProperty.bedrooms !== undefined) {
-                sidebarFeaturesList.push({
-                    label: 'Dormitorios',
-                    value: currentProperty.bedrooms === 0 ? 'Studio' : currentProperty.bedrooms
-                });
-            }
+            sidebarFeaturesList.push({
+                label: 'Dormitorios',
+                value: bedrooms === 0 ? 'Studio' : bedrooms
+            });
 
-            if (currentProperty.bathrooms) {
-                sidebarFeaturesList.push({
-                    label: 'Baños',
-                    value: currentProperty.bathrooms
-                });
-            }
+            sidebarFeaturesList.push({
+                label: 'Baños',
+                value: bathrooms
+            });
 
             if (currentProperty.parking_spaces && currentProperty.parking_spaces > 0) {
                 sidebarFeaturesList.push({
@@ -975,11 +1040,12 @@
             document.getElementById('propertyDescription').innerHTML = 
                 currentProperty.description ? 
                 `<p>${currentProperty.description}</p>` : 
-                '<p>No hay descripción disponible para esta propiedad.</p>';
+                '<p>Hermoso departamento en arriendo con excelente ubicación y todas las comodidades. Cuenta con amplios espacios, buena iluminación natural y acabados de primera calidad.</p>';
 
             // Update contact info
-            const phone = currentProperty.contact_phone || '+56 9 1234 5678';
-            const email = currentProperty.contact_email || 'hola@casanuvera.cl';
+            const phone = currentProperty.contact_phone || '+56948406684';
+            const email = currentProperty.contact_email || 'tomasdominguezcarrizo.23@gmail.com';
+            const contactName = currentProperty.contact_name || 'Martina Lewitt Benavides';
 
             document.getElementById('whatsappBtn').onclick = () => contactViaWhatsApp();
             document.getElementById('emailBtn').href = `mailto:${email}`;
@@ -996,7 +1062,7 @@
                 </div>
                 <div class="contact-item">
                     <span class="contact-icon">🏢</span>
-                    <span>Publicado por ${currentProperty.contact_name || 'Casa Nuvera'}</span>
+                    <span>${contactName}</span>
                 </div>
             `;
         }
@@ -1043,12 +1109,14 @@
         function contactViaWhatsApp() {
             if (!currentProperty) return;
 
+            const totalArea = currentProperty.total_area || 260;
+            const bedrooms = currentProperty.bedrooms !== null && currentProperty.bedrooms !== undefined ? currentProperty.bedrooms : 3;
+            const bathrooms = currentProperty.bathrooms || 3;
+
             const features = [];
-            if (currentProperty.bedrooms !== null && currentProperty.bedrooms !== undefined) {
-                features.push(`${currentProperty.bedrooms === 0 ? 'Studio' : currentProperty.bedrooms + ' dormitorios'}`);
-            }
-            if (currentProperty.bathrooms) features.push(`${currentProperty.bathrooms} baños`);
-            if (currentProperty.total_area) features.push(`${currentProperty.total_area}m²`);
+            features.push(`${bedrooms === 0 ? 'Studio' : bedrooms + ' dormitorios'}`);
+            features.push(`${bathrooms} baños`);
+            features.push(`${totalArea}m²`);
             if (currentProperty.parking_spaces > 0) features.push(`${currentProperty.parking_spaces} estacionamientos`);
 
             const operationType = currentProperty.property_type === 'venta' ? 'comprar' : 'arrendar';
@@ -1059,17 +1127,17 @@
                 if (property.commune) parts.push(property.commune);
                 if (property.neighborhood) parts.push(property.neighborhood);
                 if (property.region) parts.push(property.region);
-                return parts.length > 0 ? parts.join(', ') : 'Ubicación no especificada';
+                return parts.length > 0 ? parts.join(', ') : 'Colina, RM (Metropolitana)';
             };
 
             const formatPrice = (price) => {
-                if (!price) return 'Precio a consultar';
+                if (!price) return '$2.473.973';
                 const numPrice = parseInt(price);
-                if (isNaN(numPrice)) return 'Precio a consultar';
+                if (isNaN(numPrice)) return '$2.473.973';
                 return `$${numPrice.toLocaleString('es-CL')}`;
             };
 
-            const message = `Hola! Estoy interesado/a en ${operationType} la propiedad "${currentProperty.title}".
+            const message = `Hola! Estoy interesado/a en ${operationType} el departamento "${currentProperty.title || 'Departamento En Arriendo De 3 Dorm. En Colina'}".
 
 📍 Dirección: ${buildLocation(currentProperty)}
 💰 Precio: ${formatPrice(currentProperty.price)}
@@ -1081,7 +1149,7 @@ Vi el tour virtual 360° y me interesa conocer más detalles.
 
 Saludos!`;
 
-            const phoneNumber = (currentProperty.contact_phone || '+56912345678').replace(/[^0-9]/g, '');
+            const phoneNumber = (currentProperty.contact_phone || '+56948406684').replace(/[^0-9]/g, '');
             const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             
             window.open(whatsappURL, '_blank');
