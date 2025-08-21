@@ -336,6 +336,27 @@
             background: #3498db;
         }
 
+        .loading-properties {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .properties-header {
                 flex-direction: column;
@@ -442,7 +463,7 @@
             <div class="properties-header">
                 <div>
                     <h2>Todas las Propiedades</h2>
-                    <p id="propertiesCount">4 propiedades encontradas</p>
+                    <p id="propertiesCount">Cargando propiedades...</p>
                 </div>
                 <a href="subir-propiedades.html" class="btn btn-primary">
                     ➕ Nueva Propiedad
@@ -450,25 +471,25 @@
             </div>
 
             <!-- Estadísticas -->
-            <div class="properties-stats">
+            <div class="properties-stats" id="propertiesStats">
                 <div class="stat-item">
-                    <div class="stat-number">4</div>
+                    <div class="stat-number" id="totalProperties">0</div>
                     <div class="stat-label">Total</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">4</div>
+                    <div class="stat-number" id="activeProperties">0</div>
                     <div class="stat-label">Activas</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">1</div>
+                    <div class="stat-number" id="saleProperties">0</div>
                     <div class="stat-label">Venta</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">3</div>
+                    <div class="stat-number" id="rentProperties">0</div>
                     <div class="stat-label">Arriendo</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">1</div>
+                    <div class="stat-number" id="tourProperties">0</div>
                     <div class="stat-label">Tours 360°</div>
                 </div>
             </div>
@@ -527,208 +548,9 @@
 
             <!-- Grid de Propiedades -->
             <div class="properties-grid" id="propertiesGrid">
-                <!-- Propiedad 1 -->
-                <div class="property-card">
-                    <div class="property-image">🏢</div>
-                    <div class="property-content">
-                        <h3 class="property-title">
-                            Departamento Los llanes
-                            <span class="tours-badge">🌐 1 tour</span>
-                        </h3>
-                        <div class="property-location">
-                            📍 Av los llanes, Las Condes
-                        </div>
-                        
-                        <div class="property-details">
-                            <div class="property-detail">
-                                <span class="property-detail-value">1</span>
-                                <span class="property-detail-label">DORM.</span>
-                            </div>
-                            <div class="property-detail">
-                                <span class="property-detail-value">1</span>
-                                <span class="property-detail-label">BAÑOS</span>
-                            </div>
-                            <div class="property-detail">
-                                <span class="property-detail-value">1</span>
-                                <span class="property-detail-label">EST.</span>
-                            </div>
-                        </div>
-                        
-                        <div class="property-price">6.000 UF</div>
-                        
-                        <div class="d-flex justify-between align-center">
-                            <span class="property-status status-active">PENDIENTE</span>
-                            <small style="color: #7f8c8d;">21 ago 2025</small>
-                        </div>
-                        
-                        <div class="property-actions">
-                            <a href="property-detail.html?id=1" class="action-btn view" target="_blank">
-                                👁️ Ver
-                            </a>
-                            <button class="action-btn tours" onclick="handleTours(1, 'Departamento Los llanes')">
-                                🌐 Tours
-                            </button>
-                            <button class="action-btn edit" onclick="handleEdit(1)">
-                                ✏️ Editar
-                            </button>
-                            <button class="action-btn delete" onclick="handleDelete(1, 'Departamento Los llanes')">
-                                🗑️ Eliminar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Propiedad 2 -->
-                <div class="property-card">
-                    <div class="property-image">🏢</div>
-                    <div class="property-content">
-                        <h3 class="property-title">
-                            Departamento Los llanes
-                            <span class="tours-badge no-tours">🌐 0 tours</span>
-                        </h3>
-                        <div class="property-location">
-                            📍 Los llanes, Las Condes
-                        </div>
-                        
-                        <div class="property-details">
-                            <div class="property-detail">
-                                <span class="property-detail-value">1</span>
-                                <span class="property-detail-label">DORM.</span>
-                            </div>
-                            <div class="property-detail">
-                                <span class="property-detail-value">1</span>
-                                <span class="property-detail-label">BAÑOS</span>
-                            </div>
-                            <div class="property-detail">
-                                <span class="property-detail-value">1</span>
-                                <span class="property-detail-label">EST.</span>
-                            </div>
-                        </div>
-                        
-                        <div class="property-price">6.000 UF</div>
-                        
-                        <div class="d-flex justify-between align-center">
-                            <span class="property-status status-active">PENDIENTE</span>
-                            <small style="color: #7f8c8d;">19 ago 2025</small>
-                        </div>
-                        
-                        <div class="property-actions">
-                            <a href="property-detail.html?id=2" class="action-btn view" target="_blank">
-                                👁️ Ver
-                            </a>
-                            <button class="action-btn tours" onclick="handleTours(2, 'Departamento Los llanes')">
-                                🌐 Tours
-                            </button>
-                            <button class="action-btn edit" onclick="handleEdit(2)">
-                                ✏️ Editar
-                            </button>
-                            <button class="action-btn delete" onclick="handleDelete(2, 'Departamento Los llanes')">
-                                🗑️ Eliminar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Propiedad 3 -->
-                <div class="property-card">
-                    <div class="property-image">🏢</div>
-                    <div class="property-content">
-                        <h3 class="property-title">
-                            Departamento Los llanes
-                            <span class="tours-badge no-tours">🌐 0 tours</span>
-                        </h3>
-                        <div class="property-location">
-                            📍 Los llanes, Las Condes
-                        </div>
-                        
-                        <div class="property-details">
-                            <div class="property-detail">
-                                <span class="property-detail-value">1</span>
-                                <span class="property-detail-label">DORM.</span>
-                            </div>
-                            <div class="property-detail">
-                                <span class="property-detail-value">1</span>
-                                <span class="property-detail-label">BAÑOS</span>
-                            </div>
-                            <div class="property-detail">
-                                <span class="property-detail-value">1</span>
-                                <span class="property-detail-label">EST.</span>
-                            </div>
-                        </div>
-                        
-                        <div class="property-price">6.000 UF</div>
-                        
-                        <div class="d-flex justify-between align-center">
-                            <span class="property-status status-active">PENDIENTE</span>
-                            <small style="color: #7f8c8d;">19 ago 2025</small>
-                        </div>
-                        
-                        <div class="property-actions">
-                            <a href="property-detail.html?id=3" class="action-btn view" target="_blank">
-                                👁️ Ver
-                            </a>
-                            <button class="action-btn tours" onclick="handleTours(3, 'Departamento Los llanes')">
-                                🌐 Tours
-                            </button>
-                            <button class="action-btn edit" onclick="handleEdit(3)">
-                                ✏️ Editar
-                            </button>
-                            <button class="action-btn delete" onclick="handleDelete(3, 'Departamento Los llanes')">
-                                🗑️ Eliminar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Propiedad 4 -->
-                <div class="property-card">
-                    <div class="property-image">🏠</div>
-                    <div class="property-content">
-                        <h3 class="property-title">
-                            Casa Prueba 1
-                            <span class="tours-badge no-tours">🌐 0 tours</span>
-                        </h3>
-                        <div class="property-location">
-                            📍 camino el alba, Huechuraba
-                        </div>
-                        
-                        <div class="property-details">
-                            <div class="property-detail">
-                                <span class="property-detail-value">3</span>
-                                <span class="property-detail-label">DORM.</span>
-                            </div>
-                            <div class="property-detail">
-                                <span class="property-detail-value">2</span>
-                                <span class="property-detail-label">BAÑOS</span>
-                            </div>
-                            <div class="property-detail">
-                                <span class="property-detail-value">2</span>
-                                <span class="property-detail-label">EST.</span>
-                            </div>
-                        </div>
-                        
-                        <div class="property-price">18.000 UF</div>
-                        
-                        <div class="d-flex justify-between align-center">
-                            <span class="property-status status-active">PENDIENTE</span>
-                            <small style="color: #7f8c8d;">13 jul 2025</small>
-                        </div>
-                        
-                        <div class="property-actions">
-                            <a href="property-detail.html?id=4" class="action-btn view" target="_blank">
-                                👁️ Ver
-                            </a>
-                            <button class="action-btn tours" onclick="handleTours(4, 'Casa Prueba 1')">
-                                🌐 Tours
-                            </button>
-                            <button class="action-btn edit" onclick="handleEdit(4)">
-                                ✏️ Editar
-                            </button>
-                            <button class="action-btn delete" onclick="handleDelete(4, 'Casa Prueba 1')">
-                                🗑️ Eliminar
-                            </button>
-                        </div>
-                    </div>
+                <div class="loading-properties">
+                    <div class="loading-spinner"></div>
+                    <p>Cargando propiedades desde la base de datos...</p>
                 </div>
             </div>
         </div>
@@ -752,9 +574,11 @@
     <script>
         // Variables globales
         let pendingDeleteId = null;
+        let pendingDeleteTitle = '';
         let supabase;
+        let allProperties = [];
         
-        // Esperar a que Supabase esté listo usando el evento custom
+        // Esperar a que Supabase esté listo
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Panel de administración cargando...');
             
@@ -783,31 +607,174 @@
                 console.log('✅ Supabase conectado correctamente al panel admin');
                 showNotification('Conectado a la base de datos Casa Nuvera', 'success');
                 
-                // Probar conexión
-                testDatabaseConnection();
+                // Cargar propiedades reales
+                loadPropertiesFromDB();
             } else {
                 console.error('❌ No se pudo conectar Supabase al panel admin');
                 showNotification('Error de conexión a la base de datos', 'error');
             }
         }
         
-        async function testDatabaseConnection() {
+        async function loadPropertiesFromDB() {
             try {
-                const { data, error } = await supabase
+                console.log('📥 Cargando propiedades desde Supabase...');
+                
+                const { data: properties, error } = await supabase
                     .from('properties')
-                    .select('count')
-                    .limit(1);
-                    
+                    .select(`
+                        id,
+                        title,
+                        property_type,
+                        category,
+                        bedrooms,
+                        bathrooms,
+                        parking_spaces,
+                        price,
+                        currency,
+                        commune,
+                        address,
+                        neighborhood,
+                        published,
+                        created_at
+                    `)
+                    .order('created_at', { ascending: false });
+                
                 if (error) {
-                    console.warn('⚠️ Advertencia en conexión:', error.message);
-                    showNotification('Conexión con advertencias', 'warning');
-                } else {
-                    console.log('🌐 Conexión a base de datos confirmada');
-                    showNotification('Base de datos operativa', 'success');
+                    throw error;
                 }
+                
+                console.log(`✅ ${properties.length} propiedades cargadas`);
+                allProperties = properties;
+                
+                // Renderizar propiedades
+                renderProperties(properties);
+                updateStats(properties);
+                showNotification(`${properties.length} propiedades cargadas exitosamente`, 'success');
+                
             } catch (error) {
-                console.error('❌ Error al probar conexión:', error);
-                showNotification('Error al probar conexión BD', 'error');
+                console.error('❌ Error al cargar propiedades:', error);
+                showNotification(`Error al cargar propiedades: ${error.message}`, 'error');
+                renderNoProperties();
+            }
+        }
+        
+        function renderProperties(properties) {
+            const grid = document.getElementById('propertiesGrid');
+            
+            if (!properties || properties.length === 0) {
+                renderNoProperties();
+                return;
+            }
+            
+            const propertiesHTML = properties.map(property => {
+                const price = formatPrice(property.price, property.currency);
+                const location = `${property.neighborhood || ''} ${property.commune || ''} ${property.address || ''}`.trim();
+                const statusText = property.published ? 'ACTIVA' : 'PENDIENTE';
+                const statusClass = property.published ? 'status-active' : 'status-pending';
+                const date = new Date(property.created_at).toLocaleDateString('es-CL');
+                
+                return `
+                    <div class="property-card" data-property-id="${property.id}">
+                        <div class="property-image">
+                            ${property.category === 'casa' ? '🏠' : '🏢'}
+                        </div>
+                        <div class="property-content">
+                            <h3 class="property-title">
+                                ${property.title || 'Sin título'}
+                                <span class="tours-badge no-tours">🌐 0 tours</span>
+                            </h3>
+                            <div class="property-location">
+                                📍 ${location || 'Ubicación no especificada'}
+                            </div>
+                            
+                            <div class="property-details">
+                                <div class="property-detail">
+                                    <span class="property-detail-value">${property.bedrooms || 0}</span>
+                                    <span class="property-detail-label">DORM.</span>
+                                </div>
+                                <div class="property-detail">
+                                    <span class="property-detail-value">${property.bathrooms || 0}</span>
+                                    <span class="property-detail-label">BAÑOS</span>
+                                </div>
+                                <div class="property-detail">
+                                    <span class="property-detail-value">${property.parking_spaces || 0}</span>
+                                    <span class="property-detail-label">EST.</span>
+                                </div>
+                            </div>
+                            
+                            <div class="property-price">${price}</div>
+                            
+                            <div class="d-flex justify-between align-center">
+                                <span class="property-status ${statusClass}">${statusText}</span>
+                                <small style="color: #7f8c8d;">${date}</small>
+                            </div>
+                            
+                            <div class="property-actions">
+                                <a href="property-detail.html?id=${property.id}" class="action-btn view" target="_blank">
+                                    👁️ Ver
+                                </a>
+                                <button class="action-btn tours" onclick="handleTours('${property.id}', '${property.title}')">
+                                    🌐 Tours
+                                </button>
+                                <button class="action-btn edit" onclick="handleEdit('${property.id}')">
+                                    ✏️ Editar
+                                </button>
+                                <button class="action-btn delete" onclick="handleDelete('${property.id}', '${property.title}')">
+                                    🗑️ Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            grid.innerHTML = propertiesHTML;
+            
+            // Actualizar contador
+            document.getElementById('propertiesCount').textContent = `${properties.length} propiedades encontradas`;
+        }
+        
+        function renderNoProperties() {
+            const grid = document.getElementById('propertiesGrid');
+            grid.innerHTML = `
+                <div class="no-properties">
+                    <div class="no-properties-icon">🏠</div>
+                    <h3>No hay propiedades</h3>
+                    <p>No se encontraron propiedades en la base de datos.</p>
+                </div>
+            `;
+            document.getElementById('propertiesCount').textContent = '0 propiedades encontradas';
+        }
+        
+        function updateStats(properties) {
+            const total = properties.length;
+            const active = properties.filter(p => p.published).length;
+            const sale = properties.filter(p => p.property_type === 'venta').length;
+            const rent = properties.filter(p => p.property_type === 'arriendo').length;
+            const tours = 0; // TODO: Implementar conteo de tours
+            
+            document.getElementById('totalProperties').textContent = total;
+            document.getElementById('activeProperties').textContent = active;
+            document.getElementById('saleProperties').textContent = sale;
+            document.getElementById('rentProperties').textContent = rent;
+            document.getElementById('tourProperties').textContent = tours;
+        }
+        
+        function formatPrice(price, currency = 'CLP') {
+            if (!price) return 'Precio a consultar';
+            
+            const numPrice = parseFloat(price);
+            if (isNaN(numPrice)) return 'Precio a consultar';
+            
+            switch(currency) {
+                case 'CLP':
+                    return `$${numPrice.toLocaleString('es-CL', { maximumFractionDigits: 0 })}`;
+                case 'UF':
+                    return `${numPrice.toLocaleString('es-CL', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} UF`;
+                case 'USD':
+                    return `US$ ${numPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+                default:
+                    return `${currency} ${numPrice.toLocaleString('es-CL')}`;
             }
         }
 
@@ -850,6 +817,7 @@
         function handleDelete(id, title) {
             console.log(`🗑️ Iniciando eliminación de propiedad ID: ${id}, Título: ${title}`);
             pendingDeleteId = id;
+            pendingDeleteTitle = title;
             document.getElementById('confirmMessage').textContent = 
                 `¿Estás seguro de que deseas eliminar "${title}"? Esta acción no se puede deshacer.`;
             document.getElementById('confirmModal').classList.add('active');
@@ -869,6 +837,7 @@
                 
                 console.log('💾 Eliminando de Supabase...');
                 
+                // Usar el UUID real de la propiedad
                 const { error } = await supabase
                     .from('properties')
                     .delete()
@@ -884,21 +853,23 @@
                 showNotification('Propiedad eliminada exitosamente de la base de datos', 'success');
                 
                 // Eliminar visualmente la propiedad
-                const propertyCards = document.querySelectorAll('.property-card');
-                const propertyToRemove = Array.from(propertyCards)[pendingDeleteId - 1];
-                
-                if (propertyToRemove) {
-                    propertyToRemove.style.transform = 'scale(0)';
-                    propertyToRemove.style.opacity = '0';
+                const propertyCard = document.querySelector(`[data-property-id="${pendingDeleteId}"]`);
+                if (propertyCard) {
+                    propertyCard.style.transform = 'scale(0)';
+                    propertyCard.style.opacity = '0';
                     
                     setTimeout(() => {
-                        if (propertyToRemove.parentNode) {
-                            propertyToRemove.parentNode.removeChild(propertyToRemove);
+                        if (propertyCard.parentNode) {
+                            propertyCard.parentNode.removeChild(propertyCard);
                         }
                         
-                        // Actualizar contador
+                        // Actualizar contador y estadísticas
                         const remaining = document.querySelectorAll('.property-card').length;
                         document.getElementById('propertiesCount').textContent = `${remaining} propiedades encontradas`;
+                        
+                        // Recargar estadísticas
+                        allProperties = allProperties.filter(p => p.id !== pendingDeleteId);
+                        updateStats(allProperties);
                     }, 300);
                 }
                 
@@ -909,11 +880,13 @@
             
             closeModal();
             pendingDeleteId = null;
+            pendingDeleteTitle = '';
         }
 
         function closeModal() {
             document.getElementById('confirmModal').classList.remove('active');
             pendingDeleteId = null;
+            pendingDeleteTitle = '';
         }
 
         function clearFilters() {
@@ -923,6 +896,9 @@
             document.getElementById('filterCommune').value = '';
             document.getElementById('searchInput').value = '';
             showNotification('Filtros limpiados', 'info');
+            
+            // Recargar todas las propiedades
+            renderProperties(allProperties);
         }
 
         function logout() {
