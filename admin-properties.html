@@ -746,32 +746,70 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.3/umd.min.js"></script>
+    <!-- Scripts - ORDEN CORRECTO -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <script>
         // Variables globales
         let pendingDeleteId = null;
         let supabase;
         
-        // Esperar a que se cargue la configuración de Supabase
+        // Esperar a que Supabase esté listo usando el evento custom
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Panel de administración cargando...');
             
-            // Usar configuración de supabase.js
+            // Escuchar evento de Supabase listo
+            window.addEventListener('supabaseReady', function() {
+                console.log('🎉 Evento supabaseReady recibido');
+                initializeAdminPanel();
+            });
+            
+            // También verificar si ya está listo
             setTimeout(() => {
-                if (typeof window.supabase !== 'undefined') {
-                    supabase = window.supabase;
-                    console.log('✅ Supabase configurado correctamente desde supabase.js');
-                    showNotification('Conectado a la base de datos', 'success');
-                } else {
-                    console.error('❌ No se pudo cargar la configuración de Supabase');
-                    showNotification('Error de conexión a la base de datos', 'error');
+                if (window.supabase || window.supabaseClient) {
+                    console.log('🔄 Supabase ya estaba listo');
+                    initializeAdminPanel();
                 }
-            }, 500);
+            }, 1000);
             
             showNotification('Panel de administración cargado correctamente', 'success');
         });
+        
+        function initializeAdminPanel() {
+            // Usar la configuración de tu supabase.js
+            supabase = window.supabase || window.supabaseClient;
+            
+            if (supabase) {
+                console.log('✅ Supabase conectado correctamente al panel admin');
+                showNotification('Conectado a la base de datos Casa Nuvera', 'success');
+                
+                // Probar conexión
+                testDatabaseConnection();
+            } else {
+                console.error('❌ No se pudo conectar Supabase al panel admin');
+                showNotification('Error de conexión a la base de datos', 'error');
+            }
+        }
+        
+        async function testDatabaseConnection() {
+            try {
+                const { data, error } = await supabase
+                    .from('properties')
+                    .select('count')
+                    .limit(1);
+                    
+                if (error) {
+                    console.warn('⚠️ Advertencia en conexión:', error.message);
+                    showNotification('Conexión con advertencias', 'warning');
+                } else {
+                    console.log('🌐 Conexión a base de datos confirmada');
+                    showNotification('Base de datos operativa', 'success');
+                }
+            } catch (error) {
+                console.error('❌ Error al probar conexión:', error);
+                showNotification('Error al probar conexión BD', 'error');
+            }
+        }
 
         // Funciones de utilidad
         function showNotification(message, type = 'info') {
@@ -842,7 +880,7 @@
                     return;
                 }
                 
-                console.log('✅ Propiedad eliminada de Supabase');
+                console.log('✅ Propiedad eliminada de Supabase exitosamente');
                 showNotification('Propiedad eliminada exitosamente de la base de datos', 'success');
                 
                 // Eliminar visualmente la propiedad
