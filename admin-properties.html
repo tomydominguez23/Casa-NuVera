@@ -748,35 +748,27 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.3/umd.min.js"></script>
+    <script src="supabase.js"></script>
     <script>
         // Variables globales
         let pendingDeleteId = null;
-        
-        // Inicializar Supabase usando configuración existente
         let supabase;
         
-        // Detectar configuración existente de Supabase
+        // Esperar a que se cargue la configuración de Supabase
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Panel de administración cargando...');
             
-            // Intentar usar configuración existente de Supabase
-            if (typeof window.supabase !== 'undefined') {
-                supabase = window.supabase;
-                console.log('✅ Supabase ya configurado globalmente');
-            } else {
-                // Buscar configuración en otros archivos
-                const scripts = document.querySelectorAll('script[src*="supabase"]');
-                if (scripts.length > 0) {
-                    console.log('⏳ Esperando configuración de Supabase...');
-                    // Esperar un momento para que se cargue
-                    setTimeout(() => {
-                        if (typeof window.supabase !== 'undefined') {
-                            supabase = window.supabase;
-                            console.log('✅ Supabase configurado');
-                        }
-                    }, 1000);
+            // Usar configuración de supabase.js
+            setTimeout(() => {
+                if (typeof window.supabase !== 'undefined') {
+                    supabase = window.supabase;
+                    console.log('✅ Supabase configurado correctamente desde supabase.js');
+                    showNotification('Conectado a la base de datos', 'success');
+                } else {
+                    console.error('❌ No se pudo cargar la configuración de Supabase');
+                    showNotification('Error de conexión a la base de datos', 'error');
                 }
-            }
+            }, 500);
             
             showNotification('Panel de administración cargado correctamente', 'success');
         });
@@ -832,27 +824,26 @@
             showNotification('Eliminando propiedad...', 'info');
             
             try {
-                // Intentar eliminar de Supabase si está disponible
-                if (supabase) {
-                    console.log('💾 Eliminando de Supabase...');
-                    
-                    const { error } = await supabase
-                        .from('properties')
-                        .delete()
-                        .eq('id', pendingDeleteId);
-                    
-                    if (error) {
-                        console.error('❌ Error al eliminar de Supabase:', error);
-                        showNotification(`Error al eliminar: ${error.message}`, 'error');
-                        return;
-                    }
-                    
-                    console.log('✅ Propiedad eliminada de Supabase');
-                    showNotification('Propiedad eliminada exitosamente de la base de datos', 'success');
-                } else {
-                    console.log('⚠️ Supabase no disponible, eliminando solo visualmente');
-                    showNotification('Propiedad eliminada (solo visual - verificar conexión BD)', 'warning');
+                // Verificar que Supabase esté disponible
+                if (!supabase) {
+                    throw new Error('Supabase no está configurado. Verifica la conexión.');
                 }
+                
+                console.log('💾 Eliminando de Supabase...');
+                
+                const { error } = await supabase
+                    .from('properties')
+                    .delete()
+                    .eq('id', pendingDeleteId);
+                
+                if (error) {
+                    console.error('❌ Error al eliminar de Supabase:', error);
+                    showNotification(`Error al eliminar: ${error.message}`, 'error');
+                    return;
+                }
+                
+                console.log('✅ Propiedad eliminada de Supabase');
+                showNotification('Propiedad eliminada exitosamente de la base de datos', 'success');
                 
                 // Eliminar visualmente la propiedad
                 const propertyCards = document.querySelectorAll('.property-card');
