@@ -94,7 +94,7 @@
 
         /* Loading/Error */
         .loading-container, .error-container {
-            display: flex !important;
+            display: none !important;
             flex-direction: column !important;
             align-items: center !important;
             justify-content: center !important;
@@ -102,6 +102,14 @@
             text-align: center !important;
             min-height: 50vh !important;
             background: white !important;
+        }
+
+        .loading-container.show {
+            display: flex !important;
+        }
+
+        .error-container.show {
+            display: flex !important;
         }
 
         .loading-spinner {
@@ -126,6 +134,11 @@
             background: white !important;
             min-height: calc(100vh - 70px) !important;
             box-shadow: 0 0 20px rgba(0,0,0,0.1) !important;
+            display: none !important;
+        }
+
+        .property-container.show {
+            display: block !important;
         }
 
         /* LAYOUT DOS COLUMNAS NUEVO */
@@ -638,14 +651,14 @@
         </div>
 
         <!-- Error Container -->
-        <div id="errorContainer" class="error-container" style="display: none;">
+        <div id="errorContainer" class="error-container">
             <h3>❌ Error al cargar la propiedad</h3>
             <p id="errorMessage">No se encontró la propiedad solicitada</p>
             <a href="javascript:history.back()" class="contact-btn whatsapp">← Volver al Listado</a>
         </div>
 
         <!-- Property Content -->
-        <div id="propertyContent" class="property-container" style="display: none;">
+        <div id="propertyContent" class="property-container">
             <div class="property-layout">
                 <!-- Columna izquierda - contenido principal -->
                 <div class="property-main">
@@ -819,12 +832,26 @@
 
             console.log('🔍 ID de propiedad encontrado:', propertyId);
             
-            // Usar imágenes por defecto inmediatamente
+            // Mostrar loading inmediatamente
+            showLoading(true);
+            
+            // Usar imágenes por defecto inmediatamente y mostrar contenido
             propertyImages = [...defaultDepartmentImages];
             renderGalleryImmediately();
             
+            // Mostrar el contenido inmediatamente con datos por defecto
+            showPropertyContent();
+            
+            // Luego cargar datos reales de la BD en segundo plano
             loadPropertyDetails(propertyId);
         });
+
+        function showPropertyContent() {
+            // Ocultar loading y error, mostrar contenido
+            document.getElementById('loadingContainer').classList.remove('show');
+            document.getElementById('errorContainer').classList.remove('show');
+            document.getElementById('propertyContent').classList.add('show');
+        }
 
         function renderGalleryImmediately() {
             console.log('🖼️ Renderizando galería inmediatamente con imágenes por defecto');
@@ -851,8 +878,6 @@
 
         async function loadPropertyDetails(propertyId) {
             try {
-                showLoading(true);
-                
                 console.log('📥 Cargando detalles de propiedad ID:', propertyId);
                 
                 // Esperar a que Supabase esté listo
@@ -877,8 +902,12 @@
                     .eq('id', propertyId)
                     .single();
 
+                console.log('📋 Respuesta de BD:', { property, propertyError });
+
                 if (propertyError || !property) {
-                    throw new Error('Propiedad no encontrada');
+                    console.warn('⚠️ No se encontró la propiedad en BD, usando valores por defecto');
+                    // No mostrar error, solo usar valores por defecto
+                    return;
                 }
 
                 currentProperty = property;
@@ -903,13 +932,13 @@
                     }
                 }
 
-                showLoading(false);
+                // Actualizar info con datos reales
                 renderPropertyDetails();
                 
             } catch (error) {
                 console.error('💥 Error al cargar propiedad:', error);
-                showError('Error al cargar la propiedad: ' + error.message);
-                showLoading(false);
+                // No mostrar error, solo usar valores por defecto
+                console.log('🔄 Usando valores por defecto debido al error');
             }
         }
 
@@ -923,9 +952,6 @@
 
             // Update property info
             renderPropertyInfo();
-
-            // Show content
-            document.getElementById('propertyContent').style.display = 'block';
         }
 
         function renderGallery() {
@@ -1096,11 +1122,11 @@ Saludos!`;
             const errorContainer = document.getElementById('errorContainer');
             
             if (show) {
-                loadingContainer.style.display = 'flex';
-                propertyContent.style.display = 'none';
-                errorContainer.style.display = 'none';
+                loadingContainer.classList.add('show');
+                propertyContent.classList.remove('show');
+                errorContainer.classList.remove('show');
             } else {
-                loadingContainer.style.display = 'none';
+                loadingContainer.classList.remove('show');
             }
         }
 
@@ -1111,9 +1137,9 @@ Saludos!`;
             const propertyContent = document.getElementById('propertyContent');
             
             errorMessage.textContent = message;
-            errorContainer.style.display = 'flex';
-            loadingContainer.style.display = 'none';
-            propertyContent.style.display = 'none';
+            errorContainer.classList.add('show');
+            loadingContainer.classList.remove('show');
+            propertyContent.classList.remove('show');
         }
     </script>
 </body>
