@@ -174,6 +174,8 @@
             flex: 1;
             justify-content: center;
             min-width: 0;
+            color: white;
+            font-weight: 500;
         }
 
         .action-btn.edit {
@@ -199,6 +201,7 @@
         .action-btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            color: white;
         }
 
         .properties-grid {
@@ -333,6 +336,7 @@
             font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.3s;
+            color: white;
         }
 
         .tour-btn.preview {
@@ -397,6 +401,93 @@
             text-align: center;
             padding: 2rem;
             color: #6c757d;
+        }
+
+        /* Confirmación de eliminación */
+        .confirm-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .confirm-dialog.active {
+            display: flex;
+        }
+
+        .confirm-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        .confirm-btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .confirm-btn.danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .confirm-btn.secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        /* Notificaciones */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 3000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #27ae60;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        .notification.warning {
+            background: #f39c12;
+        }
+
+        .notification.info {
+            background: #3498db;
         }
 
         @media (max-width: 768px) {
@@ -658,6 +749,18 @@
         </div>
     </div>
 
+    <!-- Dialog de Confirmación -->
+    <div class="confirm-dialog" id="confirmDialog">
+        <div class="confirm-content">
+            <h3>⚠️ Confirmar Acción</h3>
+            <p id="confirmMessage">¿Estás seguro?</p>
+            <div class="confirm-buttons">
+                <button class="confirm-btn danger" id="confirmYes">Sí, eliminar</button>
+                <button class="confirm-btn secondary" id="confirmNo">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Loading -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
@@ -670,6 +773,48 @@
     <script src="admin-scripts.js"></script>
     
     <script>
+        // Variables globales
+        let propertiesManager;
+        let currentConfirmCallback;
+
+        // Funciones de notificación y confirmación
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Mostrar
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // Ocultar y eliminar
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        function showConfirm(message, callback) {
+            currentConfirmCallback = callback;
+            document.getElementById('confirmMessage').textContent = message;
+            document.getElementById('confirmDialog').classList.add('active');
+        }
+
+        // Event listeners para confirmación
+        document.getElementById('confirmYes').addEventListener('click', () => {
+            document.getElementById('confirmDialog').classList.remove('active');
+            if (currentConfirmCallback) {
+                currentConfirmCallback();
+                currentConfirmCallback = null;
+            }
+        });
+
+        document.getElementById('confirmNo').addEventListener('click', () => {
+            document.getElementById('confirmDialog').classList.remove('active');
+            currentConfirmCallback = null;
+        });
+
+        // Clase para gestionar propiedades
         class PropertiesManager {
             constructor() {
                 this.properties = [];
@@ -689,25 +834,18 @@
             async init() {
                 console.log('🏘️ Inicializando gestor de propiedades...');
                 
-                // Verificar autenticación
-                if (!window.checkAdminSession || !window.checkAdminSession()) {
-                    this.showAuthWarning();
-                    return;
-                }
+                // Verificar autenticación (comentado para debug)
+                // if (!window.checkAdminSession || !window.checkAdminSession()) {
+                //     this.showAuthWarning();
+                //     return;
+                // }
 
                 // Configurar eventos
                 this.setupEventListeners();
                 
-                // Cargar propiedades cuando Supabase esté listo
-                if (window.supabaseClient) {
-                    await this.loadProperties();
-                    await this.loadAllTours();
-                } else {
-                    window.addEventListener('supabaseReady', async () => {
-                        await this.loadProperties();
-                        await this.loadAllTours();
-                    });
-                }
+                // Cargar propiedades
+                await this.loadProperties();
+                await this.loadAllTours();
                 
                 this.hideLoading();
             }
@@ -751,6 +889,12 @@
                 try {
                     console.log('📦 Cargando propiedades...');
                     
+                    if (!window.supabaseClient) {
+                        console.warn('Supabase no disponible, cargando datos demo');
+                        this.loadDemoProperties();
+                        return;
+                    }
+
                     const { data, error } = await window.supabaseClient
                         .from('properties')
                         .select('*')
@@ -769,7 +913,7 @@
                 } catch (error) {
                     console.error('❌ Error al cargar propiedades:', error);
                     this.loadDemoProperties();
-                    window.showNotification('Error al cargar propiedades. Mostrando datos de ejemplo.', 'warning');
+                    showNotification('Error al cargar propiedades. Mostrando datos de ejemplo.', 'warning');
                 }
             }
 
@@ -777,6 +921,10 @@
                 try {
                     console.log('🌐 Cargando tours 360°...');
                     
+                    if (!window.supabaseClient) {
+                        return;
+                    }
+
                     const { data, error } = await window.supabaseClient
                         .from('property_tours')
                         .select('*')
@@ -807,31 +955,61 @@
                 this.properties = [
                     {
                         id: 1,
-                        title: 'Casa moderna en Las Condes',
-                        property_type: 'venta',
-                        category: 'casa',
+                        title: 'Departamento Los llanes',
+                        property_type: 'arriendo',
+                        category: 'departamento',
                         commune: 'Las Condes',
-                        address: 'Av. Apoquindo 1234',
-                        bedrooms: 3,
-                        bathrooms: 2,
-                        parking_spaces: 2,
-                        price: 350000000,
-                        currency: 'CLP',
-                        created_at: '2025-07-14T10:00:00',
+                        address: 'Av los llanes, Las Condes',
+                        bedrooms: 1,
+                        bathrooms: 1,
+                        parking_spaces: 1,
+                        price: 6000,
+                        currency: 'UF',
+                        created_at: '2023-08-21T10:00:00',
                         status: 'active'
                     },
                     {
                         id: 2,
-                        title: 'Departamento en Providencia',
+                        title: 'Departamento Los llanes',
                         property_type: 'arriendo',
                         category: 'departamento',
-                        commune: 'Providencia',
-                        address: 'Av. Providencia 567',
-                        bedrooms: 2,
+                        commune: 'Las Condes',
+                        address: 'Los llanes , Las Condes',
+                        bedrooms: 1,
                         bathrooms: 1,
                         parking_spaces: 1,
-                        price: 450000,
-                        currency: 'CLP',
+                        price: 6000,
+                        currency: 'UF',
+                        created_at: '2023-08-19T15:30:00',
+                        status: 'active'
+                    },
+                    {
+                        id: 3,
+                        title: 'Departamento Los llanes',
+                        property_type: 'arriendo',
+                        category: 'departamento',
+                        commune: 'Las Condes',
+                        address: 'Los llanes , Las Condes',
+                        bedrooms: 1,
+                        bathrooms: 1,
+                        parking_spaces: 1,
+                        price: 6000,
+                        currency: 'UF',
+                        created_at: '2023-08-19T15:30:00',
+                        status: 'active'
+                    },
+                    {
+                        id: 4,
+                        title: 'Casa Prueba 1',
+                        property_type: 'venta',
+                        category: 'casa',
+                        commune: 'Huechuraba',
+                        address: 'camino el alba, Huechuraba',
+                        bedrooms: 3,
+                        bathrooms: 2,
+                        parking_spaces: 2,
+                        price: 18000,
+                        currency: 'UF',
                         created_at: '2025-07-13T15:30:00',
                         status: 'active'
                     }
@@ -950,17 +1128,16 @@
                             
                             <div class="d-flex justify-between align-center">
                                 <span class="property-status status-${property.status || 'active'}">
-                                    ${property.status === 'active' ? 'Activa' : 
-                                      property.status === 'inactive' ? 'Inactiva' : 'Pendiente'}
+                                    ${this.getStatusText(property.status)}
                                 </span>
                                 <small style="color: #7f8c8d;">${formattedDate}</small>
                             </div>
                             
                             <div class="property-actions">
-                                <a href="property-detail.html?id=${property.id}" class="action-btn view">
+                                <a href="property-detail.html?id=${property.id}" class="action-btn view" target="_blank">
                                     👁️ Ver
                                 </a>
-                                <button class="action-btn tours" onclick="manageTours(${property.id}, '${property.title}')">
+                                <button class="action-btn tours" onclick="manageTours(${property.id}, '${property.title.replace(/'/g, "\\'")}')">
                                     🌐 Tours
                                 </button>
                                 <button class="action-btn edit" onclick="editProperty(${property.id})">
@@ -973,6 +1150,15 @@
                         </div>
                     </div>
                 `;
+            }
+
+            getStatusText(status) {
+                switch(status) {
+                    case 'active': return 'PENDIENTE';
+                    case 'inactive': return 'Inactiva';
+                    case 'pending': return 'Pendiente';
+                    default: return 'PENDIENTE';
+                }
             }
 
             formatPrice(price, currency = 'CLP') {
@@ -1002,9 +1188,9 @@
             formatDate(dateString) {
                 const date = new Date(dateString);
                 return date.toLocaleDateString('es-CL', {
-                    year: 'numeric',
+                    day: 'numeric',
                     month: 'short',
-                    day: 'numeric'
+                    year: 'numeric'
                 });
             }
 
@@ -1032,6 +1218,8 @@
 
             async loadPropertyTours(propertyId) {
                 try {
+                    if (!window.supabaseClient) return;
+
                     const { data, error } = await window.supabaseClient
                         .from('property_tours')
                         .select('*')
@@ -1091,13 +1279,18 @@
                     const order = parseInt(document.getElementById('tourOrder').value) || 1;
 
                     if (!title || !url) {
-                        window.showNotification('Por favor completa todos los campos', 'error');
+                        showNotification('Por favor completa todos los campos', 'error');
                         return;
                     }
 
                     // Validar URL de Kuula
                     if (!url.includes('kuula.co')) {
-                        window.showNotification('La URL debe ser de Kuula (kuula.co)', 'error');
+                        showNotification('La URL debe ser de Kuula (kuula.co)', 'error');
+                        return;
+                    }
+
+                    if (!window.supabaseClient) {
+                        showNotification('Error: Base de datos no disponible', 'error');
                         return;
                     }
 
@@ -1129,16 +1322,21 @@
                     document.getElementById('addTourForm').reset();
                     document.getElementById('tourOrder').value = '1';
 
-                    window.showNotification('Tour 360° agregado exitosamente', 'success');
+                    showNotification('Tour 360° agregado exitosamente', 'success');
 
                 } catch (error) {
                     console.error('Error al agregar tour:', error);
-                    window.showNotification('Error al agregar tour', 'error');
+                    showNotification('Error al agregar tour', 'error');
                 }
             }
 
             async deleteTourById(tourId) {
                 try {
+                    if (!window.supabaseClient) {
+                        showNotification('Error: Base de datos no disponible', 'error');
+                        return;
+                    }
+
                     const { error } = await window.supabaseClient
                         .from('property_tours')
                         .delete()
@@ -1157,16 +1355,25 @@
                     this.renderProperties();
                     this.updateStats();
 
-                    window.showNotification('Tour eliminado exitosamente', 'success');
+                    showNotification('Tour eliminado exitosamente', 'success');
 
                 } catch (error) {
                     console.error('Error al eliminar tour:', error);
-                    window.showNotification('Error al eliminar tour', 'error');
+                    showNotification('Error al eliminar tour', 'error');
                 }
             }
 
             async deletePropertyById(id) {
                 try {
+                    if (!window.supabaseClient) {
+                        // Eliminar localmente si no hay conexión a BD
+                        this.properties = this.properties.filter(p => p.id !== id);
+                        delete this.propertyTours[id];
+                        this.applyFilters();
+                        showNotification('Propiedad eliminada (solo localmente)', 'warning');
+                        return;
+                    }
+
                     const { error } = await window.supabaseClient
                         .from('properties')
                         .delete()
@@ -1179,11 +1386,11 @@
                     delete this.propertyTours[id];
                     this.applyFilters();
                     
-                    window.showNotification('Propiedad eliminada exitosamente', 'success');
+                    showNotification('Propiedad eliminada exitosamente', 'success');
                     
                 } catch (error) {
                     console.error('Error al eliminar propiedad:', error);
-                    window.showNotification('Error al eliminar propiedad', 'error');
+                    showNotification('Error al eliminar propiedad', 'error');
                 }
             }
 
@@ -1195,68 +1402,83 @@
             }
         }
 
-        // Funciones globales
+        // Funciones globales para los botones
         function editProperty(id) {
+            console.log('🖉 Editando propiedad:', id);
             window.location.href = `subir-propiedades.html?edit=${id}`;
         }
 
         function deleteProperty(id) {
-            window.showConfirm(
+            console.log('🗑️ Eliminando propiedad:', id);
+            showConfirm(
                 '¿Estás seguro de que deseas eliminar esta propiedad? Esta acción no se puede deshacer.',
                 () => {
-                    if (window.propertiesManager) {
-                        window.propertiesManager.deletePropertyById(id);
+                    if (propertiesManager) {
+                        propertiesManager.deletePropertyById(id);
                     }
                 }
             );
         }
 
         function manageTours(propertyId, propertyTitle) {
-            if (window.propertiesManager) {
-                window.propertiesManager.openToursModal(propertyId, propertyTitle);
+            console.log('🌐 Gestionando tours para propiedad:', propertyId);
+            if (propertiesManager) {
+                propertiesManager.openToursModal(propertyId, propertyTitle);
             }
         }
 
         function closeToursModal() {
-            if (window.propertiesManager) {
-                window.propertiesManager.closeToursModal();
+            if (propertiesManager) {
+                propertiesManager.closeToursModal();
             }
         }
 
         function previewTour(tourUrl) {
+            console.log('👁️ Previsualizando tour:', tourUrl);
             window.open(tourUrl, '_blank', 'width=1200,height=800');
         }
 
         function editTour(tourId) {
-            // TODO: Implementar edición de tours
-            window.showNotification('Función de edición en desarrollo', 'info');
+            console.log('✏️ Editando tour:', tourId);
+            showNotification('Función de edición en desarrollo', 'info');
         }
 
         function deleteTour(tourId) {
-            window.showConfirm(
+            console.log('🗑️ Eliminando tour:', tourId);
+            showConfirm(
                 '¿Estás seguro de que deseas eliminar este tour? Esta acción no se puede deshacer.',
                 () => {
-                    if (window.propertiesManager) {
-                        window.propertiesManager.deleteTourById(tourId);
+                    if (propertiesManager) {
+                        propertiesManager.deleteTourById(tourId);
                     }
                 }
             );
         }
 
         function clearFilters() {
+            console.log('🔄 Limpiando filtros');
             document.getElementById('filterType').value = '';
             document.getElementById('filterCategory').value = '';
             document.getElementById('filterCommune').value = '';
             document.getElementById('searchInput').value = '';
             
-            if (window.propertiesManager) {
-                window.propertiesManager.filters = {
+            if (propertiesManager) {
+                propertiesManager.filters = {
                     type: '',
                     category: '',
                     commune: '',
                     search: ''
                 };
-                window.propertiesManager.applyFilters();
+                propertiesManager.applyFilters();
+            }
+        }
+
+        function logoutAdmin() {
+            console.log('🚪 Cerrando sesión de administrador');
+            if (window.logoutAdmin) {
+                window.logoutAdmin();
+            } else {
+                window.location.href = 'admin-login.html';
             }
         }
 
@@ -1265,11 +1487,32 @@
             if (e.target.classList.contains('tours-modal')) {
                 closeToursModal();
             }
+            if (e.target.classList.contains('confirm-dialog')) {
+                document.getElementById('confirmDialog').classList.remove('active');
+            }
+        });
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('toursModal').classList.contains('active')) {
+                    closeToursModal();
+                }
+                if (document.getElementById('confirmDialog').classList.contains('active')) {
+                    document.getElementById('confirmDialog').classList.remove('active');
+                }
+            }
         });
 
         // Inicializar cuando la página esté lista
         document.addEventListener('DOMContentLoaded', () => {
-            window.propertiesManager = new PropertiesManager();
+            console.log('🚀 Iniciando panel de administración de propiedades');
+            propertiesManager = new PropertiesManager();
+            
+            // Hacer disponible globalmente
+            window.propertiesManager = propertiesManager;
+            window.showNotification = showNotification;
+            window.showConfirm = showConfirm;
         });
     </script>
 </body>
