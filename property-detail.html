@@ -935,6 +935,664 @@
 
     <!-- Scripts -->
     <script src="supabase.js"></script>
-    <script src="js/property-detail-fixed.js"></script>
+
+    <script>
+        // Variables globales
+        let currentProperty = null;
+        let currentImageIndex = 0;
+        let propertyImages = [];
+        let propertyTours = [];
+        let currentTourUrl = null;
+        let similarProperties = [];
+
+        // Obtener ID de la propiedad desde URL (soporte para ID y slug)
+        function getPropertyIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const slug = urlParams.get('slug');
+            
+            // Si tenemos slug, extraer ID del final del slug (formato: nombre-propiedad-123)
+            if (slug) {
+                const matches = slug.match(/-(\\d+)$/);
+                return matches ? matches[1] : null;
+            }
+            
+            return id;
+        }
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏠 Iniciando página de detalle de propiedad...');
+            
+            const propertyId = getPropertyIdFromURL();
+            if (!propertyId) {
+                showError('ID de propiedad no especificado');
+                return;
+            }
+
+            if (window.supabase) {
+                loadPropertyDetails(propertyId);
+            } else {
+                window.addEventListener('supabaseReady', () => loadPropertyDetails(propertyId));
+                
+                setTimeout(() => {
+                    if (!window.supabase) {
+                        showError('No se pudo conectar con la base de datos');
+                    }
+                }, 5000);
+            }
+        });
+
+        async function loadPropertyDetails(propertyId) {
+            try {
+                showLoading(true);
+                
+                console.log('📥 Cargando detalles de propiedad ID:', propertyId);
+                
+                // Cargar propiedad
+                const { data: property, error: propertyError } = await window.supabase
+                    .from('properties')
+                    .select('*')
+                    .eq('id', propertyId)
+                    .eq('published', true)
+                    .single();
+
+                if (propertyError || !property) {
+                    throw new Error('Propiedad no encontrada');
+                }
+
+                currentProperty = property;
+
+                // Cargar imágenes
+                const images = parseImages(property.images);
+                if (images && images.length > 0) {
+                    propertyImages = images.map(img => ({ image_url: img, is_main: false }));
+                    propertyImages[0].is_main = true;
+                } else {
+                    propertyImages = [{ 
+                        image_url: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop', 
+                        is_main: true 
+                    }];
+                }
+
+                // Cargar tours 360° desde la base de datos
+                await loadPropertyTours(propertyId);
+
+                // Cargar propiedades similares
+                await loadSimilarProperties(property.region + ', ' + property.commune);
+
+                showLoading(false);
+                renderPropertyDetails();
+                
+            } catch (error) {
+                console.error('💥 Error al cargar propiedad:', error);
+                showError(error.message);
+                showLoading(false);
+            }
+        }
+
+        function parseImages(imagesField) {
+            if (!imagesField) return [];
+            
+            try {
+                if (typeof imagesField === 'string') {
+                    return JSON.parse(imagesField);
+                }
+                if (Array.isArray(imagesField)) {
+                    return imagesField;
+                }
+            } catch (error) {
+                console.error('Error parsing images:', error);
+            }
+            
+            return [];
+        }
+
+        async function loadPropertyTours(propertyId) {
+            try {
+                console.log('🌐 Cargando tours 360° para propiedad:', propertyId);
+                
+                const { data: tours, error } = await window.supabase
+                    .from('property_tours')
+                    .select('*')
+                    .eq('property_id', propertyId)
+                    .eq('is_active', true)
+                    .order('order_index', { ascending: true });
+
+                if (error) {
+                    console.warn('⚠️ Error cargando tours:', error);
+                    // Fallback al tour por defecto
+                    propertyTours = [{
+                        id: 'default',
+                        tour_url: 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1',
+                        tour_title: 'Tour Virtual 360°',
+                        is_active: true,
+                        order_index: 1
+                    }];
+                } else if (tours && tours.length > 0) {
+                    propertyTours = tours;
+                    console.log('✅ Tours cargados:', tours.length);
+                } else {
+                    // Si no hay tours en BD, usar el tour por defecto
+                    propertyTours = [{
+                        id: 'default',
+                        tour_url: 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1',
+                        tour_title: 'Tour Virtual 360°',
+                        is_active: true,
+                        order_index: 1
+                    }];
+                    console.log('ℹ️ Usando tour por defecto (no hay tours en BD)');
+                }
+
+            } catch (error) {
+                console.error('💥 Error cargando tours:', error);
+                // Fallback al tour por defecto
+                propertyTours = [{
+                    id: 'default',
+                    tour_url: 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1',
+                    tour_title: 'Tour Virtual 360°',
+                    is_active: true,
+                    order_index: 1
+                }];
+            }
+        }
+
+        async function loadSimilarProperties(currentLocation) {
+            try {
+                console.log('🔍 Cargando propiedades similares en:', currentLocation);
+                
+                // Extraer comuna de la ubicación actual
+                const currentCommune = extractCommune(currentLocation);
+                
+                if (!currentCommune) {
+                    console.log('ℹ️ No se pudo extraer comuna, buscando propiedades cercanas');
+                    return;
+                }
+
+                // Buscar propiedades en la misma comuna
+                const { data: properties, error } = await window.supabase
+                    .from('properties')
+                    .select('*')
+                    .eq('published', true)
+                    .neq('id', currentProperty.id)
+                    .ilike('commune', `%${currentCommune}%`)
+                    .limit(3);
+
+                if (error) {
+                    console.warn('⚠️ Error cargando propiedades similares:', error);
+                    return;
+                }
+
+                if (properties && properties.length > 0) {
+                    similarProperties = properties;
+                    console.log(`✅ ${properties.length} propiedades similares encontradas en ${currentCommune}`);
+                    renderSimilarProperties();
+                } else {
+                    console.log('ℹ️ No se encontraron propiedades similares en la misma comuna');
+                    // Si no hay propiedades en la misma comuna, buscar en comunas cercanas
+                    await loadNearbyProperties();
+                }
+
+            } catch (error) {
+                console.error('💥 Error cargando propiedades similares:', error);
+            }
+        }
+
+        async function loadNearbyProperties() {
+            try {
+                console.log('🔍 Buscando propiedades en comunas cercanas...');
+                
+                const { data: properties, error } = await window.supabase
+                    .from('properties')
+                    .select('*')
+                    .eq('published', true)
+                    .neq('id', currentProperty.id)
+                    .limit(3);
+
+                if (error) {
+                    console.warn('⚠️ Error cargando propiedades cercanas:', error);
+                    return;
+                }
+
+                if (properties && properties.length > 0) {
+                    similarProperties = properties;
+                    console.log(`✅ ${properties.length} propiedades cercanas encontradas`);
+                    
+                    // Actualizar título para indicar que son propiedades cercanas
+                    document.getElementById('similarPropertiesTitle').textContent = 'Propiedades destacadas';
+                    document.getElementById('similarPropertiesSubtitle').textContent = 'Otras opciones que podrían interesarte';
+                    
+                    renderSimilarProperties();
+                }
+
+            } catch (error) {
+                console.error('💥 Error cargando propiedades cercanas:', error);
+            }
+        }
+
+        function extractCommune(location) {
+            if (!location) return null;
+            
+            // Lista de comunas de Santiago para hacer matching
+            const communes = [
+                'Las Condes', 'Providencia', 'Ñuñoa', 'Vitacura', 'Lo Barnechea', 
+                'La Reina', 'Macul', 'Peñalolén', 'Santiago', 'San Miguel', 
+                'La Florida', 'Maipú', 'Puente Alto', 'Quilicura', 'Huechuraba',
+                'Colina', 'Lampa', 'Pudahuel', 'Cerrillos', 'Estación Central'
+            ];
+            
+            const locationLower = location.toLowerCase();
+            
+            for (const commune of communes) {
+                if (locationLower.includes(commune.toLowerCase())) {
+                    return commune;
+                }
+            }
+            
+            return null;
+        }
+
+        function renderSimilarProperties() {
+            if (similarProperties.length === 0) return;
+            
+            const similarPropertiesSection = document.getElementById('similarPropertiesSection');
+            const similarPropertiesGrid = document.getElementById('similarPropertiesGrid');
+            
+            const propertiesHTML = similarProperties.map(property => {
+                const images = parseImages(property.images);
+                const firstImage = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop';
+                const formattedPrice = formatPrice(property.price);
+                const bedrooms = property.bedrooms || 0;
+                const bathrooms = property.bathrooms || 0;
+                const area = property.total_area || 0;
+
+                return `
+                    <div class="similar-property-card" onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
+                        <div class="similar-property-image">
+                            <img src="${firstImage}" alt="${property.title}" loading="lazy">
+                            <div class="similar-property-price-badge">
+                                ${formattedPrice}
+                            </div>
+                        </div>
+                        <div class="similar-property-content">
+                            <h4 class="similar-property-title">${property.title || 'Propiedad sin título'}</h4>
+                            <div class="similar-property-location">${property.address + ', ' + property.commune || 'Ubicación no especificada'}</div>
+                            <div class="similar-property-features">
+                                <div class="similar-property-feature">
+                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2L2 7v10c0 5.55 3.84 9 9 9s9-3.45 9-9V7l-10-5z"/>
+                                    </svg>
+                                    ${bedrooms} hab
+                                </div>
+                                <div class="similar-property-feature">
+                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M8 14c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/>
+                                    </svg>
+                                    ${bathrooms} baños
+                                </div>
+                                <div class="similar-property-feature">
+                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                                    </svg>
+                                    ${area}m²
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            similarPropertiesGrid.innerHTML = propertiesHTML;
+            similarPropertiesSection.style.display = 'block';
+        }
+
+        function goToProperty(propertyId, slug) {
+            const url = `property-detail.html?id=${propertyId}&slug=${slug}`;
+            window.location.href = url;
+        }
+
+        function createSlug(title) {
+            if (!title) return 'propiedad';
+            
+            return title
+                .toLowerCase()
+                .replace(/[áàäâ]/g, 'a')
+                .replace(/[éèëê]/g, 'e')
+                .replace(/[íìïî]/g, 'i')
+                .replace(/[óòöô]/g, 'o')
+                .replace(/[úùüû]/g, 'u')
+                .replace(/[ñ]/g, 'n')
+                .replace(/[ç]/g, 'c')
+                .replace(/[^a-z0-9]/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+        }
+
+        function formatPrice(price) {
+            if (!price) return 'Precio a consultar';
+            
+            const numPrice = parseInt(price);
+            if (isNaN(numPrice)) return 'Precio a consultar';
+            
+            // Formato chileno con puntos como separadores de miles
+            return `$${numPrice.toLocaleString('es-CL')}`;
+        }
+
+        function renderPropertyDetails() {
+            if (!currentProperty) return;
+
+            // Update page title
+            document.title = `${currentProperty.title} - Casa Nuvera`;
+
+            // Render gallery
+            renderGallery();
+
+            // Render property info
+            renderPropertyInfo();
+
+            // Render tour 360° section
+            renderTour360Section();
+
+            // Render contact info
+            renderContactInfo();
+
+            // Show content
+            document.getElementById('propertyContent').style.display = 'block';
+        }
+
+        function renderGallery() {
+            const mainImage = document.getElementById('mainImage');
+            const galleryNav = document.getElementById('galleryNav');
+
+            if (propertyImages.length > 0) {
+                mainImage.src = propertyImages[0].image_url;
+                mainImage.alt = currentProperty.title;
+
+                // Render thumbnails if multiple images
+                if (propertyImages.length > 1) {
+                    galleryNav.innerHTML = propertyImages.map((img, index) => `
+                        <div class="gallery-thumb ${index === 0 ? 'active' : ''}" onclick="changeImage(${index})">
+                            <img src="${img.image_url}" alt="Imagen ${index + 1}">
+                        </div>
+                    `).join('');
+                } else {
+                    galleryNav.style.display = 'none';
+                }
+            }
+        }
+
+        function renderPropertyInfo() {
+            const getBadgeText = (type) => {
+                switch(type) {
+                    case 'venta': return 'EN VENTA';
+                    case 'arriendo': return 'EN ARRIENDO';
+                    case 'arriendo-temporal': return 'ARRIENDO TEMPORAL';
+                    default: return 'DISPONIBLE';
+                }
+            };
+
+            // Update header
+            document.getElementById('propertyBadge').textContent = getBadgeText(currentProperty.property_type);
+            document.getElementById('propertyTitle').textContent = currentProperty.title;
+            document.getElementById('propertyLocation').textContent = `📍 ${currentProperty.address}, ${currentProperty.commune}`;
+            document.getElementById('propertyPrice').textContent = formatPrice(currentProperty.price);
+
+            // Update contact price
+            document.getElementById('contactPrice').textContent = formatPrice(currentProperty.price);
+
+            // Render features
+            const featuresGrid = document.getElementById('featuresGrid');
+            const features = [];
+
+            if (currentProperty.bedrooms !== null && currentProperty.bedrooms !== undefined) {
+                features.push({
+                    icon: '🛏️',
+                    value: currentProperty.bedrooms === 0 ? 'Studio' : currentProperty.bedrooms,
+                    label: currentProperty.bedrooms === 0 ? '' : 'Dormitorios'
+                });
+            }
+
+            if (currentProperty.bathrooms) {
+                features.push({
+                    icon: '🚿',
+                    value: currentProperty.bathrooms,
+                    label: 'Baños'
+                });
+            }
+
+            if (currentProperty.total_area) {
+                features.push({
+                    icon: '📐',
+                    value: `${currentProperty.total_area}m²`,
+                    label: 'Superficie Total'
+                });
+            }
+
+            if (currentProperty.built_area) {
+                features.push({
+                    icon: '🏠',
+                    value: `${currentProperty.built_area}m²`,
+                    label: 'Superficie Construida'
+                });
+            }
+
+            if (currentProperty.parking_spaces && currentProperty.parking_spaces > 0) {
+                features.push({
+                    icon: '🚗',
+                    value: currentProperty.parking_spaces,
+                    label: 'Estacionamientos'
+                });
+            }
+
+            featuresGrid.innerHTML = features.map(feature => `
+                <div class="feature-item">
+                    <div class="feature-icon">${feature.icon}</div>
+                    <div class="feature-value">${feature.value}</div>
+                    <div class="feature-label">${feature.label}</div>
+                </div>
+            `).join('');
+
+            // Update description
+            document.getElementById('propertyDescription').innerHTML = 
+                currentProperty.description ? 
+                `<p>${currentProperty.description}</p>` : 
+                '<p>No hay descripción disponible para esta propiedad.</p>';
+        }
+
+        function renderTour360Section() {
+            const tour360Section = document.getElementById('tour360Section');
+            const singleTourContainer = document.getElementById('singleTourContainer');
+            const multipleTourContainer = document.getElementById('multipleTourContainer');
+            
+            // Mostrar sección solo si hay tours disponibles
+            if (propertyTours && propertyTours.length > 0) {
+                tour360Section.style.display = 'block';
+                
+                if (propertyTours.length === 1) {
+                    // Un solo tour - mostrar botón principal
+                    const tour = propertyTours[0];
+                    currentTourUrl = tour.tour_url;
+                    
+                    document.getElementById('tourButtonText').textContent = tour.tour_title;
+                    document.getElementById('tourModalTitle').textContent = `${tour.tour_title} - ${currentProperty.title}`;
+                    
+                    singleTourContainer.style.display = 'block';
+                    multipleTourContainer.style.display = 'none';
+                    
+                } else {
+                    // Múltiples tours - mostrar grid
+                    document.getElementById('tourSectionTitle').textContent = '🌐 Tours Virtuales 360°';
+                    document.getElementById('tourSectionDescription').textContent = 'Explora esta propiedad con múltiples tours virtuales. Descubre cada área en detalle.';
+                    
+                    const toursHTML = propertyTours.map((tour, index) => `
+                        <button class="tour-item-btn" onclick="openSpecificTour('${tour.tour_url}', '${tour.tour_title}')">
+                            🔄 ${tour.tour_title}
+                        </button>
+                    `).join('');
+                    
+                    multipleTourContainer.innerHTML = toursHTML;
+                    
+                    singleTourContainer.style.display = 'none';
+                    multipleTourContainer.style.display = 'grid';
+                }
+            }
+        }
+
+        function renderContactInfo() {
+            const phone = currentProperty.contact_phone || '+56 9 1234 5678';
+            const email = currentProperty.contact_email || 'hola@casanuvera.cl';
+
+            // Update contact buttons
+            document.getElementById('whatsappBtn').onclick = () => contactViaWhatsApp();
+            document.getElementById('emailBtn').href = `mailto:${email}`;
+            document.getElementById('callBtn').href = `tel:${phone}`;
+
+            // Update contact info
+            document.getElementById('contactInfo').innerHTML = `
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <span>${phone}</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">✉️</span>
+                    <span>${email}</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">🏢</span>
+                    <span>Casa Nuvera</span>
+                </div>
+            `;
+        }
+
+        // Funciones Tour 360°
+        function openTour360() {
+            if (propertyTours.length === 1) {
+                openSpecificTour(propertyTours[0].tour_url, propertyTours[0].tour_title);
+            } else {
+                alert('Error: No se encontró el tour virtual');
+            }
+        }
+
+        function openSpecificTour(tourUrl, tourTitle) {
+            if (!tourUrl) {
+                alert('Tour virtual no disponible');
+                return;
+            }
+
+            const modal = document.getElementById('tourModal');
+            const iframe = document.getElementById('tourIframe');
+            const loading = document.getElementById('tourLoading');
+
+            // Actualizar título del modal
+            document.getElementById('tourModalTitle').textContent = `${tourTitle} - ${currentProperty.title}`;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Mostrar loading
+            loading.style.display = 'block';
+            iframe.style.display = 'none';
+
+            // Cargar iframe
+            iframe.src = tourUrl;
+            
+            iframe.onload = function() {
+                loading.style.display = 'none';
+                iframe.style.display = 'block';
+            };
+
+            // Cerrar con ESC
+            document.addEventListener('keydown', handleEscKey);
+        }
+
+        function closeTour360() {
+            const modal = document.getElementById('tourModal');
+            const iframe = document.getElementById('tourIframe');
+
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+
+            // Detener el iframe para ahorrar recursos
+            iframe.src = '';
+
+            // Remover listener ESC
+            document.removeEventListener('keydown', handleEscKey);
+        }
+
+        function handleEscKey(event) {
+            if (event.key === 'Escape') {
+                closeTour360();
+            }
+        }
+
+        // Cerrar modal al hacer click fuera
+        document.getElementById('tourModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTour360();
+            }
+        });
+
+        function changeImage(index) {
+            if (index >= 0 && index < propertyImages.length) {
+                currentImageIndex = index;
+                document.getElementById('mainImage').src = propertyImages[index].image_url;
+
+                // Update active thumbnail
+                document.querySelectorAll('.gallery-thumb').forEach((thumb, i) => {
+                    thumb.classList.toggle('active', i === index);
+                });
+            }
+        }
+
+        function contactViaWhatsApp() {
+            if (!currentProperty) return;
+
+            const features = [];
+            if (currentProperty.bedrooms !== null && currentProperty.bedrooms !== undefined) {
+                features.push(`${currentProperty.bedrooms === 0 ? 'Studio' : currentProperty.bedrooms + ' dormitorios'}`);
+            }
+            if (currentProperty.bathrooms) features.push(`${currentProperty.bathrooms} baños`);
+            if (currentProperty.total_area) features.push(`${currentProperty.total_area}m²`);
+            if (currentProperty.parking_spaces > 0) features.push(`${currentProperty.parking_spaces} estacionamientos`);
+
+            const operationType = currentProperty.property_type === 'venta' ? 'comprar' : 'arrendar';
+
+            const tourMessage = propertyTours.length > 0 ? 
+                `\n🌐 ${propertyTours.length > 1 ? 'Vi los tours virtuales 360°' : 'Vi el tour virtual 360°'} y me interesa conocer más detalles.` : '';
+
+            const message = `Hola! Estoy interesado/a en ${operationType} la propiedad "${currentProperty.title}".\n\n📍 Dirección: ${currentProperty.address}, ${currentProperty.commune}\n💰 Precio: ${formatPrice(currentProperty.price)}\n🏠 Características: ${features.join(', ')}${tourMessage}\n\n¿Podrías darme más información?\n\nSaludos!`;
+
+            const phoneNumber = (currentProperty.contact_phone || '+56912345678').replace(/[^0-9]/g, '');
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            
+            window.open(whatsappURL, '_blank');
+        }
+
+        function showLoading(show) {
+            const loadingContainer = document.getElementById('loadingContainer');
+            const propertyContent = document.getElementById('propertyContent');
+            const errorContainer = document.getElementById('errorContainer');
+            
+            if (show) {
+                loadingContainer.style.display = 'flex';
+                propertyContent.style.display = 'none';
+                errorContainer.style.display = 'none';
+            } else {
+                loadingContainer.style.display = 'none';
+            }
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            const errorMessage = document.getElementById('errorMessage');
+            const loadingContainer = document.getElementById('loadingContainer');
+            const propertyContent = document.getElementById('propertyContent');
+            
+            errorMessage.textContent = message;
+            errorContainer.style.display = 'flex';
+            loadingContainer.style.display = 'none';
+            propertyContent.style.display = 'none';
+        }
+    </script>
 </body>
 </html>
