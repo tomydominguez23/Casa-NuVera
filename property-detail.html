@@ -118,58 +118,6 @@
             margin: 0 auto;
             padding: 6rem 2rem 2rem;
             background: white;
-            min-height: 70vh;
-        }
-
-        /* Loading State */
-        .loading-state {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--accent-orange);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 2rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Error State */
-        .error-state {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-
-        .error-state h2 {
-            color: #d32f2f;
-            margin-bottom: 1rem;
-        }
-
-        .error-state button {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 8px;
-            margin: 1rem 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .error-reload {
-            background: var(--accent-orange);
-            color: white;
-        }
-
-        .error-back {
-            background: var(--light-gray);
-            color: #333;
         }
 
         /* TÍTULO ARRIBA DE LAS IMÁGENES */
@@ -716,6 +664,61 @@
             margin-right: 0.5rem;
         }
 
+        /* Error Container */
+        .error-container {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--primary-black);
+        }
+
+        .error-container h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #d32f2f;
+        }
+
+        .error-container p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: var(--secondary-gray);
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--charcoal);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--primary-black);
+        }
+
+        .btn-secondary:hover {
+            background: var(--medium-gray);
+        }
+
         /* Footer */
         .footer {
             background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
@@ -872,66 +875,48 @@
 
     <!-- Main Property Detail Container -->
     <div class="property-detail-container">
-        <!-- Loading State -->
-        <div id="loadingState" class="loading-state">
-            <div class="loading-spinner"></div>
-            <h2>Cargando propiedad...</h2>
-            <p>Por favor espera mientras cargamos los detalles de la propiedad.</p>
+        <!-- TÍTULO ARRIBA DE LAS IMÁGENES -->
+        <div class="property-header" id="propertyHeader">
+            <!-- Se llena dinámicamente -->
         </div>
 
-        <!-- Error State -->
-        <div id="errorState" class="error-state" style="display: none;">
-            <h2>❌ Error al cargar propiedad</h2>
-            <p id="errorMessage">No se pudo cargar la información de la propiedad.</p>
-            <button class="error-reload" onclick="window.location.reload()">🔄 Recargar</button>
-            <button class="error-back" onclick="window.location.href='compras.html'">🏠 Volver al listado</button>
+        <!-- Property Gallery -->
+        <div class="property-gallery" id="propertyGallery">
+            <!-- Se llena dinámicamente -->
         </div>
 
-        <!-- Property Content -->
-        <div id="propertyContent" style="display: none;">
-            <!-- TÍTULO ARRIBA DE LAS IMÁGENES -->
-            <div class="property-header" id="propertyHeader">
-                <!-- Se llena dinámicamente -->
-            </div>
-
-            <!-- Property Gallery -->
-            <div class="property-gallery" id="propertyGallery">
-                <!-- Se llena dinámicamente -->
-            </div>
-
-            <!-- Property Content Grid -->
-            <div class="property-content">
-                <!-- Main Content Column -->
-                <div class="property-main">
-                    <!-- Property Features -->
-                    <div class="property-features" id="propertyFeatures">
-                        <!-- Se llena dinámicamente -->
-                    </div>
-
-                    <!-- Property Info -->
-                    <div class="property-info" id="propertyInfo">
-                        <!-- Se llena dinámicamente -->
-                    </div>
-
-                    <!-- Property Tours -->
-                    <div class="property-tours" id="propertyTours">
-                        <!-- Se llena dinámicamente -->
-                    </div>
+        <!-- Property Content Grid -->
+        <div class="property-content">
+            <!-- Main Content Column -->
+            <div class="property-main">
+                <!-- Property Features -->
+                <div class="property-features" id="propertyFeatures">
+                    <!-- Se llena dinámicamente -->
                 </div>
 
-                <!-- Sidebar Column -->
-                <div class="property-sidebar">
-                    <!-- Contact Info -->
-                    <div class="contact-info" id="contactInfo">
-                        <!-- Se llena dinámicamente -->
-                    </div>
+                <!-- Property Info -->
+                <div class="property-info" id="propertyInfo">
+                    <!-- Se llena dinámicamente -->
+                </div>
+
+                <!-- Property Tours -->
+                <div class="property-tours" id="propertyTours">
+                    <!-- Se llena dinámicamente -->
                 </div>
             </div>
 
-            <!-- Similar Properties -->
-            <div class="similar-properties" id="similarProperties">
-                <!-- Se llena dinámicamente -->
+            <!-- Sidebar Column -->
+            <div class="property-sidebar">
+                <!-- Contact Info -->
+                <div class="contact-info" id="contactInfo">
+                    <!-- Se llena dinámicamente -->
+                </div>
             </div>
+        </div>
+
+        <!-- Similar Properties -->
+        <div class="similar-properties" id="similarProperties">
+            <!-- Se llena dinámicamente -->
         </div>
     </div>
 
