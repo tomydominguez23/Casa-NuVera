@@ -970,6 +970,8 @@
                 return;
             }
 
+            console.log('🔍 ID de propiedad encontrado:', propertyId);
+
             if (window.supabase) {
                 loadPropertyDetails(propertyId);
             } else {
@@ -989,22 +991,35 @@
                 
                 console.log('📥 Cargando detalles de propiedad ID:', propertyId);
                 
-                // Cargar propiedad
+                // Cargar propiedad - USAR ESTRUCTURA EXACTA DE TU BD
                 const { data: property, error: propertyError } = await window.supabase
                     .from('properties')
                     .select('*')
                     .eq('id', propertyId)
-                    .eq('published', true)
                     .single();
 
-                if (propertyError || !property) {
+                console.log('📋 Respuesta de BD:', { property, propertyError });
+
+                if (propertyError) {
+                    console.error('❌ Error en consulta:', propertyError);
+                    throw new Error(`Error BD: ${propertyError.message}`);
+                }
+
+                if (!property) {
                     throw new Error('Propiedad no encontrada');
                 }
 
                 currentProperty = property;
+                console.log('✅ Propiedad cargada:', property);
 
-                // Cargar imágenes
-                const images = parseImages(property.images);
+                // Cargar imágenes (intentar diferentes campos)
+                let images = null;
+                if (property.images) {
+                    images = parseImages(property.images);
+                } else if (property.property_images) {
+                    images = parseImages(property.property_images);
+                }
+
                 if (images && images.length > 0) {
                     propertyImages = images.map(img => ({ image_url: img, is_main: false }));
                     propertyImages[0].is_main = true;
@@ -1015,11 +1030,11 @@
                     }];
                 }
 
-                // Cargar tours 360° desde la base de datos
+                // Cargar tours 360° 
                 await loadPropertyTours(propertyId);
 
                 // Cargar propiedades similares
-                await loadSimilarProperties(property.region + ', ' + property.commune);
+                await loadSimilarProperties(property);
 
                 showLoading(false);
                 renderPropertyDetails();
@@ -1061,15 +1076,9 @@
 
                 if (error) {
                     console.warn('⚠️ Error cargando tours:', error);
-                    // Fallback al tour por defecto
-                    propertyTours = [{
-                        id: 'default',
-                        tour_url: 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1',
-                        tour_title: 'Tour Virtual 360°',
-                        is_active: true,
-                        order_index: 1
-                    }];
-                } else if (tours && tours.length > 0) {
+                } 
+
+                if (tours && tours.length > 0) {
                     propertyTours = tours;
                     console.log('✅ Tours cargados:', tours.length);
                 } else {
@@ -1081,7 +1090,7 @@
                         is_active: true,
                         order_index: 1
                     }];
-                    console.log('ℹ️ Usando tour por defecto (no hay tours en BD)');
+                    console.log('ℹ️ Usando tour por defecto');
                 }
 
             } catch (error) {
@@ -1097,25 +1106,14 @@
             }
         }
 
-        async function loadSimilarProperties(currentLocation) {
+        async function loadSimilarProperties(currentProperty) {
             try {
-                console.log('🔍 Cargando propiedades similares en:', currentLocation);
+                console.log('🔍 Cargando propiedades similares...');
                 
-                // Extraer comuna de la ubicación actual
-                const currentCommune = extractCommune(currentLocation);
-                
-                if (!currentCommune) {
-                    console.log('ℹ️ No se pudo extraer comuna, buscando propiedades cercanas');
-                    return;
-                }
-
-                // Buscar propiedades en la misma comuna
                 const { data: properties, error } = await window.supabase
                     .from('properties')
                     .select('*')
-                    .eq('published', true)
                     .neq('id', currentProperty.id)
-                    .ilike('commune', `%${currentCommune}%`)
                     .limit(3);
 
                 if (error) {
@@ -1125,71 +1123,15 @@
 
                 if (properties && properties.length > 0) {
                     similarProperties = properties;
-                    console.log(`✅ ${properties.length} propiedades similares encontradas en ${currentCommune}`);
+                    console.log(`✅ ${properties.length} propiedades similares encontradas`);
                     renderSimilarProperties();
                 } else {
-                    console.log('ℹ️ No se encontraron propiedades similares en la misma comuna');
-                    // Si no hay propiedades en la misma comuna, buscar en comunas cercanas
-                    await loadNearbyProperties();
+                    console.log('ℹ️ No se encontraron propiedades similares');
                 }
 
             } catch (error) {
                 console.error('💥 Error cargando propiedades similares:', error);
             }
-        }
-
-        async function loadNearbyProperties() {
-            try {
-                console.log('🔍 Buscando propiedades en comunas cercanas...');
-                
-                const { data: properties, error } = await window.supabase
-                    .from('properties')
-                    .select('*')
-                    .eq('published', true)
-                    .neq('id', currentProperty.id)
-                    .limit(3);
-
-                if (error) {
-                    console.warn('⚠️ Error cargando propiedades cercanas:', error);
-                    return;
-                }
-
-                if (properties && properties.length > 0) {
-                    similarProperties = properties;
-                    console.log(`✅ ${properties.length} propiedades cercanas encontradas`);
-                    
-                    // Actualizar título para indicar que son propiedades cercanas
-                    document.getElementById('similarPropertiesTitle').textContent = 'Propiedades destacadas';
-                    document.getElementById('similarPropertiesSubtitle').textContent = 'Otras opciones que podrían interesarte';
-                    
-                    renderSimilarProperties();
-                }
-
-            } catch (error) {
-                console.error('💥 Error cargando propiedades cercanas:', error);
-            }
-        }
-
-        function extractCommune(location) {
-            if (!location) return null;
-            
-            // Lista de comunas de Santiago para hacer matching
-            const communes = [
-                'Las Condes', 'Providencia', 'Ñuñoa', 'Vitacura', 'Lo Barnechea', 
-                'La Reina', 'Macul', 'Peñalolén', 'Santiago', 'San Miguel', 
-                'La Florida', 'Maipú', 'Puente Alto', 'Quilicura', 'Huechuraba',
-                'Colina', 'Lampa', 'Pudahuel', 'Cerrillos', 'Estación Central'
-            ];
-            
-            const locationLower = location.toLowerCase();
-            
-            for (const commune of communes) {
-                if (locationLower.includes(commune.toLowerCase())) {
-                    return commune;
-                }
-            }
-            
-            return null;
         }
 
         function renderSimilarProperties() {
@@ -1204,7 +1146,7 @@
                 const formattedPrice = formatPrice(property.price);
                 const bedrooms = property.bedrooms || 0;
                 const bathrooms = property.bathrooms || 0;
-                const area = property.total_area || 0;
+                const area = property.total_area || property.built_area || 0;
 
                 return `
                     <div class="similar-property-card" onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
@@ -1216,25 +1158,16 @@
                         </div>
                         <div class="similar-property-content">
                             <h4 class="similar-property-title">${property.title || 'Propiedad sin título'}</h4>
-                            <div class="similar-property-location">${property.address + ', ' + property.commune || 'Ubicación no especificada'}</div>
+                            <div class="similar-property-location">${buildLocation(property)}</div>
                             <div class="similar-property-features">
                                 <div class="similar-property-feature">
-                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2L2 7v10c0 5.55 3.84 9 9 9s9-3.45 9-9V7l-10-5z"/>
-                                    </svg>
-                                    ${bedrooms} hab
+                                    🛏️ ${bedrooms} hab
                                 </div>
                                 <div class="similar-property-feature">
-                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M8 14c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/>
-                                    </svg>
-                                    ${bathrooms} baños
+                                    🚿 ${bathrooms} baños
                                 </div>
                                 <div class="similar-property-feature">
-                                    <svg class="similar-property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
-                                    </svg>
-                                    ${area}m²
+                                    📐 ${area}m²
                                 </div>
                             </div>
                         </div>
@@ -1244,6 +1177,16 @@
             
             similarPropertiesGrid.innerHTML = propertiesHTML;
             similarPropertiesSection.style.display = 'block';
+        }
+
+        function buildLocation(property) {
+            const parts = [];
+            if (property.address) parts.push(property.address);
+            if (property.commune) parts.push(property.commune);
+            if (property.neighborhood) parts.push(property.neighborhood);
+            if (property.region) parts.push(property.region);
+            
+            return parts.length > 0 ? parts.join(', ') : 'Ubicación no especificada';
         }
 
         function goToProperty(propertyId, slug) {
@@ -1280,6 +1223,8 @@
 
         function renderPropertyDetails() {
             if (!currentProperty) return;
+
+            console.log('🎨 Renderizando detalles de propiedad');
 
             // Update page title
             document.title = `${currentProperty.title} - Casa Nuvera`;
@@ -1334,7 +1279,7 @@
             // Update header
             document.getElementById('propertyBadge').textContent = getBadgeText(currentProperty.property_type);
             document.getElementById('propertyTitle').textContent = currentProperty.title;
-            document.getElementById('propertyLocation').textContent = `📍 ${currentProperty.address}, ${currentProperty.commune}`;
+            document.getElementById('propertyLocation').textContent = `📍 ${buildLocation(currentProperty)}`;
             document.getElementById('propertyPrice').textContent = formatPrice(currentProperty.price);
 
             // Update contact price
@@ -1560,7 +1505,7 @@
             const tourMessage = propertyTours.length > 0 ? 
                 `\n🌐 ${propertyTours.length > 1 ? 'Vi los tours virtuales 360°' : 'Vi el tour virtual 360°'} y me interesa conocer más detalles.` : '';
 
-            const message = `Hola! Estoy interesado/a en ${operationType} la propiedad "${currentProperty.title}".\n\n📍 Dirección: ${currentProperty.address}, ${currentProperty.commune}\n💰 Precio: ${formatPrice(currentProperty.price)}\n🏠 Características: ${features.join(', ')}${tourMessage}\n\n¿Podrías darme más información?\n\nSaludos!`;
+            const message = `Hola! Estoy interesado/a en ${operationType} la propiedad "${currentProperty.title}".\n\n📍 Dirección: ${buildLocation(currentProperty)}\n💰 Precio: ${formatPrice(currentProperty.price)}\n🏠 Características: ${features.join(', ')}${tourMessage}\n\n¿Podrías darme más información?\n\nSaludos!`;
 
             const phoneNumber = (currentProperty.contact_phone || '+56912345678').replace(/[^0-9]/g, '');
             const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
