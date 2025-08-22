@@ -211,7 +211,7 @@
             accent-color: #3498db;
         }
 
-        /* File Upload */
+        /* File Upload - Imágenes */
         .file-upload-area {
             border: 2px dashed #ddd;
             border-radius: 15px;
@@ -233,9 +233,37 @@
             transform: scale(1.02);
         }
 
+        /* Video upload area específico */
+        .video-upload-area {
+            border: 2px dashed #ff6b35;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: #fff9f7;
+        }
+
+        .video-upload-area:hover {
+            border-color: #e74c3c;
+            background: #ffebe6;
+        }
+
+        .video-upload-area.dragover {
+            border-color: #e74c3c;
+            background: #ffd6cc;
+            transform: scale(1.02);
+        }
+
         .upload-icon {
             font-size: 3rem;
             color: #bdc3c7;
+            margin-bottom: 1rem;
+        }
+
+        .video-upload-icon {
+            font-size: 3rem;
+            color: #ff6b35;
             margin-bottom: 1rem;
         }
 
@@ -246,9 +274,21 @@
             font-weight: 500;
         }
 
+        .video-upload-text {
+            color: #d35400;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
         .upload-subtext {
             font-size: 0.9rem;
             color: #999;
+        }
+
+        .video-upload-subtext {
+            font-size: 0.9rem;
+            color: #d35400;
         }
 
         .file-input {
@@ -262,6 +302,13 @@
             gap: 1rem;
         }
 
+        .video-list {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
         .file-item {
             background: #f8f9fa;
             padding: 1rem;
@@ -272,7 +319,18 @@
             transition: transform 0.3s;
         }
 
-        .file-item:hover {
+        .video-item {
+            background: #fff9f7;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            border: 1px solid #ff6b35;
+            transition: transform 0.3s;
+        }
+
+        .file-item:hover,
+        .video-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
@@ -285,10 +343,25 @@
             margin-bottom: 0.5rem;
         }
 
-        .file-name {
+        .video-item video {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-name,
+        .video-name {
             font-size: 0.8rem;
             color: #666;
             word-break: break-all;
+        }
+
+        .video-info {
+            font-size: 0.7rem;
+            color: #d35400;
+            margin-top: 0.3rem;
         }
 
         .remove-file {
@@ -308,6 +381,83 @@
 
         .remove-file:hover {
             transform: scale(1.1);
+        }
+
+        /* Price Input */
+        .price-group {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .currency-select {
+            flex: 0 0 120px;
+        }
+
+        .price-input {
+            flex: 1;
+        }
+
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #7f8c8d;
+            border: 2px solid #7f8c8d;
+        }
+
+        .btn-outline:hover {
+            background: #7f8c8d;
+            color: white;
         }
 
         /* Tours 360° Section */
@@ -444,83 +594,6 @@
             opacity: 0.8;
         }
 
-        /* Price Input */
-        .price-group {
-            display: flex;
-            gap: 1rem;
-            align-items: end;
-        }
-
-        .currency-select {
-            flex: 0 0 120px;
-        }
-
-        .price-input {
-            flex: 1;
-        }
-
-        /* Action Buttons */
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid #eee;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
-        }
-
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #7f8c8d;
-            transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #7f8c8d;
-            border: 2px solid #7f8c8d;
-        }
-
-        .btn-outline:hover {
-            background: #7f8c8d;
-            color: white;
-        }
-
         .btn-tour {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -615,6 +688,40 @@
             margin-top: 0.5rem;
         }
 
+        /* Media help */
+        .media-help {
+            background: #e8f4f8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            border-left: 4px solid #3498db;
+        }
+
+        .media-help strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        /* Video help específico */
+        .video-help {
+            background: #fff5f2;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .video-help strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #d35400;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-menu {
@@ -652,7 +759,8 @@
                 gap: 1rem;
             }
 
-            .file-list {
+            .file-list,
+            .video-list {
                 grid-template-columns: repeat(2, 1fr);
             }
 
@@ -700,7 +808,7 @@
         <!-- Page Header -->
         <div class="page-header">
             <h1>Panel de Administración</h1>
-            <p id="welcomeMessage">Modo prueba - Casa Nuvera</p>
+            <p id="welcomeMessage">Sube tu propiedad con imágenes, videos y tours 360° - Casa Nuvera</p>
         </div>
 
         <!-- Auth Check -->
@@ -980,7 +1088,7 @@
                 <div class="form-section">
                     <h2 class="section-title">
                         <span class="section-icon">📸</span>
-                        Imágenes
+                        Imágenes de la Propiedad
                     </h2>
                     
                     <div class="file-upload-area" onclick="document.getElementById('imageInput').click()">
@@ -991,6 +1099,39 @@
                     </div>
                     
                     <div class="file-list" id="fileList"></div>
+
+                    <div class="media-help">
+                        <strong>💡 Consejos para las imágenes:</strong>
+                        • La primera imagen será la imagen principal<br>
+                        • Usa fotos con buena iluminación natural<br>
+                        • Incluye todas las habitaciones principales<br>
+                        • Máximo 20 imágenes por propiedad
+                    </div>
+                </div>
+
+                <!-- Videos -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">🎥</span>
+                        Videos de la Propiedad
+                    </h2>
+                    
+                    <div class="video-upload-area" onclick="document.getElementById('videoInput').click()">
+                        <div class="video-upload-icon">🎬</div>
+                        <div class="video-upload-text">Sube videos de tu propiedad</div>
+                        <div class="video-upload-subtext">Haz clic aquí o arrastra y suelta • MP4, MOV, AVI • Máximo 50MB cada uno</div>
+                        <input type="file" id="videoInput" class="file-input" multiple accept="video/*">
+                    </div>
+                    
+                    <div class="video-list" id="videoList"></div>
+
+                    <div class="video-help">
+                        <strong>🎥 Consejos para los videos:</strong>
+                        • Graba videos cortos (1-3 minutos)<br>
+                        • Muestra recorridos por las habitaciones<br>
+                        • Mantén la cámara estable<br>
+                        • Máximo 5 videos por propiedad
+                    </div>
                 </div>
 
                 <!-- Tours 360° -->
@@ -1107,14 +1248,18 @@
     <!-- 3. Después cargar property-handler -->
     <script src="property-handler.js"></script>
     
-    <!-- 4. Script del formulario CORREGIDO con Tours 360° -->
+    <!-- 4. Script del formulario CORREGIDO con Tours 360°, Imágenes y Videos -->
     <script src="form-scripts.js"></script>
 
     <script>
-        // Variables globales para tours
+        // Variables globales para tours y archivos
         let propertyTours = [];
+        let propertyImages = [];
+        let propertyVideos = [];
 
-        // Función para agregar tour
+        // ======================
+        // FUNCIONES PARA TOURS
+        // ======================
         function addTour() {
             const titleInput = document.getElementById('tourTitle');
             const urlInput = document.getElementById('tourUrl');
@@ -1165,19 +1310,16 @@
             console.log('✅ Tour agregado:', newTour);
         }
 
-        // Función para eliminar tour
         function removeTour(tourId) {
             propertyTours = propertyTours.filter(tour => tour.id !== tourId);
             renderToursList();
             console.log('🗑️ Tour eliminado:', tourId);
         }
 
-        // Función para previsualizar tour
         function previewTour(tourUrl) {
             window.open(tourUrl, '_blank', 'width=1200,height=800');
         }
 
-        // Función para renderizar lista de tours
         function renderToursList() {
             const container = document.getElementById('toursList');
             
@@ -1210,7 +1352,184 @@
             `).join('');
         }
 
-        // Función para obtener tours para guardar en BD
+        // ======================
+        // FUNCIONES PARA IMÁGENES
+        // ======================
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            handleFileUpload(e.target.files, 'image');
+        });
+
+        // ======================
+        // FUNCIONES PARA VIDEOS
+        // ======================
+        document.getElementById('videoInput').addEventListener('change', function(e) {
+            handleFileUpload(e.target.files, 'video');
+        });
+
+        function handleFileUpload(files, type) {
+            Array.from(files).forEach(file => {
+                if (type === 'image') {
+                    if (!file.type.startsWith('image/')) {
+                        alert('Por favor selecciona solo archivos de imagen');
+                        return;
+                    }
+                    if (file.size > 10 * 1024 * 1024) { // 10MB
+                        alert('Las imágenes deben ser menores a 10MB');
+                        return;
+                    }
+                    if (propertyImages.length >= 20) {
+                        alert('Máximo 20 imágenes por propiedad');
+                        return;
+                    }
+                    addImageToList(file);
+                } else if (type === 'video') {
+                    if (!file.type.startsWith('video/')) {
+                        alert('Por favor selecciona solo archivos de video');
+                        return;
+                    }
+                    if (file.size > 50 * 1024 * 1024) { // 50MB
+                        alert('Los videos deben ser menores a 50MB');
+                        return;
+                    }
+                    if (propertyVideos.length >= 5) {
+                        alert('Máximo 5 videos por propiedad');
+                        return;
+                    }
+                    addVideoToList(file);
+                }
+            });
+        }
+
+        function addImageToList(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = {
+                    id: Date.now() + Math.random(),
+                    file: file,
+                    preview: e.target.result,
+                    name: file.name,
+                    size: file.size
+                };
+                
+                propertyImages.push(imageData);
+                renderImageList();
+                console.log('📸 Imagen agregada:', file.name);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function addVideoToList(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const videoData = {
+                    id: Date.now() + Math.random(),
+                    file: file,
+                    preview: e.target.result,
+                    name: file.name,
+                    size: file.size,
+                    duration: 0 // Se calculará después
+                };
+                
+                propertyVideos.push(videoData);
+                renderVideoList();
+                console.log('🎥 Video agregado:', file.name);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderImageList() {
+            const container = document.getElementById('fileList');
+            container.innerHTML = propertyImages.map((image, index) => `
+                <div class="file-item">
+                    <img src="${image.preview}" alt="${image.name}">
+                    <div class="file-name">${image.name}</div>
+                    <div style="font-size: 0.7rem; color: #999; margin-top: 0.3rem;">
+                        ${(image.size / 1024 / 1024).toFixed(1)} MB
+                        ${index === 0 ? '<br><strong>📌 Imagen Principal</strong>' : ''}
+                    </div>
+                    <button class="remove-file" onclick="removeImage(${image.id})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function renderVideoList() {
+            const container = document.getElementById('videoList');
+            container.innerHTML = propertyVideos.map((video, index) => `
+                <div class="video-item">
+                    <video src="${video.preview}" controls muted preload="metadata">
+                        Tu navegador no soporta videos.
+                    </video>
+                    <div class="video-name">${video.name}</div>
+                    <div class="video-info">
+                        📁 ${(video.size / 1024 / 1024).toFixed(1)} MB
+                    </div>
+                    <button class="remove-file" onclick="removeVideo(${video.id})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeImage(imageId) {
+            propertyImages = propertyImages.filter(img => img.id !== imageId);
+            renderImageList();
+            console.log('🗑️ Imagen eliminada:', imageId);
+        }
+
+        function removeVideo(videoId) {
+            propertyVideos = propertyVideos.filter(vid => vid.id !== videoId);
+            renderVideoList();
+            console.log('🗑️ Video eliminado:', videoId);
+        }
+
+        // ======================
+        // DRAG & DROP
+        // ======================
+        function setupDragAndDrop() {
+            const imageArea = document.querySelector('.file-upload-area');
+            const videoArea = document.querySelector('.video-upload-area');
+
+            [imageArea, videoArea].forEach(area => {
+                area.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('dragover');
+                });
+
+                area.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                });
+
+                area.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                    
+                    const files = e.dataTransfer.files;
+                    const type = this.classList.contains('video-upload-area') ? 'video' : 'image';
+                    handleFileUpload(files, type);
+                });
+            });
+        }
+
+        // ======================
+        // INICIALIZACIÓN
+        // ======================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Autocompletar URL de Kuula al cambiar el título
+            document.getElementById('tourTitle').addEventListener('input', function() {
+                const urlInput = document.getElementById('tourUrl');
+                if (!urlInput.value && this.value) {
+                    urlInput.value = 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1';
+                }
+            });
+
+            // Configurar drag & drop
+            setupDragAndDrop();
+
+            console.log('🚀 Sistema completo inicializado: Tours 360°, Imágenes y Videos');
+        });
+
+        // ======================
+        // FUNCIONES PARA OBTENER DATOS
+        // ======================
         function getToursForSaving() {
             return propertyTours.map(tour => ({
                 tour_title: tour.tour_title,
@@ -1220,18 +1539,25 @@
             }));
         }
 
-        // Autocompletar URL de Kuula al cambiar el título
-        document.getElementById('tourTitle').addEventListener('input', function() {
-            const urlInput = document.getElementById('tourUrl');
-            if (!urlInput.value && this.value) {
-                // URL por defecto con tu tour actual
-                urlInput.value = 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1';
-            }
-        });
+        function getImagesForSaving() {
+            return propertyImages.map((image, index) => ({
+                file: image.file,
+                is_main: index === 0,
+                image_order: index + 1
+            }));
+        }
 
-        // Auto-incrementar orden
-        document.getElementById('tourOrder').value = propertyTours.length + 1;
+        function getVideosForSaving() {
+            return propertyVideos.map((video, index) => ({
+                file: video.file,
+                video_order: index + 1,
+                video_title: video.name || `Video ${index + 1}`
+            }));
+        }
 
+        // Información de debug
+        console.log('🎬 Sistema de Videos inicializado');
+        console.log('📸 Sistema de Imágenes inicializado'); 
         console.log('🌐 Sistema de Tours 360° inicializado');
     </script>
 </body>
