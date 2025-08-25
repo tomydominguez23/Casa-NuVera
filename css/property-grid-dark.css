@@ -59,9 +59,9 @@
 }
 
 .filter-select:focus, .filter-input:focus {
-    border-color: #F5F5DC;
+    border-color: #333333;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(245, 245, 220, 0.2);
+    box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.2);
 }
 
 .price-range {
@@ -96,14 +96,14 @@
 }
 
 .filter-btn.primary {
-    background: #F5F5DC;
-    color: #2d2d2d;
-    border-color: #F5F5DC;
+    background: #333333;
+    color: white;
+    border-color: #333333;
 }
 
 .filter-btn.primary:hover {
-    background: #F0E68C;
-    border-color: #F0E68C;
+    background: #000000;
+    border-color: #000000;
 }
 
 .filter-btn.secondary {
@@ -154,12 +154,12 @@
     min-height: 320px; /* Reducido de 400px */
 }
 
-/* Hover effect en toda la tarjeta */
+/* Hover effect en toda la tarjeta - NEGRO MINIMALISTA */
 .property-card:hover {
     transform: scale(1.02);
-    box-shadow: 0 8px 25px rgba(245, 245, 220, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     z-index: 10;
-    border: 2px solid #F5F5DC;
+    border: 2px solid #333333;
 }
 
 /* Contenedor de imagen - REDUCIDO */
@@ -188,13 +188,13 @@
     transform: scale(1.05);
 }
 
-/* Badge/etiqueta de tipo de propiedad - MÁS PEQUEÑO */
+/* Badge/etiqueta de tipo de propiedad - NEGRO MINIMALISTA */
 .property-card .property-badge {
     position: absolute;
     top: 10px;
     left: 10px;
-    background: rgba(245, 245, 220, 0.95);
-    color: #2d2d2d;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
     padding: 4px 8px;
     border-radius: 3px;
     font-size: 10px;
@@ -207,27 +207,27 @@
 }
 
 .property-card .property-badge.featured {
-    background: linear-gradient(135deg, #F5F5DC, #F0E68C);
-    box-shadow: 0 2px 8px rgba(245, 245, 220, 0.3);
+    background: linear-gradient(135deg, #333333, #000000);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     animation: pulse-featured 3s infinite;
 }
 
 @keyframes pulse-featured {
     0%, 100% { 
-        box-shadow: 0 2px 8px rgba(245, 245, 220, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     }
     50% { 
-        box-shadow: 0 4px 15px rgba(245, 245, 220, 0.6);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
         transform: translateY(-1px) scale(1.02);
     }
 }
 
 .property-card:hover .property-badge {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(245, 245, 220, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* Overlay que aparece en hover - MÁS PEQUEÑO */
+/* Overlay que aparece en hover - NEGRO MINIMALISTA */
 .property-card .property-overlay {
     position: absolute;
     top: 50%;
@@ -243,8 +243,8 @@
 }
 
 .property-card .property-details-btn {
-    background: rgba(245, 245, 220, 0.95);
-    color: #2d2d2d;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
     padding: 8px 16px;
     border-radius: 20px;
     font-size: 10px;
@@ -252,15 +252,15 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(245, 245, 220, 0.3);
-    border: 2px solid rgba(245, 245, 220, 0.6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(51, 51, 51, 0.6);
     transform: translateY(10px);
     transition: all 0.3s ease;
 }
 
 .property-card:hover .property-details-btn {
     transform: translateY(0);
-    box-shadow: 0 6px 20px rgba(245, 245, 220, 0.4);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* Sección de información - COMPACTA */
@@ -275,11 +275,11 @@
     min-height: 120px; /* Reducido de 150px */
 }
 
-/* Precio destacado - MÁS PEQUEÑO */
+/* Precio destacado - NEGRO MINIMALISTA */
 .property-card .property-price {
     font-size: 16px; /* Reducido de 20px */
     font-weight: 700;
-    color: #F5F5DC;
+    color: #333333;
     margin-bottom: 6px;
     line-height: 1.2;
 }
@@ -321,10 +321,10 @@
     overflow: hidden;
 }
 
-/* Gastos comunes - MÁS PEQUEÑOS */
+/* Gastos comunes - NEGRO MINIMALISTA */
 .property-card .property-expenses {
     font-size: 9px; /* Reducido de 11px */
-    color: #F0E68C;
+    color: #666666;
     margin-bottom: 8px;
 }
 
@@ -334,8 +334,8 @@
 }
 
 .property-card .contact-btn {
-    background: #F5F5DC;
-    color: #2d2d2d;
+    background: #333333;
+    color: white;
     border: none;
     padding: 6px 12px; /* Reducido */
     border-radius: 15px;
@@ -349,9 +349,9 @@
 }
 
 .property-card .contact-btn:hover {
-    background: #F0E68C;
+    background: #000000;
     transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(245, 245, 220, 0.3);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* Placeholder para imágenes que no cargan */
@@ -378,7 +378,7 @@
     opacity: 0.8;
 }
 
-/* Loading y estados de error */
+/* Loading y estados de error - NEGRO MINIMALISTA */
 .loading-container {
     background: #1a1a1a;
     color: #ffffff;
@@ -395,7 +395,7 @@
     width: 40px;
     height: 40px;
     border: 3px solid #333;
-    border-top: 3px solid #F5F5DC;
+    border-top: 3px solid #333333;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 20px;
@@ -419,13 +419,13 @@
 }
 
 .error-container h3 {
-    color: #F5F5DC;
+    color: #333333;
     margin-bottom: 15px;
 }
 
 .retry-btn, .reconnect-btn {
-    background: #F5F5DC;
-    color: #2d2d2d;
+    background: #333333;
+    color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -436,11 +436,11 @@
 }
 
 .retry-btn:hover, .reconnect-btn:hover {
-    background: #F0E68C;
+    background: #000000;
     transform: translateY(-1px);
 }
 
-/* Sin propiedades */
+/* Sin propiedades - NEGRO MINIMALISTA */
 .no-properties-container {
     background: #1a1a1a;
     color: #ffffff;
@@ -460,8 +460,8 @@
 }
 
 .add-property-btn, .refresh-btn {
-    background: #F5F5DC;
-    color: #2d2d2d;
+    background: #333333;
+    color: white;
     padding: 12px 24px;
     border-radius: 25px;
     text-decoration: none;
@@ -474,9 +474,9 @@
 }
 
 .add-property-btn:hover, .refresh-btn:hover {
-    background: #F0E68C;
+    background: #000000;
     transform: translateY(-2px);
-    color: #2d2d2d;
+    color: white;
 }
 
 /* Responsive Design - AJUSTADO PARA TAMAÑOS MÁS PEQUEÑOS */
