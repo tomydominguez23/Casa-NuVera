@@ -25,7 +25,7 @@
             --medium-gray: #e0e0e0;
             --background-gray: #7a7a7a;
             --white: #ffffff;
-            --accent-orange: #ff6b35;
+            --accent-black: #333333; /* Cambio de accent-orange */
             --text-muted: #999999;
             --border-color: #ddd;
             --overlay-dark: rgba(0, 0, 0, 0.6);
@@ -33,9 +33,9 @@
             --overlay-light: rgba(0, 0, 0, 0.2);
             --overlay-white: rgba(255, 255, 255, 0.9);
             
-            /* NUEVO ESQUEMA ELEGANTE - NEGRO, BEIGE, GRIS */
-            --elegant-beige: #F5F5DC;
-            --warm-beige: #F0E68C;
+            /* ESQUEMA NEGRO MINIMALISTA */
+            --elegant-black: #333333; /* Cambio de elegant-beige */
+            --warm-black: #000000; /* Cambio de warm-beige */
             --dark-gray: #2F2F2F;
             --light-gray-accent: #D3D3D3;
             --charcoal: #36454F;
@@ -141,7 +141,7 @@
 
         .hero-tagline {
             font-size: 0.9rem;
-            color: var(--elegant-beige);
+            color: var(--elegant-black); /* Cambio a negro */
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 2rem;
@@ -265,12 +265,12 @@
             z-index: 2;
         }
 
-        /* BADGE DESTACADA */
+        /* BADGE DESTACADA - NEGRO MINIMALISTA */
         .featured-badge {
             position: absolute;
             top: 12px;
             right: 12px;
-            background: linear-gradient(135deg, #ff6b35, #ff8c35);
+            background: linear-gradient(135deg, #333333, #000000); /* Cambio de naranja a negro */
             color: white;
             padding: 6px 10px;
             border-radius: 6px;
@@ -411,11 +411,11 @@
         }
 
         .btn-primary:hover {
-            background: var(--elegant-beige);
-            color: var(--primary-black);
+            background: var(--elegant-black); /* Cambio de beige a negro */
+            color: white; /* Mantener texto blanco */
         }
 
-        /* Footer */
+        /* Footer - NEGRO MINIMALISTA */
         .footer {
             background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
                         url('https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=1920&h=600&fit=crop&crop=center');
@@ -444,7 +444,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 1.5rem;
-            color: var(--elegant-beige);
+            color: var(--elegant-black); /* Cambio a negro */
         }
 
         .footer-section ul {
@@ -463,7 +463,7 @@
         }
 
         .footer-section ul li a:hover {
-            color: var(--elegant-beige);
+            color: var(--elegant-black); /* Cambio a negro */
         }
 
         .footer-bottom {
