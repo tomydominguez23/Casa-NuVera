@@ -25,7 +25,7 @@
             --medium-gray: #e0e0e0;
             --background-gray: #7a7a7a;
             --white: #ffffff;
-            --accent-orange: #ff6b35;
+            --accent-black: #333333; /* Cambio de accent-orange */
             --text-muted: #999999;
             --border-color: #ddd;
             --overlay-dark: rgba(0, 0, 0, 0.6);
@@ -33,9 +33,9 @@
             --overlay-light: rgba(0, 0, 0, 0.2);
             --overlay-white: rgba(255, 255, 255, 0.9);
             
-            /* NUEVO ESQUEMA ELEGANTE - NEGRO, BEIGE, GRIS */
-            --elegant-beige: #F5F5DC;
-            --warm-beige: #F0E68C;
+            /* ESQUEMA NEGRO MINIMALISTA */
+            --elegant-black: #333333; /* Cambio de elegant-beige */
+            --warm-black: #000000; /* Cambio de warm-beige */
             --dark-gray: #2F2F2F;
             --light-gray-accent: #D3D3D3;
             --charcoal: #36454F;
@@ -50,13 +50,13 @@
             overflow-x: hidden;
         }
 
-        /* Botón flotante para subir propiedades */
+        /* Botón flotante para subir propiedades - NEGRO MINIMALISTA */
         .floating-upload-btn {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
-            background: linear-gradient(135deg, var(--elegant-beige), var(--warm-beige));
-            color: var(--primary-black);
+            background: linear-gradient(135deg, var(--elegant-black), var(--warm-black));
+            color: white;
             padding: 1rem 1.5rem;
             border-radius: 50px;
             text-decoration: none;
@@ -64,25 +64,25 @@
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 10px 30px rgba(245, 245, 220, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
             z-index: 999;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            animation: pulse-beige 3s infinite;
+            animation: pulse-black 3s infinite;
         }
 
         .floating-upload-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(245, 245, 220, 0.4);
-            background: linear-gradient(135deg, var(--warm-beige), var(--elegant-beige));
-            color: var(--primary-black);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, var(--warm-black), var(--elegant-black));
+            color: white;
         }
 
-        @keyframes pulse-beige {
-            0%, 100% { box-shadow: 0 10px 30px rgba(245, 245, 220, 0.3); }
-            50% { box-shadow: 0 15px 40px rgba(245, 245, 220, 0.5); }
+        @keyframes pulse-black {
+            0%, 100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); }
         }
 
         /* Header flotante sobre imágenes */
@@ -146,11 +146,11 @@
 
         .nav-menu a:hover,
         .nav-menu a.active {
-            color: var(--charcoal); /* Gris oscuro elegante */
+            color: var(--charcoal);
         }
 
         .nav-cta {
-            background: var(--charcoal); /* Gris oscuro */
+            background: var(--charcoal);
             color: white !important;
             padding: 0.8rem 1.5rem;
             border-radius: 0;
@@ -162,8 +162,8 @@
         }
 
         .nav-cta:hover {
-            background: var(--elegant-beige); /* Beige al hover */
-            color: var(--primary-black) !important;
+            background: var(--elegant-black);
+            color: white !important;
         }
 
         /* Hero Section con imagen de fondo */
@@ -191,7 +191,7 @@
 
         .hero-tagline {
             font-size: 0.9rem;
-            color: var(--elegant-beige); /* Beige elegante */
+            color: var(--elegant-black);
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 2rem;
@@ -231,7 +231,7 @@
 
         .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
-            border-top: 4px solid var(--charcoal); /* Gris oscuro */
+            border-top: 4px solid var(--charcoal);
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -273,13 +273,13 @@
         }
 
         .btn-primary {
-            background: var(--charcoal); /* Gris oscuro */
+            background: var(--charcoal);
             color: white;
         }
 
         .btn-primary:hover {
-            background: var(--elegant-beige); /* Beige al hover */
-            color: var(--primary-black);
+            background: var(--elegant-black);
+            color: white;
         }
 
         /* Properties Section - AQUÍ ES DONDE SE APLICA EL GRID OSCURO */
