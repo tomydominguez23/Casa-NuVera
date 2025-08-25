@@ -237,7 +237,7 @@
 
         .nav-item {
             height: 500px;
-            padding: 3rem;
+            padding: 0;
             text-align: left;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -248,7 +248,7 @@
             align-items: flex-end;
             background-size: cover;
             background-position: center;
-            margin: 0; /* Sin márgenes */
+            margin: 0;
         }
 
         .nav-item:nth-child(1) {
@@ -294,7 +294,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(51, 51, 51, 0.1); /* Cambio de beige a negro */
+            background: rgba(51, 51, 51, 0.1);
             z-index: 1;
         }
 
@@ -302,62 +302,75 @@
             position: relative;
             z-index: 2;
             width: 100%;
+            height: 100%;
+            padding: 3rem;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            min-height: 200px;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%);
         }
 
         .nav-item-label {
             font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.7);
+            color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 1rem;
             font-weight: 500;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         .nav-item h3 {
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 1rem;
-            color: white;
+            color: #ffffff;
             line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         .nav-item p {
-            color: rgba(255, 255, 255, 0.8);
+            color: #ffffff;
             line-height: 1.6;
             margin-bottom: 1.5rem;
             font-size: 0.9rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         /* Viñetas específicas */
         .nav-item-feature {
             margin-bottom: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
         }
 
         .nav-item-feature h4 {
             font-size: 1rem;
             font-weight: 600;
-            color: var(--elegant-black); /* Cambio a negro */
+            color: #ffffff;
             margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         .nav-item-feature p {
             font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: #ffffff;
             line-height: 1.4;
             margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         .nav-item-link {
-            color: white;
+            color: #ffffff;
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-size: 0.9rem;
             margin-top: auto;
+            padding-top: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         /* About Features Section */
