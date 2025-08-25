@@ -233,10 +233,11 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 0; /* Sin espacios entre imágenes */
+            height: 500px; /* Altura fija para alineación uniforme */
         }
 
         .nav-item {
-            height: 500px;
+            height: 100%;
             padding: 0;
             text-align: left;
             transition: all 0.3s ease;
@@ -245,7 +246,7 @@
             position: relative;
             overflow: hidden;
             display: flex;
-            align-items: center; /* CENTRADO VERTICAL - CAMBIO PRINCIPAL */
+            align-items: center; /* CENTRADO VERTICAL DE TODO EL CONTENIDO */
             background-size: cover;
             background-position: center;
             margin: 0;
@@ -298,17 +299,19 @@
             z-index: 1;
         }
 
-        /* MANTENIENDO ESTRUCTURA ORIGINAL PERO CENTRADO VERTICALMENTE */
+        /* CONTENIDO CENTRADO Y ALINEADO */
         .nav-item-content {
             position: relative;
             z-index: 2;
             width: 100%;
-            height: 100%;
             padding: 3rem;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* CENTRADO VERTICAL - CAMBIO PRINCIPAL */
+            justify-content: center; /* CENTRADO VERTICAL PRINCIPAL */
+            align-items: flex-start; /* Alineación horizontal consistente */
+            gap: 1rem; /* Espaciado uniforme entre elementos */
             background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+            min-height: 400px; /* Altura mínima consistente */
         }
 
         .nav-item-label {
@@ -316,7 +319,7 @@
             color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 1rem;
+            margin: 0;
             font-weight: 500;
             text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
             background: rgba(0, 0, 0, 0.4);
@@ -325,12 +328,13 @@
             backdrop-filter: blur(10px);
             display: inline-block;
             width: fit-content;
+            align-self: flex-start; /* Mantiene alineación izquierda */
         }
 
         .nav-item h3 {
             font-size: 1.5rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin: 0;
             color: #ffffff;
             line-height: 1.2;
             text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
@@ -338,18 +342,22 @@
             padding: 1rem;
             border-radius: 8px;
             backdrop-filter: blur(10px);
+            width: 100%;
+            align-self: stretch; /* Ocupa todo el ancho disponible */
         }
 
         .nav-item p {
             color: #ffffff;
             line-height: 1.6;
-            margin-bottom: 1.5rem;
+            margin: 0;
             font-size: 0.9rem;
             text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
             background: rgba(0, 0, 0, 0.4);
             padding: 1rem;
             border-radius: 8px;
             backdrop-filter: blur(10px);
+            width: 100%;
+            align-self: stretch; /* Ocupa todo el ancho disponible */
         }
 
         /* Viñetas específicas */
@@ -359,7 +367,9 @@
             border-radius: 8px;
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 1rem;
+            margin: 0;
+            width: 100%;
+            align-self: stretch;
         }
 
         .nav-item-feature h4 {
@@ -380,14 +390,13 @@
             padding: 0;
         }
 
+        /* ENLACES EN LA MISMA LÍNEA HORIZONTAL */
         .nav-item-link {
             color: #ffffff;
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-size: 0.9rem;
-            margin-top: auto;
-            padding-top: 1rem;
             text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
             background: rgba(0, 0, 0, 0.4);
             padding: 0.75rem 1.5rem;
@@ -396,6 +405,8 @@
             display: inline-block;
             width: fit-content;
             transition: all 0.3s ease;
+            margin-top: auto; /* Empuja hacia abajo */
+            align-self: flex-start; /* Alineación izquierda consistente */
         }
 
         .nav-item-link:hover {
@@ -1054,10 +1065,16 @@
 
             .nav-container-grid {
                 grid-template-columns: repeat(2, 1fr);
+                height: auto;
+            }
+
+            .nav-item {
+                height: 400px;
             }
 
             .nav-item-content {
                 padding: 2rem;
+                min-height: 300px;
             }
 
             .search-filters {
