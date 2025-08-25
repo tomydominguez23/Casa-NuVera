@@ -299,7 +299,7 @@
             z-index: 1;
         }
 
-        /* CONTENIDO CENTRADO Y ALINEADO */
+        /* CONTENIDO CENTRADO SIN RECUADROS NEGROS */
         .nav-item-content {
             position: relative;
             z-index: 2;
@@ -310,7 +310,7 @@
             justify-content: center; /* CENTRADO VERTICAL PRINCIPAL */
             align-items: flex-start; /* Alineación horizontal consistente */
             gap: 1rem; /* Espaciado uniforme entre elementos */
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+            background: none; /* SIN FONDO OSCURO */
             min-height: 400px; /* Altura mínima consistente */
         }
 
@@ -320,12 +320,10 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 0;
-            font-weight: 500;
-            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
-            background: rgba(0, 0, 0, 0.4);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            backdrop-filter: blur(10px);
+            font-weight: 600;
+            text-shadow: 4px 4px 12px rgba(0, 0, 0, 1);
+            background: none; /* SIN FONDO */
+            padding: 0.5rem 0;
             display: inline-block;
             width: fit-content;
             align-self: flex-start; /* Mantiene alineación izquierda */
@@ -333,15 +331,13 @@
 
         .nav-item h3 {
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: 700;
             margin: 0;
             color: #ffffff;
             line-height: 1.2;
-            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
-            background: rgba(0, 0, 0, 0.4);
-            padding: 1rem;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
+            text-shadow: 4px 4px 12px rgba(0, 0, 0, 1);
+            background: none; /* SIN FONDO */
+            padding: 0.5rem 0;
             width: 100%;
             align-self: stretch; /* Ocupa todo el ancho disponible */
         }
@@ -351,22 +347,21 @@
             line-height: 1.6;
             margin: 0;
             font-size: 0.9rem;
-            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
-            background: rgba(0, 0, 0, 0.4);
-            padding: 1rem;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
+            font-weight: 500;
+            text-shadow: 4px 4px 12px rgba(0, 0, 0, 1);
+            background: none; /* SIN FONDO */
+            padding: 0.5rem 0;
             width: 100%;
             align-self: stretch; /* Ocupa todo el ancho disponible */
         }
 
-        /* Viñetas específicas */
+        /* Viñetas específicas SIN RECUADROS */
         .nav-item-feature {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 1.2rem;
-            border-radius: 8px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: none; /* SIN FONDO OSCURO */
+            padding: 1rem 0;
+            border-radius: 0;
+            backdrop-filter: none;
+            border: none;
             margin: 0;
             width: 100%;
             align-self: stretch;
@@ -374,10 +369,10 @@
 
         .nav-item-feature h4 {
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #ffffff;
             margin-bottom: 0.5rem;
-            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
+            text-shadow: 4px 4px 12px rgba(0, 0, 0, 1);
         }
 
         .nav-item-feature p {
@@ -385,33 +380,36 @@
             color: #ffffff;
             line-height: 1.4;
             margin: 0;
-            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
+            font-weight: 500;
+            text-shadow: 4px 4px 12px rgba(0, 0, 0, 1);
             background: none;
             padding: 0;
         }
 
-        /* ENLACES EN LA MISMA LÍNEA HORIZONTAL */
+        /* ENLACES SIN RECUADROS PERO VISIBLES */
         .nav-item-link {
             color: #ffffff;
-            font-weight: 500;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-size: 0.9rem;
-            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
-            background: rgba(0, 0, 0, 0.4);
+            text-shadow: 4px 4px 12px rgba(0, 0, 0, 1);
+            background: rgba(0, 0, 0, 0.1);
             padding: 0.75rem 1.5rem;
             border-radius: 8px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             display: inline-block;
             width: fit-content;
             transition: all 0.3s ease;
             margin-top: auto; /* Empuja hacia abajo */
             align-self: flex-start; /* Alineación izquierda consistente */
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .nav-item-link:hover {
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.2);
             transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         /* Gallery Section - NUEVA SECCIÓN PARA REEMPLAZAR ABOUT FEATURES */
