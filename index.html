@@ -245,7 +245,8 @@
             position: relative;
             overflow: hidden;
             display: flex;
-            align-items: flex-end;
+            align-items: center; /* CENTRADO VERTICAL */
+            justify-content: center; /* CENTRADO HORIZONTAL */
             background-size: cover;
             background-position: center;
             margin: 0;
@@ -298,44 +299,22 @@
             z-index: 1;
         }
 
-        /* ALINEACIÓN PERFECTA Y LEGIBILIDAD MEJORADA */
+        /* CONTENIDO CENTRADO VERTICALMENTE */
         .nav-item-content {
             position: relative;
             z-index: 2;
             width: 100%;
-            height: 100%;
+            max-width: 300px; /* Ancho máximo para mejor legibilidad */
             padding: 3rem;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Distribución uniforme */
+            align-items: center; /* Centrado horizontal del contenido */
+            justify-content: center; /* Centrado vertical del contenido */
+            text-align: center; /* Centrado del texto */
+            gap: 1.5rem; /* Espaciado uniforme entre elementos */
             background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
-        }
-
-        /* Contenedor superior alineado */
-        .nav-item-header {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            min-height: 120px; /* Altura mínima consistente */
-            justify-content: flex-start;
-        }
-
-        /* Contenedor central para descripción */
-        .nav-item-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 1rem;
-            min-height: 200px; /* Altura consistente */
-        }
-
-        /* Contenedor inferior para enlaces */
-        .nav-item-footer {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            min-height: 60px; /* Altura mínima */
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
         }
 
         .nav-item-label {
@@ -365,6 +344,7 @@
             padding: 1rem;
             border-radius: 8px;
             backdrop-filter: blur(10px);
+            text-align: center;
         }
 
         .nav-item p {
@@ -377,6 +357,7 @@
             padding: 1rem;
             border-radius: 8px;
             backdrop-filter: blur(10px);
+            text-align: center;
         }
 
         /* Viñetas específicas */
@@ -387,6 +368,7 @@
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             margin: 0;
+            text-align: center;
         }
 
         .nav-item-feature h4 {
@@ -395,6 +377,7 @@
             color: #ffffff;
             margin-bottom: 0.5rem;
             text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
+            text-align: center;
         }
 
         .nav-item-feature p {
@@ -405,6 +388,7 @@
             text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
             background: none;
             padding: 0;
+            text-align: center;
         }
 
         .nav-item-link {
@@ -421,6 +405,7 @@
             display: inline-block;
             width: fit-content;
             transition: all 0.3s ease;
+            text-align: center;
         }
 
         .nav-item-link:hover {
@@ -1053,6 +1038,7 @@
 
             .nav-item-content {
                 padding: 2rem;
+                max-width: 250px;
             }
 
             .search-filters {
@@ -1170,69 +1156,45 @@
         <div class="nav-container-grid">
             <a href="compras.html" class="nav-item">
                 <div class="nav-item-content">
-                    <div class="nav-item-header">
-                        <div class="nav-item-label">Compra</div>
-                        <h3>Propiedades en Venta</h3>
-                    </div>
-                    <div class="nav-item-body">
-                        <p>Casas y departamentos cuidadosamente seleccionados en las mejores ubicaciones de Santiago.</p>
-                    </div>
-                    <div class="nav-item-footer">
-                        <span class="nav-item-link">Explorar Propiedades →</span>
-                    </div>
+                    <div class="nav-item-label">Compra</div>
+                    <h3>Propiedades en Venta</h3>
+                    <p>Casas y departamentos cuidadosamente seleccionados en las mejores ubicaciones de Santiago.</p>
+                    <span class="nav-item-link">Explorar Propiedades →</span>
                 </div>
             </a>
 
             <a href="#contacto" class="nav-item">
                 <div class="nav-item-content">
-                    <div class="nav-item-header">
-                        <div class="nav-item-label">Servicios</div>
-                        <h3>Asesoría Inmobiliaria</h3>
+                    <div class="nav-item-label">Servicios</div>
+                    <h3>Asesoría Inmobiliaria</h3>
+                    <p>Consultoría profesional y servicios integrales para maximizar tu inversión.</p>
+                    <div class="nav-item-feature">
+                        <h4>Apoyo integral</h4>
+                        <p>Contamos con un equipo interdisciplinario que te acompañarán en todas las etapas de compra y venta.</p>
                     </div>
-                    <div class="nav-item-body">
-                        <p>Consultoría profesional y servicios integrales para maximizar tu inversión.</p>
-                        <div class="nav-item-feature">
-                            <h4>Apoyo integral</h4>
-                            <p>Contamos con un equipo interdisciplinario que te acompañarán en todas las etapas de compra y venta.</p>
-                        </div>
-                    </div>
-                    <div class="nav-item-footer">
-                        <span class="nav-item-link">Conocer Más →</span>
-                    </div>
+                    <span class="nav-item-link">Conocer Más →</span>
                 </div>
             </a>
 
             <a href="#contacto" class="nav-item">
                 <div class="nav-item-content">
-                    <div class="nav-item-header">
-                        <div class="nav-item-label">Vende</div>
-                        <h3>Vende tu propiedad</h3>
-                    </div>
-                    <div class="nav-item-body">
-                        <p>Te ayudamos a vender tu propiedad de manera rápida y al mejor precio del mercado.</p>
-                    </div>
-                    <div class="nav-item-footer">
-                        <span class="nav-item-link">Más información →</span>
-                    </div>
+                    <div class="nav-item-label">Vende</div>
+                    <h3>Vende tu propiedad</h3>
+                    <p>Te ayudamos a vender tu propiedad de manera rápida y al mejor precio del mercado.</p>
+                    <span class="nav-item-link">Más información →</span>
                 </div>
             </a>
 
             <a href="#redefiniendo" class="nav-item">
                 <div class="nav-item-content">
-                    <div class="nav-item-header">
-                        <div class="nav-item-label">Información</div>
-                        <h3>Conocer más</h3>
+                    <div class="nav-item-label">Información</div>
+                    <h3>Conocer más</h3>
+                    <p>Descubre cómo estamos redefiniendo el mercado inmobiliario con tecnología e innovación.</p>
+                    <div class="nav-item-feature">
+                        <h4>Experiencia digital</h4>
+                        <p>Integramos la tecnología de hoy al sector inmobiliario, creando experiencias digitales que transforman la manera de encontrar tu nuevo hogar.</p>
                     </div>
-                    <div class="nav-item-body">
-                        <p>Descubre cómo estamos redefiniendo el mercado inmobiliario con tecnología e innovación.</p>
-                        <div class="nav-item-feature">
-                            <h4>Experiencia digital</h4>
-                            <p>Integramos la tecnología de hoy al sector inmobiliario, creando experiencias digitales que transforman la manera de encontrar tu nuevo hogar.</p>
-                        </div>
-                    </div>
-                    <div class="nav-item-footer">
-                        <span class="nav-item-link">Ver más →</span>
-                    </div>
+                    <span class="nav-item-link">Ver más →</span>
                 </div>
             </a>
         </div>
