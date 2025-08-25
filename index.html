@@ -32,6 +32,7 @@
             --overlay-dark: rgba(0, 0, 0, 0.6);
             --overlay-medium: rgba(0, 0, 0, 0.4);
             --overlay-light: rgba(0, 0, 0, 0.2);
+            --overlay-nav: rgba(0, 0, 0, 0.3);
             --overlay-white: rgba(255, 255, 255, 0.9);
             
             /* Esquema negro minimalista */
@@ -251,35 +252,35 @@
         }
 
         .nav-item:nth-child(1) {
-            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+            background: linear-gradient(var(--overlay-nav), var(--overlay-nav)), 
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg');
             background-size: cover;
             background-position: center;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+            filter: saturate(1.2) contrast(1.3) brightness(1.5) hue-rotate(15deg);
         }
 
         .nav-item:nth-child(2) {
-            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+            background: linear-gradient(var(--overlay-nav), var(--overlay-nav)), 
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150948654_0.jpeg');
             background-size: cover;
             background-position: center;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+            filter: saturate(1.2) contrast(1.3) brightness(1.5) hue-rotate(15deg);
         }
 
         .nav-item:nth-child(3) {
-            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+            background: linear-gradient(var(--overlay-nav), var(--overlay-nav)), 
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150760004_0.jpeg');
             background-size: cover;
             background-position: center;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+            filter: saturate(1.2) contrast(1.3) brightness(1.5) hue-rotate(15deg);
         }
 
         .nav-item:nth-child(4) {
-            background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
+            background: linear-gradient(var(--overlay-nav), var(--overlay-nav)), 
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756151545766_0.jpeg');
             background-size: cover;
             background-position: center;
-            filter: saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(15deg);
+            filter: saturate(1.2) contrast(1.3) brightness(1.5) hue-rotate(15deg);
         }
 
         .nav-item:hover {
@@ -300,6 +301,11 @@
         .nav-item-content {
             position: relative;
             z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 200px;
         }
 
         .nav-item-label {
@@ -316,6 +322,7 @@
             font-weight: 600;
             margin-bottom: 1rem;
             color: white;
+            line-height: 1.2;
         }
 
         .nav-item p {
@@ -350,6 +357,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-size: 0.9rem;
+            margin-top: auto;
         }
 
         /* About Features Section */
