@@ -26,7 +26,7 @@
             --medium-gray: #e0e0e0;
             --background-gray: #7a7a7a;
             --white: #ffffff;
-            --accent-orange: #ff6b35;
+            --accent-black: #333333; /* Cambio de accent-orange a accent-black */
             --text-muted: #999999;
             --border-color: #ddd;
             --overlay-dark: rgba(0, 0, 0, 0.6);
@@ -34,9 +34,9 @@
             --overlay-light: rgba(0, 0, 0, 0.2);
             --overlay-white: rgba(255, 255, 255, 0.9);
             
-            /* Esquema elegante beige/gris */
-            --elegant-beige: #F5F5DC;
-            --warm-beige: #F0E68C;
+            /* Esquema negro minimalista */
+            --elegant-black: #333333; /* Cambio de elegant-beige */
+            --warm-black: #000000; /* Cambio de warm-beige */
             --charcoal: #36454F;
             --light-gray-accent: #D3D3D3;
             --dark-gray: #2F2F2F;
@@ -141,7 +141,7 @@
 
         .hero-tagline {
             font-size: 0.9rem;
-            color: var(--elegant-beige);
+            color: var(--elegant-black);
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 2rem;
@@ -289,7 +289,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(245, 245, 220, 0.1);
+            background: rgba(51, 51, 51, 0.1); /* Cambio de beige a negro */
             z-index: 1;
         }
 
@@ -329,7 +329,7 @@
         .nav-item-feature h4 {
             font-size: 1rem;
             font-weight: 600;
-            color: var(--elegant-beige);
+            color: var(--elegant-black); /* Cambio a negro */
             margin-bottom: 0.5rem;
         }
 
@@ -403,7 +403,7 @@
             font-size: 1.1rem;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: var(--elegant-beige);
+            color: var(--elegant-black); /* Cambio a negro */
         }
 
         .about-feature p {
@@ -413,7 +413,7 @@
         }
 
         .about-feature .btn-feature {
-            color: var(--elegant-beige);
+            color: var(--elegant-black); /* Cambio a negro */
             text-decoration: none;
             font-weight: 500;
             text-transform: uppercase;
@@ -426,7 +426,7 @@
         .about-image {
             height: 500px;
             background: linear-gradient(var(--overlay-light), var(--overlay-light)), 
-                        url('https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=600&fit=crop&crop=center');
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1755189383506_0.jpeg');
             background-size: cover;
             background-position: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -469,7 +469,7 @@
             margin-bottom: 0;
         }
 
-        /* BUSCADOR */
+        /* BUSCADOR - NEGRO MINIMALISTA */
         .property-search-bar {
             background: rgba(248, 248, 248, 1);
             border-radius: 16px;
@@ -505,7 +505,7 @@
         .search-select:focus,
         .search-input:focus {
             outline: none;
-            border-color: #4a90e2;
+            border-color: #333333; /* Cambio de azul a negro */
         }
 
         .search-checkbox-group {
@@ -536,12 +536,12 @@
         }
 
         .search-btn-primary {
-            background: #4a90e2;
+            background: #333333; /* Cambio de azul a negro */
             color: white;
         }
 
         .search-btn-primary:hover {
-            background: #357abd;
+            background: #000000; /* Cambio de azul a negro */
         }
 
         .search-btn-secondary {
@@ -554,7 +554,7 @@
         }
 
         .search-link {
-            color: #4a90e2;
+            color: #333333; /* Cambio de azul a negro */
             text-decoration: none;
             font-size: 0.9rem;
             margin-top: 1rem;
@@ -758,7 +758,7 @@
             font-size: 1.1rem;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: var(--elegant-beige);
+            color: var(--elegant-black); /* Cambio a negro */
         }
 
         .tech-feature p {
@@ -834,7 +834,7 @@
 
         .contact-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-color: var(--elegant-beige);
+            border-color: var(--elegant-black); /* Cambio a negro */
             transform: translateY(-2px);
         }
 
@@ -844,7 +844,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--elegant-beige);
+            color: var(--elegant-black); /* Cambio a negro */
         }
 
         .contact-item a {
@@ -893,7 +893,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 1.5rem;
-            color: var(--elegant-beige);
+            color: var(--elegant-black); /* Cambio a negro */
         }
 
         .footer-section ul {
@@ -912,7 +912,7 @@
         }
 
         .footer-section ul li a:hover {
-            color: var(--elegant-beige);
+            color: var(--elegant-black); /* Cambio a negro */
         }
 
         .footer-bottom {
@@ -1220,7 +1220,7 @@
         <div class="new-era-container">
             <div class="new-era-content fade-in">
                 <h2>La nueva era de lo inmobiliario comienza aquí</h2>
-                <h3 style="font-size: 1.8rem; font-weight: 300; margin-bottom: 2rem; color: var(--elegant-beige);">Revolucionando la manera de encontrar tu hogar</h3>
+                <h3 style="font-size: 1.8rem; font-weight: 300; margin-bottom: 2rem; color: var(--elegant-black);">Revolucionando la manera de encontrar tu hogar</h3>
                 <p>Porque entendemos que la tarea de encontrar tu próximo hogar es difícil, ya que implica tiempo y recursos. Acá en Casa Nuvera te brindamos las mejores herramientas para adquirir la propiedad que anhelas.</p>
                 
                 <div class="new-era-technologies">
