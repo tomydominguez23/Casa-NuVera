@@ -416,16 +416,18 @@
             transform: translateY(-2px);
         }
 
-        /* Properties Section - CON BUSCADOR INTEGRADO */
+        /* 🚨 FORZAR FONDO BLANCO EN SECCIÓN DE PROPIEDADES */
         .properties-section {
-            padding: 8rem 2rem;
-            background: #ffffff;
-            color: var(--primary-black);
+            padding: 8rem 2rem !important;
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            color: var(--primary-black) !important;
         }
 
         .properties-container {
             max-width: 1400px;
             margin: 0 auto;
+            background: transparent !important;
         }
 
         .properties-header {
@@ -437,14 +439,14 @@
             font-size: 2.8rem;
             font-weight: 300;
             margin-bottom: 2rem;
-            color: var(--primary-black);
+            color: var(--primary-black) !important;
             line-height: 1.2;
             letter-spacing: -1px;
         }
 
         .properties-header p {
             font-size: 1.2rem;
-            color: var(--secondary-gray);
+            color: var(--secondary-gray) !important;
             margin-bottom: 2rem;
             line-height: 1.6;
             max-width: 800px;
@@ -452,9 +454,9 @@
             margin-right: auto;
         }
 
-        /* BUSCADOR - LIMPIO */
+        /* BUSCADOR - FONDO GRIS CLARO SOBRE BLANCO */
         .property-search-bar {
-            background: rgba(248, 248, 248, 1);
+            background: rgba(248, 248, 248, 1) !important;
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
             padding: 2rem;
@@ -480,8 +482,8 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 0.9rem;
-            background: white;
-            color: #333;
+            background: white !important;
+            color: #333 !important;
             transition: border-color 0.3s ease;
         }
 
@@ -505,7 +507,7 @@
 
         .search-checkbox-label {
             font-size: 0.9rem;
-            color: #666;
+            color: #666 !important;
         }
 
         .search-btn {
@@ -519,42 +521,44 @@
         }
 
         .search-btn-primary {
-            background: #333333;
-            color: white;
+            background: #333333 !important;
+            color: white !important;
         }
 
         .search-btn-primary:hover {
-            background: #000000;
+            background: #000000 !important;
         }
 
         .search-btn-secondary {
-            background: #6c757d;
-            color: white;
+            background: #6c757d !important;
+            color: white !important;
         }
 
         .search-btn-secondary:hover {
-            background: #545b62;
+            background: #545b62 !important;
         }
 
         .search-link {
-            color: #333333;
+            color: #333333 !important;
             text-decoration: none;
             font-size: 0.9rem;
             margin-top: 1rem;
             display: inline-block;
         }
 
-        /* GRID DE PROPIEDADES - LIMPIO SIN CUADRADOS RAROS */
+        /* GRID DE PROPIEDADES CON FONDO BLANCO FORZADO */
         .properties-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
             padding: 0;
+            background: transparent !important;
         }
 
-        /* CARDS LIMPIAS SIN CUADRADOS GRISES */
+        /* CARDS BLANCAS SOBRE FONDO BLANCO */
         .property-item {
-            background: white;
+            background: white !important;
+            background-color: white !important;
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -588,23 +592,24 @@
             transform: scale(1.05);
         }
 
-        /* CONTENIDO LIMPIO SIN ELEMENTOS EXTRAÑOS */
+        /* CONTENIDO CON COLORES PARA FONDO BLANCO */
         .property-content {
             padding: 20px;
-            background: white;
+            background: white !important;
+            background-color: white !important;
         }
 
         .property-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #333;
+            color: #333 !important;
             margin-bottom: 8px;
             line-height: 1.3;
         }
 
         .property-type {
             font-size: 0.85rem;
-            color: #666;
+            color: #666 !important;
             margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -615,7 +620,7 @@
             align-items: center;
             gap: 6px;
             font-size: 0.85rem;
-            color: #888;
+            color: #888 !important;
             margin-bottom: 0;
             line-height: 1.2;
         }
@@ -623,6 +628,34 @@
         .property-location::before {
             content: "📍";
             font-size: 0.8rem;
+        }
+
+        /* Loading States para fondo blanco */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--secondary-gray) !important;
+            min-height: 200px;
+            background: transparent !important;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--secondary-gray);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Stats Section */
@@ -859,33 +892,6 @@
             letter-spacing: 1px;
         }
 
-        /* Loading States */
-        .loading-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem 2rem;
-            text-align: center;
-            color: var(--secondary-gray);
-            min-height: 200px;
-        }
-
-        .loading-spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-top: 4px solid var(--secondary-gray);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-menu {
@@ -1067,7 +1073,7 @@
         </div>
     </section>
 
-    <!-- Properties Section - LIMPIO SIN CUADRADOS GRISES -->
+    <!-- Properties Section - FONDO BLANCO FORZADO -->
     <section class="properties-section" id="propiedades">
         <div class="properties-container">
             <div class="properties-header fade-in">
@@ -1112,7 +1118,7 @@
                 <a href="#" class="search-link">Buscar por código de propiedad</a>
             </div>
             
-            <!-- Grid de Propiedades LIMPIO -->
+            <!-- Grid de Propiedades CON FONDO BLANCO -->
             <div class="properties-grid" id="propertiesGrid">
                 <div class="loading-container">
                     <div class="loading-spinner"></div>
@@ -1252,12 +1258,12 @@
             }
         }
 
-        // CARGAR PROPIEDADES LIMPIAS - SIN CUADRADOS GRISES
+        // CARGAR PROPIEDADES CON FONDO BLANCO FORZADO
         async function loadProperties() {
             const propertiesContainer = document.getElementById('propertiesGrid');
             
             try {
-                // Propiedades de ejemplo limpias
+                // Propiedades de ejemplo para fondo blanco
                 const mockProperties = [
                     {
                         type: 'Departamento',
@@ -1297,7 +1303,7 @@
                     }
                 ];
 
-                // HTML LIMPIO SIN CUADRADOS GRISES
+                // HTML PARA FONDO BLANCO
                 const propertiesHTML = mockProperties.map(property => `
                     <div class="property-item">
                         <div class="property-media">
