@@ -10,7 +10,7 @@
     <!-- 🚀 Widget WhatsApp -->
     <link rel="stylesheet" href="whatsapp-widget.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         /* 🚨 OVERRIDE COMPLETO PARA FONDO BLANCO FORZADO */
@@ -604,31 +604,33 @@
             position: absolute !important;
             top: 1rem !important;
             left: 1rem !important;
-            background: rgba(255, 255, 255, 0.95) !important;
-            padding: 0.6rem 1.2rem !important; /* Padding aumentado */
-            border-radius: 8px !important;
-            font-size: 1rem !important; /* Tamaño aumentado */
-            font-weight: 700 !important; /* Más bold */
-            color: var(--primary-black) !important;
-            backdrop-filter: blur(10px) !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra para legibilidad */
+            background: rgba(255, 255, 255, 0.98) !important; /* Fondo más opaco */
+            padding: 0.7rem 1.3rem !important; /* Padding más generoso */
+            border-radius: 10px !important; /* Border radius más pronunciado */
+            font-size: 1.1rem !important; /* Tamaño más grande */
+            font-weight: 800 !important; /* Más bold para contraste */
+            color: #1a1a1a !important; /* Negro más intenso */
+            backdrop-filter: blur(15px) !important; /* Blur más intenso */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important; /* Sombra más pronunciada */
+            border: 1px solid rgba(0, 0, 0, 0.08) !important; /* Borde sutil */
         }
 
         .property-featured-badge {
             position: absolute !important;
             top: 1rem !important;
             right: 1rem !important;
-            background: #f39c12 !important;
+            background: #e67e22 !important; /* Color más intenso */
             color: white !important;
-            padding: 0.4rem 1rem !important;
-            border-radius: 6px !important;
-            font-size: 0.8rem !important;
-            font-weight: 600 !important;
+            padding: 0.5rem 1.1rem !important; /* Padding más generoso */
+            border-radius: 8px !important;
+            font-size: 0.85rem !important; /* Tamaño más grande */
+            font-weight: 700 !important; /* Más bold */
             text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
+            letter-spacing: 0.8px !important; /* Letter-spacing aumentado */
+            box-shadow: 0 2px 8px rgba(230, 126, 34, 0.3) !important; /* Sombra del mismo color */
         }
 
-        /* CONTENIDO DE PROPIEDADES EXPANDIDO */
+        /* CONTENIDO DE PROPIEDADES CON TEXTOS SUPER LEGIBLES */
         .property-content {
             padding: 24px !important; /* Padding aumentado */
             background: white !important;
@@ -640,11 +642,11 @@
         }
 
         .property-title {
-            font-size: 1.3rem !important; /* Tamaño aumentado */
-            font-weight: 600 !important;
-            color: #333 !important;
-            margin-bottom: 12px !important; /* Más espacio */
-            line-height: 1.3 !important;
+            font-size: 1.35rem !important; /* Tamaño más grande para legibilidad */
+            font-weight: 700 !important; /* Más bold para contraste */
+            color: #1a1a1a !important; /* Negro más intenso para legibilidad */
+            margin-bottom: 14px !important; /* Más espacio */
+            line-height: 1.25 !important; /* Line-height optimizado */
             /* Permitir que el título se expanda sin cortarse */
             overflow: visible !important;
             white-space: normal !important;
@@ -652,10 +654,11 @@
         }
 
         .property-subtitle {
-            font-size: 0.95rem !important; /* Tamaño aumentado */
-            color: #666 !important;
-            margin-bottom: 16px !important; /* Más espacio */
-            line-height: 1.4 !important;
+            font-size: 1rem !important; /* Tamaño más grande */
+            color: #333333 !important; /* Color más oscuro para legibilidad */
+            font-weight: 500 !important; /* Peso medio para mejor legibilidad */
+            margin-bottom: 18px !important; /* Más espacio */
+            line-height: 1.45 !important; /* Line-height mejorado */
             /* Permitir expansión de texto */
             overflow: visible !important;
             white-space: normal !important;
@@ -666,11 +669,12 @@
         .property-location {
             display: flex !important;
             align-items: flex-start !important; /* Alineación superior para texto largo */
-            gap: 6px !important;
-            font-size: 0.9rem !important; /* Tamaño aumentado */
-            color: #888 !important;
-            margin-bottom: 20px !important; /* Más espacio */
-            line-height: 1.3 !important;
+            gap: 8px !important; /* Gap aumentado */
+            font-size: 0.95rem !important; /* Tamaño más grande */
+            color: #444444 !important; /* Color más oscuro para legibilidad */
+            font-weight: 500 !important; /* Peso medio para mejor legibilidad */
+            margin-bottom: 22px !important; /* Más espacio */
+            line-height: 1.4 !important; /* Line-height mejorado */
             /* Permitir texto multilínea */
             overflow: visible !important;
             white-space: normal !important;
@@ -679,14 +683,14 @@
 
         .property-location::before {
             content: "📍" !important;
-            font-size: 0.9rem !important;
+            font-size: 1rem !important; /* Ícono más grande */
             flex-shrink: 0 !important; /* El ícono no se reduce */
         }
 
         .property-features {
             display: flex !important;
             justify-content: space-between !important;
-            gap: 1rem !important;
+            gap: 1.2rem !important; /* Gap aumentado */
             margin-top: auto !important; /* Se mantiene en la parte inferior */
             flex-wrap: wrap !important; /* Permite envolver si es necesario */
         }
@@ -694,18 +698,18 @@
         .property-feature {
             display: flex !important;
             align-items: center !important;
-            gap: 0.4rem !important; /* Gap aumentado */
-            font-size: 0.85rem !important;
-            color: #666 !important;
-            font-weight: 500 !important;
+            gap: 0.5rem !important; /* Gap aumentado */
+            font-size: 0.9rem !important; /* Tamaño más grande */
+            color: #333333 !important; /* Color más oscuro para legibilidad */
+            font-weight: 600 !important; /* Más bold para contraste */
             flex: 1 !important; /* Se distribuye equitativamente */
-            min-width: 60px !important; /* Ancho mínimo para evitar colapso */
+            min-width: 65px !important; /* Ancho mínimo aumentado */
         }
 
         .property-feature-icon {
-            width: 16px !important; /* Tamaño aumentado */
-            height: 16px !important;
-            color: #999 !important;
+            width: 18px !important; /* Tamaño más grande */
+            height: 18px !important;
+            color: #555555 !important; /* Color más oscuro para contraste */
             flex-shrink: 0 !important; /* No se reduce */
         }
 
@@ -717,14 +721,20 @@
             justify-content: center !important;
             padding: 4rem 2rem !important;
             text-align: center !important;
-            color: var(--secondary-gray) !important;
+            color: #333333 !important; /* Color más oscuro para legibilidad */
             min-height: 200px !important;
             background: transparent !important;
         }
 
+        .loading-container p {
+            font-size: 1.05rem !important; /* Tamaño más grande */
+            font-weight: 500 !important; /* Peso medio para legibilidad */
+            color: #333333 !important; /* Color más oscuro */
+        }
+
         .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1) !important;
-            border-top: 4px solid var(--secondary-gray) !important;
+            border-top: 4px solid #333333 !important; /* Color más oscuro */
             border-radius: 50% !important;
             width: 40px !important;
             height: 40px !important;
@@ -1016,7 +1026,36 @@
             }
 
             .property-content {
-                padding: 20px !important; /* Padding reducido en móvil */
+                padding: 22px !important; /* Padding ligeramente reducido pero generoso */
+            }
+
+            .property-title {
+                font-size: 1.25rem !important; /* Tamaño optimizado para móvil */
+                font-weight: 700 !important; /* Mantiene el bold */
+                line-height: 1.3 !important;
+            }
+
+            .property-subtitle {
+                font-size: 0.95rem !important; /* Tamaño optimizado */
+                color: #333333 !important; /* Mantiene contraste */
+                font-weight: 500 !important;
+            }
+
+            .property-location {
+                font-size: 0.9rem !important; /* Tamaño optimizado */
+                color: #444444 !important; /* Mantiene contraste */
+                font-weight: 500 !important;
+            }
+
+            .property-feature {
+                font-size: 0.85rem !important; /* Tamaño optimizado */
+                color: #333333 !important; /* Mantiene contraste */
+                font-weight: 600 !important;
+            }
+
+            .property-price-badge {
+                font-size: 1rem !important; /* Tamaño optimizado para móvil */
+                padding: 0.6rem 1.1rem !important;
             }
 
             .new-era-container {
