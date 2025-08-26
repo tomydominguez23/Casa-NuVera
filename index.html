@@ -544,7 +544,7 @@
             display: inline-block;
         }
 
-        /* GRID DE PROPIEDADES */
+        /* GRID DE PROPIEDADES - LIMPIO SIN CUADRADOS RAROS */
         .properties-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -552,6 +552,7 @@
             padding: 0;
         }
 
+        /* CARDS LIMPIAS SIN CUADRADOS GRISES */
         .property-item {
             background: white;
             border-radius: 16px;
@@ -587,8 +588,10 @@
             transform: scale(1.05);
         }
 
+        /* CONTENIDO LIMPIO SIN ELEMENTOS EXTRAÑOS */
         .property-content {
             padding: 20px;
+            background: white;
         }
 
         .property-title {
@@ -613,7 +616,7 @@
             gap: 6px;
             font-size: 0.85rem;
             color: #888;
-            margin-bottom: 16px;
+            margin-bottom: 0;
             line-height: 1.2;
         }
 
@@ -1064,7 +1067,7 @@
         </div>
     </section>
 
-    <!-- Properties Section - CON BUSCADOR Y PROPIEDADES -->
+    <!-- Properties Section - LIMPIO SIN CUADRADOS GRISES -->
     <section class="properties-section" id="propiedades">
         <div class="properties-container">
             <div class="properties-header fade-in">
@@ -1109,6 +1112,7 @@
                 <a href="#" class="search-link">Buscar por código de propiedad</a>
             </div>
             
+            <!-- Grid de Propiedades LIMPIO -->
             <div class="properties-grid" id="propertiesGrid">
                 <div class="loading-container">
                     <div class="loading-spinner"></div>
@@ -1248,12 +1252,12 @@
             }
         }
 
-        // Cargar propiedades en la galería
+        // CARGAR PROPIEDADES LIMPIAS - SIN CUADRADOS GRISES
         async function loadProperties() {
             const propertiesContainer = document.getElementById('propertiesGrid');
             
             try {
-                // Propiedades de ejemplo
+                // Propiedades de ejemplo limpias
                 const mockProperties = [
                     {
                         type: 'Departamento',
@@ -1293,6 +1297,7 @@
                     }
                 ];
 
+                // HTML LIMPIO SIN CUADRADOS GRISES
                 const propertiesHTML = mockProperties.map(property => `
                     <div class="property-item">
                         <div class="property-media">
