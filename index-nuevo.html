@@ -323,12 +323,14 @@
             overflow: hidden;
         }
 
+        /* ===== UBICACIÓN CON MÁXIMA LEGIBILIDAD ===== */
         .property-location {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             font-size: 0.9rem;
-            color: var(--secondary-gray);
+            color: var(--primary-black) !important; /* MISMO COLOR QUE EL TÍTULO */
+            font-weight: 700 !important; /* MÁXIMA LEGIBILIDAD */
             margin-bottom: 1rem;
         }
 
@@ -341,13 +343,15 @@
             border-radius: 8px;
         }
 
+        /* ===== CARACTERÍSTICAS CON MÁXIMA LEGIBILIDAD ===== */
         .feature {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.3rem;
             font-size: 0.85rem;
-            color: var(--secondary-gray);
+            color: var(--primary-black) !important; /* MISMO COLOR QUE EL TÍTULO */
+            font-weight: 700 !important; /* MÁXIMA LEGIBILIDAD */
         }
 
         .feature i {
@@ -356,8 +360,8 @@
         }
 
         .feature-value {
-            font-weight: 600;
-            color: var(--primary-black);
+            font-weight: 700 !important; /* MÁXIMA LEGIBILIDAD */
+            color: var(--primary-black) !important;
         }
 
         .property-actions {
@@ -813,7 +817,7 @@
                     return moneda === 'UF' ? `UF ${formatted}` : `$${formatted}`;
                 };
 
-                const message = `Hola! Estoy interesado/a en la propiedad "${property.title}" ubicada en ${property.address}.\n\n💰 Precio: ${formatPrice(property.price, property.currency)}\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\n📐 Superficie: ${property.total_area}m²\n\n¿Podrías darme más información?`;
+                const message = `Hola! Estoy interesado/a en la propiedad "${property.title}" ubicada en ${property.address}.\\n\\n💰 Precio: ${formatPrice(property.price, property.currency)}\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📐 Superficie: ${property.total_area}m²\\n\\n¿Podrías darme más información?`;
 
                 const whatsappURL = `https://wa.me/56912345678?text=${encodeURIComponent(message)}`;
                 window.open(whatsappURL, '_blank');
