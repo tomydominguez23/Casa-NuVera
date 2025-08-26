@@ -552,17 +552,18 @@
             display: inline-block !important;
         }
 
-        /* GRID DE PROPIEDADES CON FONDO BLANCO FORZADO */
-        .properties-grid {
+        /* 🎯 GRID DE PROPIEDADES REALES CON ESTÉTICA MANTENIDA */
+        .properties-grid-container,
+        #featuredProperties {
             display: grid !important;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
             gap: 2rem !important;
             padding: 0 !important;
             background: transparent !important;
         }
 
-        /* CARDS BLANCAS SOBRE FONDO BLANCO */
-        .property-item {
+        /* 🏠 CARDS DE PROPIEDADES REALES - ESTÉTICA MANTENIDA */
+        .property-card {
             background: white !important;
             background-color: white !important;
             border-radius: 16px !important;
@@ -573,32 +574,56 @@
             border: 1px solid rgba(0, 0, 0, 0.05) !important;
         }
 
-        .property-item:hover {
+        .property-card:hover {
             transform: translateY(-8px) !important;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
         }
 
-        .property-media {
+        .property-image {
             height: 250px !important;
-            background: #f5f5f5 !important;
-            background-size: cover !important;
-            background-position: center !important;
             position: relative !important;
             overflow: hidden !important;
         }
 
-        .property-media img {
+        .property-image img {
             width: 100% !important;
             height: 100% !important;
             object-fit: cover !important;
             transition: transform 0.3s ease !important;
         }
 
-        .property-item:hover .property-media img {
+        .property-card:hover .property-image img {
             transform: scale(1.05) !important;
         }
 
-        /* CONTENIDO CON COLORES PARA FONDO BLANCO */
+        .property-price-badge {
+            position: absolute !important;
+            top: 1rem !important;
+            left: 1rem !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px !important;
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            color: var(--primary-black) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+
+        .property-featured-badge {
+            position: absolute !important;
+            top: 1rem !important;
+            right: 1rem !important;
+            background: #f39c12 !important;
+            color: white !important;
+            padding: 0.3rem 0.8rem !important;
+            border-radius: 6px !important;
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        /* CONTENIDO DE PROPIEDADES CON COLORES PARA FONDO BLANCO */
         .property-content {
             padding: 20px !important;
             background: white !important;
@@ -606,19 +631,18 @@
         }
 
         .property-title {
-            font-size: 1.1rem !important;
+            font-size: 1.2rem !important;
             font-weight: 600 !important;
             color: #333 !important;
             margin-bottom: 8px !important;
             line-height: 1.3 !important;
         }
 
-        .property-type {
-            font-size: 0.85rem !important;
+        .property-subtitle {
+            font-size: 0.9rem !important;
             color: #666 !important;
             margin-bottom: 12px !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
+            line-height: 1.4 !important;
         }
 
         .property-location {
@@ -627,13 +651,34 @@
             gap: 6px !important;
             font-size: 0.85rem !important;
             color: #888 !important;
-            margin-bottom: 0 !important;
+            margin-bottom: 16px !important;
             line-height: 1.2 !important;
         }
 
         .property-location::before {
             content: "📍" !important;
             font-size: 0.8rem !important;
+        }
+
+        .property-features {
+            display: flex !important;
+            justify-content: space-between !important;
+            gap: 1rem !important;
+        }
+
+        .property-feature {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.3rem !important;
+            font-size: 0.8rem !important;
+            color: #666 !important;
+            font-weight: 500 !important;
+        }
+
+        .property-feature-icon {
+            width: 14px !important;
+            height: 14px !important;
+            color: #999 !important;
         }
 
         /* Loading States para fondo blanco */
@@ -926,14 +971,15 @@
                 grid-template-columns: 1fr;
             }
 
-            .properties-grid {
+            .properties-grid-container,
+            #featuredProperties {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
             }
 
-            .property-item {
+            .property-card {
                 margin: 0 auto;
-                max-width: 320px;
+                max-width: 350px;
             }
 
             .new-era-container {
@@ -1079,7 +1125,7 @@
         </div>
     </section>
 
-    <!-- Properties Section - FONDO BLANCO DEFINITIVO -->
+    <!-- Properties Section - PROPIEDADES REALES CON REDIRECCIÓN -->
     <section class="properties-section" id="propiedades">
         <div class="properties-container">
             <div class="properties-header fade-in">
@@ -1124,11 +1170,11 @@
                 <a href="#" class="search-link">Buscar por código de propiedad</a>
             </div>
             
-            <!-- Grid de Propiedades CON FONDO BLANCO DEFINITIVO -->
-            <div class="properties-grid" id="propertiesGrid">
+            <!-- 🎯 Grid de Propiedades REALES - Se carga desde property-loader-fixed.js -->
+            <div id="featuredProperties">
                 <div class="loading-container">
                     <div class="loading-spinner"></div>
-                    <p>Cargando propiedades...</p>
+                    <p>Cargando propiedades reales...</p>
                 </div>
             </div>
         </div>
@@ -1245,15 +1291,16 @@
     <script src="whatsapp-widget.js"></script>
 
     <script>
-        // Función de búsqueda
+        // 🎯 FUNCIÓN DE BÚSQUEDA CONECTADA AL SISTEMA REAL
         function searchProperties() {
             const operation = document.getElementById('operation-filter').value;
             const type = document.getElementById('type-filter').value;
             const location = document.getElementById('location-filter').value;
             const projects = document.getElementById('projects-filter').checked;
             
-            console.log('Filtros de búsqueda:', { operation, type, location, projects });
+            console.log('🔍 Filtros de búsqueda aplicados:', { operation, type, location, projects });
             
+            // Usar el PropertyLoader real para aplicar filtros
             if (window.propertyLoader) {
                 window.propertyLoader.applySearchFilters({
                     operation,
@@ -1261,70 +1308,15 @@
                     location,
                     projects
                 });
-            }
-        }
-
-        // CARGAR PROPIEDADES REALES - PASO 2 PENDIENTE
-        async function loadProperties() {
-            const propertiesContainer = document.getElementById('propertiesGrid');
-            
-            try {
-                // PASO 1: MOCKUP TEMPORAL - PASO 2: PROPIEDADES REALES
-                const mockProperties = [
-                    {
-                        type: 'Departamento',
-                        title: 'Moderno Departamento en Las Condes',
-                        location: 'Las Condes, Santiago',
-                        image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg'
-                    },
-                    {
-                        type: 'Casa',
-                        title: 'Casa Familiar en Providencia',
-                        location: 'Providencia, Santiago',
-                        image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150948654_0.jpeg'
-                    },
-                    {
-                        type: 'Departamento',
-                        title: 'Elegante Departamento en Ñuñoa',
-                        location: 'Ñuñoa, Santiago',
-                        image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150760004_0.jpeg'
-                    },
-                    {
-                        type: 'Casa',
-                        title: 'Casa Moderna en Vitacura',
-                        location: 'Vitacura, Santiago',
-                        image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756151545766_0.jpeg'
-                    }
-                ];
-
-                const propertiesHTML = mockProperties.map(property => `
-                    <div class="property-item">
-                        <div class="property-media">
-                            <img src="${property.image}" alt="${property.title}" loading="lazy">
-                        </div>
-                        <div class="property-content">
-                            <div class="property-type">${property.type}</div>
-                            <h3 class="property-title">${property.title}</h3>
-                            <div class="property-location">${property.location}</div>
-                        </div>
-                    </div>
-                `).join('');
-
-                propertiesContainer.innerHTML = propertiesHTML;
-
-            } catch (error) {
-                console.error('Error loading properties:', error);
-                propertiesContainer.innerHTML = `
-                    <div class="loading-container">
-                        <p>Error al cargar las propiedades. Por favor, intenta más tarde.</p>
-                    </div>
-                `;
+            } else {
+                console.warn('PropertyLoader no está disponible aún');
             }
         }
 
         // Load content on page load
         document.addEventListener('DOMContentLoaded', () => {
-            loadProperties();
+            console.log('🏠 Página cargada - PropertyLoader se iniciará automáticamente');
+            // El property-loader-fixed.js se encarga de cargar las propiedades reales
         });
 
         // Animations on scroll
