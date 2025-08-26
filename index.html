@@ -1174,7 +1174,7 @@
             <div id="featuredProperties">
                 <div class="loading-container">
                     <div class="loading-spinner"></div>
-                    <p>Cargando propiedades reales...</p>
+                    <p>Cargando propiedades reales desde Supabase...</p>
                 </div>
             </div>
         </div>
@@ -1309,13 +1309,14 @@
                     projects
                 });
             } else {
-                console.warn('PropertyLoader no está disponible aún');
+                console.warn('⚠️ PropertyLoader no está disponible aún - esperando conexión a Supabase');
             }
         }
 
-        // Load content on page load
+        // 🚨 SOLO MANEJO DE EVENTOS - SIN CARGA DE PROPIEDADES MOCKUP
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🏠 Página cargada - PropertyLoader se iniciará automáticamente');
+            console.log('🏠 Página cargada - PropertyLoader real se iniciará automáticamente');
+            console.log('⚡ Scripts cargados: supabase.js, property-handler.js, property-loader-fixed.js');
             // El property-loader-fixed.js se encarga de cargar las propiedades reales
         });
 
