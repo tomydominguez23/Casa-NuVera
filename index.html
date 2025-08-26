@@ -26,18 +26,18 @@
             --medium-gray: #e0e0e0;
             --background-gray: #7a7a7a;
             --white: #ffffff;
-            --accent-black: #333333; /* Cambio de accent-orange a accent-black */
+            --accent-black: #333333;
             --text-muted: #999999;
             --border-color: #ddd;
             --overlay-dark: rgba(0, 0, 0, 0.6);
             --overlay-medium: rgba(0, 0, 0, 0.4);
             --overlay-light: rgba(0, 0, 0, 0.2);
-            --overlay-nav: rgba(0, 0, 0, 0.1); /* OVERLAY MÁS SUAVE */
+            --overlay-nav: rgba(0, 0, 0, 0.1);
             --overlay-white: rgba(255, 255, 255, 0.9);
             
             /* Esquema negro minimalista */
-            --elegant-black: #333333; /* Cambio de elegant-beige */
-            --warm-black: #000000; /* Cambio de warm-beige */
+            --elegant-black: #333333;
+            --warm-black: #000000;
             --charcoal: #36454F;
             --light-gray-accent: #D3D3D3;
             --dark-gray: #2F2F2F;
@@ -257,7 +257,6 @@
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg');
             background-size: cover;
             background-position: center;
-            /* SIN FILTROS - IMAGEN NATURAL Y VIBRANTE */
         }
 
         .nav-item:nth-child(2) {
@@ -265,7 +264,6 @@
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150948654_0.jpeg');
             background-size: cover;
             background-position: center;
-            /* SIN FILTROS - IMAGEN NATURAL Y VIBRANTE */
         }
 
         .nav-item:nth-child(3) {
@@ -273,7 +271,6 @@
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150760004_0.jpeg');
             background-size: cover;
             background-position: center;
-            /* SIN FILTROS - IMAGEN NATURAL Y VIBRANTE */
         }
 
         .nav-item:nth-child(4) {
@@ -281,7 +278,6 @@
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756151545766_0.jpeg');
             background-size: cover;
             background-position: center;
-            /* SIN FILTROS - IMAGEN NATURAL Y VIBRANTE */
         }
 
         .nav-item:hover {
@@ -295,27 +291,25 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(51, 51, 51, 0.05); /* HOVER MÁS SUTIL */
+            background: rgba(51, 51, 51, 0.05);
             z-index: 1;
         }
 
-        /* CONTENIDO A LA MISMA ALTURA - ALINEACIÓN UNIFORME */
         .nav-item-content {
             position: relative;
             z-index: 2;
             width: 100%;
             padding: 3rem;
-            padding-top: 4rem; /* ALTURA UNIFORME DESDE ARRIBA */
+            padding-top: 4rem;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* TODOS EMPIEZAN A LA MISMA ALTURA */
-            align-items: flex-start; /* Alineación horizontal consistente */
-            gap: 1rem; /* Espaciado uniforme entre elementos */
-            background: none; /* SIN FONDO OSCURO */
-            min-height: 400px; /* Altura mínima consistente */
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 1rem;
+            background: none;
+            min-height: 400px;
         }
 
-        /* TÍTULOS SIN CUADRADOS - TEXT-SHADOW MÁS FUERTE PARA CONTRASTE */
         .nav-item-label {
             font-size: 0.8rem;
             color: #ffffff;
@@ -324,11 +318,11 @@
             margin: 0;
             font-weight: 600;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.7);
-            background: none; /* SIN FONDO */
+            background: none;
             padding: 0.5rem 0;
             display: inline-block;
             width: fit-content;
-            align-self: flex-start; /* Mantiene alineación izquierda */
+            align-self: flex-start;
         }
 
         .nav-item h3 {
@@ -338,20 +332,18 @@
             color: #ffffff;
             line-height: 1.2;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.7);
-            background: none; /* SIN FONDO */
+            background: none;
             padding: 0.5rem 0;
             width: 100%;
-            align-self: stretch; /* Ocupa todo el ancho disponible */
+            align-self: stretch;
         }
 
-        /* TEXTOS DESCRIPTIVOS CON CUADRADOS GLASSMORPHISM TRANSPARENTES */
         .nav-item p {
             color: #ffffff;
             line-height: 1.6;
             margin: 0;
             font-size: 0.9rem;
             font-weight: 500;
-            /* CUADRADO TRANSPARENTE CON GLASSMORPHISM */
             background: rgba(0, 0, 0, 0.3);
             padding: 14px 18px;
             border-radius: 8px;
@@ -362,9 +354,8 @@
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
         }
 
-        /* Viñetas específicas CON RECUADROS */
         .nav-item-feature {
-            background: none; /* SIN FONDO PRINCIPAL */
+            background: none;
             padding: 1rem 0;
             border-radius: 0;
             backdrop-filter: none;
@@ -380,7 +371,6 @@
             color: #ffffff;
             margin-bottom: 0.5rem;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.7);
-            /* SIN CUADRADO - SOLO TÍTULOS */
             background: none;
             padding: 0;
         }
@@ -391,7 +381,6 @@
             line-height: 1.4;
             margin: 0;
             font-weight: 500;
-            /* CUADRADO TRANSPARENTE CON GLASSMORPHISM */
             background: rgba(0, 0, 0, 0.3);
             padding: 14px 18px;
             border-radius: 8px;
@@ -401,14 +390,12 @@
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
         }
 
-        /* ENLACES GLASSMORPHISM TRANSPARENTES */
         .nav-item-link {
             color: #ffffff;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-size: 0.9rem;
-            /* GLASSMORPHISM TRANSPARENTE */
             background: rgba(0, 0, 0, 0.4);
             padding: 14px 18px;
             border-radius: 8px;
@@ -417,8 +404,8 @@
             display: inline-block;
             width: fit-content;
             transition: all 0.3s ease;
-            margin-top: auto; /* Empuja hacia abajo */
-            align-self: flex-start; /* Alineación izquierda consistente */
+            margin-top: auto;
+            align-self: flex-start;
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
             text-decoration: none;
         }
@@ -544,17 +531,18 @@
             font-size: 0.8rem;
         }
 
-        /* Featured Properties - ESTILO IMAGEN 1 MINIMALISTA LIMPIO */
+        /* ✅ FEATURED PROPERTIES SECTION - FONDO BLANCO PURO COMO IMAGEN 1 */
         .featured-section {
             padding: 8rem 2rem;
-            background: #ffffff;
-            color: var(--primary-black);
+            background: #ffffff !important; /* FONDO BLANCO FORZADO */
+            color: var(--primary-black) !important;
         }
 
         .featured-container {
             max-width: 1400px;
             margin: 0 auto;
             width: 100%;
+            background: transparent;
         }
 
         .section-header {
@@ -580,9 +568,9 @@
             margin-bottom: 0;
         }
 
-        /* BUSCADOR - NEGRO MINIMALISTA */
+        /* ✅ BUSCADOR - FONDO BLANCO LIMPIO */
         .property-search-bar {
-            background: rgba(248, 248, 248, 1);
+            background: rgba(248, 248, 248, 1) !important; /* FONDO GRIS CLARO */
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
             padding: 2rem;
@@ -616,7 +604,7 @@
         .search-select:focus,
         .search-input:focus {
             outline: none;
-            border-color: #333333; /* Cambio de azul a negro */
+            border-color: #333333;
         }
 
         .search-checkbox-group {
@@ -647,12 +635,12 @@
         }
 
         .search-btn-primary {
-            background: #333333; /* Cambio de azul a negro */
+            background: #333333;
             color: white;
         }
 
         .search-btn-primary:hover {
-            background: #000000; /* Cambio de azul a negro */
+            background: #000000;
         }
 
         .search-btn-secondary {
@@ -665,16 +653,16 @@
         }
 
         .search-link {
-            color: #333333; /* Cambio de azul a negro */
+            color: #333333;
             text-decoration: none;
             font-size: 0.9rem;
             margin-top: 1rem;
             display: inline-block;
         }
 
-        /* GRID DE PROPIEDADES - ESTILO IMAGEN 1 MINIMALISTA LIMPIO */
+        /* ✅ CONTENEDOR PROPIEDADES - FONDO BLANCO PURO */
         #featuredProperties {
-            background: transparent;
+            background: transparent !important; /* FONDO TRANSPARENTE */
             padding: 0;
             margin: 0;
         }
@@ -686,11 +674,12 @@
             padding: 0;
             max-width: 1400px;
             margin: 0 auto;
+            background: transparent; /* FONDO TRANSPARENTE */
         }
 
-        /* CARDS DE PROPIEDADES - ESTILO IMAGEN 1 MINIMALISTA LIMPIO */
+        /* ✅ CARDS EXACTAMENTE COMO IMAGEN 1 - FONDO BLANCO LIMPIO */
         .property-card {
-            background: #ffffff;
+            background: #ffffff !important; /* FONDO BLANCO FORZADO */
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
@@ -727,13 +716,13 @@
 
         .property-content {
             padding: 24px;
-            background: white;
+            background: white !important; /* FONDO BLANCO FORZADO */
         }
 
-        /* TIPO DE PROPIEDAD - ESTILO IMAGEN 1 */
+        /* ✅ TIPO DE PROPIEDAD - EXACTO COMO IMAGEN 1 */
         .property-type {
             font-size: 0.75rem;
-            color: var(--secondary-gray);
+            color: var(--secondary-gray) !important;
             text-transform: uppercase;
             letter-spacing: 1.2px;
             margin-bottom: 12px;
@@ -744,22 +733,22 @@
             border-radius: 4px;
         }
 
-        /* TÍTULO - ESTILO IMAGEN 1 MINIMALISTA */
+        /* ✅ TÍTULO - EXACTO COMO IMAGEN 1 */
         .property-title {
             font-size: 1.15rem;
             font-weight: 600;
-            color: var(--primary-black);
+            color: var(--primary-black) !important;
             margin-bottom: 8px;
             line-height: 1.4;
         }
 
-        /* UBICACIÓN - ESTILO IMAGEN 1 */
+        /* ✅ UBICACIÓN - EXACTO COMO IMAGEN 1 */
         .property-location {
             display: flex;
             align-items: center;
             gap: 6px;
             font-size: 0.9rem;
-            color: var(--secondary-gray);
+            color: var(--secondary-gray) !important;
             margin-bottom: 0;
             line-height: 1.3;
             font-weight: 500;
@@ -836,7 +825,7 @@
             font-size: 1.1rem;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: var(--elegant-black); /* Cambio a negro */
+            color: var(--elegant-black);
         }
 
         .tech-feature p {
@@ -910,7 +899,7 @@
 
         .contact-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-color: var(--elegant-black); /* Cambio a negro */
+            border-color: var(--elegant-black);
             transform: translateY(-2px);
         }
 
@@ -920,7 +909,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--elegant-black); /* Cambio a negro */
+            color: var(--elegant-black);
         }
 
         .contact-item a {
@@ -968,7 +957,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 1.5rem;
-            color: var(--elegant-black); /* Cambio a negro */
+            color: var(--elegant-black);
         }
 
         .footer-section ul {
@@ -987,7 +976,7 @@
         }
 
         .footer-section ul li a:hover {
-            color: var(--elegant-black); /* Cambio a negro */
+            color: var(--elegant-black);
         }
 
         .footer-bottom {
@@ -1233,7 +1222,7 @@
         </div>
     </section>
 
-    <!-- Featured Properties - ESTILO IMAGEN 1 MINIMALISTA LIMPIO -->
+    <!-- ✅ FEATURED PROPERTIES - EXACTAMENTE COMO IMAGEN 1 CON FONDO BLANCO -->
     <section class="featured-section" id="compra">
         <div class="featured-container">
             <div class="section-header fade-in">
@@ -1482,12 +1471,12 @@
             }
         }
 
-        // Load properties with IMAGE 1 style - MINIMALISTA LIMPIO
+        // ✅ CARGAR PROPIEDADES EXACTAMENTE COMO IMAGEN 1 - FONDO BLANCO LIMPIO
         async function loadFeaturedProperties() {
             const container = document.getElementById('featuredProperties');
             
             try {
-                // Mock data with IMAGE 1 style - clean and minimalist
+                // Mock data exactamente como imagen 1 - limpia y minimalista
                 const mockProperties = [
                     {
                         type: 'DEPARTAMENTO',
@@ -1515,6 +1504,7 @@
                     }
                 ];
 
+                // ✅ HTML EXACTO COMO IMAGEN 1 - FONDO BLANCO LIMPIO
                 const propertiesHTML = `
                     <div class="properties-grid-container">
                         ${mockProperties.map(property => `
