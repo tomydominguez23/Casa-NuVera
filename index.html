@@ -343,21 +343,22 @@
             align-self: stretch; /* Ocupa todo el ancho disponible */
         }
 
-        /* TEXTOS DESCRIPTIVOS CON CUADRADOS ESTILO "EXPLORAR PROPIEDADES" */
+        /* TEXTOS DESCRIPTIVOS CON CUADRADOS GLASSMORPHISM TRANSPARENTES */
         .nav-item p {
             color: #ffffff;
             line-height: 1.6;
             margin: 0;
             font-size: 0.9rem;
             font-weight: 500;
-            /* CUADRADO SEMITRANSPARENTE ESTILO BOTÓN */
-            background: rgba(0, 0, 0, 0.75);
+            /* CUADRADO TRANSPARENTE CON GLASSMORPHISM */
+            background: rgba(0, 0, 0, 0.3);
             padding: 14px 18px;
-            border-radius: 6px;
-            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             width: fit-content;
             align-self: flex-start;
-            text-shadow: none; /* Sin text-shadow ya que tiene fondo */
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
         }
 
         /* Viñetas específicas CON RECUADROS */
@@ -389,38 +390,41 @@
             line-height: 1.4;
             margin: 0;
             font-weight: 500;
-            /* CUADRADO PARA TEXTO DESCRIPTIVO ESTILO BOTÓN */
-            background: rgba(0, 0, 0, 0.75);
+            /* CUADRADO TRANSPARENTE CON GLASSMORPHISM */
+            background: rgba(0, 0, 0, 0.3);
             padding: 14px 18px;
-            border-radius: 6px;
-            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             width: fit-content;
-            text-shadow: none; /* Sin text-shadow ya que tiene fondo */
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
         }
 
-        /* ENLACES ESTILO "EXPLORAR PROPIEDADES" */
+        /* ENLACES GLASSMORPHISM TRANSPARENTES */
         .nav-item-link {
             color: #ffffff;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-size: 0.9rem;
-            /* ESTILO IDÉNTICO AL BOTÓN "EXPLORAR PROPIEDADES" */
-            background: rgba(0, 0, 0, 0.75);
+            /* GLASSMORPHISM TRANSPARENTE */
+            background: rgba(0, 0, 0, 0.4);
             padding: 14px 18px;
-            border-radius: 6px;
-            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             display: inline-block;
             width: fit-content;
             transition: all 0.3s ease;
             margin-top: auto; /* Empuja hacia abajo */
             align-self: flex-start; /* Alineación izquierda consistente */
-            text-shadow: none; /* Sin text-shadow ya que tiene fondo */
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
             text-decoration: none;
         }
 
         .nav-item-link:hover {
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.25);
             transform: translateY(-2px);
         }
 
