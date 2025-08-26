@@ -32,7 +32,7 @@
             --overlay-dark: rgba(0, 0, 0, 0.6);
             --overlay-medium: rgba(0, 0, 0, 0.4);
             --overlay-light: rgba(0, 0, 0, 0.2);
-            --overlay-nav: rgba(0, 0, 0, 0.3);
+            --overlay-nav: rgba(0, 0, 0, 0.1); /* OVERLAY MÁS SUAVE */
             --overlay-white: rgba(255, 255, 255, 0.9);
             
             /* Esquema negro minimalista */
@@ -251,13 +251,13 @@
             margin: 0;
         }
 
-        /* IMÁGENES NATURALES SIN FILTROS */
+        /* IMÁGENES VIBRANTES CON OVERLAY MÁS SUAVE */
         .nav-item:nth-child(1) {
             background: linear-gradient(var(--overlay-nav), var(--overlay-nav)), 
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg');
             background-size: cover;
             background-position: center;
-            /* SIN FILTROS - IMAGEN NATURAL */
+            /* SIN FILTROS - IMAGEN NATURAL Y VIBRANTE */
         }
 
         .nav-item:nth-child(2) {
@@ -265,7 +265,7 @@
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150948654_0.jpeg');
             background-size: cover;
             background-position: center;
-            /* SIN FILTROS - IMAGEN NATURAL */
+            /* SIN FILTROS - IMAGEN NATURAL Y VIBRANTE */
         }
 
         .nav-item:nth-child(3) {
@@ -273,7 +273,7 @@
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150760004_0.jpeg');
             background-size: cover;
             background-position: center;
-            /* SIN FILTROS - IMAGEN NATURAL */
+            /* SIN FILTROS - IMAGEN NATURAL Y VIBRANTE */
         }
 
         .nav-item:nth-child(4) {
@@ -281,7 +281,7 @@
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756151545766_0.jpeg');
             background-size: cover;
             background-position: center;
-            /* SIN FILTROS - IMAGEN NATURAL */
+            /* SIN FILTROS - IMAGEN NATURAL Y VIBRANTE */
         }
 
         .nav-item:hover {
@@ -295,7 +295,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(51, 51, 51, 0.1);
+            background: rgba(51, 51, 51, 0.05); /* HOVER MÁS SUTIL */
             z-index: 1;
         }
 
@@ -314,7 +314,7 @@
             min-height: 400px; /* Altura mínima consistente */
         }
 
-        /* TÍTULOS SIN CUADRADOS - SOLO TEXT-SHADOW */
+        /* TÍTULOS SIN CUADRADOS - TEXT-SHADOW MÁS FUERTE PARA CONTRASTE */
         .nav-item-label {
             font-size: 0.8rem;
             color: #ffffff;
@@ -322,7 +322,7 @@
             letter-spacing: 1px;
             margin: 0;
             font-weight: 600;
-            text-shadow: 4px 4px 12px rgba(0, 0, 0, 1);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.7);
             background: none; /* SIN FONDO */
             padding: 0.5rem 0;
             display: inline-block;
@@ -336,22 +336,22 @@
             margin: 0;
             color: #ffffff;
             line-height: 1.2;
-            text-shadow: 4px 4px 12px rgba(0, 0, 0, 1);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.7);
             background: none; /* SIN FONDO */
             padding: 0.5rem 0;
             width: 100%;
             align-self: stretch; /* Ocupa todo el ancho disponible */
         }
 
-        /* TEXTOS DESCRIPTIVOS CON CUADRADOS COMO "EXPLORAR PROPIEDADES" */
+        /* TEXTOS DESCRIPTIVOS CON CUADRADOS ESTILO "EXPLORAR PROPIEDADES" */
         .nav-item p {
             color: #ffffff;
             line-height: 1.6;
             margin: 0;
             font-size: 0.9rem;
             font-weight: 500;
-            /* CUADRADO SEMITRANSPARENTE COMO EN LA IMAGEN */
-            background: rgba(0, 0, 0, 0.7);
+            /* CUADRADO SEMITRANSPARENTE ESTILO BOTÓN */
+            background: rgba(0, 0, 0, 0.75);
             padding: 14px 18px;
             border-radius: 6px;
             backdrop-filter: blur(10px);
@@ -377,7 +377,7 @@
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 0.5rem;
-            text-shadow: 4px 4px 12px rgba(0, 0, 0, 1);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.7);
             /* SIN CUADRADO - SOLO TÍTULOS */
             background: none;
             padding: 0;
@@ -389,8 +389,8 @@
             line-height: 1.4;
             margin: 0;
             font-weight: 500;
-            /* CUADRADO PARA TEXTO DESCRIPTIVO COMO "EXPLORAR PROPIEDADES" */
-            background: rgba(0, 0, 0, 0.7);
+            /* CUADRADO PARA TEXTO DESCRIPTIVO ESTILO BOTÓN */
+            background: rgba(0, 0, 0, 0.75);
             padding: 14px 18px;
             border-radius: 6px;
             backdrop-filter: blur(10px);
@@ -406,7 +406,7 @@
             letter-spacing: 0.5px;
             font-size: 0.9rem;
             /* ESTILO IDÉNTICO AL BOTÓN "EXPLORAR PROPIEDADES" */
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             padding: 14px 18px;
             border-radius: 6px;
             backdrop-filter: blur(10px);
@@ -420,7 +420,7 @@
         }
 
         .nav-item-link:hover {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             transform: translateY(-2px);
         }
 
