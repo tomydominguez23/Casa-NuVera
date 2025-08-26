@@ -25,7 +25,6 @@
             --secondary-gray: #666666;
             --light-gray: #f5f5f5;
             --medium-gray: #e0e0e0;
-            --background-gray: #7a7a7a;
             --white: #ffffff;
             --accent-black: #333333;
             --text-muted: #999999;
@@ -44,11 +43,13 @@
             --dark-gray: #2F2F2F;
         }
 
+        /* 🚨 BODY CON FONDO BLANCO FORZADO - SIN BACKGROUND-GRAY */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.5;
-            color: var(--white);
-            background-color: var(--background-gray);
+            color: var(--primary-black) !important;
+            background-color: #ffffff !important;
+            background: #ffffff !important;
             font-weight: 400;
             overflow-x: hidden;
         }
@@ -269,14 +270,14 @@
 
         .nav-item:nth-child(3) {
             background: linear-gradient(var(--overlay-nav), var(--overlay-nav)), 
-                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150760004_0.jpeg');
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756151545766_0.jpeg');
             background-size: cover;
             background-position: center;
         }
 
         .nav-item:nth-child(4) {
             background: linear-gradient(var(--overlay-nav), var(--overlay-nav)), 
-                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756151545766_0.jpeg');
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150760004_0.jpeg');
             background-size: cover;
             background-position: center;
         }
@@ -417,28 +418,24 @@
             transform: translateY(-2px);
         }
 
-        /* 🚨 FORZAR FONDO BLANCO - OVERRIDE ABSOLUTO */
-        .properties-section,
-        .properties-section *,
-        #propiedades,
-        #propiedades * {
-            background: #ffffff !important;
-            background-color: #ffffff !important;
-        }
-
+        /* 🚨 SECCIÓN PROPIEDADES - FONDO BLANCO TOTAL FORZADO */
         .properties-section {
             padding: 8rem 2rem !important;
+            background: #ffffff !important;
+            background-color: #ffffff !important;
             color: var(--primary-black) !important;
         }
 
         .properties-container {
             max-width: 1400px;
             margin: 0 auto;
+            background: transparent !important;
         }
 
         .properties-header {
             text-align: center;
             margin-bottom: 4rem;
+            background: transparent !important;
         }
 
         .properties-header h2 {
@@ -475,11 +472,13 @@
             grid-template-columns: repeat(6, 1fr) !important;
             gap: 1rem !important;
             align-items: end !important;
+            background: transparent !important;
         }
 
         .search-group {
             display: flex !important;
             flex-direction: column !important;
+            background: transparent !important;
         }
 
         .search-select,
@@ -504,6 +503,7 @@
             align-items: center !important;
             gap: 0.5rem !important;
             margin-top: 1.5rem !important;
+            background: transparent !important;
         }
 
         .search-checkbox {
@@ -558,10 +558,13 @@
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
             gap: 2rem !important;
             padding: 0 !important;
+            background: transparent !important;
         }
 
         /* CARDS BLANCAS SOBRE FONDO BLANCO */
         .property-item {
+            background: white !important;
+            background-color: white !important;
             border-radius: 16px !important;
             overflow: hidden !important;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
@@ -598,6 +601,8 @@
         /* CONTENIDO CON COLORES PARA FONDO BLANCO */
         .property-content {
             padding: 20px !important;
+            background: white !important;
+            background-color: white !important;
         }
 
         .property-title {
@@ -641,6 +646,7 @@
             text-align: center !important;
             color: var(--secondary-gray) !important;
             min-height: 200px !important;
+            background: transparent !important;
         }
 
         .loading-spinner {
