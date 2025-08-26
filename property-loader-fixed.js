@@ -28,7 +28,7 @@ class PropertyLoaderFixed {
                 throw new Error('Supabase no está disponible');
             }
 
-            console.log('📥 Cargando propiedades...');
+            console.log('📥 Cargando propiedades reales...');
 
             // Query con la estructura REAL de tu BD
             const { data, error } = await window.supabase
@@ -110,9 +110,10 @@ class PropertyLoaderFixed {
     }
 
     renderProperties() {
+        // 🎯 USAR EL CONTENEDOR CORRECTO DEL HTML
         const container = document.getElementById('featuredProperties');
         if (!container) {
-            console.error('Container featuredProperties no encontrado');
+            console.error('❌ Container featuredProperties no encontrado');
             return;
         }
 
@@ -121,6 +122,7 @@ class PropertyLoaderFixed {
             return;
         }
 
+        // 🏠 GENERAR GRID DE PROPIEDADES REALES
         const gridHTML = `
             <div class="properties-grid-container">
                 ${this.properties.map(property => this.generatePropertyCard(property)).join('')}
@@ -129,6 +131,8 @@ class PropertyLoaderFixed {
 
         container.innerHTML = gridHTML;
         this.addCardClickHandlers();
+        
+        console.log('✅ Propiedades reales renderizadas correctamente');
     }
 
     generatePropertyCard(property) {
@@ -251,7 +255,7 @@ class PropertyLoaderFixed {
             container.innerHTML = `
                 <div class="loading-container">
                     <div class="loading-spinner"></div>
-                    <p>Cargando propiedades destacadas...</p>
+                    <p>Cargando propiedades reales desde la base de datos...</p>
                 </div>
             `;
         }
@@ -262,8 +266,8 @@ class PropertyLoaderFixed {
         if (container) {
             container.innerHTML = `
                 <div class="loading-container">
-                    <p style="color: #e74c3c;">❌ Error al cargar las propiedades</p>
-                    <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">Problema de conexión con la base de datos</p>
+                    <p style="color: #e74c3c;">❌ Error al cargar las propiedades reales</p>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">Problema de conexión con la base de datos Supabase</p>
                     <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
                         🔄 Recargar página
                     </button>
@@ -279,7 +283,7 @@ class PropertyLoaderFixed {
     getEmptyState() {
         return `
             <div class="loading-container">
-                <p style="color: #7f8c8d;">No hay propiedades destacadas disponibles en este momento.</p>
+                <p style="color: #7f8c8d;">📋 No hay propiedades publicadas en este momento.</p>
                 <a href="compras.html" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3498db; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
                     Ver todas las propiedades
                 </a>
@@ -289,7 +293,7 @@ class PropertyLoaderFixed {
 
     // Método para aplicar filtros de búsqueda
     applySearchFilters(filters) {
-        console.log('Aplicando filtros:', filters);
+        console.log('🔍 Aplicando filtros a propiedades reales:', filters);
         
         let filteredProperties = [...this.properties];
 
@@ -308,6 +312,8 @@ class PropertyLoaderFixed {
             );
         }
 
+        console.log(`🎯 ${filteredProperties.length} propiedades encontradas después del filtro`);
+
         // Renderizar propiedades filtradas
         this.renderFilteredProperties(filteredProperties);
     }
@@ -319,7 +325,7 @@ class PropertyLoaderFixed {
         if (properties.length === 0) {
             container.innerHTML = `
                 <div class="loading-container">
-                    <p style="color: #7f8c8d;">No se encontraron propiedades que coincidan con los filtros seleccionados.</p>
+                    <p style="color: #7f8c8d;">🔍 No se encontraron propiedades que coincidan con los filtros seleccionados.</p>
                     <button onclick="window.propertyLoader.renderProperties()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
                         Mostrar todas las propiedades
                     </button>
@@ -342,26 +348,27 @@ class PropertyLoaderFixed {
 // Función global para redirección (necesaria para onclick)
 function redirectToProperty(propertyId, slug) {
     const url = `property-detail.html?id=${propertyId}&slug=${slug}`;
+    console.log(`🔗 Redirigiendo a: ${url}`);
     window.location.href = url;
 }
 
-// Inicializar cuando Supabase esté listo
+// 🚀 INICIALIZACIÓN MEJORADA
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🏠 DOM cargado, esperando Supabase...');
+    console.log('🏠 DOM cargado, esperando Supabase para cargar propiedades reales...');
     
     function initPropertyLoader() {
-        if (window.supabase) {
-            console.log('✅ Inicializando PropertyLoader DEFINITIVO...');
+        if (window.supabase && window.supabase.from) {
+            console.log('✅ Inicializando PropertyLoader con propiedades reales...');
             window.propertyLoader = new PropertyLoaderFixed();
         } else {
-            console.log('⏳ Esperando Supabase...');
+            console.log('⏳ Esperando conexión a Supabase...');
             setTimeout(initPropertyLoader, 500);
         }
     }
 
     // Escuchar evento de Supabase listo
     window.addEventListener('supabaseReady', () => {
-        console.log('🚀 Supabase listo, inicializando PropertyLoader...');
+        console.log('🚀 Supabase listo, inicializando PropertyLoader con datos reales...');
         window.propertyLoader = new PropertyLoaderFixed();
     });
 
