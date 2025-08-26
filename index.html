@@ -544,7 +544,7 @@
             font-size: 0.8rem;
         }
 
-        /* Featured Properties - NUEVO DISEÑO */
+        /* Featured Properties - ESTILO IMAGEN 1 */
         .featured-section {
             padding: 6rem 2rem;
             background: #ffffff;
@@ -672,7 +672,7 @@
             display: inline-block;
         }
 
-        /* GRID DE PROPIEDADES */
+        /* GRID DE PROPIEDADES - ESTILO IMAGEN 1 */
         #featuredProperties {
             background: transparent;
             padding: 0;
@@ -681,17 +681,19 @@
 
         .properties-grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             padding: 0;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        /* CARDS DE PROPIEDADES */
+        /* CARDS DE PROPIEDADES - ESTILO IMAGEN 1 */
         .property-card {
             background: white;
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
             cursor: pointer;
             border: 1px solid rgba(0, 0, 0, 0.05);
@@ -699,12 +701,12 @@
         }
 
         .property-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
 
         .property-image {
-            height: 220px;
+            height: 200px;
             background: #f5f5f5;
             background-size: cover;
             background-position: center;
@@ -723,83 +725,40 @@
             transform: scale(1.05);
         }
 
-        .property-price-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            z-index: 2;
-        }
-
         .property-content {
             padding: 20px;
+        }
+
+        .property-type {
+            font-size: 0.75rem;
+            color: var(--secondary-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
 
         .property-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #333;
+            color: var(--primary-black);
             margin-bottom: 6px;
             line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .property-subtitle {
-            font-size: 0.85rem;
-            color: #666;
-            margin-bottom: 12px;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
 
         .property-location {
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: var(--secondary-gray);
+            margin-bottom: 0;
             line-height: 1.2;
         }
 
         .property-location::before {
             content: "📍";
             font-size: 0.8rem;
-        }
-
-        .property-features {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 16px;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .property-feature {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.8rem;
-            color: #666;
-            font-weight: 500;
-        }
-
-        .property-feature-icon {
-            width: 16px;
-            height: 16px;
-            opacity: 0.7;
         }
 
         /* Stats Section */
@@ -1264,7 +1223,7 @@
         </div>
     </section>
 
-    <!-- Featured Properties -->
+    <!-- Featured Properties - ESTILO IMAGEN 1 -->
     <section class="featured-section" id="compra">
         <div class="featured-container">
             <div class="section-header fade-in">
@@ -1513,9 +1472,72 @@
             }
         }
 
-        // Load gallery on page load
+        // Load properties with IMAGE 1 style
+        async function loadFeaturedProperties() {
+            const container = document.getElementById('featuredProperties');
+            
+            try {
+                // Mock data similar to image 1 style
+                const mockProperties = [
+                    {
+                        type: 'DEPARTAMENTO',
+                        title: 'Moderno Departamento en Las Condes',
+                        location: 'Las Condes, Santiago',
+                        image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg'
+                    },
+                    {
+                        type: 'CASA',
+                        title: 'Casa Familiar en Providencia',
+                        location: 'Providencia, Santiago',
+                        image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150948654_0.jpeg'
+                    },
+                    {
+                        type: 'DEPARTAMENTO',
+                        title: 'Elegante Departamento en Ñuñoa',
+                        location: 'Ñuñoa, Santiago',
+                        image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150760004_0.jpeg'
+                    },
+                    {
+                        type: 'CASA',
+                        title: 'Casa Moderna en Vitacura',
+                        location: 'Vitacura, Santiago',
+                        image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756151545766_0.jpeg'
+                    }
+                ];
+
+                const propertiesHTML = `
+                    <div class="properties-grid-container">
+                        ${mockProperties.map(property => `
+                            <div class="property-card">
+                                <div class="property-image">
+                                    <img src="${property.image}" alt="${property.title}" loading="lazy">
+                                </div>
+                                <div class="property-content">
+                                    <div class="property-type">${property.type}</div>
+                                    <h3 class="property-title">${property.title}</h3>
+                                    <div class="property-location">${property.location}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                container.innerHTML = propertiesHTML;
+
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                container.innerHTML = `
+                    <div class="loading-container">
+                        <p>Error al cargar las propiedades destacadas. Por favor, intenta más tarde.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load content on page load
         document.addEventListener('DOMContentLoaded', () => {
             loadPropertyGallery();
+            loadFeaturedProperties();
         });
 
         // Animations on scroll
