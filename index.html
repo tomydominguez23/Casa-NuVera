@@ -245,7 +245,7 @@
             position: relative;
             overflow: hidden;
             display: flex;
-            align-items: center; /* CENTRADO VERTICAL DE TODO EL CONTENIDO */
+            align-items: flex-start; /* ALINEACIÓN VERTICAL DESDE ARRIBA */
             background-size: cover;
             background-position: center;
             margin: 0;
@@ -299,15 +299,16 @@
             z-index: 1;
         }
 
-        /* CONTENIDO CENTRADO SIN RECUADROS NEGROS */
+        /* CONTENIDO A LA MISMA ALTURA - ALINEACIÓN UNIFORME */
         .nav-item-content {
             position: relative;
             z-index: 2;
             width: 100%;
             padding: 3rem;
+            padding-top: 4rem; /* ALTURA UNIFORME DESDE ARRIBA */
             display: flex;
             flex-direction: column;
-            justify-content: center; /* CENTRADO VERTICAL PRINCIPAL */
+            justify-content: flex-start; /* TODOS EMPIEZAN A LA MISMA ALTURA */
             align-items: flex-start; /* Alineación horizontal consistente */
             gap: 1rem; /* Espaciado uniforme entre elementos */
             background: none; /* SIN FONDO OSCURO */
