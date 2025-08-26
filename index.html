@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</title>
     <link rel="stylesheet" href="property-styles.css">
-    <link rel="stylesheet" href="css/property-grid-dark.css">
+    <!-- 🚨 REMOVIDO: css/property-grid-dark.css - CAUSA FONDO NEGRO -->
     <link rel="stylesheet" href="css/property-featured-styles.css">
     <!-- 🚀 Widget WhatsApp -->
     <link rel="stylesheet" href="whatsapp-widget.css">
@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* 🚨 OVERRIDE COMPLETO PARA FONDO BLANCO FORZADO */
         * {
             margin: 0;
             padding: 0;
@@ -416,18 +417,23 @@
             transform: translateY(-2px);
         }
 
-        /* 🚨 FORZAR FONDO BLANCO EN SECCIÓN DE PROPIEDADES */
-        .properties-section {
-            padding: 8rem 2rem !important;
+        /* 🚨 FORZAR FONDO BLANCO - OVERRIDE ABSOLUTO */
+        .properties-section,
+        .properties-section *,
+        #propiedades,
+        #propiedades * {
             background: #ffffff !important;
             background-color: #ffffff !important;
+        }
+
+        .properties-section {
+            padding: 8rem 2rem !important;
             color: var(--primary-black) !important;
         }
 
         .properties-container {
             max-width: 1400px;
             margin: 0 auto;
-            background: transparent !important;
         }
 
         .properties-header {
@@ -436,88 +442,88 @@
         }
 
         .properties-header h2 {
-            font-size: 2.8rem;
-            font-weight: 300;
-            margin-bottom: 2rem;
+            font-size: 2.8rem !important;
+            font-weight: 300 !important;
+            margin-bottom: 2rem !important;
             color: var(--primary-black) !important;
-            line-height: 1.2;
-            letter-spacing: -1px;
+            line-height: 1.2 !important;
+            letter-spacing: -1px !important;
         }
 
         .properties-header p {
-            font-size: 1.2rem;
+            font-size: 1.2rem !important;
             color: var(--secondary-gray) !important;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            margin-bottom: 2rem !important;
+            line-height: 1.6 !important;
+            max-width: 800px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
 
         /* BUSCADOR - FONDO GRIS CLARO SOBRE BLANCO */
         .property-search-bar {
             background: rgba(248, 248, 248, 1) !important;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-            padding: 2rem;
-            margin-bottom: 3rem;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 16px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important;
+            padding: 2rem !important;
+            margin-bottom: 3rem !important;
+            border: 1px solid rgba(0, 0, 0, 0.05) !important;
         }
 
         .search-filters {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 1rem;
-            align-items: end;
+            display: grid !important;
+            grid-template-columns: repeat(6, 1fr) !important;
+            gap: 1rem !important;
+            align-items: end !important;
         }
 
         .search-group {
-            display: flex;
-            flex-direction: column;
+            display: flex !important;
+            flex-direction: column !important;
         }
 
         .search-select,
         .search-input {
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            padding: 0.75rem !important;
+            border: 1px solid #ddd !important;
+            border-radius: 8px !important;
+            font-size: 0.9rem !important;
             background: white !important;
             color: #333 !important;
-            transition: border-color 0.3s ease;
+            transition: border-color 0.3s ease !important;
         }
 
         .search-select:focus,
         .search-input:focus {
-            outline: none;
-            border-color: #333333;
+            outline: none !important;
+            border-color: #333333 !important;
         }
 
         .search-checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1.5rem;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            margin-top: 1.5rem !important;
         }
 
         .search-checkbox {
-            width: 16px;
-            height: 16px;
+            width: 16px !important;
+            height: 16px !important;
         }
 
         .search-checkbox-label {
-            font-size: 0.9rem;
+            font-size: 0.9rem !important;
             color: #666 !important;
         }
 
         .search-btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-size: 0.9rem !important;
+            font-weight: 500 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
         }
 
         .search-btn-primary {
@@ -540,117 +546,111 @@
 
         .search-link {
             color: #333333 !important;
-            text-decoration: none;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-            display: inline-block;
+            text-decoration: none !important;
+            font-size: 0.9rem !important;
+            margin-top: 1rem !important;
+            display: inline-block !important;
         }
 
         /* GRID DE PROPIEDADES CON FONDO BLANCO FORZADO */
         .properties-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            padding: 0;
-            background: transparent !important;
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+            gap: 2rem !important;
+            padding: 0 !important;
         }
 
         /* CARDS BLANCAS SOBRE FONDO BLANCO */
         .property-item {
-            background: white !important;
-            background-color: white !important;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 16px !important;
+            overflow: hidden !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+            border: 1px solid rgba(0, 0, 0, 0.05) !important;
         }
 
         .property-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px) !important;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
         }
 
         .property-media {
-            height: 250px;
-            background: #f5f5f5;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            overflow: hidden;
+            height: 250px !important;
+            background: #f5f5f5 !important;
+            background-size: cover !important;
+            background-position: center !important;
+            position: relative !important;
+            overflow: hidden !important;
         }
 
         .property-media img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            transition: transform 0.3s ease !important;
         }
 
         .property-item:hover .property-media img {
-            transform: scale(1.05);
+            transform: scale(1.05) !important;
         }
 
         /* CONTENIDO CON COLORES PARA FONDO BLANCO */
         .property-content {
-            padding: 20px;
-            background: white !important;
-            background-color: white !important;
+            padding: 20px !important;
         }
 
         .property-title {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
             color: #333 !important;
-            margin-bottom: 8px;
-            line-height: 1.3;
+            margin-bottom: 8px !important;
+            line-height: 1.3 !important;
         }
 
         .property-type {
-            font-size: 0.85rem;
+            font-size: 0.85rem !important;
             color: #666 !important;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-bottom: 12px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
         }
 
         .property-location {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            font-size: 0.85rem !important;
             color: #888 !important;
-            margin-bottom: 0;
-            line-height: 1.2;
+            margin-bottom: 0 !important;
+            line-height: 1.2 !important;
         }
 
         .property-location::before {
-            content: "📍";
-            font-size: 0.8rem;
+            content: "📍" !important;
+            font-size: 0.8rem !important;
         }
 
         /* Loading States para fondo blanco */
         .loading-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem 2rem;
-            text-align: center;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 4rem 2rem !important;
+            text-align: center !important;
             color: var(--secondary-gray) !important;
-            min-height: 200px;
-            background: transparent !important;
+            min-height: 200px !important;
         }
 
         .loading-spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-top: 4px solid var(--secondary-gray);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
+            border: 4px solid rgba(0, 0, 0, 0.1) !important;
+            border-top: 4px solid var(--secondary-gray) !important;
+            border-radius: 50% !important;
+            width: 40px !important;
+            height: 40px !important;
+            animation: spin 1s linear infinite !important;
+            margin-bottom: 1rem !important;
         }
 
         @keyframes spin {
@@ -1073,7 +1073,7 @@
         </div>
     </section>
 
-    <!-- Properties Section - FONDO BLANCO FORZADO -->
+    <!-- Properties Section - FONDO BLANCO DEFINITIVO -->
     <section class="properties-section" id="propiedades">
         <div class="properties-container">
             <div class="properties-header fade-in">
@@ -1118,7 +1118,7 @@
                 <a href="#" class="search-link">Buscar por código de propiedad</a>
             </div>
             
-            <!-- Grid de Propiedades CON FONDO BLANCO -->
+            <!-- Grid de Propiedades CON FONDO BLANCO DEFINITIVO -->
             <div class="properties-grid" id="propertiesGrid">
                 <div class="loading-container">
                     <div class="loading-spinner"></div>
@@ -1258,12 +1258,12 @@
             }
         }
 
-        // CARGAR PROPIEDADES CON FONDO BLANCO FORZADO
+        // CARGAR PROPIEDADES REALES - PASO 2 PENDIENTE
         async function loadProperties() {
             const propertiesContainer = document.getElementById('propertiesGrid');
             
             try {
-                // Propiedades de ejemplo para fondo blanco
+                // PASO 1: MOCKUP TEMPORAL - PASO 2: PROPIEDADES REALES
                 const mockProperties = [
                     {
                         type: 'Departamento',
@@ -1288,22 +1288,9 @@
                         title: 'Casa Moderna en Vitacura',
                         location: 'Vitacura, Santiago',
                         image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756151545766_0.jpeg'
-                    },
-                    {
-                        type: 'Departamento',
-                        title: 'Penthouse con Vista Panorámica',
-                        location: 'Las Condes, Santiago',
-                        image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg'
-                    },
-                    {
-                        type: 'Casa',
-                        title: 'Casa con Jardín Amplio',
-                        location: 'La Reina, Santiago',
-                        image: 'https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150948654_0.jpeg'
                     }
                 ];
 
-                // HTML PARA FONDO BLANCO
                 const propertiesHTML = mockProperties.map(property => `
                     <div class="property-item">
                         <div class="property-media">
