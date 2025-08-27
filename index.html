@@ -1,55 +1,259 @@
-    </section>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</title>
+    <link rel="stylesheet" href="property-styles.css">
+    <!-- 🚨 REMOVIDO: css/property-grid-dark.css - CAUSA FONDO NEGRO -->
+    <link rel="stylesheet" href="css/property-featured-styles.css">
+    <!-- 🚀 Widget WhatsApp -->
+    <link rel="stylesheet" href="whatsapp-widget.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 🚨 OVERRIDE COMPLETO PARA FONDO BLANCO FORZADO */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <!-- 🎨 Gallery Carousel Section -->
-    <section class="gallery-section" id="galeria">
-        <div class="gallery-container">
-            <div class="gallery-header fade-in">
-                <h2>Galería Casa-NuVera</h2>
-                <p>Descubre nuestras propiedades y últimas noticias del sector inmobiliario</p>
-            </div>
+        :root {
+            --primary-black: #0a0a0a;
+            --secondary-gray: #666666;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --white: #ffffff;
+            --accent-black: #333333;
+            --text-muted: #999999;
+            --border-color: #ddd;
+            --overlay-dark: rgba(0, 0, 0, 0.6);
+            --overlay-medium: rgba(0, 0, 0, 0.4);
+            --overlay-light: rgba(0, 0, 0, 0.2);
+            --overlay-nav: rgba(0, 0, 0, 0.1);
+            --overlay-white: rgba(255, 255, 255, 0.9);
             
-            <div class="carousel-container fade-in">
-                <div class="carousel-wrapper" id="carouselWrapper">
-                    <div class="carousel-slide" style="background-image: url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752024246180_1.jpg');">
-                        <div class="carousel-slide-content">
-                            <h3 class="carousel-slide-title">Propiedades Exclusivas en Santiago</h3>
-                            <p class="carousel-slide-subtitle">Descubre hogares únicos en las mejores ubicaciones de la capital</p>
-                        </div>
-                    </div>
-                    
-                    <div class="carousel-slide" style="background-image: url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg');">
-                        <div class="carousel-slide-content">
-                            <h3 class="carousel-slide-title">Innovación en el Sector Inmobiliario</h3>
-                            <p class="carousel-slide-subtitle">Tecnología de vanguardia para encontrar tu hogar perfecto</p>
-                        </div>
-                    </div>
-                    
-                    <div class="carousel-slide" style="background-image: url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150948654_0.jpeg');">
-                        <div class="carousel-slide-content">
-                            <h3 class="carousel-slide-title">Asesoría Profesional Personalizada</h3>
-                            <p class="carousel-slide-subtitle">Equipo experto que te acompaña en cada etapa del proceso</p>
-                        </div>
-                    </div>
-                    
-                    <div class="carousel-slide" style="background-image: url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756151545766_0.jpeg');">
-                        <div class="carousel-slide-content">
-                            <h3 class="carousel-slide-title">Experiencias Inmobiliarias Únicas</h3>
-                            <p class="carousel-slide-subtitle">Redefiniendo la manera de comprar y vender propiedades</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <button class="carousel-btn prev" onclick="changeSlide(-1)">‹</button>
-                <button class="carousel-btn next" onclick="changeSlide(1)">›</button>
-                
-                <div class="carousel-indicators" id="carouselIndicators">
-                    <span class="carousel-indicator active" onclick="currentSlide(1)"></span>
-                    <span class="carousel-indicator" onclick="currentSlide(2)"></span>
-                    <span class="carousel-indicator" onclick="currentSlide(3)"></span>
-                    <span class="carousel-indicator" onclick="currentSlide(4)"></span>
-                </div>
-            </div>
-        </div>
-    </section>
+            /* Esquema negro minimalista */
+            --elegant-black: #333333;
+            --warm-black: #000000;
+            --charcoal: #36454F;
+            --light-gray-accent: #D3D3D3;
+            --dark-gray: #2F2F2F;
+        }
 
-    <!-- Stats Section -->
+        /* 🚨 BODY CON FONDO BLANCO FORZADO - SIN BACKGROUND-GRAY */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.5;
+            color: var(--primary-black) !important;
+            background-color: #ffffff !important;
+            background: #ffffff !important;
+            font-weight: 400;
+            overflow-x: hidden;
+        }
+
+        /* Header flotante sobre imágenes */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            color: var(--primary-black);
+        }
+
+        .logo-image {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--secondary-gray);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: var(--charcoal);
+        }
+
+        /* Hero Section con imagen de fondo full */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(var(--overlay-light), var(--overlay-light)), 
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752024246180_1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+            padding: 0 2rem;
+            z-index: 2;
+        }
+
+        .hero-tagline {
+            font-size: 0.9rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-description {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 1;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 1.2rem 2.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 1.2rem 2.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-black);
+        }
+
+        /* Navigation Grid SIN ESPACIOS GRISES */
+        .nav-grid {
+            padding: 0;
+            background: transparent;
+            margin: 0;
+        }
+
+        .nav-container-grid {
+            max-width: 100%;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0; /* Sin espacios entre imágenes */
+            height: 500px; /* Altura fija para alineación uniforme */
+        }
+
+        .nav-item {
+            height: 100%;
+            padding: 0;
+            text-align: left;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-start; /* ALINEACIÓN VERTICAL DESDE ARRIBA */
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+        }
+
+        /* IMÁGENES VIBRANTES CON OVERLAY MÁS SUAVE */
+        .nav-item:nth-child(1) {
+            background: linear-gradient(var(--overlay-nav), var(--overlay-nav)), 
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756
