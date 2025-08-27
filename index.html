@@ -709,6 +709,133 @@
             flex-shrink: 0 !important; /* No se reduce */
         }
 
+        /* 🎨 GALLERY CAROUSEL - FONDO BLANCO MINIMALISTA */
+        .gallery-section {
+            padding: 6rem 2rem;
+            background: #ffffff;
+            color: var(--primary-black);
+        }
+
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .gallery-header h2 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            color: var(--primary-black);
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .gallery-header p {
+            font-size: 1.2rem;
+            color: var(--secondary-gray);
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .carousel-container {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .carousel-wrapper {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 500px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .carousel-slide-content {
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+            width: 100%;
+            padding: 3rem 2rem 2rem;
+            color: white;
+        }
+
+        .carousel-slide-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .carousel-slide-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            color: var(--primary-black);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-btn.prev { left: 1rem; }
+        .carousel-btn.next { right: 1rem; }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-indicator.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
         /* Loading States para fondo blanco */
         .loading-container {
             display: flex !important;
@@ -1019,6 +1146,37 @@
                 padding: 20px !important; /* Padding reducido en móvil */
             }
 
+            /* Gallery responsive */
+            .gallery-section {
+                padding: 4rem 1rem;
+            }
+
+            .gallery-header h2 {
+                font-size: 2.2rem;
+            }
+
+            .carousel-slide {
+                height: 350px;
+            }
+
+            .carousel-slide-content {
+                padding: 2rem 1.5rem 1.5rem;
+            }
+
+            .carousel-slide-title {
+                font-size: 1.5rem;
+            }
+
+            .carousel-slide-subtitle {
+                font-size: 1rem;
+            }
+
+            .carousel-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
             .new-era-container {
                 grid-template-columns: 1fr;
                 gap: 3rem;
@@ -1076,331 +1234,3 @@
         .parallax {
             background-attachment: fixed;
         }
-    </style>
-</head>
-<body>
-    <!-- Header flotante -->
-    <header class="header">
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752020935606_0.png" 
-                     alt="Casa Nuvera Logo" 
-                     class="logo-image">
-                <span class="logo-text">Casa Nuvera</span>
-            </a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.html" class="active">Inicio</a></li>
-                    <li><a href="compras.html">Comprar</a></li>
-                    <li><a href="#servicios">Servicios</a></li>
-                    <li><a href="#nosotros">Nosotros</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero parallax">
-        <div class="hero-content fade-in">
-            <div class="hero-tagline">Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</div>
-            <h1>descubramos juntos tu nuevo hogar</h1>
-            <p class="hero-description">Somos una corredora Boutique Familiar, que nace con el fin de ampliar la visibilidad de propiedades con gran potencial en todo el gran Santiago. Nuestro trabajo se enmarca en brindar calidad en el servicio de corretaje, desde la funcionalidad, innovación y proyección de cada espacio que ofrecemos.</p>
-            <div class="hero-actions">
-                <a href="#propiedades" class="btn-primary">Explorar Propiedades</a>
-                <a href="#contacto" class="btn-secondary">Contactar Ahora</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Navigation Grid -->
-    <section class="nav-grid" id="servicios">
-        <div class="nav-container-grid">
-            <a href="#propiedades" class="nav-item">
-                <div class="nav-item-content">
-                    <div class="nav-item-label">Compra</div>
-                    <h3>Propiedades en Venta</h3>
-                    <p>Casas y departamentos cuidadosamente seleccionados en las mejores ubicaciones de Santiago.</p>
-                    <span class="nav-item-link">Explorar Propiedades →</span>
-                </div>
-            </a>
-
-            <a href="#contacto" class="nav-item">
-                <div class="nav-item-content">
-                    <div class="nav-item-label">Servicios</div>
-                    <h3>Asesoría Inmobiliaria</h3>
-                    <p>Consultoría profesional y servicios integrales para maximizar tu inversión.</p>
-                    <div class="nav-item-feature">
-                        <h4>Apoyo integral</h4>
-                        <p>Contamos con un equipo interdisciplinario que te acompañarán en todas las etapas de compra y venta.</p>
-                    </div>
-                    <span class="nav-item-link">Conocer Más →</span>
-                </div>
-            </a>
-
-            <a href="#contacto" class="nav-item">
-                <div class="nav-item-content">
-                    <div class="nav-item-label">Vende</div>
-                    <h3>Vende tu propiedad</h3>
-                    <p>Te ayudamos a vender tu propiedad de manera rápida y al mejor precio del mercado.</p>
-                    <span class="nav-item-link">Más información →</span>
-                </div>
-            </a>
-
-            <a href="#redefiniendo" class="nav-item">
-                <div class="nav-item-content">
-                    <div class="nav-item-label">Información</div>
-                    <h3>Conocer más</h3>
-                    <p>Descubre cómo estamos redefiniendo el mercado inmobiliario con tecnología e innovación.</p>
-                    <div class="nav-item-feature">
-                        <h4>Experiencia digital</h4>
-                        <p>Integramos la tecnología de hoy al sector inmobiliario, creando experiencias digitales que transforman la manera de encontrar tu nuevo hogar.</p>
-                    </div>
-                    <span class="nav-item-link">Ver más →</span>
-                </div>
-            </a>
-        </div>
-    </section>
-
-    <!-- Properties Section - PROPIEDADES REALES CON REDIRECCIÓN -->
-    <section class="properties-section" id="propiedades">
-        <div class="properties-container">
-            <div class="properties-header fade-in">
-                <h2>Encuentra tu próximo hogar</h2>
-                <p>Explora nuestra selección de propiedades disponibles en las mejores ubicaciones de Santiago.</p>
-            </div>
-
-            <!-- Buscador de Propiedades -->
-            <div class="property-search-bar fade-in">
-                <div class="search-filters">
-                    <div class="search-group">
-                        <select class="search-select" id="operation-filter">
-                            <option value="">Venta</option>
-                            <option value="venta">Venta</option>
-                            <option value="arriendo">Arriendo</option>
-                        </select>
-                    </div>
-                    <div class="search-group">
-                        <select class="search-select" id="type-filter">
-                            <option value="">Departamentos</option>
-                            <option value="Casa">Casa</option>
-                            <option value="Departamento">Departamento</option>
-                            <option value="Oficina">Oficina</option>
-                        </select>
-                    </div>
-                    <div class="search-group">
-                        <input type="text" class="search-input" placeholder="Ingresa comuna o ciudad" id="location-filter">
-                    </div>
-                    <div class="search-group">
-                        <div class="search-checkbox-group">
-                            <input type="checkbox" class="search-checkbox" id="projects-filter">
-                            <label for="projects-filter" class="search-checkbox-label">Proyectos</label>
-                        </div>
-                    </div>
-                    <div class="search-group">
-                        <button class="search-btn search-btn-primary" onclick="searchProperties()">Buscar</button>
-                    </div>
-                    <div class="search-group">
-                        <button class="search-btn search-btn-secondary">Buscar en Mapa</button>
-                    </div>
-                </div>
-                <a href="#" class="search-link">Buscar por código de propiedad</a>
-            </div>
-            
-            <!-- 🎯 Grid de Propiedades REALES - Se carga desde property-loader-fixed.js -->
-            <div id="featuredProperties">
-                <div class="loading-container">
-                    <div class="loading-spinner"></div>
-                    <p>Cargando propiedades reales desde Supabase...</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="stats-section parallax"></section>
-
-    <!-- Nueva Era Section -->
-    <section class="new-era-section parallax" id="redefiniendo">
-        <div class="new-era-container">
-            <div class="new-era-content fade-in">
-                <h2>La nueva era de lo inmobiliario comienza aquí</h2>
-                <h3 style="font-size: 1.8rem; font-weight: 300; margin-bottom: 2rem; color: var(--elegant-black);">Revolucionando la manera de encontrar tu hogar</h3>
-                <p>Porque entendemos que la tarea de encontrar tu próximo hogar es difícil, ya que implica tiempo y recursos. Acá en Casa Nuvera te brindamos las mejores herramientas para adquirir la propiedad que anhelas.</p>
-                
-                <div class="new-era-technologies">
-                    <div class="tech-feature">
-                        <h4>Tour virtuales última generación</h4>
-                        <p>Recorre propiedades desde la comodidad de tu hogar con tecnología 360°</p>
-                    </div>
-                    <div class="tech-feature">
-                        <h4>IA aplicada al sector inmobiliario</h4>
-                        <p>Algoritmos inteligentes que encuentran la propiedad perfecta para ti</p>
-                    </div>
-                    <div class="tech-feature">
-                        <h4>Integración de tecnologías</h4>
-                        <p>En un mercado competitivo, aplicamos las mejores herramientas para facilitar la venta de tu propiedad.</p>
-                    </div>
-                    <div class="tech-feature">
-                        <h4>Plataforma digital</h4>
-                        <p>Gestiona todo el proceso de compra o venta desde nuestra plataforma</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="new-era-image fade-in"></div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact-section parallax" id="contacto">
-        <div class="contact-container">
-            <h2 class="fade-in">¿Listo para encontrar tu próximo hogar?</h2>
-            <p class="fade-in">Nuestro equipo está aquí para ayudar en cada paso del proceso. Desde la búsqueda inicial hasta la inscripción de la propiedad a tu nombre.</p>
-            
-            <div class="contact-grid">
-                <div class="contact-item fade-in">
-                    <h4>Teléfono</h4>
-                    <p><a href="tel:+56912345678">+56 9 1234 5678</a></p>
-                </div>
-                <div class="contact-item fade-in">
-                    <h4>Email</h4>
-                    <p><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Propiedades</h4>
-                    <ul>
-                        <li><a href="#propiedades">Hogares para descubrir</a></li>
-                        <li><a href="#propiedades">Encuentra propiedades en venta cuidadosamente seleccionadas en el gran Santiago</a></li>
-                        <li><a href="#servicios">Tasaciones</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Servicios</h4>
-                    <ul>
-                        <li><a href="#servicios">Asesoría</a></li>
-                        <li><a href="#contacto">Consultoría</a></li>
-                        <li><a href="#servicios">Inversiones</a></li>
-                        <li><a href="#contacto">Financiamiento</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Soporte</h4>
-                    <ul>
-                        <li><a href="#contacto">Contacto</a></li>
-                        <li><a href="#" onclick="alert('Próximamente: Centro de ayuda con guías y tutoriales')">Centro de Ayuda</a></li>
-                        <li><a href="admin-login.html">Gestionar Contenido</a></li>
-                        <li><a href="#" onclick="alert('Próximamente: Términos y condiciones')">Términos</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Contacto</h4>
-                    <ul>
-                        <li><a href="mailto:hola@casanuvera.cl">hola@casanuvera.cl</a></li>
-                        <li><a href="tel:+56912345678">+56 9 1234 5678</a></li>
-                        <li>Santiago, Chile</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="footer-tagline">Casa Nuvera | Innovando el sector Inmobiliario | EST. 2025</div>
-                <div>&copy; 2025 Casa Nuvera. Todos los derechos reservados.</div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="supabase.js"></script>
-    <script src="property-handler.js"></script>
-    <script src="property-loader-fixed.js"></script>
-    <script src="whatsapp-widget.js"></script>
-
-    <script>
-        // 🎯 FUNCIÓN DE BÚSQUEDA CONECTADA AL SISTEMA REAL
-        function searchProperties() {
-            const operation = document.getElementById('operation-filter').value;
-            const type = document.getElementById('type-filter').value;
-            const location = document.getElementById('location-filter').value;
-            const projects = document.getElementById('projects-filter').checked;
-            
-            console.log('🔍 Filtros de búsqueda aplicados:', { operation, type, location, projects });
-            
-            // Usar el PropertyLoader real para aplicar filtros
-            if (window.propertyLoader) {
-                window.propertyLoader.applySearchFilters({
-                    operation,
-                    type,
-                    location,
-                    projects
-                });
-            } else {
-                console.warn('⚠️ PropertyLoader no está disponible aún - esperando conexión a Supabase');
-            }
-        }
-
-        // 🚨 SOLO MANEJO DE EVENTOS - SIN CARGA DE PROPIEDADES MOCKUP
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🏠 Página cargada - PropertyLoader real se iniciará automáticamente');
-            console.log('⚡ Scripts cargados: supabase.js, property-handler.js, property-loader-fixed.js');
-            // El property-loader-fixed.js se encarga de cargar las propiedades reales
-        });
-
-        // Animations on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationDelay = Math.random() * 0.5 + 's';
-                    entry.target.classList.add('fade-in');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Parallax effect
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallaxElements = document.querySelectorAll('.parallax');
-            
-            parallaxElements.forEach(element => {
-                const speed = 0.5;
-                const yPos = -(scrolled * speed);
-                element.style.backgroundPosition = `center ${yPos}px`;
-            });
-        });
-    </script>
-</body>
-</html>
