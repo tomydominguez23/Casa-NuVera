@@ -418,12 +418,15 @@
             transform: translateY(-2px);
         }
 
-        /* 🔄 Nueva Era Section - ESTILO HERO CENTRADO SIN VIÑETAS */
+        /* 🔄 Nueva Era Section - ESTILO HERO COMPLETO CON IMAGEN DE FONDO */
         .new-era-section {
             padding: 5rem 2rem !important;
-            background: #ffffff !important;
-            background-color: #ffffff !important;
-            color: var(--primary-black) !important;
+            background: linear-gradient(var(--overlay-light), var(--overlay-light)), 
+                        url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756397254249_0.jpeg') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
+            color: white !important;
         }
 
         .new-era-container {
@@ -442,32 +445,36 @@
             font-weight: 300 !important;
             line-height: 1.1 !important;
             margin-bottom: 2rem !important;
-            color: var(--primary-black) !important;
+            color: white !important;
             letter-spacing: -2px !important;
             text-align: center !important;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8) !important;
         }
 
         .new-era-content h3 {
             font-size: 1.3rem !important;
             font-weight: 400 !important;
             margin-bottom: 3rem !important;
-            color: var(--secondary-gray) !important;
+            color: white !important;
             line-height: 1.6 !important;
             max-width: 800px !important;
             margin-left: auto !important;
             margin-right: auto !important;
             text-align: center !important;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7) !important;
         }
 
         .new-era-content p {
             font-size: 1.3rem !important;
-            color: var(--secondary-gray) !important;
+            color: white !important;
             margin-bottom: 2rem !important;
             line-height: 1.6 !important;
             max-width: 800px !important;
             margin-left: auto !important;
             margin-right: auto !important;
             text-align: center !important;
+            opacity: 1 !important;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7) !important;
         }
 
         /* 🚨 SECCIÓN PROPIEDADES - ESPACIADO REDUCIDO */
@@ -1208,6 +1215,7 @@
                 background-attachment: scroll;
             }
 
+            .new-era-section,
             .stats-section,
             .properties-section,
             .contact-section {
@@ -1353,12 +1361,12 @@
         </div>
     </section>
 
-    <!-- 🔄 Nueva Era Section - ESTILO HERO SIMPLIFICADO -->
-    <section class="new-era-section" id="redefiniendo">
+    <!-- 🔄 Nueva Era Section - ESTILO HERO CON IMAGEN DE FONDO -->
+    <section class="new-era-section parallax" id="redefiniendo">
         <div class="new-era-container">
             <div class="new-era-content fade-in">
                 <h2>La nueva era de lo inmobiliario comienza aquí</h2>
-                <h3 style="font-size: 1.3rem; font-weight: 400; margin-bottom: 3rem; color: var(--secondary-gray); line-height: 1.6; max-width: 800px; margin-left: auto; margin-right: auto; text-align: center;">Revolucionando la manera de encontrar tu hogar</h3>
+                <h3>Revolucionando la manera de encontrar tu hogar</h3>
                 <p>Porque entendemos que la tarea de encontrar tu próximo hogar es difícil, ya que implica tiempo y recursos. Acá en Casa Nuvera te brindamos las mejores herramientas para adquirir la propiedad que anhelas.</p>
             </div>
         </div>
