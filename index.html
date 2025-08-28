@@ -32,6 +32,7 @@
             --overlay-dark: rgba(0, 0, 0, 0.6);
             --overlay-medium: rgba(0, 0, 0, 0.4);
             --overlay-light: rgba(0, 0, 0, 0.2);
+            --overlay-minimal: rgba(0, 0, 0, 0.05);
             --overlay-nav: rgba(0, 0, 0, 0.1);
             --overlay-white: rgba(255, 255, 255, 0.9);
             
@@ -418,14 +419,15 @@
             transform: translateY(-2px);
         }
 
-        /* 🔄 Nueva Era Section - ESTILO HERO COMPLETO CON IMAGEN DE FONDO */
+        /* 🔄 Nueva Era Section - IMAGEN VIBRANTE CON MÁXIMO BRILLO */
         .new-era-section {
             padding: 5rem 2rem !important;
-            background: linear-gradient(var(--overlay-light), var(--overlay-light)), 
+            background: linear-gradient(var(--overlay-minimal), var(--overlay-minimal)), 
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756397254249_0.jpeg') !important;
             background-size: cover !important;
             background-position: center !important;
             background-attachment: fixed !important;
+            filter: brightness(1.1) contrast(1.1) saturate(1.2) !important;
             color: white !important;
         }
 
