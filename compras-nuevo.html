@@ -644,9 +644,7 @@
                 <ul class="nav-menu">
                     <li><a href="index.html">Inicio</a></li>
                     <li><a href="compras.html" class="active">Comprar</a></li>
-                    <li><a href="arriendos.html">Arrendar</a></li>
-                    <li><a href="index.html#servicios">Servicios</a></li>
-                    <li><a href="index.html#nosotros">Nosotros</a></li>
+                    <li><a href="arriendos-nuevo.html">Arrendar</a></li>
                     <li><a href="index.html#contacto">Contacto</a></li>
                     <li><a href="subir-propiedades.html" class="nav-cta">
                         <i class="fas fa-plus"></i>
@@ -1042,7 +1040,7 @@
                     return currency === 'UF' ? `UF ${formatted}` : `$${formatted}`;
                 };
 
-                const message = `Hola! Estoy interesado/a en la propiedad "${property.title}" ubicada en ${property.location}.\n\n💰 Precio: ${formatPrice(property.price, property.currency)}\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\n📐 Superficie: ${property.area}m²\n\n¿Podrías darme más información?`;
+                const message = `Hola! Estoy interesado/a en la propiedad "${property.title}" ubicada en ${property.location}.\\n\\n💰 Precio: ${formatPrice(property.price, property.currency)}\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📐 Superficie: ${property.area}m²\\n\\n¿Podrías darme más información?`;
                 const whatsappURL = `https://wa.me/56912345678?text=${encodeURIComponent(message)}`;
                 window.open(whatsappURL, '_blank');
             }
