@@ -71,7 +71,7 @@
     background-position: center;
     position: relative;
     transition: all 0.4s ease;
-    filter: brightness(0.7) contrast(1.1);
+    /* filtros removidos */
 }
 
 .property-card:hover .property-image {

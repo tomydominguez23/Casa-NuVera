@@ -821,7 +821,7 @@
                 const featuredBadge = property.featured ? '<div class="featured-badge">Destacada</div>' : '';
 
                 return `
-                    <div class="property-card" data-operacion="${property.operation || ''}" data-tipo="${(property.property_type || property.category || '').toString().toLowerCase()}" data-ubicacion="${location}" data-precio="${property.price || '0'}" onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
+                    <div class="property-card" data-operacion="venta" data-tipo="${(property.property_type || property.category || '').toString().toLowerCase()}" data-ubicacion="${location}" data-precio="${property.price || '0'}" onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
                         <div class="property-image">
                             ${property.main_image ? 
                                 `<img src="${property.main_image}" alt="${property.title}" loading="lazy">` : 
