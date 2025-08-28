@@ -150,7 +150,7 @@ class PropertyLoaderFixed {
         const slug = this.createSlug(title);
 
         return `
-            <div class="property-card" data-id="${property.id}" data-title="${slug}" onclick="redirectToProperty('${property.id}', '${slug}')">
+            <div class="property-card" data-id="${property.id}" data-title="${slug}" data-operacion="${property.operation || ''}" data-tipo="${(property.property_type || property.category || '').toString().toLowerCase()}" data-ubicacion="${this.formatLocation(property.commune, property.neighborhood, property.region)}" data-precio="${property.price || '0'}" onclick="redirectToProperty('${property.id}', '${slug}')">
                 <div class="property-image">
                     <img src="${firstImage}" alt="${title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'">
                     <div class="property-price-badge">
