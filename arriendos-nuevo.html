@@ -22,7 +22,7 @@
             --shadow-light: rgba(0, 0, 0, 0.1);
             --shadow-medium: rgba(0, 0, 0, 0.15);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --rent-blue: #2196F3;
+            --rent-accent: #2196F3;
         }
 
         * {
@@ -120,7 +120,7 @@
 
         /* ===== HERO SECTION ===== */
         .hero {
-            background: linear-gradient(135deg, var(--rent-blue) 0%, #1976D2 100%);
+            background: linear-gradient(135deg, var(--rent-accent) 0%, #1976D2 100%);
             color: white;
             padding: 120px 2rem 60px;
             text-align: center;
@@ -211,8 +211,8 @@
         .filter-select:focus,
         .filter-input:focus {
             outline: none;
-            border-color: var(--rent-blue);
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+            border-color: var(--elegant-beige);
+            box-shadow: 0 0 0 3px rgba(245, 245, 220, 0.2);
         }
 
         .price-range {
@@ -249,12 +249,12 @@
         }
 
         .filter-btn.primary {
-            background: var(--rent-blue);
+            background: var(--charcoal);
             color: white;
         }
 
         .filter-btn.primary:hover {
-            background: #1976D2;
+            background: var(--dark-gray);
             transform: translateY(-1px);
         }
 
@@ -266,8 +266,8 @@
 
         .filter-btn.secondary:hover {
             background: var(--light-gray);
-            border-color: var(--rent-blue);
-            color: var(--rent-blue);
+            border-color: var(--charcoal);
+            color: var(--charcoal);
         }
 
         /* ===== RESULTADOS ===== */
@@ -307,7 +307,7 @@
             font-weight: 500;
         }
 
-        /* ===== GRID DE PROPIEDADES ===== */
+        /* ===== GRID DE PROPIEDADES CON ESTÉTICA DE COMPRAS ===== */
         .properties-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
@@ -328,7 +328,7 @@
         .property-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 12px 40px var(--shadow-medium);
-            border-color: var(--rent-blue);
+            border-color: var(--elegant-beige);
         }
 
         .property-image {
@@ -353,7 +353,7 @@
             position: absolute;
             top: 1rem;
             left: 1rem;
-            background: var(--rent-blue);
+            background: var(--charcoal);
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 6px;
@@ -364,6 +364,11 @@
             z-index: 2;
         }
 
+        .property-badge.featured {
+            background: linear-gradient(135deg, var(--elegant-beige), var(--warm-beige));
+            color: var(--primary-black);
+        }
+
         .property-content {
             padding: 1.5rem;
         }
@@ -371,7 +376,7 @@
         .property-price {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--rent-blue);
+            color: var(--charcoal);
             margin-bottom: 0.5rem;
         }
 
@@ -416,7 +421,7 @@
 
         .feature i {
             font-size: 1rem;
-            color: var(--rent-blue);
+            color: var(--charcoal);
         }
 
         .feature-value {
@@ -431,7 +436,7 @@
 
         .contact-btn {
             flex: 1;
-            background: var(--rent-blue);
+            background: var(--charcoal);
             color: white;
             border: none;
             padding: 0.8rem;
@@ -447,13 +452,14 @@
         }
 
         .contact-btn:hover {
-            background: #1976D2;
+            background: var(--elegant-beige);
+            color: var(--primary-black);
             transform: translateY(-1px);
         }
 
         .details-btn {
             background: transparent;
-            color: var(--rent-blue);
+            color: var(--charcoal);
             border: 2px solid var(--border-light);
             padding: 0.8rem 1.5rem;
             border-radius: 8px;
@@ -463,8 +469,8 @@
         }
 
         .details-btn:hover {
-            border-color: var(--rent-blue);
-            background: var(--rent-blue);
+            border-color: var(--charcoal);
+            background: var(--charcoal);
             color: white;
         }
 
@@ -506,7 +512,7 @@
 
         .loading-spinner {
             border: 4px solid var(--border-light);
-            border-top: 4px solid var(--rent-blue);
+            border-top: 4px solid var(--charcoal);
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -638,10 +644,8 @@
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.html">Inicio</a></li>
-                    <li><a href="compras.html">Comprar</a></li>
-                    <li><a href="arriendos.html" class="active">Arrendar</a></li>
-                    <li><a href="index.html#servicios">Servicios</a></li>
-                    <li><a href="index.html#nosotros">Nosotros</a></li>
+                    <li><a href="compras-nuevo.html">Comprar</a></li>
+                    <li><a href="arriendos-nuevo.html" class="active">Arrendar</a></li>
                     <li><a href="index.html#contacto">Contacto</a></li>
                     <li><a href="subir-propiedades.html" class="nav-cta">
                         <i class="fas fa-plus"></i>
@@ -820,7 +824,7 @@
                 bathrooms: 2,
                 area: 140,
                 parking: 1,
-                featured: false,
+                featured: true,
                 image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"
             },
             {
@@ -971,7 +975,9 @@
                                     <div class="placeholder-text">Imagen no disponible</div>
                                 </div>`
                             }
-                            <div class="property-badge">ARRIENDO</div>
+                            <div class="property-badge ${property.featured ? 'featured' : ''}">
+                                ${property.featured ? '⭐ DESTACADA' : 'ARRIENDO'}
+                            </div>
                         </div>
                         <div class="property-content">
                             <div class="property-price">${formatPrice(property.price, property.currency)}</div>
@@ -1031,7 +1037,7 @@
                     return currency === 'CLP' ? `$${formatted}` : `UF ${formatted}`;
                 };
 
-                const message = `Hola! Estoy interesado/a en arrendar la propiedad "${property.title}" ubicada en ${property.location}.\n\n💰 Precio: ${formatPrice(property.price, property.currency)}/mes\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\n📐 Superficie: ${property.area}m²\n\n¿Podrías darme más información sobre disponibilidad y condiciones?`;
+                const message = `Hola! Estoy interesado/a en arrendar la propiedad "${property.title}" ubicada en ${property.location}.\\n\\n💰 Precio: ${formatPrice(property.price, property.currency)}/mes\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📐 Superficie: ${property.area}m²\\n\\n¿Podrías darme más información sobre disponibilidad y condiciones?`;
                 const whatsappURL = `https://wa.me/56912345678?text=${encodeURIComponent(message)}`;
                 window.open(whatsappURL, '_blank');
             }
