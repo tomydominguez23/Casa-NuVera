@@ -418,7 +418,7 @@
             transform: translateY(-2px);
         }
 
-        /* 🔄 Nueva Era Section - FONDO BLANCO + ESPACIADO REDUCIDO */
+        /* 🔄 Nueva Era Section - ESTILO HERO CENTRADO SIN VIÑETAS */
         .new-era-section {
             padding: 5rem 2rem !important;
             background: #ffffff !important;
@@ -427,74 +427,47 @@
         }
 
         .new-era-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6rem;
-            align-items: center;
+            max-width: 800px !important;
+            margin: 0 auto !important;
+            text-align: center !important;
+            /* Eliminado: grid de 2 columnas */
+        }
+
+        .new-era-content {
+            /* Ya no tiene grid - layout centrado como Hero */
         }
 
         .new-era-content h2 {
-            font-size: 2.8rem !important;
+            font-size: 4rem !important;
             font-weight: 300 !important;
+            line-height: 1.1 !important;
             margin-bottom: 2rem !important;
             color: var(--primary-black) !important;
-            line-height: 1.2 !important;
-            letter-spacing: -1px !important;
+            letter-spacing: -2px !important;
+            text-align: center !important;
         }
 
         .new-era-content h3 {
-            font-size: 1.8rem !important;
-            font-weight: 300 !important;
-            margin-bottom: 2rem !important;
+            font-size: 1.3rem !important;
+            font-weight: 400 !important;
+            margin-bottom: 3rem !important;
             color: var(--secondary-gray) !important;
+            line-height: 1.6 !important;
+            max-width: 800px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            text-align: center !important;
         }
 
         .new-era-content p {
-            font-size: 1.2rem !important;
+            font-size: 1.3rem !important;
             color: var(--secondary-gray) !important;
             margin-bottom: 2rem !important;
             line-height: 1.6 !important;
-        }
-
-        .new-era-technologies {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .tech-feature {
-            background: rgba(248, 248, 248, 1) !important;
-            padding: 2rem !important;
-            border-radius: 12px !important;
-            border: 1px solid rgba(0, 0, 0, 0.05) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
-        }
-
-        .tech-feature h4 {
-            font-size: 1.1rem !important;
-            margin-bottom: 0.5rem !important;
-            font-weight: 600 !important;
-            color: var(--primary-black) !important;
-        }
-
-        .tech-feature p {
-            font-size: 0.9rem !important;
-            margin: 0 !important;
-            color: var(--secondary-gray) !important;
-            line-height: 1.5 !important;
-        }
-
-        .new-era-image {
-            height: 500px;
-            background: url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1755189383506_0.jpeg');
-            background-size: cover;
-            background-position: center;
-            border-radius: 16px !important;
-            border: 1px solid rgba(0, 0, 0, 0.05) !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+            max-width: 800px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            text-align: center !important;
         }
 
         /* 🚨 SECCIÓN PROPIEDADES - ESPACIADO REDUCIDO */
@@ -1166,6 +1139,10 @@
                 font-size: 2.5rem;
             }
 
+            .new-era-content h2 {
+                font-size: 2.5rem !important;
+            }
+
             .nav-container-grid {
                 grid-template-columns: repeat(2, 1fr);
                 height: auto;
@@ -1202,11 +1179,6 @@
 
             .property-content {
                 padding: 20px !important; /* Padding reducido en móvil */
-            }
-
-            .new-era-container {
-                grid-template-columns: 1fr;
-                gap: 3rem;
             }
 
             .contact-grid {
@@ -1381,35 +1353,14 @@
         </div>
     </section>
 
-    <!-- 🔄 Nueva Era Section - REPOSICIONADA CON FONDO BLANCO -->
+    <!-- 🔄 Nueva Era Section - ESTILO HERO SIMPLIFICADO -->
     <section class="new-era-section" id="redefiniendo">
         <div class="new-era-container">
             <div class="new-era-content fade-in">
                 <h2>La nueva era de lo inmobiliario comienza aquí</h2>
-                <h3 style="font-size: 1.8rem; font-weight: 300; margin-bottom: 2rem; color: var(--secondary-gray);">Revolucionando la manera de encontrar tu hogar</h3>
+                <h3 style="font-size: 1.3rem; font-weight: 400; margin-bottom: 3rem; color: var(--secondary-gray); line-height: 1.6; max-width: 800px; margin-left: auto; margin-right: auto; text-align: center;">Revolucionando la manera de encontrar tu hogar</h3>
                 <p>Porque entendemos que la tarea de encontrar tu próximo hogar es difícil, ya que implica tiempo y recursos. Acá en Casa Nuvera te brindamos las mejores herramientas para adquirir la propiedad que anhelas.</p>
-                
-                <div class="new-era-technologies">
-                    <div class="tech-feature">
-                        <h4>Tour virtuales última generación</h4>
-                        <p>Recorre propiedades desde la comodidad de tu hogar con tecnología 360°</p>
-                    </div>
-                    <div class="tech-feature">
-                        <h4>IA aplicada al sector inmobiliario</h4>
-                        <p>Algoritmos inteligentes que encuentran la propiedad perfecta para ti</p>
-                    </div>
-                    <div class="tech-feature">
-                        <h4>Integración de tecnologías</h4>
-                        <p>En un mercado competitivo, aplicamos las mejores herramientas para facilitar la venta de tu propiedad.</p>
-                    </div>
-                    <div class="tech-feature">
-                        <h4>Plataforma digital</h4>
-                        <p>Gestiona todo el proceso de compra o venta desde nuestra plataforma</p>
-                    </div>
-                </div>
             </div>
-            
-            <div class="new-era-image fade-in"></div>
         </div>
     </section>
 
