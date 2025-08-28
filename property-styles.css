@@ -75,7 +75,7 @@
 }
 
 .property-card:hover .property-image {
-    /* remover efectos de iluminación/saturación; mantener sólo transform en img */
+    filter: brightness(1.0) contrast(1.2) saturate(1.2);
 }
 
 .property-image img {
@@ -148,14 +148,14 @@
     font-weight: 700;
     color: white;
     margin-bottom: 0.5rem;
-    /* text-shadow removido */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     transition: all 0.3s ease;
 }
 
 .property-card:hover .property-price {
     color: var(--dark-gray);
     transform: scale(1.05);
-    /* text-shadow removido */
+    text-shadow: 0 0 10px rgba(51, 51, 51, 0.5);
 }
 
 /* Property Title - NEGRO EN HOVER */
@@ -164,7 +164,7 @@
     font-weight: 600;
     color: white;
     margin-bottom: 0.3rem;
-    /* text-shadow removido */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     transition: all 0.3s ease;
     line-height: 1.2;
 }
@@ -178,7 +178,7 @@
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.8);
     margin-bottom: 0.5rem;
-    /* text-shadow removido */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     transition: all 0.3s ease;
 }
 
@@ -191,7 +191,7 @@
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.4;
-    /* text-shadow removido */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* Property Hover Info - NEGRO MINIMALISTA */

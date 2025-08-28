@@ -559,53 +559,6 @@
         <p>Cargando propiedades en venta...</p>
     </div>
 
-    <!-- SECCIÓN BUSCADOR (agregar después del hero, antes de las propiedades) -->
-    <section class="search-section" style="background: white; padding: 60px 0;">
-        <div class="container">
-            <h2 style="text-align: center; margin-bottom: 40px; color: #333;">Encuentra tu Propiedad Ideal</h2>
-            
-            <div class="search-container">
-                <div class="search-filters">
-                    <div class="filter-group">
-                        <label>Tipo de Operación:</label>
-                        <select id="operacion-filter">
-                            <option value="">Todas las operaciones</option>
-                            <option value="venta">Venta</option>
-                            <option value="arriendo">Arriendo</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label>Tipo de Propiedad:</label>
-                        <select id="tipo-filter">
-                            <option value="">Todos los tipos</option>
-                            <option value="casa">Casa</option>
-                            <option value="departamento">Departamento</option>
-                            <option value="oficina">Oficina</option>
-                            <option value="local">Local Comercial</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label>Ubicación:</label>
-                        <input type="text" id="ubicacion-filter" placeholder="Ciudad o comuna">
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label>Precio (UF):</label>
-                        <div class="price-range">
-                            <input type="number" id="precio-min" placeholder="Mín">
-                            <input type="number" id="precio-max" placeholder="Máx">
-                        </div>
-                    </div>
-                    
-                    <button id="search-btn" class="btn btn-primary">Buscar</button>
-                    <button id="clear-filters" class="btn btn-secondary">Limpiar Filtros</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Error Container -->
     <div id="errorContainer" class="error-container" style="display: none;">
         <h3>❌ Error al cargar propiedades</h3>
@@ -821,7 +774,7 @@
                 const featuredBadge = property.featured ? '<div class="featured-badge">Destacada</div>' : '';
 
                 return `
-                    <div class="property-card" data-operacion="${property.operation || ''}" data-tipo="${(property.property_type || property.category || '').toString().toLowerCase()}" data-ubicacion="${location}" data-precio="${property.price || '0'}" onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
+                    <div class="property-card" onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
                         <div class="property-image">
                             ${property.main_image ? 
                                 `<img src="${property.main_image}" alt="${property.title}" loading="lazy">` : 
@@ -946,66 +899,6 @@
             loadingContainer.style.display = 'none';
             propertiesSection.style.display = 'none';
         }
-    </script>
-    <script>
-    // Conectar el buscador con las propiedades reales de Supabase
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchBtn = document.getElementById('search-btn');
-        const clearBtn = document.getElementById('clear-filters');
-        
-        function filterProperties() {
-            const operacion = document.getElementById('operacion-filter').value;
-            const tipo = document.getElementById('tipo-filter').value;
-            const ubicacion = document.getElementById('ubicacion-filter').value.toLowerCase();
-            const precioMin = document.getElementById('precio-min').value;
-            const precioMax = document.getElementById('precio-max').value;
-            
-            const properties = document.querySelectorAll('.property-card');
-            
-            properties.forEach(property => {
-                let show = true;
-                
-                if (operacion) {
-                    const propOperacion = property.getAttribute('data-operacion');
-                    if (propOperacion !== operacion) show = false;
-                }
-                
-                if (tipo) {
-                    const propTipo = property.getAttribute('data-tipo');
-                    if (propTipo !== tipo) show = false;
-                }
-                
-                if (ubicacion) {
-                    const propUbicacion = property.getAttribute('data-ubicacion').toLowerCase();
-                    if (!propUbicacion.includes(ubicacion)) show = false;
-                }
-                
-                if (precioMin || precioMax) {
-                    const propPrecio = parseInt(property.getAttribute('data-precio'));
-                    if (precioMin && propPrecio < parseInt(precioMin)) show = false;
-                    if (precioMax && propPrecio > parseInt(precioMax)) show = false;
-                }
-                
-                property.style.display = show ? 'block' : 'none';
-            });
-        }
-        
-        if (searchBtn) searchBtn.addEventListener('click', filterProperties);
-        
-        if (clearBtn) {
-            clearBtn.addEventListener('click', function() {
-                document.getElementById('operacion-filter').value = '';
-                document.getElementById('tipo-filter').value = '';
-                document.getElementById('ubicacion-filter').value = '';
-                document.getElementById('precio-min').value = '';
-                document.getElementById('precio-max').value = '';
-                
-                document.querySelectorAll('.property-card').forEach(prop => {
-                    prop.style.display = 'block';
-                });
-            });
-        }
-    });
     </script>
 </body>
 </html>
