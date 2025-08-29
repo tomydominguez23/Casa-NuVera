@@ -996,36 +996,114 @@
             propertiesSection.style.display = 'none';
         }
 
-        function applyFilters() {
+        async function applyFilters() {
             const op = (document.getElementById('filter-operation').value || '').toLowerCase();
             const type = (document.getElementById('filter-type').value || '').toLowerCase();
             const location = (document.getElementById('filter-location').value || '').toLowerCase();
             const min = parseFloat(document.getElementById('filter-price-min').value) || 0;
             const max = parseFloat(document.getElementById('filter-price-max').value) || Infinity;
 
-            filtered = allProperties.filter(p => {
-                const cardOp = ((p.category || '').toLowerCase().includes('arriendo')) ? 'arriendo' : 'venta';
-                const cardType = (p.property_type || p.category || '').toLowerCase();
-                const cardLoc = (p.commune || p.neighborhood || p.region || '').toLowerCase();
-                const price = Number(p.price) || 0;
-
-                return (!op || op === 'ambas' || cardOp === op)
-                    && (!type || cardType.includes(type))
-                    && (!location || cardLoc.includes(location))
-                    && (price >= min && price <= max);
-            });
-
-            renderProperties();
+            try {
+                showLoading(true);
+                const results = await fetchFilteredProperties({ op, type, location, min, max });
+                filtered = results;
+                await loadImagesFor(filtered);
+                showLoading(false);
+                renderProperties();
+            } catch (e) {
+                console.error('Error aplicando filtros:', e);
+                showLoading(false);
+                showError('No se pudieron aplicar los filtros');
+            }
         }
 
-        function clearFilters() {
+        async function clearFilters() {
             document.getElementById('filter-operation').value = '';
             document.getElementById('filter-type').value = '';
             document.getElementById('filter-location').value = '';
             document.getElementById('filter-price-min').value = '';
             document.getElementById('filter-price-max').value = '';
-            filtered = [...allProperties];
-            renderProperties();
+            try {
+                showLoading(true);
+                // Re-consultar publicados recientes
+                const { data, error } = await window.supabase
+                    .from('properties')
+                    .select(`
+                        id, title, property_type, category, bedrooms, bathrooms,
+                        description, region, commune, address, neighborhood,
+                        total_area, built_area, parking_spaces, currency, price,
+                        expenses, features, featured, published, created_at
+                    `)
+                    .eq('published', true)
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
+                allProperties = data || [];
+                filtered = [...allProperties];
+                await loadImagesFor(filtered);
+                showLoading(false);
+                renderProperties();
+            } catch (e) {
+                console.error('Error al limpiar filtros:', e);
+                showLoading(false);
+            }
+        }
+
+        async function fetchFilteredProperties({ op, type, location, min, max }) {
+            let query = window.supabase
+                .from('properties')
+                .select(`
+                    id, title, property_type, category, bedrooms, bathrooms,
+                    description, region, commune, address, neighborhood,
+                    total_area, built_area, parking_spaces, currency, price,
+                    expenses, features, featured, published, created_at
+                `)
+                .eq('published', true);
+
+            if (type) {
+                query = query.ilike('property_type', `%${type}%`);
+            }
+            if (location) {
+                // Priorizar búsqueda por comuna, luego barrio y región
+                // Hacemos OR manual combinando en un solo ilike sobre un campo denormalizado con coalesce
+                query = query.or(
+                    `commune.ilike.%${location}%,neighborhood.ilike.%${location}%,region.ilike.%${location}%`
+                );
+            }
+            if (isFinite(min) && min > 0) {
+                query = query.gte('price', min);
+            }
+            if (isFinite(max) && max < Infinity) {
+                query = query.lte('price', max);
+            }
+
+            // Tipo de operación: inferimos por category/property_type si contiene "arriendo"
+            if (op === 'arriendo') {
+                query = query.or('category.ilike.%arriendo%,property_type.ilike.%arriendo%');
+            } else if (op === 'venta') {
+                query = query.not('category', 'ilike', '%arriendo%').not('property_type', 'ilike', '%arriendo%');
+            }
+
+            const { data, error } = await query.order('created_at', { ascending: false });
+            if (error) throw error;
+            return data || [];
+        }
+
+        async function loadImagesFor(list) {
+            for (let property of list) {
+                try {
+                    const { data: images, error } = await window.supabase
+                        .from('property_images')
+                        .select('image_url, image_order, is_main')
+                        .eq('property_id', property.id)
+                        .order('image_order', { ascending: true });
+                    if (!error && images && images.length > 0) {
+                        const main = images.find(i => i.is_main) || images[0];
+                        property.main_image = main?.image_url;
+                    } else {
+                        property.main_image = null;
+                    }
+                } catch {}
+            }
         }
     </script>
 </body>
