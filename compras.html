@@ -167,7 +167,7 @@
             opacity: 0.9;
         }
 
-        /* ===== FILTROS (mismo estilo que arriendos-nuevo) ===== */
+        /* ===== FILTROS MEJORADOS PARA COMPRA ===== */
         .filters-section {
             background: white;
             padding: 2rem;
@@ -177,7 +177,10 @@
             border: 1px solid #e0e0e0;
         }
 
-        .filters-container { max-width: 1200px; margin: 0 auto; }
+        .filters-container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
 
         .filters-title {
             font-size: 1.3rem;
@@ -189,18 +192,91 @@
             gap: 0.5rem;
         }
 
-        .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .filter-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .filter-label { font-size: 0.9rem; font-weight: 600; color: var(--secondary-gray); text-transform: uppercase; letter-spacing: 0.5px; }
-        .filter-select, .filter-input { padding: 0.75rem 0.9rem; border: 1px solid var(--medium-gray); border-radius: 8px; font-size: 0.95rem; background: white; }
-        .price-range { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; }
-        .price-separator { color: #666; font-weight: 600; }
-        .filters-actions { display: flex; gap: 0.8rem; justify-content: flex-end; }
-        .filter-btn { padding: 0.8rem 1.2rem; border: 1px solid var(--medium-gray); border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.5px; }
-        .filter-btn.primary { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
-        .filter-btn.secondary { background: #fff; color: #666; }
-        .filter-btn.primary:hover { background: var(--elegant-black); }
-        .filter-btn.secondary:hover { background: #f5f5f5; }
+        .filters-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 1.5rem; 
+            margin-bottom: 2rem; 
+        }
+
+        .filter-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 0.5rem; 
+        }
+
+        .filter-label { 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            color: var(--secondary-gray); 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+
+        .filter-select, .filter-input { 
+            padding: 0.75rem 0.9rem; 
+            border: 1px solid var(--medium-gray); 
+            border-radius: 8px; 
+            font-size: 0.95rem; 
+            background: white; 
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: var(--charcoal);
+            box-shadow: 0 0 0 3px rgba(54, 69, 79, 0.1);
+        }
+
+        .price-range { 
+            display: grid; 
+            grid-template-columns: 1fr auto 1fr; 
+            gap: 10px; 
+            align-items: center; 
+        }
+
+        .price-separator { 
+            color: #666; 
+            font-weight: 600; 
+        }
+
+        .filters-actions { 
+            display: flex; 
+            gap: 0.8rem; 
+            justify-content: flex-end; 
+            flex-wrap: wrap;
+        }
+
+        .filter-btn { 
+            padding: 0.8rem 1.2rem; 
+            border: 1px solid var(--medium-gray); 
+            border-radius: 8px; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+
+        .filter-btn.primary { 
+            background: var(--charcoal); 
+            color: #fff; 
+            border-color: var(--charcoal); 
+        }
+
+        .filter-btn.secondary { 
+            background: #fff; 
+            color: #666; 
+        }
+
+        .filter-btn.primary:hover { 
+            background: var(--elegant-black); 
+        }
+
+        .filter-btn.secondary:hover { 
+            background: #f5f5f5; 
+        }
 
         /* Properties Section - FONDO BLANCO */
         .properties-section {
@@ -227,7 +303,7 @@
             font-weight: 500;
         }
 
-        /* NUEVO GRID DE PROPIEDADES COMO EN LA IMAGEN */
+        /* GRID DE PROPIEDADES CON IMÁGENES MÁS GRANDES (350px) */
         .properties-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -235,7 +311,7 @@
             padding: 0;
         }
 
-        /* CARDS CON DISEÑO EXACTO DE LA IMAGEN */
+        /* CARDS CON IMÁGENES 350px Y SIN FILTROS */
         .property-card {
             background: white;
             border-radius: 16px;
@@ -248,13 +324,13 @@
         }
 
         .property-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-8px) scale(1.02); /* Solo zoom y elevación */
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
-        /* IMAGEN CON PRECIO BADGE */
+        /* IMAGEN AUMENTADA A 350px SIN FILTROS */
         .property-image {
-            height: 220px;
+            height: 350px; /* Aumentado de 220px a 350px */
             background: #f5f5f5;
             background-size: cover;
             background-position: center;
@@ -267,10 +343,11 @@
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
+            filter: none; /* Sin filtros en las imágenes */
         }
 
         .property-card:hover .property-image img {
-            transform: scale(1.05);
+            transform: scale(1.05); /* Solo zoom en hover */
         }
 
         .no-image-placeholder {
@@ -300,7 +377,7 @@
             z-index: 2;
         }
 
-        /* BADGE DESTACADA - NEGRO MINIMALISTA */
+        /* BADGE DESTACADA */
         .featured-badge {
             position: absolute;
             top: 12px;
@@ -450,7 +527,7 @@
             color: white;
         }
 
-        /* Footer - NEGRO MINIMALISTA */
+        /* Footer */
         .footer {
             background: linear-gradient(var(--overlay-dark), var(--overlay-dark)), 
                         url('https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=1920&h=600&fit=crop&crop=center');
@@ -546,6 +623,18 @@
                 max-width: 320px;
             }
 
+            .property-image {
+                height: 280px; /* Ajustado para móvil */
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-actions {
+                justify-content: center;
+            }
+
             .footer-content {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -587,7 +676,7 @@
         </div>
     </section>
 
-    <!-- Filtros de búsqueda -->
+    <!-- Filtros de búsqueda OPTIMIZADOS PARA COMPRA -->
     <section class="filters-section">
         <div class="filters-container">
             <h2 class="filters-title">
@@ -596,15 +685,7 @@
             </h2>
 
             <div class="filters-grid">
-                <div class="filter-group">
-                    <label class="filter-label" for="filter-operation">Tipo de Operación</label>
-                    <select class="filter-select" id="filter-operation">
-                        <option value="">Ambas</option>
-                        <option value="venta">Venta</option>
-                        <option value="arriendo">Arriendo</option>
-                    </select>
-                </div>
-
+                <!-- TIPO DE PROPIEDAD - ENFOCADO EN VENTA -->
                 <div class="filter-group">
                     <label class="filter-label" for="filter-type">Tipo de Propiedad</label>
                     <select class="filter-select" id="filter-type">
@@ -612,22 +693,73 @@
                         <option value="casa">Casa</option>
                         <option value="departamento">Departamento</option>
                         <option value="oficina">Oficina</option>
-                        <option value="local">Local</option>
+                        <option value="local">Local Comercial</option>
+                        <option value="terreno">Terreno</option>
+                        <option value="bodega">Bodega</option>
                     </select>
                 </div>
 
+                <!-- UBICACIÓN MEJORADA -->
                 <div class="filter-group">
-                    <label class="filter-label" for="filter-location">Ubicación</label>
-                    <input type="text" class="filter-input" id="filter-location" placeholder="Comuna, barrio o región" />
+                    <label class="filter-label" for="filter-location">Comuna o Ubicación</label>
+                    <input type="text" class="filter-input" id="filter-location" placeholder="Las Condes, Providencia, Vitacura..." />
                 </div>
 
+                <!-- DORMITORIOS -->
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-bedrooms">Dormitorios</label>
+                    <select class="filter-select" id="filter-bedrooms">
+                        <option value="">Cualquier cantidad</option>
+                        <option value="1">1 dormitorio</option>
+                        <option value="2">2 dormitorios</option>
+                        <option value="3">3 dormitorios</option>
+                        <option value="4">4 dormitorios</option>
+                        <option value="5">5+ dormitorios</option>
+                    </select>
+                </div>
+
+                <!-- BAÑOS -->
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-bathrooms">Baños</label>
+                    <select class="filter-select" id="filter-bathrooms">
+                        <option value="">Cualquier cantidad</option>
+                        <option value="1">1 baño</option>
+                        <option value="2">2 baños</option>
+                        <option value="3">3 baños</option>
+                        <option value="4">4+ baños</option>
+                    </select>
+                </div>
+
+                <!-- RANGO DE PRECIO MEJORADO PARA VENTA -->
                 <div class="filter-group">
                     <label class="filter-label">Rango de Precio</label>
                     <div class="price-range">
-                        <input type="number" class="filter-input" id="filter-price-min" placeholder="Mín">
+                        <select class="filter-select" id="filter-price-min">
+                            <option value="">Precio mínimo</option>
+                            <option value="50000000">$50M</option>
+                            <option value="100000000">$100M</option>
+                            <option value="150000000">$150M</option>
+                            <option value="200000000">$200M</option>
+                            <option value="300000000">$300M</option>
+                            <option value="500000000">$500M</option>
+                        </select>
                         <span class="price-separator">-</span>
-                        <input type="number" class="filter-input" id="filter-price-max" placeholder="Máx">
+                        <select class="filter-select" id="filter-price-max">
+                            <option value="">Precio máximo</option>
+                            <option value="100000000">$100M</option>
+                            <option value="200000000">$200M</option>
+                            <option value="300000000">$300M</option>
+                            <option value="500000000">$500M</option>
+                            <option value="1000000000">$1.000M</option>
+                            <option value="2000000000">$2.000M+</option>
+                        </select>
                     </div>
+                </div>
+
+                <!-- SUPERFICIE -->
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-area">Superficie mínima (m²)</label>
+                    <input type="number" class="filter-input" id="filter-area" placeholder="Ej: 60, 100, 150">
                 </div>
             </div>
 
@@ -638,7 +770,7 @@
                 </button>
                 <button class="filter-btn primary" id="applyFiltersBtn">
                     <i class="fas fa-search"></i>
-                    Buscar
+                    Buscar Propiedades
                 </button>
             </div>
         </div>
@@ -666,7 +798,7 @@
                 </div>
             </div>
 
-            <!-- GRID DE PROPIEDADES CON NUEVO DISEÑO -->
+            <!-- GRID DE PROPIEDADES CON NUEVAS MEDIDAS -->
             <div class="properties-grid" id="propertiesGrid">
                 <!-- Property Cards se cargan dinámicamente -->
             </div>
@@ -765,7 +897,7 @@
                 
                 console.log('📥 Cargando propiedades desde tabla "properties" con estructura real...');
                 
-                // Query con la estructura REAL de tu BD
+                // Query OPTIMIZADO PARA VENTA - Prioriza propiedades de venta
                 const { data, error } = await window.supabase
                     .from('properties')
                     .select(`
@@ -792,6 +924,10 @@
                         created_at
                     `)
                     .eq('published', true)
+                    // Filtrar por venta: excluir propiedades que contengan "arriendo" en category
+                    .not('category', 'ilike', '%arriendo%')
+                    .not('property_type', 'ilike', '%arriendo%')
+                    .order('featured', { ascending: false })
                     .order('created_at', { ascending: false });
 
                 if (error) {
@@ -800,7 +936,7 @@
                 }
 
                 allProperties = data || [];
-                console.log(`✅ ${allProperties.length} propiedades cargadas`);
+                console.log(`✅ ${allProperties.length} propiedades de VENTA cargadas`);
                 
                 // Cargar imágenes para cada propiedad
                 await loadPropertyImages();
@@ -862,14 +998,21 @@
                 return;
             }
 
-            // Renderizar propiedades con el nuevo diseño
+            // Renderizar propiedades con imágenes más grandes y sin filtros
             const propertiesHTML = (filtered.length ? filtered : allProperties).map(property => {
                 const formattedPrice = formatPrice(property.price, property.currency);
                 const location = formatLocation(property);
                 const featuredBadge = property.featured ? '<div class="featured-badge">Destacada</div>' : '';
 
                 return `
-                    <div class="property-card" data-operacion="${(property.category || '').toLowerCase().includes('arriendo') ? 'arriendo' : 'venta'}" data-tipo="${(property.property_type || property.category || '').toLowerCase()}" data-ubicacion="${(property.commune || property.neighborhood || property.region || '').toLowerCase()}" data-precio="${Number(property.price) || 0}" onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
+                    <div class="property-card" 
+                         data-tipo="${(property.property_type || property.category || '').toLowerCase()}" 
+                         data-ubicacion="${(property.commune || property.neighborhood || property.region || '').toLowerCase()}" 
+                         data-precio="${Number(property.price) || 0}"
+                         data-bedrooms="${property.bedrooms || 0}"
+                         data-bathrooms="${property.bathrooms || 0}"
+                         data-area="${property.total_area || property.built_area || 0}"
+                         onclick="goToProperty('${property.id}', '${createSlug(property.title)}')">
                         <div class="property-image">
                             ${property.main_image ? 
                                 `<img src="${property.main_image}" alt="${property.title}" loading="lazy">` : 
@@ -913,7 +1056,7 @@
 
             grid.innerHTML = propertiesHTML;
             const list = filtered.length ? filtered : allProperties;
-            resultsCount.textContent = `Mostrando ${list.length} propiedades`;
+            resultsCount.textContent = `Mostrando ${list.length} propiedades en venta`;
 
             // Mostrar la sección de propiedades
             document.getElementById('propertiesSection').style.display = 'block';
@@ -997,19 +1140,22 @@
         }
 
         async function applyFilters() {
-            const op = (document.getElementById('filter-operation').value || '').toLowerCase();
             const type = (document.getElementById('filter-type').value || '').toLowerCase();
             const location = (document.getElementById('filter-location').value || '').toLowerCase();
-            const min = parseFloat(document.getElementById('filter-price-min').value) || 0;
-            const max = parseFloat(document.getElementById('filter-price-max').value) || Infinity;
+            const bedrooms = parseInt(document.getElementById('filter-bedrooms').value) || 0;
+            const bathrooms = parseInt(document.getElementById('filter-bathrooms').value) || 0;
+            const minPrice = parseFloat(document.getElementById('filter-price-min').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('filter-price-max').value) || Infinity;
+            const minArea = parseInt(document.getElementById('filter-area').value) || 0;
 
             try {
                 showLoading(true);
-                const results = await fetchFilteredProperties({ op, type, location, min, max });
+                const results = await fetchFilteredProperties({ type, location, bedrooms, bathrooms, minPrice, maxPrice, minArea });
                 filtered = results;
                 await loadImagesFor(filtered);
                 showLoading(false);
                 renderProperties();
+                console.log(`🔍 Filtros aplicados: ${filtered.length} propiedades encontradas`);
             } catch (e) {
                 console.error('Error aplicando filtros:', e);
                 showLoading(false);
@@ -1018,37 +1164,27 @@
         }
 
         async function clearFilters() {
-            document.getElementById('filter-operation').value = '';
+            // Limpiar formulario
             document.getElementById('filter-type').value = '';
             document.getElementById('filter-location').value = '';
+            document.getElementById('filter-bedrooms').value = '';
+            document.getElementById('filter-bathrooms').value = '';
             document.getElementById('filter-price-min').value = '';
             document.getElementById('filter-price-max').value = '';
+            document.getElementById('filter-area').value = '';
+            
             try {
                 showLoading(true);
-                // Re-consultar publicados recientes
-                const { data, error } = await window.supabase
-                    .from('properties')
-                    .select(`
-                        id, title, property_type, category, bedrooms, bathrooms,
-                        description, region, commune, address, neighborhood,
-                        total_area, built_area, parking_spaces, currency, price,
-                        expenses, features, featured, published, created_at
-                    `)
-                    .eq('published', true)
-                    .order('created_at', { ascending: false });
-                if (error) throw error;
-                allProperties = data || [];
-                filtered = [...allProperties];
-                await loadImagesFor(filtered);
-                showLoading(false);
-                renderProperties();
+                // Re-cargar todas las propiedades de venta
+                await loadProperties();
+                console.log('🔄 Filtros limpiados, mostrando todas las propiedades de venta');
             } catch (e) {
                 console.error('Error al limpiar filtros:', e);
                 showLoading(false);
             }
         }
 
-        async function fetchFilteredProperties({ op, type, location, min, max }) {
+        async function fetchFilteredProperties({ type, location, bedrooms, bathrooms, minPrice, maxPrice, minArea }) {
             let query = window.supabase
                 .from('properties')
                 .select(`
@@ -1057,33 +1193,40 @@
                     total_area, built_area, parking_spaces, currency, price,
                     expenses, features, featured, published, created_at
                 `)
-                .eq('published', true);
+                .eq('published', true)
+                // SIEMPRE filtrar para venta (excluir arriendos)
+                .not('category', 'ilike', '%arriendo%')
+                .not('property_type', 'ilike', '%arriendo%');
 
+            // Aplicar filtros específicos
             if (type) {
                 query = query.ilike('property_type', `%${type}%`);
             }
             if (location) {
-                // Priorizar búsqueda por comuna, luego barrio y región
-                // Hacemos OR manual combinando en un solo ilike sobre un campo denormalizado con coalesce
                 query = query.or(
-                    `commune.ilike.%${location}%,neighborhood.ilike.%${location}%,region.ilike.%${location}%`
+                    `commune.ilike.%${location}%,neighborhood.ilike.%${location}%,region.ilike.%${location}%,address.ilike.%${location}%`
                 );
             }
-            if (isFinite(min) && min > 0) {
-                query = query.gte('price', min);
+            if (bedrooms > 0) {
+                query = query.gte('bedrooms', bedrooms);
             }
-            if (isFinite(max) && max < Infinity) {
-                query = query.lte('price', max);
+            if (bathrooms > 0) {
+                query = query.gte('bathrooms', bathrooms);
+            }
+            if (isFinite(minPrice) && minPrice > 0) {
+                query = query.gte('price', minPrice);
+            }
+            if (isFinite(maxPrice) && maxPrice < Infinity) {
+                query = query.lte('price', maxPrice);
+            }
+            if (minArea > 0) {
+                query = query.or(`total_area.gte.${minArea},built_area.gte.${minArea}`);
             }
 
-            // Tipo de operación: inferimos por category/property_type si contiene "arriendo"
-            if (op === 'arriendo') {
-                query = query.or('category.ilike.%arriendo%,property_type.ilike.%arriendo%');
-            } else if (op === 'venta') {
-                query = query.not('category', 'ilike', '%arriendo%').not('property_type', 'ilike', '%arriendo%');
-            }
-
-            const { data, error } = await query.order('created_at', { ascending: false });
+            const { data, error } = await query
+                .order('featured', { ascending: false })
+                .order('created_at', { ascending: false });
+                
             if (error) throw error;
             return data || [];
         }
@@ -1102,7 +1245,9 @@
                     } else {
                         property.main_image = null;
                     }
-                } catch {}
+                } catch (err) {
+                    console.error(`Error loading images for property ${property.id}:`, err);
+                }
             }
         }
     </script>
