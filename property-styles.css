@@ -26,7 +26,7 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    height: 350px;
+    height: 450px; /* Aumentado de 350px para imágenes más grandes */
     box-shadow: none;
 }
 
@@ -35,37 +35,21 @@
     border-right: none;
 }
 
-/* Hover Effect Premium - NEGRO MINIMALISTA */
+/* Hover Effect Premium - SOLO ZOOM, SIN CAMBIOS DE COLOR */
 .property-card:hover {
-    background: #0a0a0a;
-    transform: scale(1.02);
+    transform: scale(1.02); /* Solo zoom, sin cambios de color */
     z-index: 10;
-    box-shadow: 
-        0 0 50px rgba(0, 0, 0, 0.5),
-        inset 0 0 0 2px var(--dark-gray);
-    border-color: var(--dark-gray);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
 }
 
+/* REMOVIDO: overlay de color en hover */
 .property-card:hover::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        135deg,
-        rgba(0, 0, 0, 0.1) 0%,
-        transparent 50%,
-        rgba(51, 51, 51, 0.05) 100%
-    );
-    z-index: 1;
-    pointer-events: none;
+    display: none; /* Eliminado el overlay de color */
 }
 
-/* Property Image - Ocupa toda la altura */
+/* Property Image - Ocupa más altura (350px) */
 .property-image {
-    height: 100%;
+    height: 350px; /* Aumentado de altura original */
     background: #2a2a2a;
     background-size: cover;
     background-position: center;
@@ -73,20 +57,20 @@
     transition: all 0.4s ease;
 }
 
-/* Remove lighting effects; keep only zoom via img */
-
+/* IMÁGENES SIN FILTROS - Solo zoom */
 .property-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s ease;
+    filter: none; /* Sin filtros aplicados */
 }
 
 .property-card:hover .property-image img {
-    transform: scale(1.05);
+    transform: scale(1.05); /* Solo zoom en la imagen */
 }
 
-/* Property Badge - Esquina superior izquierda - NEGRO */
+/* Property Badge - Esquina superior izquierda */
 .property-badge {
     position: absolute;
     top: 1rem;
@@ -108,9 +92,9 @@
     color: white;
 }
 
+/* REMOVIDO: cambio de escala del badge en hover */
 .property-card:hover .property-badge {
-    background: rgba(0, 0, 0, 0.9);
-    transform: scale(1.05);
+    background: rgba(0, 0, 0, 0.9); /* Solo mantener el fondo más sólido */
 }
 
 /* Property Info - Overlay en la parte inferior */
@@ -130,68 +114,56 @@
     transition: all 0.4s ease;
 }
 
+/* REMOVIDO: cambio de fondo en hover */
 .property-card:hover .property-info {
     background: linear-gradient(
         transparent 0%,
-        rgba(51, 51, 51, 0.2) 30%,
-        rgba(0, 0, 0, 0.8) 70%,
-        rgba(0, 0, 0, 0.95) 100%
-    );
+        rgba(0, 0, 0, 0.7) 40%,
+        rgba(0, 0, 0, 0.9) 100%
+    ); /* Mantiene el mismo fondo */
 }
 
-/* Property Price - Destacado - NEGRO */
+/* Property Price - SIN cambios de color en hover */
 .property-price {
     font-size: 1.3rem;
     font-weight: 700;
     color: white;
     margin-bottom: 0.5rem;
-    /* text-shadow removed */
-    transition: all 0.3s ease;
+    transition: none; /* Sin transiciones de color */
 }
 
-.property-card:hover .property-price {
-    color: var(--dark-gray);
-    transform: scale(1.05);
-    /* text-shadow removed */
-}
+/* REMOVIDO: cambios de color y escala en hover */
 
-/* Property Title - NEGRO EN HOVER */
+/* Property Title - SIN cambios de color en hover */
 .property-title {
     font-size: 1rem;
     font-weight: 600;
     color: white;
     margin-bottom: 0.3rem;
-    /* text-shadow removed */
-    transition: all 0.3s ease;
+    transition: none; /* Sin transiciones de color */
     line-height: 1.2;
 }
 
-.property-card:hover .property-title {
-    color: var(--dark-gray);
-}
+/* REMOVIDO: cambios de color en hover */
 
-/* Property Location - NEGRO EN HOVER */
+/* Property Location - SIN cambios de color en hover */
 .property-location {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.8);
     margin-bottom: 0.5rem;
-    /* text-shadow removed */
-    transition: all 0.3s ease;
+    transition: none; /* Sin transiciones de color */
 }
 
-.property-card:hover .property-location {
-    color: rgba(51, 51, 51, 0.9);
-}
+/* REMOVIDO: cambios de color en hover */
 
 /* Property Features */
 .property-features {
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.4;
-    /* text-shadow removed */
 }
 
-/* Property Hover Info - NEGRO MINIMALISTA */
+/* Property Hover Info - Mantenido pero SIN cambios de color dinámicos */
 .property-hover-info {
     position: absolute;
     top: 50%;
@@ -312,7 +284,11 @@
     
     .property-card {
         border-right: none;
-        height: 300px;
+        height: 400px; /* Altura ajustada para móvil */
+    }
+    
+    .property-image {
+        height: 300px; /* Altura ajustada para móvil */
     }
     
     .property-hover-info {
@@ -325,7 +301,7 @@
     }
 }
 
-/* Loading States - NEGRO */
+/* Loading States */
 .loading-container {
     display: flex;
     flex-direction: column;
@@ -349,110 +325,4 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Error Container */
-.error-container {
-    text-align: center;
-    padding: 4rem 2rem;
-    background: #1a1a1a;
-    color: white;
-    min-height: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.error-container h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: #ff6b6b;
-}
-
-.error-container p {
-    margin-bottom: 2rem;
-    font-size: 1.1rem;
-    opacity: 0.8;
-}
-
-/* No Properties State */
-.no-properties {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 4rem 2rem;
-    background: #1a1a1a;
-    color: white;
-    min-height: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.no-properties h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    font-weight: 300;
-    opacity: 0.8;
-}
-
-.no-properties p {
-    font-size: 1.1rem;
-    opacity: 0.6;
-    margin-bottom: 2rem;
-}
-
-/* Animations - NEGRO MINIMALISTA */
-@keyframes shimmer {
-    0% { 
-        box-shadow: 0 0 50px rgba(51, 51, 51, 0.4);
-    }
-    50% { 
-        box-shadow: 0 0 80px rgba(0, 0, 0, 0.6);
-    }
-    100% { 
-        box-shadow: 0 0 50px rgba(51, 51, 51, 0.4);
-    }
-}
-
-.property-card:hover {
-    animation: shimmer 2s infinite;
-}
-
-/* Utility Classes - NEGRO */
-.btn {
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin: 0.5rem;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-}
-
-.btn-primary {
-    background: var(--dark-gray);
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #000;
-    transform: translateY(-2px);
-}
-
-.btn-secondary {
-    background: transparent;
-    color: white;
-    border: 2px solid white;
-}
-
-.btn-secondary:hover {
-    background: white;
-    color: #1a1a1a;
-}
+    0% { transform: rotate(0deg); }\n    100% { transform: rotate(360deg); }\n}\n\n/* Error Container */\n.error-container {\n    text-align: center;\n    padding: 4rem 2rem;\n    background: #1a1a1a;\n    color: white;\n    min-height: 400px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n}\n\n.error-container h3 {\n    font-size: 1.5rem;\n    margin-bottom: 1rem;\n    color: #ff6b6b;\n}\n\n.error-container p {\n    margin-bottom: 2rem;\n    font-size: 1.1rem;\n    opacity: 0.8;\n}\n\n/* No Properties State */\n.no-properties {\n    grid-column: 1 / -1;\n    text-align: center;\n    padding: 4rem 2rem;\n    background: #1a1a1a;\n    color: white;\n    min-height: 400px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n}\n\n.no-properties h3 {\n    font-size: 1.8rem;\n    margin-bottom: 1rem;\n    font-weight: 300;\n    opacity: 0.8;\n}\n\n.no-properties p {\n    font-size: 1.1rem;\n    opacity: 0.6;\n    margin-bottom: 2rem;\n}\n\n/* REMOVIDO: Animation shimmer que causaba cambios de color */\n\n/* Utility Classes */\n.btn {\n    padding: 1rem 2rem;\n    border: none;\n    border-radius: 4px;\n    font-size: 1rem;\n    cursor: pointer;\n    margin: 0.5rem;\n    transition: all 0.3s ease;\n    text-transform: uppercase;\n    letter-spacing: 0.5px;\n    font-weight: 600;\n}\n\n.btn-primary {\n    background: var(--dark-gray);\n    color: white;\n}\n\n.btn-primary:hover {\n    background: #000;\n    transform: translateY(-2px);\n}\n\n.btn-secondary {\n    background: transparent;\n    color: white;\n    border: 2px solid white;\n}\n\n.btn-secondary:hover {\n    background: white;\n    color: #1a1a1a;\n}
