@@ -184,7 +184,6 @@
 
 /* Efecto de iluminación al hover */
 .property-card:hover .property-image img {
-    filter: brightness(1.2) contrast(1.1);
     transform: scale(1.05);
 }
 
