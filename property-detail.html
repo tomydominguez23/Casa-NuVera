@@ -116,7 +116,7 @@
             background: white !important;
         }
 
-        /* GALLERY COMPLETAMENTE NUEVA */
+        /* 🆕 GALERÍA REDISEÑADA - SOLO IMAGEN GRANDE + BOTÓN ELEGANTE */
         .property-gallery {
             height: 500px !important;
             position: relative !important;
@@ -138,17 +138,18 @@
             display: block !important;
         }
 
-        /* 🆕 BOTÓN VER TODAS LAS FOTOS - ESQUINA SUPERIOR DERECHA */
+        /* 🆕 BOTÓN "VER X FOTOS" ESTILO REFERENCIA */
         .gallery-view-all-btn {
             position: absolute !important;
             top: 1rem !important;
             right: 1rem !important;
-            background: rgba(0,0,0,0.8) !important;
-            color: white !important;
-            border: none !important;
-            padding: 0.5rem 1rem !important;
-            border-radius: 6px !important;
-            font-size: 0.9rem !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+            color: #333 !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            padding: 0.6rem 1.2rem !important;
+            border-radius: 4px !important;
+            font-size: 0.85rem !important;
             font-weight: 500 !important;
             cursor: pointer !important;
             z-index: 5 !important;
@@ -156,62 +157,15 @@
             display: flex !important;
             align-items: center !important;
             gap: 0.4rem !important;
-            backdrop-filter: blur(10px) !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
         }
 
         .gallery-view-all-btn:hover {
-            background: rgba(0,0,0,0.9) !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
-        }
-
-        /* THUMBNAILS NUEVOS */
-        .gallery-thumbnails {
-            position: absolute !important;
-            left: 1rem !important;
-            top: 1rem !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 0.5rem !important;
-            z-index: 10 !important;
-        }
-
-        .gallery-thumb {
-            width: 60px !important;
-            height: 45px !important;
-            border-radius: 4px !important;
-            overflow: hidden !important;
-            cursor: pointer !important;
-            opacity: 0.8 !important;
-            transition: all 0.2s !important;
-            border: 2px solid transparent !important;
             background: white !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
-        }
-
-        .gallery-thumb.active {
-            opacity: 1 !important;
-            border-color: #333 !important;
-            box-shadow: 0 4px 12px rgba(51,51,51,0.3) !important;
-        }
-
-        .gallery-thumb img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-        }
-
-        .gallery-counter {
-            position: absolute !important;
-            left: 1rem !important;
-            bottom: 1rem !important;
-            background: rgba(0,0,0,0.8) !important;
-            color: white !important;
-            padding: 0.25rem 0.75rem !important;
-            border-radius: 20px !important;
-            font-size: 0.8rem !important;
-            font-weight: 500 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
         }
 
         /* 🆕 MODAL DE GALERÍA COMPLETO */
@@ -873,10 +827,6 @@
                 height: 300px !important;
             }
 
-            .gallery-thumbnails {
-                display: none !important;
-            }
-
             .property-info {
                 padding: 1.5rem !important;
             }
@@ -950,7 +900,7 @@
 
             .gallery-view-all-btn {
                 font-size: 0.8rem !important;
-                padding: 0.4rem 0.8rem !important;
+                padding: 0.5rem 1rem !important;
             }
         }
     </style>
@@ -978,35 +928,15 @@
             <div class="property-layout">
                 <!-- Columna izquierda - contenido principal -->
                 <div class="property-main">
-                    <!-- Gallery -->
+                    <!-- 🆕 GALERÍA REDISEÑADA - SOLO IMAGEN + BOTÓN ELEGANTE -->
                     <section class="property-gallery">
                         <div class="gallery-main">
                             <img id="mainImage" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&crop=center" alt="Departamento en arriendo">
                             
-                            <!-- 🆕 BOTÓN VER TODAS LAS FOTOS -->
-                            <button class="gallery-view-all-btn" onclick="openGalleryModal()">
-                                📷 Ver todas las fotos
+                            <!-- 🆕 BOTÓN "VER X FOTOS" ESTILO REFERENCIA -->
+                            <button class="gallery-view-all-btn" onclick="openGalleryModal()" id="galleryViewBtn">
+                                VER <span id="photoCount">12</span> FOTOS
                             </button>
-                        </div>
-                        <div class="gallery-thumbnails" id="galleryThumbnails">
-                            <div class="gallery-thumb active" onclick="changeImage(0)">
-                                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&crop=center" alt="Imagen 1">
-                            </div>
-                            <div class="gallery-thumb" onclick="changeImage(1)">
-                                <img src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&h=600&fit=crop&crop=center" alt="Imagen 2">
-                            </div>
-                            <div class="gallery-thumb" onclick="changeImage(2)">
-                                <img src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&h=600&fit=crop&crop=center" alt="Imagen 3">
-                            </div>
-                            <div class="gallery-thumb" onclick="changeImage(3)">
-                                <img src="https://images.unsplash.com/photo-1560448075-bb485b067938?w=800&h=600&fit=crop&crop=center" alt="Imagen 4">
-                            </div>
-                            <div class="gallery-thumb" onclick="changeImage(4)">
-                                <img src="https://images.unsplash.com/photo-1560185008-b033106af5c3?w=800&h=600&fit=crop&crop=center" alt="Imagen 5">
-                            </div>
-                        </div>
-                        <div class="gallery-counter" id="galleryCounter">
-                            1 / 5
                         </div>
                     </section>
 
@@ -1212,13 +1142,13 @@
             
             const propertyId = getPropertyIdFromURL();
             
+            // 🆕 Actualizar botón con número real de fotos
+            document.getElementById('photoCount').textContent = propertyImages.length;
+            
             // Contenido ya está visible, solo cargar datos en segundo plano
             if (propertyId) {
                 loadPropertyDetailsInBackground(propertyId);
             }
-
-            // 🆕 Actualizar contador con total real de imágenes
-            document.getElementById('galleryCounter').textContent = `1 / ${propertyImages.length}`;
             
             // 🆕 Inicializar event listeners del modal
             initializeGalleryModal();
@@ -1290,34 +1220,8 @@
             // Actualizar imagen principal
             document.getElementById('mainImage').src = images[0];
             
-            // Actualizar thumbnails
-            const galleryThumbnails = document.getElementById('galleryThumbnails');
-            galleryThumbnails.innerHTML = images.slice(0, 5).map((img, index) => `
-                <div class="gallery-thumb ${index === 0 ? 'active' : ''}" onclick="changeImage(${index}, '${img}')">
-                    <img src="${img}" alt="Imagen ${index + 1}">
-                </div>
-            `).join('');
-            
-            // Actualizar contador
-            document.getElementById('galleryCounter').textContent = `1 / ${images.length}`;
-        }
-
-        function changeImage(index, imageUrl = null) {
-            currentImageIndex = index;
-            
-            // Si se proporciona URL específica, usarla; sino usar la por defecto
-            const imageSrc = imageUrl || propertyImages[index];
-            
-            // Update main image
-            document.getElementById('mainImage').src = imageSrc;
-
-            // Update counter
-            document.getElementById('galleryCounter').textContent = `${index + 1} / ${propertyImages.length}`;
-
-            // Update active thumbnail
-            document.querySelectorAll('.gallery-thumb').forEach((thumb, i) => {
-                thumb.classList.toggle('active', i === index);
-            });
+            // 🆕 Actualizar contador en botón
+            document.getElementById('photoCount').textContent = images.length;
         }
 
         // 🆕 FUNCIONES DEL MODAL DE GALERÍA
@@ -1342,7 +1246,7 @@
             document.body.style.overflow = 'hidden';
             
             // Inicializar en modo viewer con la imagen actual
-            currentModalImageIndex = currentImageIndex;
+            currentModalImageIndex = 0;
             setGalleryMode('viewer');
             updateViewerImage();
             generateViewerThumbnails();
