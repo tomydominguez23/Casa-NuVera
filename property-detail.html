@@ -128,6 +128,7 @@
         .gallery-main {
             width: 100% !important;
             height: 100% !important;
+            position: relative !important;
         }
 
         .gallery-main img {
@@ -135,6 +136,34 @@
             height: 100% !important;
             object-fit: cover !important;
             display: block !important;
+        }
+
+        /* 🆕 BOTÓN VER TODAS LAS FOTOS - ESQUINA SUPERIOR DERECHA */
+        .gallery-view-all-btn {
+            position: absolute !important;
+            top: 1rem !important;
+            right: 1rem !important;
+            background: rgba(0,0,0,0.8) !important;
+            color: white !important;
+            border: none !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 6px !important;
+            font-size: 0.9rem !important;
+            font-weight: 500 !important;
+            cursor: pointer !important;
+            z-index: 5 !important;
+            transition: all 0.2s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.4rem !important;
+            backdrop-filter: blur(10px) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+        }
+
+        .gallery-view-all-btn:hover {
+            background: rgba(0,0,0,0.9) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
         }
 
         /* THUMBNAILS NUEVOS */
@@ -181,6 +210,269 @@
             color: white !important;
             padding: 0.25rem 0.75rem !important;
             border-radius: 20px !important;
+            font-size: 0.8rem !important;
+            font-weight: 500 !important;
+        }
+
+        /* 🆕 MODAL DE GALERÍA COMPLETO */
+        .gallery-modal {
+            display: none !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(0,0,0,0.95) !important;
+            z-index: 2001 !important;
+            backdrop-filter: blur(5px) !important;
+        }
+
+        .gallery-modal.active {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .gallery-modal-content {
+            width: 95% !important;
+            height: 90% !important;
+            max-width: 1400px !important;
+            background: #000 !important;
+            border-radius: 12px !important;
+            overflow: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8) !important;
+        }
+
+        /* HEADER DEL MODAL */
+        .gallery-modal-header {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 1rem 1.5rem !important;
+            background: #111 !important;
+            border-bottom: 1px solid #333 !important;
+        }
+
+        .gallery-modal-title {
+            color: white !important;
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+        }
+
+        .gallery-modal-controls {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+        }
+
+        .gallery-mode-btn {
+            background: rgba(255,255,255,0.1) !important;
+            color: rgba(255,255,255,0.7) !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+            padding: 0.4rem 0.8rem !important;
+            border-radius: 6px !important;
+            font-size: 0.85rem !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .gallery-mode-btn.active,
+        .gallery-mode-btn:hover {
+            background: rgba(255,255,255,0.2) !important;
+            color: white !important;
+            border-color: rgba(255,255,255,0.4) !important;
+        }
+
+        .gallery-modal-close {
+            background: none !important;
+            border: none !important;
+            color: white !important;
+            font-size: 2rem !important;
+            cursor: pointer !important;
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: background 0.2s !important;
+            margin-left: 1rem !important;
+        }
+
+        .gallery-modal-close:hover {
+            background: rgba(255,255,255,0.1) !important;
+        }
+
+        /* CUERPO DEL MODAL */
+        .gallery-modal-body {
+            flex: 1 !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+
+        /* 🆕 MODO VIEWER - IMAGEN GRANDE */
+        .gallery-viewer-mode {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transition: opacity 0.3s ease !important;
+        }
+
+        .gallery-viewer-mode.active {
+            opacity: 1 !important;
+            pointer-events: all !important;
+        }
+
+        .viewer-main-container {
+            flex: 1 !important;
+            position: relative !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            overflow: hidden !important;
+        }
+
+        .viewer-main-image {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: contain !important;
+            display: block !important;
+        }
+
+        .viewer-nav-btn {
+            position: absolute !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            background: rgba(255,255,255,0.9) !important;
+            color: #333 !important;
+            border: none !important;
+            width: 50px !important;
+            height: 50px !important;
+            border-radius: 50% !important;
+            font-size: 1.5rem !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            backdrop-filter: blur(10px) !important;
+            z-index: 10 !important;
+        }
+
+        .viewer-nav-btn:hover {
+            background: white !important;
+            transform: translateY(-50%) scale(1.1) !important;
+        }
+
+        .viewer-nav-btn.prev {
+            left: 2rem !important;
+        }
+
+        .viewer-nav-btn.next {
+            right: 2rem !important;
+        }
+
+        .viewer-info {
+            background: #111 !important;
+            padding: 1rem 1.5rem !important;
+            color: white !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+
+        .viewer-counter {
+            font-size: 0.9rem !important;
+            color: rgba(255,255,255,0.8) !important;
+        }
+
+        .viewer-thumbnails-strip {
+            display: flex !important;
+            gap: 0.5rem !important;
+            overflow-x: auto !important;
+            padding: 0.5rem 0 !important;
+        }
+
+        .viewer-thumb {
+            width: 60px !important;
+            height: 45px !important;
+            border-radius: 4px !important;
+            overflow: hidden !important;
+            cursor: pointer !important;
+            opacity: 0.6 !important;
+            transition: opacity 0.2s !important;
+            border: 2px solid transparent !important;
+            flex-shrink: 0 !important;
+        }
+
+        .viewer-thumb.active {
+            opacity: 1 !important;
+            border-color: white !important;
+        }
+
+        .viewer-thumb img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        /* 🆕 MODO GRID - MOSAICO DE IMÁGENES */
+        .gallery-grid-mode {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transition: opacity 0.3s ease !important;
+            overflow-y: auto !important;
+        }
+
+        .gallery-grid-mode.active {
+            opacity: 1 !important;
+            pointer-events: all !important;
+        }
+
+        .grid-container {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+            gap: 1rem !important;
+            padding: 1.5rem !important;
+        }
+
+        .grid-item {
+            aspect-ratio: 4/3 !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            cursor: pointer !important;
+            transition: transform 0.2s ease !important;
+            position: relative !important;
+        }
+
+        .grid-item:hover {
+            transform: scale(1.02) !important;
+        }
+
+        .grid-item img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        .grid-item-overlay {
+            position: absolute !important;
+            top: 0.5rem !important;
+            left: 0.5rem !important;
+            background: rgba(0,0,0,0.7) !important;
+            color: white !important;
+            padding: 0.25rem 0.5rem !important;
+            border-radius: 4px !important;
             font-size: 0.8rem !important;
             font-weight: 500 !important;
         }
@@ -615,6 +907,51 @@
                 padding: 1rem 2rem !important;
                 font-size: 1rem !important;
             }
+
+            /* 🆕 GALLERY MODAL RESPONSIVE */
+            .gallery-modal-content {
+                width: 98% !important;
+                height: 98% !important;
+                border-radius: 8px !important;
+            }
+
+            .gallery-modal-header {
+                padding: 0.75rem 1rem !important;
+            }
+
+            .gallery-modal-title {
+                font-size: 1rem !important;
+            }
+
+            .gallery-mode-btn {
+                font-size: 0.8rem !important;
+                padding: 0.3rem 0.6rem !important;
+            }
+
+            .viewer-nav-btn {
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 1.2rem !important;
+            }
+
+            .viewer-nav-btn.prev {
+                left: 1rem !important;
+            }
+
+            .viewer-nav-btn.next {
+                right: 1rem !important;
+            }
+
+            .grid-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+                gap: 0.75rem !important;
+                padding: 1rem !important;
+            }
+
+            .gallery-view-all-btn {
+                font-size: 0.8rem !important;
+                padding: 0.4rem 0.8rem !important;
+            }
         }
     </style>
 </head>
@@ -645,6 +982,11 @@
                     <section class="property-gallery">
                         <div class="gallery-main">
                             <img id="mainImage" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&crop=center" alt="Departamento en arriendo">
+                            
+                            <!-- 🆕 BOTÓN VER TODAS LAS FOTOS -->
+                            <button class="gallery-view-all-btn" onclick="openGalleryModal()">
+                                📷 Ver todas las fotos
+                            </button>
                         </div>
                         <div class="gallery-thumbnails" id="galleryThumbnails">
                             <div class="gallery-thumb active" onclick="changeImage(0)">
@@ -773,6 +1115,50 @@
         </div>
     </main>
 
+    <!-- 🆕 MODAL DE GALERÍA COMPLETO -->
+    <div class="gallery-modal" id="galleryModal">
+        <div class="gallery-modal-content">
+            <!-- Header con controles -->
+            <div class="gallery-modal-header">
+                <div class="gallery-modal-title">Galería de Fotos - Departamento Los Llanes</div>
+                <div class="gallery-modal-controls">
+                    <button class="gallery-mode-btn active" onclick="setGalleryMode('viewer')" data-mode="viewer">
+                        👁️ Vista Individual
+                    </button>
+                    <button class="gallery-mode-btn" onclick="setGalleryMode('grid')" data-mode="grid">
+                        ⊞ Vista Mosaico
+                    </button>
+                    <button class="gallery-modal-close" onclick="closeGalleryModal()">×</button>
+                </div>
+            </div>
+            
+            <!-- Cuerpo del modal -->
+            <div class="gallery-modal-body">
+                <!-- MODO VIEWER - Imagen grande -->
+                <div class="gallery-viewer-mode active" id="viewerMode">
+                    <div class="viewer-main-container">
+                        <img class="viewer-main-image" id="viewerMainImage" src="" alt="Vista completa">
+                        <button class="viewer-nav-btn prev" onclick="previousImage()">‹</button>
+                        <button class="viewer-nav-btn next" onclick="nextImage()">›</button>
+                    </div>
+                    <div class="viewer-info">
+                        <div class="viewer-counter" id="viewerCounter">1 / 12</div>
+                        <div class="viewer-thumbnails-strip" id="viewerThumbnailsStrip">
+                            <!-- Thumbnails strip se genera dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- MODO GRID - Mosaico -->
+                <div class="gallery-grid-mode" id="gridMode">
+                    <div class="grid-container" id="gridContainer">
+                        <!-- Grid se genera dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Tour 360° - TAMBIÉN SOBRIO -->
     <div class="tour-modal" id="tourModal">
         <div class="tour-modal-content">
@@ -793,15 +1179,25 @@
         // Variables globales
         let currentProperty = null;
         let currentImageIndex = 0;
+        let currentModalImageIndex = 0;
         const defaultTourUrl = 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1';
 
-        // Imágenes por defecto del departamento
+        // 🆕 IMÁGENES EXPANDIDAS - SISTEMA DE 12 FOTOS
         const propertyImages = [
+            // 5 imágenes originales
             'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&crop=center',
             'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&h=600&fit=crop&crop=center',
             'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&h=600&fit=crop&crop=center',
             'https://images.unsplash.com/photo-1560448075-bb485b067938?w=800&h=600&fit=crop&crop=center',
-            'https://images.unsplash.com/photo-1560185008-b033106af5c3?w=800&h=600&fit=crop&crop=center'
+            'https://images.unsplash.com/photo-1560185008-b033106af5c3?w=800&h=600&fit=crop&crop=center',
+            // 7 nuevas imágenes
+            'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop&crop=center', // Cocina moderna
+            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop&crop=center', // Baño elegante  
+            'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&h=600&fit=crop&crop=center', // Dormitorio
+            'https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=800&h=600&fit=crop&crop=center', // Balcón/terraza
+            'https://images.unsplash.com/photo-1565182999561-18d7dc61c393?w=800&h=600&fit=crop&crop=center', // Vista exterior
+            'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop&crop=center', // Sala estar
+            'https://images.unsplash.com/photo-1556909114-4f4e0d69ac04?w=800&h=600&fit=crop&crop=center'  // Comedor
         ];
 
         // Obtener ID de la propiedad desde URL
@@ -820,6 +1216,12 @@
             if (propertyId) {
                 loadPropertyDetailsInBackground(propertyId);
             }
+
+            // 🆕 Actualizar contador con total real de imágenes
+            document.getElementById('galleryCounter').textContent = `1 / ${propertyImages.length}`;
+            
+            // 🆕 Inicializar event listeners del modal
+            initializeGalleryModal();
         });
 
         async function loadPropertyDetailsInBackground(propertyId) {
@@ -881,12 +1283,16 @@
         function updateGalleryWithRealImages(images) {
             console.log('🖼️ Actualizando galería con imágenes reales');
             
+            // Reemplazar array de imágenes
+            propertyImages.length = 0;
+            propertyImages.push(...images);
+            
             // Actualizar imagen principal
             document.getElementById('mainImage').src = images[0];
             
             // Actualizar thumbnails
             const galleryThumbnails = document.getElementById('galleryThumbnails');
-            galleryThumbnails.innerHTML = images.map((img, index) => `
+            galleryThumbnails.innerHTML = images.slice(0, 5).map((img, index) => `
                 <div class="gallery-thumb ${index === 0 ? 'active' : ''}" onclick="changeImage(${index}, '${img}')">
                     <img src="${img}" alt="Imagen ${index + 1}">
                 </div>
@@ -906,13 +1312,135 @@
             document.getElementById('mainImage').src = imageSrc;
 
             // Update counter
-            const totalImages = imageUrl ? document.querySelectorAll('.gallery-thumb').length : propertyImages.length;
-            document.getElementById('galleryCounter').textContent = `${index + 1} / ${totalImages}`;
+            document.getElementById('galleryCounter').textContent = `${index + 1} / ${propertyImages.length}`;
 
             // Update active thumbnail
             document.querySelectorAll('.gallery-thumb').forEach((thumb, i) => {
                 thumb.classList.toggle('active', i === index);
             });
+        }
+
+        // 🆕 FUNCIONES DEL MODAL DE GALERÍA
+
+        function initializeGalleryModal() {
+            // Event listeners del modal
+            document.addEventListener('keydown', handleGalleryKeydown);
+            
+            // Close on outside click
+            document.getElementById('galleryModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeGalleryModal();
+                }
+            });
+        }
+
+        function openGalleryModal() {
+            console.log('🖼️ Abriendo modal de galería');
+            
+            const modal = document.getElementById('galleryModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Inicializar en modo viewer con la imagen actual
+            currentModalImageIndex = currentImageIndex;
+            setGalleryMode('viewer');
+            updateViewerImage();
+            generateViewerThumbnails();
+            generateGridImages();
+        }
+
+        function closeGalleryModal() {
+            console.log('❌ Cerrando modal de galería');
+            
+            const modal = document.getElementById('galleryModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function setGalleryMode(mode) {
+            console.log('🔄 Cambiando a modo:', mode);
+            
+            // Update buttons
+            document.querySelectorAll('.gallery-mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+            
+            // Update modes
+            document.getElementById('viewerMode').classList.toggle('active', mode === 'viewer');
+            document.getElementById('gridMode').classList.toggle('active', mode === 'grid');
+            
+            if (mode === 'grid') {
+                generateGridImages();
+            }
+        }
+
+        function updateViewerImage() {
+            const viewerImage = document.getElementById('viewerMainImage');
+            const counter = document.getElementById('viewerCounter');
+            
+            viewerImage.src = propertyImages[currentModalImageIndex];
+            counter.textContent = `${currentModalImageIndex + 1} / ${propertyImages.length}`;
+            
+            // Update active thumbnail in strip
+            document.querySelectorAll('.viewer-thumb').forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === currentModalImageIndex);
+            });
+        }
+
+        function generateViewerThumbnails() {
+            const strip = document.getElementById('viewerThumbnailsStrip');
+            strip.innerHTML = propertyImages.map((img, index) => `
+                <div class="viewer-thumb ${index === currentModalImageIndex ? 'active' : ''}" onclick="goToImage(${index})">
+                    <img src="${img}" alt="Imagen ${index + 1}">
+                </div>
+            `).join('');
+        }
+
+        function generateGridImages() {
+            const grid = document.getElementById('gridContainer');
+            grid.innerHTML = propertyImages.map((img, index) => `
+                <div class="grid-item" onclick="goToImageFromGrid(${index})">
+                    <img src="${img}" alt="Imagen ${index + 1}">
+                    <div class="grid-item-overlay">${index + 1}</div>
+                </div>
+            `).join('');
+        }
+
+        function previousImage() {
+            currentModalImageIndex = (currentModalImageIndex - 1 + propertyImages.length) % propertyImages.length;
+            updateViewerImage();
+        }
+
+        function nextImage() {
+            currentModalImageIndex = (currentModalImageIndex + 1) % propertyImages.length;
+            updateViewerImage();
+        }
+
+        function goToImage(index) {
+            currentModalImageIndex = index;
+            updateViewerImage();
+        }
+
+        function goToImageFromGrid(index) {
+            currentModalImageIndex = index;
+            setGalleryMode('viewer');
+            updateViewerImage();
+        }
+
+        function handleGalleryKeydown(e) {
+            if (!document.getElementById('galleryModal').classList.contains('active')) return;
+            
+            switch(e.key) {
+                case 'Escape':
+                    closeGalleryModal();
+                    break;
+                case 'ArrowLeft':
+                    previousImage();
+                    break;
+                case 'ArrowRight':
+                    nextImage();
+                    break;
+            }
         }
 
         // Tour 360° functions

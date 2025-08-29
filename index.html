@@ -913,7 +913,7 @@
             margin-right: auto !important;
         }
 
-        /* CARRUSEL MIXTO */
+        /* 🆕 CARRUSEL CLICKEABLE - CURSOR POINTER MEJORADO */
         .gallery-carousel {
             position: relative;
             max-width: 1200px;
@@ -921,6 +921,7 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+            cursor: pointer; /* Cursor pointer en todo el carrusel */
         }
 
         .gallery-slides-container {
@@ -941,6 +942,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer; /* 🆕 Cursor pointer en cada slide */
         }
 
         .gallery-slide.active {
@@ -975,6 +977,8 @@
             color: white;
             padding: 3rem 2rem 2rem;
             text-align: left;
+            /* 🆕 Prevenir que overlay interfiera con clicks */
+            pointer-events: none;
         }
 
         .slide-overlay h3 {
@@ -1520,7 +1524,7 @@
         </div>
     </section>
 
-    <!-- 🎬 GALERÍA MIXTA: Imágenes + Videos -->
+    <!-- 🎬 GALERÍA MIXTA: Imágenes + Videos CON FUNCIONALIDAD CLICKEABLE -->
     <section class="gallery-section">
         <div class="gallery-container">
             <div class="gallery-header">
@@ -1528,10 +1532,10 @@
                 <p>Descubre a través de imágenes y videos la calidad y belleza de nuestras propiedades</p>
             </div>
             
-            <div class="gallery-carousel">
+            <div class="gallery-carousel" onclick="handleCarouselClick()">
                 <div class="gallery-slides-container">
-                    <!-- SLIDE 1: IMAGEN -->
-                    <div class="gallery-slide active">
+                    <!-- 🆕 SLIDE 1: IMAGEN CLICKEABLE → Propiedad 1 -->
+                    <div class="gallery-slide active" data-property="1" data-slug="departamento-los-llanes">
                         <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg" alt="Experiencia 1">
                         <div class="slide-overlay">
                             <h3>Espacios que Inspiran</h3>
@@ -1539,8 +1543,8 @@
                         </div>
                     </div>
                     
-                    <!-- SLIDE 2: VIDEO PLACEHOLDER -->
-                    <div class="gallery-slide video-slide">
+                    <!-- 🆕 SLIDE 2: VIDEO CLICKEABLE → Propiedad 2 -->
+                    <div class="gallery-slide video-slide" data-property="2" data-slug="casa-moderna-providencia">
                         <video autoplay muted loop>
                             <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
                             Tu navegador no soporta videos HTML5.
@@ -1551,8 +1555,8 @@
                         </div>
                     </div>
                     
-                    <!-- SLIDE 3: IMAGEN -->
-                    <div class="gallery-slide">
+                    <!-- 🆕 SLIDE 3: IMAGEN CLICKEABLE → Propiedad 3 -->
+                    <div class="gallery-slide" data-property="3" data-slug="oficina-vitacura">
                         <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150948654_0.jpeg" alt="Experiencia 3">
                         <div class="slide-overlay">
                             <h3>Calidad en Cada Detalle</h3>
@@ -1560,8 +1564,8 @@
                         </div>
                     </div>
                     
-                    <!-- SLIDE 4: VIDEO PLACEHOLDER -->
-                    <div class="gallery-slide video-slide">
+                    <!-- 🆕 SLIDE 4: VIDEO CLICKEABLE → Propiedad 4 -->
+                    <div class="gallery-slide video-slide" data-property="4" data-slug="casa-familiar-nunoa">
                         <video autoplay muted loop>
                             <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
                             Tu navegador no soporta videos HTML5.
@@ -1574,15 +1578,15 @@
                 </div>
                 
                 <!-- Controles de navegación -->
-                <button class="gallery-nav-btn prev-btn" onclick="previousSlide()">‹</button>
-                <button class="gallery-nav-btn next-btn" onclick="nextSlide()">›</button>
+                <button class="gallery-nav-btn prev-btn" onclick="previousSlide(); event.stopPropagation();">‹</button>
+                <button class="gallery-nav-btn next-btn" onclick="nextSlide(); event.stopPropagation();">›</button>
                 
                 <!-- Indicadores -->
                 <div class="gallery-indicators">
-                    <span class="indicator active" data-slide="0"></span>
-                    <span class="indicator" data-slide="1"></span>
-                    <span class="indicator" data-slide="2"></span>
-                    <span class="indicator" data-slide="3"></span>
+                    <span class="indicator active" data-slide="0" onclick="showSlide(0); event.stopPropagation();"></span>
+                    <span class="indicator" data-slide="1" onclick="showSlide(1); event.stopPropagation();"></span>
+                    <span class="indicator" data-slide="2" onclick="showSlide(2); event.stopPropagation();"></span>
+                    <span class="indicator" data-slide="3" onclick="showSlide(3); event.stopPropagation();"></span>
                 </div>
             </div>
         </div>
@@ -1705,6 +1709,22 @@
             showSlide(prevIndex);
         }
 
+        // 🆕 FUNCIONALIDAD CLICKEABLE DEL CARRUSEL
+        function handleCarouselClick() {
+            const activeSlide = document.querySelector('.gallery-slide.active');
+            if (activeSlide) {
+                const propertyId = activeSlide.dataset.property;
+                const slug = activeSlide.dataset.slug;
+                
+                if (propertyId && slug) {
+                    console.log(`🖼️ Click en carrusel - Navegando a propiedad ID: ${propertyId}, Slug: ${slug}`);
+                    navigateToProperty(propertyId, slug);
+                } else {
+                    console.warn('⚠️ Slide sin datos de propiedad');
+                }
+            }
+        }
+
         // AUTOPLAY AUTOMÁTICO
         function startAutoplay() {
             autoplayInterval = setInterval(nextSlide, 4000); // Cambio cada 4 segundos
@@ -1744,12 +1764,7 @@
             console.log('⚡ Scripts cargados: supabase.js, property-handler.js, property-loader-fixed.js');
             
             // INICIALIZAR CARRUSEL
-            // Configurar indicadores
-            document.querySelectorAll('.indicator').forEach((indicator, index) => {
-                indicator.addEventListener('click', () => {
-                    showSlide(index);
-                });
-            });
+            // Configurar indicadores ya tienen onclick en HTML
             
             // Pausar en hover
             const carousel = document.querySelector('.gallery-carousel');
