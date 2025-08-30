@@ -691,7 +691,7 @@
             display: inline-block !important;
         }
 
-        /* 🎯 GRID DE PROPIEDADES UNIFICADO - DISEÑO IMAGEN 1 */
+        /* 🆕 GRID DE PROPIEDADES - DISEÑO IMAGEN 1 SIN BORDES */
         .properties-grid-container,
         #featuredProperties {
             display: grid !important;
@@ -701,31 +701,32 @@
             background: transparent !important;
         }
 
-        /* 🆕 CARDS UNIFICADAS - DISEÑO EXACTO IMAGEN 1 */
+        /* 🔥 CARDS SIN BORDES - EXACTAMENTE COMO IMAGEN 1 */
         .property-card {
-            background: white !important;
-            border-radius: 8px !important;
-            overflow: hidden !important;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+            background: transparent !important; /* Sin fondo contenedor */
+            border: none !important; /* SIN BORDER */
+            border-radius: 0 !important; /* SIN BORDER-RADIUS */
+            box-shadow: none !important; /* SIN BOX-SHADOW */
+            overflow: visible !important;
             transition: all 0.3s ease !important;
             cursor: pointer !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
             display: flex !important;
             flex-direction: column !important;
             position: relative !important;
         }
 
         .property-card:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
+            transform: translateY(-2px) !important; /* Solo movimiento, sin sombra */
         }
 
-        /* 🆕 IMAGEN PRINCIPAL - IMAGEN 1 */
+        /* 🔥 IMAGEN PRINCIPAL - PEGADA AL FONDO */
         .property-image {
             height: 200px !important;
             position: relative !important;
             overflow: hidden !important;
             flex-shrink: 0 !important;
+            border-radius: 0 !important; /* SIN BORDER-RADIUS */
+            margin: 0 !important;
         }
 
         .property-image img {
@@ -733,6 +734,7 @@
             height: 100% !important;
             object-fit: cover !important;
             transition: transform 0.3s ease !important;
+            border-radius: 0 !important; /* SIN BORDER-RADIUS EN IMAGEN */
         }
 
         .property-card:hover .property-image img {
@@ -752,7 +754,7 @@
             font-weight: 500 !important;
         }
 
-        /* 🆕 CÍRCULO FAVORITOS - EXACTAMENTE IMAGEN 1 */
+        /* 🔥 CÍRCULO FAVORITOS - COMO IMAGEN 1 */
         .property-favorite {
             position: absolute !important;
             top: 12px !important;
@@ -787,17 +789,17 @@
             transition: all 0.2s ease !important;
         }
 
-        /* 🆕 CONTENIDO - DISEÑO IMAGEN 1 */
+        /* 🔥 CONTENIDO SIN FONDO - PEGADO A LA IMAGEN */
         .property-content {
-            padding: 1.5rem !important;
-            background: white !important;
+            padding: 1.5rem 0 !important; /* Sin padding lateral - pegado al fondo */
+            background: transparent !important; /* SIN FONDO BLANCO */
             flex: 1 !important;
             display: flex !important;
             flex-direction: column !important;
             gap: 0.75rem !important;
         }
 
-        /* 🆕 TÍTULO - IMAGEN 1 */
+        /* 🔥 TÍTULO - COMO IMAGEN 1 */
         .property-title {
             font-size: 1.1rem !important;
             font-weight: 600 !important;
@@ -808,7 +810,7 @@
             white-space: normal !important;
         }
 
-        /* 🆕 UBICACIÓN - IMAGEN 1 */
+        /* 🔥 UBICACIÓN - COMO IMAGEN 1 */
         .property-subtitle,
         .property-location {
             font-size: 0.85rem !important;
@@ -820,7 +822,7 @@
             gap: 0.5rem !important;
         }
 
-        /* 🆕 ICONOS HORIZONTALES - IMAGEN 1 */
+        /* 🔥 ICONOS HORIZONTALES VISIBLES - IMAGEN 1 */
         .property-features {
             display: flex !important;
             gap: 1.5rem !important;
@@ -837,14 +839,16 @@
             font-weight: 500 !important;
         }
 
+        /* 🔥 ICONOS SVG VISIBLES Y CORRECTOS */
         .property-feature-icon {
             width: 16px !important;
             height: 16px !important;
-            color: #999 !important;
+            color: #666 !important;
             flex-shrink: 0 !important;
+            fill: currentColor !important;
         }
 
-        /* 🆕 PRECIO ALINEADO DERECHA - IMAGEN 1 */
+        /* 🔥 PRECIO ALINEADO DERECHA - COMO IMAGEN 1 */
         .property-price-section {
             display: flex !important;
             justify-content: flex-end !important;
@@ -1303,7 +1307,7 @@
             }
 
             .property-content {
-                padding: 1.5rem !important;
+                padding: 1.5rem 0 !important;
             }
 
             .contact-grid {
@@ -1602,7 +1606,6 @@
                     <div class="gallery-slide video-slide" data-property="4" data-slug="casa-familiar-nunoa">
                         <video autoplay muted loop>
                             <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-                            Tu navegador no soporta videos HTML5.
                         </video>
                         <div class="slide-overlay">
                             <h3>Tecnología de Vanguardia</h3>
@@ -1694,7 +1697,7 @@
     <script src="whatsapp-widget.js"></script>
 
     <script>
-        // 🆕 FUNCIÓN FAVORITOS UNIFICADA - IMAGEN 1
+        // 🔥 FUNCIÓN FAVORITOS UNIFICADA - IMAGEN 1
         function toggleFavorite(propertyId, event) {
             event.stopPropagation(); // Evitar que se ejecute el onclick de la card
             
@@ -1809,6 +1812,79 @@
                 console.warn('⚠️ PropertyLoader no está disponible aún - esperando conexión a Supabase');
             }
         }
+
+        // 🔥 RENDERIZADO DE PROPERTY CARD - EXACTAMENTE IMAGEN 1 CON ICONOS SVG
+        window.renderPropertyCard = function(property) {
+            const imageUrl = property.fotos && property.fotos.length > 0 
+                ? property.fotos[0] 
+                : null;
+            
+            const imageHTML = imageUrl 
+                ? `<img src="${imageUrl}" alt="${property.titulo}" loading="lazy">` 
+                : `<div class="no-image-placeholder">Imagen no disponible</div>`;
+            
+            return `
+                <div class="property-card" onclick="navigateToProperty('${property.id}', '${property.slug || 'property'}')">
+                    <!-- 🔥 IMAGEN SIN BORDES -->
+                    <div class="property-image">
+                        ${imageHTML}
+                        
+                        <!-- 🔥 CÍRCULO FAVORITOS BLANCO -->
+                        <button class="property-favorite" id="fav_${property.id}" onclick="toggleFavorite('${property.id}', event)" aria-label="Agregar a favoritos">
+                            <svg class="property-favorite-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- 🔥 CONTENIDO SIN FONDO - PEGADO -->
+                    <div class="property-content">
+                        <!-- 🔥 TÍTULO -->
+                        <h3 class="property-title">${property.titulo}</h3>
+                        
+                        <!-- 🔥 UBICACIÓN -->
+                        <p class="property-location">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            ${property.comuna}, ${property.region}
+                        </p>
+                        
+                        <!-- 🔥 ICONOS HORIZONTALES VISIBLES - CAMA, DUCHA, METROS -->
+                        <div class="property-features">
+                            <div class="property-feature">
+                                <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M7 14c1.66 0 3-1.34 3-3S8.66 8 7 8s-3 1.34-3 3 1.34 3 3 3zm0-4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm12-3h-8v8H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/>
+                                </svg>
+                                ${property.dormitorios || 0} hab
+                            </div>
+                            <div class="property-feature">
+                                <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.25l1.25-2.75-6-6-3.5 3.5-4.5-4.5L1 12.75l6.5 6.5 3.5-3.5 6 6z"/>
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM7.07 18.28c.43-.9 3.05-.99 4.93-.99s4.51.09 4.93.99c-.73 1.13-1.87 2.02-3.21 2.53C12.75 21.27 11.25 21.27 10.28 20.81c-1.34-.51-2.48-1.4-3.21-2.53z"/>
+                                </svg>
+                                ${property.banos || 0} baños
+                            </div>
+                            <div class="property-feature">
+                                <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16z"/>
+                                    <path d="M6 10h2v2H6zm0 4h2v2H6zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"/>
+                                </svg>
+                                ${property.superficie_util || property.superficie_total || 0} m²
+                            </div>
+                        </div>
+                        
+                        <!-- 🔥 PRECIO ALINEADO DERECHA -->
+                        <div class="property-price-section">
+                            <span class="property-price">
+                                ${property.precio ? `${parseFloat(property.precio).toLocaleString()} UF` : 'Consultar'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
 
         // 🚨 SOLO MANEJO DE EVENTOS - SIN CARGA DE PROPIEDADES MOCKUP
         document.addEventListener('DOMContentLoaded', () => {
