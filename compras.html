@@ -303,7 +303,7 @@
             font-weight: 500;
         }
 
-        /* 🆕 GRID DE PROPIEDADES REDISEÑADO COMO IMAGEN 2 */
+        /* 🆕 GRID DE PROPIEDADES UNIFICADO - DISEÑO IMAGEN 1 */
         .properties-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -311,7 +311,7 @@
             padding: 0;
         }
 
-        /* 🆕 CARDS REDISEÑADAS COMO IMAGEN 2 */
+        /* 🆕 CARDS UNIFICADAS - DISEÑO EXACTO IMAGEN 1 */
         .property-card {
             background: white;
             border-radius: 8px;
@@ -330,7 +330,7 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
 
-        /* 🆕 IMAGEN COMO IMAGEN 2 */
+        /* 🆕 IMAGEN PRINCIPAL - IMAGEN 1 */
         .property-image {
             height: 200px;
             position: relative;
@@ -361,7 +361,7 @@
             font-weight: 500;
         }
 
-        /* 🆕 CÍRCULO FAVORITOS COMO IMAGEN 2 */
+        /* 🆕 CÍRCULO FAVORITOS EXACTAMENTE COMO IMAGEN 1 */
         .property-favorite {
             position: absolute;
             top: 12px;
@@ -396,7 +396,7 @@
             transition: all 0.2s ease;
         }
 
-        /* 🆕 CONTENIDO REDISEÑADO COMO IMAGEN 2 */
+        /* 🆕 CONTENIDO REDISEÑADO EXACTAMENTE COMO IMAGEN 1 */
         .property-content {
             padding: 1.5rem;
             background: white;
@@ -406,7 +406,7 @@
             gap: 0.75rem;
         }
 
-        /* 🆕 TÍTULO + UBICACIÓN COMO IMAGEN 2 */
+        /* 🆕 TÍTULO + UBICACIÓN COMO IMAGEN 1 */
         .property-title {
             font-size: 1.1rem;
             font-weight: 600;
@@ -424,7 +424,7 @@
             font-weight: 400;
         }
 
-        /* 🆕 ICONOS HORIZONTALES COMO IMAGEN 2 */
+        /* 🆕 ICONOS HORIZONTALES EXACTAMENTE COMO IMAGEN 1 */
         .property-features {
             display: flex;
             gap: 1.5rem;
@@ -448,7 +448,7 @@
             flex-shrink: 0;
         }
 
-        /* 🆕 PRECIO ALINEADO DERECHA COMO IMAGEN 2 */
+        /* 🆕 PRECIO ALINEADO DERECHA EXACTAMENTE COMO IMAGEN 1 */
         .property-price-section {
             display: flex;
             justify-content: flex-end;
@@ -889,6 +889,24 @@
         let allProperties = [];
         let filtered = [];
 
+        // 🆕 FUNCIÓN FAVORITOS UNIFICADA
+        function toggleFavorite(propertyId, event) {
+            event.stopPropagation(); // Evitar que se ejecute el onclick de la card
+            
+            const favoriteBtn = document.getElementById(`fav_${propertyId}`);
+            const isActive = favoriteBtn.classList.contains('active');
+            
+            if (isActive) {
+                favoriteBtn.classList.remove('active');
+                console.log(`❤️ Removido de favoritos: ${propertyId}`);
+                // Aquí puedes agregar lógica para remover de localStorage o API
+            } else {
+                favoriteBtn.classList.add('active');
+                console.log(`💖 Agregado a favoritos: ${propertyId}`);
+                // Aquí puedes agregar lógica para guardar en localStorage o API
+            }
+        }
+
         // Inicializar página
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🏠 Iniciando página de compras...');
@@ -1022,7 +1040,7 @@
                 return;
             }
 
-            // 🆕 RENDERIZAR PROPIEDADES ESTILO IMAGEN 2
+            // 🆕 RENDERIZAR PROPIEDADES ESTILO IMAGEN 1
             const propertiesHTML = (filtered.length ? filtered : allProperties).map(property => {
                 const formattedPrice = formatPrice(property.price, property.currency);
                 const location = formatLocation(property);
@@ -1045,7 +1063,7 @@
                             }
                             ${featuredBadge}
                             
-                            <!-- 🆕 CÍRCULO FAVORITOS COMO IMAGEN 2 -->
+                            <!-- 🆕 CÍRCULO FAVORITOS COMO IMAGEN 1 -->
                             <div class="property-favorite" onclick="toggleFavorite('${propertyId}', event)" id="fav_${propertyId}">
                                 <svg class="property-favorite-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -1053,12 +1071,12 @@
                             </div>
                         </div>
                         
-                        <!-- 🆕 CONTENIDO REDISEÑADO COMO IMAGEN 2 -->
+                        <!-- 🆕 CONTENIDO REDISEÑADO COMO IMAGEN 1 -->
                         <div class="property-content">
                             <h3 class="property-title">${property.title || 'Propiedad sin título'}</h3>
                             <p class="property-subtitle">${location}</p>
                             
-                            <!-- 🆕 ICONOS HORIZONTALES COMO IMAGEN 2 -->
+                            <!-- 🆕 ICONOS HORIZONTALES COMO IMAGEN 1 -->
                             <div class="property-features">
                                 <div class="property-feature">
                                     <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -1080,7 +1098,7 @@
                                 </div>
                             </div>
                             
-                            <!-- 🆕 PRECIO ALINEADO DERECHA COMO IMAGEN 2 -->
+                            <!-- 🆕 PRECIO ALINEADO DERECHA COMO IMAGEN 1 -->
                             <div class="property-price-section">
                                 <div class="property-price-badge">
                                     ${formattedPrice}
@@ -1097,24 +1115,6 @@
 
             // Mostrar la sección de propiedades
             document.getElementById('propertiesSection').style.display = 'block';
-        }
-
-        // 🆕 FUNCIÓN FAVORITOS
-        function toggleFavorite(propertyId, event) {
-            event.stopPropagation(); // Evitar que se ejecute el onclick de la card
-            
-            const favoriteBtn = document.getElementById(`fav_${propertyId}`);
-            const isActive = favoriteBtn.classList.contains('active');
-            
-            if (isActive) {
-                favoriteBtn.classList.remove('active');
-                console.log(`❤️ Removido de favoritos: ${propertyId}`);
-                // Aquí puedes agregar lógica para remover de localStorage o API
-            } else {
-                favoriteBtn.classList.add('active');
-                console.log(`💖 Agregado a favoritos: ${propertyId}`);
-                // Aquí puedes agregar lógica para guardar en localStorage o API
-            }
         }
 
         function goToProperty(propertyId, slug) {
