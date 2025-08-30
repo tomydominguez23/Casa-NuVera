@@ -334,9 +334,9 @@
             transform: translateY(-2px) !important; /* Solo movimiento, sin sombra */
         }
 
-        /* 🔥 IMAGEN PRINCIPAL - PEGADA AL FONDO */
+        /* 🔥 IMAGEN PRINCIPAL - MÁS CUADRADA Y GRANDE (280px) */
         .property-image {
-            height: 200px !important;
+            height: 280px !important; /* AUMENTADO DE 200px A 280px */
             position: relative !important;
             overflow: hidden !important;
             flex-shrink: 0 !important;
@@ -653,6 +653,11 @@
             .property-features {
                 flex-wrap: wrap;
                 gap: 1rem;
+            }
+
+            /* 🔥 RESPONSIVE - IMAGEN MÁS GRANDE EN MÓVIL TAMBIÉN */
+            .property-image {
+                height: 250px !important; /* En móvil un poco menos pero aún más grande que antes */
             }
 
             .property-content {
@@ -1059,7 +1064,7 @@
                     return currency === 'UF' ? `${formatted} UF` : `$${formatted}`;
                 };
 
-                const message = `Hola! Estoy interesado/a en arrendar la propiedad "${property.title}" ubicada en ${property.location}.\\n\\n💰 Precio: ${formatPrice(property.price, property.currency)}\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📜 Superficie: ${property.area}m²\\n\\n¿Podrías darme más información sobre disponibilidad y condiciones?`;
+                const message = `Hola! Estoy interesado/a en arrendar la propiedad "${property.title}" ubicada en ${property.location}.\\n\\n💰 Precio: ${formatPrice(property.price, property.currency)}\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📏 Superficie: ${property.area}m²\\n\\n¿Podrías darme más información sobre disponibilidad y condiciones?`;
                 const whatsappURL = `https://wa.me/56912345678?text=${encodeURIComponent(message)}`;
                 window.open(whatsappURL, '_blank');
             }
