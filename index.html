@@ -719,9 +719,9 @@
             transform: translateY(-2px) !important; /* Solo movimiento, sin sombra */
         }
 
-        /* 🔥 IMAGEN PRINCIPAL - PEGADA AL FONDO */
+        /* 🔥 IMAGEN PRINCIPAL - MÁS CUADRADA Y GRANDE (280px) */
         .property-image {
-            height: 200px !important;
+            height: 280px !important; /* AUMENTADO DE 200px A 280px */
             position: relative !important;
             overflow: hidden !important;
             flex-shrink: 0 !important;
@@ -1302,8 +1302,9 @@
                 max-width: 350px;
             }
 
+            /* 🔥 RESPONSIVE - IMAGEN MÁS GRANDE EN MÓVIL TAMBIÉN */
             .property-image {
-                height: 200px !important;
+                height: 250px !important; /* En móvil un poco menos pero aún más grande que antes */
             }
 
             .property-content {
@@ -1825,7 +1826,7 @@
             
             return `
                 <div class="property-card" onclick="navigateToProperty('${property.id}', '${property.slug || 'property'}')">
-                    <!-- 🔥 IMAGEN SIN BORDES -->
+                    <!-- 🔥 IMAGEN SIN BORDES - MÁS GRANDE Y CUADRADA -->
                     <div class="property-image">
                         ${imageHTML}
                         
