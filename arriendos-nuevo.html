@@ -308,7 +308,7 @@
             font-weight: 500;
         }
 
-        /* 🆕 GRID DE PROPIEDADES REDISEÑADO COMO COMPRAS.HTML */
+        /* 🆕 GRID DE PROPIEDADES UNIFICADO - DISEÑO IMAGEN 1 */
         .properties-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -316,7 +316,7 @@
             padding: 0;
         }
 
-        /* 🆕 CARDS REDISEÑADAS EXACTAMENTE COMO COMPRAS.HTML */
+        /* 🆕 CARDS UNIFICADAS - DISEÑO EXACTO IMAGEN 1 */
         .property-card {
             background: white;
             border-radius: 8px;
@@ -335,7 +335,7 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
 
-        /* 🆕 IMAGEN COMO COMPRAS.HTML */
+        /* 🆕 IMAGEN PRINCIPAL - IMAGEN 1 */
         .property-image {
             height: 200px;
             position: relative;
@@ -366,7 +366,7 @@
             font-weight: 500;
         }
 
-        /* 🆕 CÍRCULO FAVORITOS EXACTAMENTE COMO COMPRAS.HTML */
+        /* 🆕 CÍRCULO FAVORITOS EXACTAMENTE COMO IMAGEN 1 */
         .property-favorite {
             position: absolute;
             top: 12px;
@@ -401,7 +401,7 @@
             transition: all 0.2s ease;
         }
 
-        /* 🆕 CONTENIDO REDISEÑADO EXACTAMENTE COMO COMPRAS.HTML */
+        /* 🆕 CONTENIDO REDISEÑADO EXACTAMENTE COMO IMAGEN 1 */
         .property-content {
             padding: 1.5rem;
             background: white;
@@ -411,7 +411,7 @@
             gap: 0.75rem;
         }
 
-        /* 🆕 TÍTULO + UBICACIÓN COMO COMPRAS.HTML */
+        /* 🆕 TÍTULO + UBICACIÓN COMO IMAGEN 1 */
         .property-title {
             font-size: 1.1rem;
             font-weight: 600;
@@ -429,7 +429,7 @@
             font-weight: 400;
         }
 
-        /* 🆕 ICONOS HORIZONTALES EXACTAMENTE COMO COMPRAS.HTML */
+        /* 🆕 ICONOS HORIZONTALES EXACTAMENTE COMO IMAGEN 1 */
         .property-features {
             display: flex;
             gap: 1.5rem;
@@ -453,7 +453,7 @@
             flex-shrink: 0;
         }
 
-        /* 🆕 PRECIO ALINEADO DERECHA EXACTAMENTE COMO COMPRAS.HTML */
+        /* 🆕 PRECIO ALINEADO DERECHA EXACTAMENTE COMO IMAGEN 1 */
         .property-price-section {
             display: flex;
             justify-content: flex-end;
@@ -814,105 +814,57 @@
         const allProperties = [
             {
                 id: 1,
-                title: "Departamento en Arriendo Ñuñoa",
-                location: "Ñuñoa, Santiago",
-                price: 650000,
-                currency: "CLP",
+                title: "Casa El Salto",
+                location: "El Almendro Oriente, Huechuraba",
+                price: 20460000,
+                currency: "UF",
                 type: "arriendo",
-                category: "departamento",
-                commune: "ñuñoa",
-                bedrooms: 2,
-                bathrooms: 1,
-                area: 80,
-                parking: 1,
+                category: "casa",
+                commune: "huechuraba",
+                bedrooms: 5,
+                bathrooms: 3,
+                area: 266,
+                parking: 2,
                 featured: false,
                 image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop"
             },
             {
                 id: 2,
-                title: "Casa en Arriendo San Miguel",
-                location: "San Miguel, Santiago",
-                price: 850000,
-                currency: "CLP",
+                title: "Departamento El Greco",
+                location: "Americo Vespucio Norte, Las Condes",
+                price: 16800000,
+                currency: "UF",
                 type: "arriendo",
-                category: "casa",
-                commune: "san-miguel",
-                bedrooms: 3,
-                bathrooms: 2,
-                area: 150,
-                parking: 2,
+                category: "departamento",
+                commune: "las-condes",
+                bedrooms: 2,
+                bathrooms: 3,
+                area: 180,
+                parking: 1,
                 featured: false,
                 image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop"
             },
             {
                 id: 3,
-                title: "Departamento Premium Providencia",
-                location: "Providencia, Santiago",
-                price: 1200000,
-                currency: "CLP",
-                type: "arriendo",
-                category: "departamento",
-                commune: "providencia",
-                bedrooms: 3,
-                bathrooms: 2,
-                area: 140,
-                parking: 1,
-                featured: true,
-                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"
-            },
-            {
-                id: 4,
-                title: "Casa Familiar Las Condes",
-                location: "Las Condes, Santiago",
-                price: 1800000,
-                currency: "CLP",
+                title: "Casa Concón",
+                location: "Camino Concón Quintero, Concón",
+                price: 83000000,
+                currency: "UF",
                 type: "arriendo",
                 category: "casa",
-                commune: "las-condes",
-                bedrooms: 4,
-                bathrooms: 3,
-                area: 220,
-                parking: 2,
-                featured: false,
-                image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=600&fit=crop"
-            },
-            {
-                id: 5,
-                title: "Oficina Santiago Centro",
-                location: "Santiago Centro",
-                price: 900000,
-                currency: "CLP",
-                type: "arriendo",
-                category: "oficina",
-                commune: "santiago",
-                bedrooms: 0,
-                bathrooms: 2,
-                area: 80,
-                parking: 1,
-                featured: false,
-                image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop"
-            },
-            {
-                id: 6,
-                title: "Departamento Studio Ñuñoa",
-                location: "Ñuñoa, Santiago",
-                price: 450000,
-                currency: "CLP",
-                type: "arriendo",
-                category: "departamento",
-                commune: "ñuñoa",
-                bedrooms: 1,
-                bathrooms: 1,
-                area: 45,
-                parking: 0,
-                featured: false,
-                image: null
+                commune: "concon",
+                bedrooms: 5,
+                bathrooms: 5,
+                area: 496,
+                parking: 3,
+                featured: true,
+                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"
             }
         ];
 
         let filteredProperties = [...allProperties];
 
-        // 🆕 FUNCIÓN FAVORITOS EXACTAMENTE COMO COMPRAS.HTML
+        // 🆕 FUNCIÓN FAVORITOS UNIFICADA - IMAGEN 1
         function toggleFavorite(propertyId, event) {
             event.stopPropagation(); // Evitar que se ejecute el onclick de la card
             
@@ -992,7 +944,7 @@
             document.getElementById('results-count').innerHTML = `<strong>${count}</strong> propiedades en arriendo encontradas`;
         }
 
-        // 🆕 RENDER PROPERTIES REDISEÑADO EXACTAMENTE COMO COMPRAS.HTML
+        // 🆕 RENDER PROPERTIES REDISEÑADO EXACTAMENTE COMO IMAGEN 1
         function renderProperties() {
             const grid = document.getElementById('properties-grid');
             
@@ -1011,11 +963,11 @@
                 return;
             }
 
-            // 🆕 RENDERIZAR EXACTAMENTE COMO COMPRAS.HTML CON SVG ICONS
+            // 🆕 RENDERIZAR EXACTAMENTE COMO IMAGEN 1 CON SVG ICONS
             grid.innerHTML = filteredProperties.map(property => {
                 const formatPrice = (price, currency) => {
                     const formatted = new Intl.NumberFormat('es-CL').format(price);
-                    return currency === 'CLP' ? `$${formatted}` : `UF ${formatted}`;
+                    return currency === 'UF' ? `${formatted} UF` : `$${formatted}`;
                 };
 
                 const propertyId = `prop_${Math.random().toString(36).substr(2, 9)}`;
@@ -1030,7 +982,7 @@
                             }
                             ${featuredBadge}
                             
-                            <!-- 🆕 CÍRCULO FAVORITOS CON SVG EXACTAMENTE COMO COMPRAS.HTML -->
+                            <!-- 🆕 CÍRCULO FAVORITOS CON SVG EXACTAMENTE COMO IMAGEN 1 -->
                             <div class="property-favorite" onclick="toggleFavorite('${propertyId}', event)" id="fav_${propertyId}">
                                 <svg class="property-favorite-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -1038,12 +990,12 @@
                             </div>
                         </div>
                         
-                        <!-- 🆕 CONTENIDO REDISEÑADO EXACTAMENTE COMO COMPRAS.HTML -->
+                        <!-- 🆕 CONTENIDO REDISEÑADO EXACTAMENTE COMO IMAGEN 1 -->
                         <div class="property-content">
                             <h3 class="property-title">${property.title}</h3>
                             <p class="property-subtitle">${property.location}</p>
                             
-                            <!-- 🆕 ICONOS HORIZONTALES CON SVG EXACTAMENTE COMO COMPRAS.HTML -->
+                            <!-- 🆕 ICONOS HORIZONTALES CON SVG EXACTAMENTE COMO IMAGEN 1 -->
                             <div class="property-features">
                                 <div class="property-feature">
                                     <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -1071,10 +1023,10 @@
                                 </div>
                             </div>
                             
-                            <!-- 🆕 PRECIO ALINEADO DERECHA EXACTAMENTE COMO COMPRAS.HTML -->
+                            <!-- 🆕 PRECIO ALINEADO DERECHA EXACTAMENTE COMO IMAGEN 1 -->
                             <div class="property-price-section">
                                 <div class="property-price-badge">
-                                    ${formatPrice(property.price, property.currency)}/mes
+                                    ${formatPrice(property.price, property.currency)}
                                 </div>
                             </div>
                         </div>
@@ -1094,10 +1046,10 @@
             if (property) {
                 const formatPrice = (price, currency) => {
                     const formatted = new Intl.NumberFormat('es-CL').format(price);
-                    return currency === 'CLP' ? `$${formatted}` : `UF ${formatted}`;
+                    return currency === 'UF' ? `${formatted} UF` : `$${formatted}`;
                 };
 
-                const message = `Hola! Estoy interesado/a en arrendar la propiedad "${property.title}" ubicada en ${property.location}.\\n\\n💰 Precio: ${formatPrice(property.price, property.currency)}/mes\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📐 Superficie: ${property.area}m²\\n\\n¿Podrías darme más información sobre disponibilidad y condiciones?`;
+                const message = `Hola! Estoy interesado/a en arrendar la propiedad "${property.title}" ubicada en ${property.location}.\\n\\n💰 Precio: ${formatPrice(property.price, property.currency)}\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📐 Superficie: ${property.area}m²\\n\\n¿Podrías darme más información sobre disponibilidad y condiciones?`;
                 const whatsappURL = `https://wa.me/56912345678?text=${encodeURIComponent(message)}`;
                 window.open(whatsappURL, '_blank');
             }
