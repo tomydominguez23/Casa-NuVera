@@ -691,7 +691,7 @@
             display: inline-block !important;
         }
 
-        /* 🆕 GRID DE PROPIEDADES - DISEÑO IMAGEN 1 SIN BORDES */
+        /* 🔥 GRID DE PROPIEDADES - DISEÑO IMAGEN 1 SIN BORDES */
         .properties-grid-container,
         #featuredProperties {
             display: grid !important;
@@ -719,14 +719,15 @@
             transform: translateY(-2px) !important; /* Solo movimiento, sin sombra */
         }
 
-        /* 🔥 IMAGEN PRINCIPAL - PEGADA AL FONDO */
+        /* 🔥 IMAGEN MÁS GRANDE Y CUADRADA - COMO IMAGEN DE EJEMPLO */
         .property-image {
-            height: 200px !important;
+            height: 280px !important; /* MÁS GRANDE: 200px → 280px */
             position: relative !important;
             overflow: hidden !important;
             flex-shrink: 0 !important;
             border-radius: 0 !important; /* SIN BORDER-RADIUS */
             margin: 0 !important;
+            aspect-ratio: 1.2/1 !important; /* PROPORCIÓN MÁS CUADRADA */
         }
 
         .property-image img {
@@ -1302,8 +1303,10 @@
                 max-width: 350px;
             }
 
+            /* 🔥 RESPONSIVE: IMAGEN MÁS CUADRADA EN MÓVIL TAMBIÉN */
             .property-image {
-                height: 200px !important;
+                height: 250px !important; /* Proporcionalmente más pequeño en móvil */
+                aspect-ratio: 1.15/1 !important; /* Ligeramente más cuadrado en móvil */
             }
 
             .property-content {
@@ -1825,7 +1828,7 @@
             
             return `
                 <div class="property-card" onclick="navigateToProperty('${property.id}', '${property.slug || 'property'}')">
-                    <!-- 🔥 IMAGEN SIN BORDES -->
+                    <!-- 🔥 IMAGEN MÁS GRANDE Y CUADRADA -->
                     <div class="property-image">
                         ${imageHTML}
                         
