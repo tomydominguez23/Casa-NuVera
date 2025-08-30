@@ -691,41 +691,41 @@
             display: inline-block !important;
         }
 
-        /* 🎯 GRID DE PROPIEDADES REALES CON ESTÉTICA MANTENIDA */
+        /* 🎯 GRID DE PROPIEDADES UNIFICADO - DISEÑO IMAGEN 1 */
         .properties-grid-container,
         #featuredProperties {
             display: grid !important;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)) !important;
-            gap: 2.5rem !important;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+            gap: 2rem !important;
             padding: 0 !important;
             background: transparent !important;
         }
 
-        /* 🏠 CARDS DE PROPIEDADES REALES - ALTURA AJUSTADA PARA MOSTRAR TODO */
+        /* 🆕 CARDS UNIFICADAS - DISEÑO EXACTO IMAGEN 1 */
         .property-card {
             background: white !important;
-            background-color: white !important;
-            border-radius: 16px !important;
+            border-radius: 8px !important;
             overflow: hidden !important;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
             transition: all 0.3s ease !important;
             cursor: pointer !important;
-            border: 1px solid rgba(0, 0, 0, 0.05) !important;
-            min-height: 480px !important; /* Altura mínima garantizada */
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
             display: flex !important;
             flex-direction: column !important;
+            position: relative !important;
         }
 
         .property-card:hover {
-            transform: translateY(-8px) !important;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
         }
 
+        /* 🆕 IMAGEN PRINCIPAL - IMAGEN 1 */
         .property-image {
-            height: 280px !important; /* Altura aumentada para mejor proporción */
+            height: 200px !important;
             position: relative !important;
             overflow: hidden !important;
-            flex-shrink: 0 !important; /* No se reduce */
+            flex-shrink: 0 !important;
         }
 
         .property-image img {
@@ -736,116 +736,151 @@
         }
 
         .property-card:hover .property-image img {
-            transform: scale(1.05) !important;
+            transform: scale(1.03) !important;
         }
 
-        .property-price-badge {
+        /* PLACEHOLDER SI NO HAY IMAGEN */
+        .no-image-placeholder {
+            width: 100% !important;
+            height: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%) !important;
+            color: #999 !important;
+            font-size: 0.85rem !important;
+            font-weight: 500 !important;
+        }
+
+        /* 🆕 CÍRCULO FAVORITOS - EXACTAMENTE IMAGEN 1 */
+        .property-favorite {
             position: absolute !important;
-            top: 1rem !important;
-            left: 1rem !important;
-            background: rgba(255, 255, 255, 0.95) !important;
-            padding: 0.6rem 1.2rem !important; /* Padding aumentado */
-            border-radius: 8px !important;
-            font-size: 1rem !important; /* Tamaño aumentado */
-            font-weight: 700 !important; /* Más bold */
-            color: var(--primary-black) !important;
+            top: 12px !important;
+            right: 12px !important;
+            width: 32px !important;
+            height: 32px !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
             backdrop-filter: blur(10px) !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra para legibilidad */
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            z-index: 5 !important;
         }
 
-        .property-featured-badge {
-            position: absolute !important;
-            top: 1rem !important;
-            right: 1rem !important;
-            background: #f39c12 !important;
-            color: white !important;
-            padding: 0.4rem 1rem !important;
-            border-radius: 6px !important;
-            font-size: 0.8rem !important;
-            font-weight: 600 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-        }
-
-        /* CONTENIDO DE PROPIEDADES EXPANDIDO */
-        .property-content {
-            padding: 24px !important; /* Padding aumentado */
+        .property-favorite:hover {
             background: white !important;
-            background-color: white !important;
-            flex: 1 !important; /* Ocupa todo el espacio disponible */
+            transform: scale(1.1) !important;
+        }
+
+        .property-favorite.active {
+            background: #e74c3c !important;
+            color: white !important;
+        }
+
+        .property-favorite-icon {
+            width: 16px !important;
+            height: 16px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        /* 🆕 CONTENIDO - DISEÑO IMAGEN 1 */
+        .property-content {
+            padding: 1.5rem !important;
+            background: white !important;
+            flex: 1 !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-content: space-between !important;
+            gap: 0.75rem !important;
         }
 
+        /* 🆕 TÍTULO - IMAGEN 1 */
         .property-title {
-            font-size: 1.3rem !important; /* Tamaño aumentado */
+            font-size: 1.1rem !important;
             font-weight: 600 !important;
             color: #333 !important;
-            margin-bottom: 12px !important; /* Más espacio */
+            margin: 0 !important;
             line-height: 1.3 !important;
-            /* Permitir que el título se expanda sin cortarse */
             overflow: visible !important;
             white-space: normal !important;
-            word-wrap: break-word !important;
         }
 
-        .property-subtitle {
-            font-size: 0.95rem !important; /* Tamaño aumentado */
-            color: #666 !important;
-            margin-bottom: 16px !important; /* Más espacio */
-            line-height: 1.4 !important;
-            /* Permitir expansión de texto */
-            overflow: visible !important;
-            white-space: normal !important;
-            word-wrap: break-word !important;
-            flex-grow: 1 !important; /* Toma espacio disponible */
-        }
-
+        /* 🆕 UBICACIÓN - IMAGEN 1 */
+        .property-subtitle,
         .property-location {
-            display: flex !important;
-            align-items: flex-start !important; /* Alineación superior para texto largo */
-            gap: 6px !important;
-            font-size: 0.9rem !important; /* Tamaño aumentado */
+            font-size: 0.85rem !important;
             color: #888 !important;
-            margin-bottom: 20px !important; /* Más espacio */
-            line-height: 1.3 !important;
-            /* Permitir texto multilínea */
-            overflow: visible !important;
-            white-space: normal !important;
-            word-wrap: break-word !important;
+            margin: 0 !important;
+            font-weight: 400 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
         }
 
-        .property-location::before {
-            content: "📍" !important;
-            font-size: 0.9rem !important;
-            flex-shrink: 0 !important; /* El ícono no se reduce */
-        }
-
+        /* 🆕 ICONOS HORIZONTALES - IMAGEN 1 */
         .property-features {
             display: flex !important;
-            justify-content: space-between !important;
-            gap: 1rem !important;
-            margin-top: auto !important; /* Se mantiene en la parte inferior */
-            flex-wrap: wrap !important; /* Permite envolver si es necesario */
+            gap: 1.5rem !important;
+            margin: 0.5rem 0 !important;
+            align-items: center !important;
         }
 
         .property-feature {
             display: flex !important;
             align-items: center !important;
-            gap: 0.4rem !important; /* Gap aumentado */
-            font-size: 0.85rem !important;
+            gap: 0.4rem !important;
+            font-size: 0.8rem !important;
             color: #666 !important;
             font-weight: 500 !important;
-            flex: 1 !important; /* Se distribuye equitativamente */
-            min-width: 60px !important; /* Ancho mínimo para evitar colapso */
         }
 
         .property-feature-icon {
-            width: 16px !important; /* Tamaño aumentado */
+            width: 16px !important;
             height: 16px !important;
             color: #999 !important;
-            flex-shrink: 0 !important; /* No se reduce */
+            flex-shrink: 0 !important;
+        }
+
+        /* 🆕 PRECIO ALINEADO DERECHA - IMAGEN 1 */
+        .property-price-section {
+            display: flex !important;
+            justify-content: flex-end !important;
+            align-items: center !important;
+            margin-top: auto !important;
+            padding-top: 0.5rem !important;
+            border-top: 1px solid #f0f0f0 !important;
+        }
+
+        .property-price-badge,
+        .property-price {
+            font-size: 1.1rem !important;
+            font-weight: 700 !important;
+            color: #333 !important;
+            background: none !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            position: static !important;
+            box-shadow: none !important;
+        }
+
+        /* BADGE DESTACADA SUPERIOR */
+        .featured-badge,
+        .property-featured-badge {
+            position: absolute !important;
+            top: 12px !important;
+            left: 12px !important;
+            background: linear-gradient(135deg, #333333, #000000) !important;
+            color: white !important;
+            padding: 6px 10px !important;
+            border-radius: 6px !important;
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            z-index: 2 !important;
         }
 
         /* Loading States para fondo blanco */
@@ -1260,16 +1295,15 @@
 
             .property-card {
                 margin: 0 auto;
-                max-width: 380px;
-                min-height: 420px !important; /* Altura reducida en móvil */
+                max-width: 350px;
             }
 
             .property-image {
-                height: 240px !important; /* Altura reducida en móvil */
+                height: 200px !important;
             }
 
             .property-content {
-                padding: 20px !important; /* Padding reducido en móvil */
+                padding: 1.5rem !important;
             }
 
             .contact-grid {
@@ -1660,6 +1694,24 @@
     <script src="whatsapp-widget.js"></script>
 
     <script>
+        // 🆕 FUNCIÓN FAVORITOS UNIFICADA - IMAGEN 1
+        function toggleFavorite(propertyId, event) {
+            event.stopPropagation(); // Evitar que se ejecute el onclick de la card
+            
+            const favoriteBtn = document.getElementById(`fav_${propertyId}`);
+            const isActive = favoriteBtn.classList.contains('active');
+            
+            if (isActive) {
+                favoriteBtn.classList.remove('active');
+                console.log(`❤️ Removido de favoritos: ${propertyId}`);
+                // Aquí puedes agregar lógica para remover de localStorage o API
+            } else {
+                favoriteBtn.classList.add('active');
+                console.log(`💖 Agregado a favoritos: ${propertyId}`);
+                // Aquí puedes agregar lógica para guardar en localStorage o API
+            }
+        }
+
         // 🎯 FUNCIONALIDAD DE NAVEGACIÓN A PROPIEDADES CON ANIMACIÓN
         function navigateToProperty(propertyId, slug) {
             console.log(`🎯 Navegando a propiedad ID: ${propertyId}, Slug: ${slug}`);
