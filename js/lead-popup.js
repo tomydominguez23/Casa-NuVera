@@ -977,7 +977,8 @@ class LeadPopup {
             zona_interes: selectedZones.length > 0 ? selectedZones : null,
             mensaje: formData.get('mensaje'),
             
-            // Additional tracking data (property_id removed - it's stored in property_favorites table)
+            // Additional tracking data
+            property_id: this.currentProperty?.id || null,
             utm_source: this.getUrlParameter('utm_source'),
             utm_campaign: this.getUrlParameter('utm_campaign'),
             utm_medium: this.getUrlParameter('utm_medium'),
