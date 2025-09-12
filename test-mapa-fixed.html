@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mapa Corregido - Casa Nuvera</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .form-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .map-preview-container {
+            margin-top: 1.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .map-preview-header {
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .map-preview-header h4 {
+            margin: 0;
+            font-size: 1rem;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .btn-remove-map {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .btn-remove-map:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+        
+        .map-preview {
+            height: 400px;
+            position: relative;
+            background: #f8f9fa;
+        }
+        
+        .map-preview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .map-preview-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #6c757d;
+            text-align: center;
+        }
+        
+        .map-preview-placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .test-urls {
+            background: #e8f4f8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .test-urls h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .test-urls button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.25rem;
+            font-size: 0.8rem;
+        }
+        
+        .test-urls button:hover {
+            background: #2980b9;
+        }
+        
+        .status {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ Test Mapa Corregido - Casa Nuvera</h1>
+        
+        <div class="status" id="statusMessage">
+            ✅ Sistema de mapa inicializado correctamente. Sin errores de mapRef.current
+        </div>
+        
+        <div class="form-group">
+            <label for="googleMapsUrl">URL de Google Maps</label>
+            <input type="url" id="googleMapsUrl" class="form-control" 
+                   placeholder="https://maps.google.com/... o https://goo.gl/maps/...">
+            <small class="form-text">
+                💡 <strong>Consejo:</strong> Ve a Google Maps, busca tu propiedad, haz clic en "Compartir" y copia el enlace aquí.
+            </small>
+        </div>
+        
+        <div class="test-urls">
+            <h4>🧪 URLs de Prueba</h4>
+            <p>Haz clic en cualquiera de estos botones para probar diferentes tipos de URLs:</p>
+            <button onclick="testUrl('https://maps.app.goo.gl/abc123')">maps.app.goo.gl</button>
+            <button onclick="testUrl('https://goo.gl/maps/abc123')">goo.gl/maps</button>
+            <button onclick="testUrl('https://maps.google.com/maps?q=Santiago+Chile')">maps.google.com</button>
+            <button onclick="testUrl('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl')">URL Embed</button>
+        </div>
+        
+        <div class="map-preview-container" id="mapPreviewContainer" style="display: none;">
+            <div class="map-preview-header">
+                <h4>📍 Vista Previa del Mapa</h4>
+                <button type="button" class="btn-remove-map" onclick="removeMapPreview()">×</button>
+            </div>
+            <div class="map-preview" id="mapPreview">
+                <!-- El iframe del mapa se insertará aquí -->
+            </div>
+        </div>
+        
+        <div class="test-urls">
+            <h4>🔧 Información de Debug</h4>
+            <p><strong>Estado del Sistema:</strong> <span id="systemStatus">Cargando...</span></p>
+            <p><strong>Cache de URLs:</strong> <span id="cacheStatus">0</span></p>
+            <p><strong>Iframe Cargado:</strong> <span id="iframeStatus">No</span></p>
+            <button onclick="updateDebugInfo()">🔄 Actualizar Info</button>
+            <button onclick="clearCache()">🗑️ Limpiar Cache</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="google-maps-fix-final.js"></script>
+    
+    <script>
+        // Función para probar URLs
+        function testUrl(url) {
+            const input = document.getElementById('googleMapsUrl');
+            input.value = url;
+            input.dispatchEvent(new Event('input'));
+        }
+        
+        // Función para actualizar información de debug
+        function updateDebugInfo() {
+            const stats = window.googleMapsFinal.getStats();
+            document.getElementById('systemStatus').textContent = stats.isInitialized ? 'Inicializado' : 'No inicializado';
+            document.getElementById('cacheStatus').textContent = stats.cacheSize;
+            document.getElementById('iframeStatus').textContent = stats.hasIframe ? 'Sí' : 'No';
+        }
+        
+        // Función para limpiar cache
+        function clearCache() {
+            window.googleMapsFinal.clearCache();
+            updateDebugInfo();
+            console.log('🗑️ Cache limpiado');
+        }
+        
+        // Actualizar información de debug cada 2 segundos
+        setInterval(updateDebugInfo, 2000);
+        
+        // Actualizar información inicial
+        setTimeout(updateDebugInfo, 1000);
+        
+        // Verificar que no hay errores de mapRef
+        window.addEventListener('error', function(e) {
+            if (e.message.includes('mapRef') || e.message.includes('current')) {
+                document.getElementById('statusMessage').className = 'error';
+                document.getElementById('statusMessage').innerHTML = '❌ Error detectado: ' + e.message;
+            }
+        });
+        
+        console.log('🧪 Test de mapa iniciado - Sin errores de mapRef.current');
+    </script>
+</body>
+</html>
