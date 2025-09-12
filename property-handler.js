@@ -147,6 +147,9 @@ class PropertyHandler {
             contact_phone: formData.contactPhone || '',
             contact_email: formData.contactEmail || '',
             
+            // Google Maps
+            google_maps_url: formData.googleMapsUrl || null,
+            
             // Características
             features: formData.features || [],
             featured: formData.featured || false,
