@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Cambios - Casa Nuvera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Cambios - Casa Nuvera</h1>
+    
+    <div class="test-section">
+        <h2 class="test-title">✅ Cambios Implementados</h2>
+        
+        <div class="test-result success">
+            <h3>1. Descripciones Limitadas en Página de Inicio</h3>
+            <p><strong>Problema resuelto:</strong> Las descripciones muy largas en la página de inicio ahora están limitadas a 120 caracteres.</p>
+            <p><strong>Archivo modificado:</strong> <code>property-loader-fixed.js</code></p>
+            <div class="code-block">
+// 🎯 TRUNCAR DESCRIPCIÓN - MÁXIMO 120 CARACTERES
+let subtitle = property.description || `${property.property_type} en ${property.commune}` || 'Ver detalles';
+if (subtitle.length > 120) {
+    subtitle = subtitle.substring(0, 120).trim() + '...';
+}
+            </div>
+        </div>
+
+        <div class="test-result success">
+            <h3>2. Subpáginas Dinámicas de Propiedades</h3>
+            <p><strong>Problema resuelto:</strong> Las subpáginas de propiedades ahora cargan datos dinámicos desde la base de datos en lugar de mostrar valores fijos.</p>
+            <p><strong>Archivos creados/modificados:</strong></p>
+            <ul>
+                <li><code>property-detail-dynamic.js</code> - Nuevo archivo para cargar datos dinámicos</li>
+                <li><code>property-detail.html</code> - Actualizado para usar datos dinámicos</li>
+            </ul>
+        </div>
+
+        <div class="test-result success">
+            <h3>3. Tours 360° Dinámicos</h3>
+            <p><strong>Problema resuelto:</strong> Los tours 360° ahora se cargan dinámicamente desde la base de datos y se muestran correctamente en las subpáginas.</p>
+            <p><strong>Funcionalidades implementadas:</strong></p>
+            <ul>
+                <li>Carga de tours desde la tabla <code>property_tours</code></li>
+                <li>Actualización automática del botón de tour con la URL real</li>
+                <li>Ocultación de la sección de tours si no hay tours disponibles</li>
+                <li>Integración con el modal existente de tours</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">🔧 Funcionalidades Mejoradas</h2>
+        
+        <div class="test-result success">
+            <h3>Información de Contacto Dinámica</h3>
+            <p>Los datos de contacto (teléfono, email, nombre del agente) ahora se cargan dinámicamente desde la base de datos.</p>
+        </div>
+
+        <div class="test-result success">
+            <h3>Precios y Características Dinámicas</h3>
+            <p>Precios, dormitorios, baños, área y otras características se actualizan automáticamente con los datos reales de la propiedad.</p>
+        </div>
+
+        <div class="test-result success">
+            <h3>Galería de Imágenes Dinámica</h3>
+            <p>Las imágenes se cargan desde la tabla <code>property_images</code> y se actualizan automáticamente en la galería.</p>
+        </div>
+
+        <div class="test-result success">
+            <h3>Mensajes de WhatsApp Personalizados</h3>
+            <p>Los mensajes de WhatsApp ahora incluyen información real de la propiedad (título, precio, características, ubicación).</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">📋 Instrucciones de Prueba</h2>
+        
+        <div class="test-result warning">
+            <h3>Para probar los cambios:</h3>
+            <ol>
+                <li><strong>Página de Inicio:</strong> Verifica que las descripciones de las propiedades estén limitadas a 120 caracteres</li>
+                <li><strong>Subpáginas de Propiedades:</strong> 
+                    <ul>
+                        <li>Navega a cualquier propiedad desde la página de inicio</li>
+                        <li>Verifica que el título, descripción, características y precio se actualicen con datos reales</li>
+                        <li>Comprueba que las imágenes se carguen correctamente</li>
+                        <li>Verifica que los tours 360° funcionen si están disponibles</li>
+                    </ul>
+                </li>
+                <li><strong>Contacto:</strong> Prueba el botón de WhatsApp para verificar que el mensaje incluya información real de la propiedad</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">🚀 Enlaces de Prueba</h2>
+        
+        <a href="index.html" class="btn">🏠 Ir a Página de Inicio</a>
+        <a href="property-detail.html?id=1" class="btn">🏡 Ver Propiedad de Prueba</a>
+        <a href="compras.html" class="btn">📋 Ver Todas las Propiedades</a>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">📊 Resumen de Archivos Modificados</h2>
+        
+        <div class="code-block">
+Archivos modificados:
+├── property-loader-fixed.js (descripciones limitadas)
+├── property-detail.html (integración con datos dinámicos)
+└── property-detail-dynamic.js (nuevo - carga datos dinámicos)
+
+Funcionalidades implementadas:
+✅ Descripciones limitadas a 120 caracteres
+✅ Carga dinámica de datos de propiedades
+✅ Tours 360° dinámicos
+✅ Información de contacto dinámica
+✅ Precios y características dinámicas
+✅ Galería de imágenes dinámica
+✅ Mensajes de WhatsApp personalizados
+        </div>
+    </div>
+
+    <script>
+        console.log('🧪 Página de test cargada');
+        console.log('📋 Cambios implementados:');
+        console.log('1. ✅ Descripciones limitadas en página de inicio');
+        console.log('2. ✅ Subpáginas dinámicas de propiedades');
+        console.log('3. ✅ Tours 360° dinámicos');
+        console.log('4. ✅ Información de contacto dinámica');
+        console.log('5. ✅ Precios y características dinámicas');
+    </script>
+</body>
+</html>

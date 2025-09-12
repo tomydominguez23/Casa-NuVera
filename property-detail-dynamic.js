@@ -1,0 +1,392 @@
+// Property Detail Dynamic Loader - Compatible con property-detail.html actual
+class PropertyDetailDynamic {
+    constructor() {
+        this.property = null;
+        this.propertyImages = [];
+        this.propertyTours = [];
+        this.init();
+    }
+
+    async init() {
+        try {
+            console.log('🏠 Inicializando PropertyDetailDynamic...');
+            
+            // Esperar a que Supabase esté disponible
+            if (!window.supabase) {
+                console.error('❌ Supabase no está disponible');
+                throw new Error('Error de conexión con la base de datos');
+            }
+
+            // Obtener ID de la propiedad desde URL
+            const propertyId = this.getPropertyIdFromURL();
+            if (!propertyId) {
+                console.warn('⚠️ No se encontró ID de propiedad en la URL, usando datos por defecto');
+                return;
+            }
+
+            console.log('🔍 Cargando propiedad con ID:', propertyId);
+            
+            // Cargar datos de la propiedad
+            await this.loadProperty(propertyId);
+            await this.loadPropertyImages(propertyId);
+            await this.loadPropertyTours(propertyId);
+
+            // Actualizar la página con los datos reales
+            this.updatePropertyData();
+            
+        } catch (error) {
+            console.error('💥 Error al inicializar PropertyDetailDynamic:', error);
+            // No mostrar error al usuario, mantener datos por defecto
+        }
+    }
+
+    getPropertyIdFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        console.log('🔗 ID desde URL:', id);
+        return id;
+    }
+
+    async loadProperty(propertyId) {
+        try {
+            console.log('📥 Cargando datos de la propiedad...');
+            
+            const { data, error } = await window.supabase
+                .from('properties')
+                .select(`
+                    id,
+                    title,
+                    property_type,
+                    category,
+                    bedrooms,
+                    bathrooms,
+                    description,
+                    region,
+                    commune,
+                    address,
+                    neighborhood,
+                    total_area,
+                    built_area,
+                    parking_spaces,
+                    currency,
+                    price,
+                    expenses,
+                    availability,
+                    contact_name,
+                    contact_phone,
+                    contact_email,
+                    features,
+                    featured,
+                    published,
+                    created_at
+                `)
+                .eq('id', propertyId)
+                .eq('published', true)
+                .single();
+
+            if (error) {
+                console.error('❌ Error al cargar propiedad:', error);
+                return;
+            }
+
+            if (!data) {
+                console.warn('⚠️ Propiedad no encontrada');
+                return;
+            }
+
+            this.property = data;
+            console.log('✅ Propiedad cargada:', this.property.title);
+            
+        } catch (error) {
+            console.error('💥 Error en loadProperty:', error);
+        }
+    }
+
+    async loadPropertyImages(propertyId) {
+        try {
+            console.log('🖼️ Cargando imágenes de la propiedad...');
+            
+            const { data, error } = await window.supabase
+                .from('property_images')
+                .select('image_url, image_order, is_main')
+                .eq('property_id', propertyId)
+                .order('image_order', { ascending: true });
+
+            if (error) {
+                console.error('⚠️ Error al cargar imágenes:', error);
+                this.propertyImages = [];
+                return;
+            }
+
+            this.propertyImages = data || [];
+            console.log(`✅ ${this.propertyImages.length} imágenes cargadas`);
+            
+        } catch (error) {
+            console.error('💥 Error en loadPropertyImages:', error);
+            this.propertyImages = [];
+        }
+    }
+
+    async loadPropertyTours(propertyId) {
+        try {
+            console.log('🌐 Cargando tours 360° de la propiedad...');
+            
+            const { data, error } = await window.supabase
+                .from('property_tours')
+                .select('id, tour_name, tour_url, tour_order')
+                .eq('property_id', propertyId)
+                .order('tour_order', { ascending: true });
+
+            if (error) {
+                console.error('⚠️ Error al cargar tours:', error);
+                this.propertyTours = [];
+                return;
+            }
+
+            this.propertyTours = data || [];
+            console.log(`✅ ${this.propertyTours.length} tours 360° cargados`);
+            
+        } catch (error) {
+            console.error('💥 Error en loadPropertyTours:', error);
+            this.propertyTours = [];
+        }
+    }
+
+    updatePropertyData() {
+        if (!this.property) {
+            console.log('ℹ️ No hay datos de propiedad para actualizar');
+            return;
+        }
+
+        console.log('🔄 Actualizando datos de la propiedad en la página...');
+
+        // Actualizar título de la página
+        document.title = `${this.property.title} | Casa Nuvera`;
+
+        // Actualizar título de la propiedad
+        const titleElement = document.getElementById('propertyTitle');
+        if (titleElement) {
+            titleElement.textContent = this.property.title;
+        }
+
+        // Actualizar badge de tipo de propiedad
+        const badgeElement = document.querySelector('.property-badge');
+        if (badgeElement) {
+            const typeText = this.property.property_type === 'arriendo' ? 'En Arriendo' : 'En Venta';
+            badgeElement.textContent = `${this.property.category || 'Propiedad'} ${typeText}`;
+        }
+
+        // Actualizar ubicación
+        const locationElement = document.querySelector('.property-location span');
+        if (locationElement) {
+            const location = this.formatLocation(this.property);
+            locationElement.textContent = location;
+        }
+
+        // Actualizar características
+        this.updatePropertyFeatures();
+
+        // Actualizar descripción
+        this.updatePropertyDescription();
+
+        // Actualizar galería de imágenes
+        this.updatePropertyGallery();
+
+        // Actualizar tours 360°
+        this.updatePropertyTours();
+
+        // Actualizar información de contacto
+        this.updateContactInfo();
+
+        // Actualizar precio en sidebar
+        this.updatePriceInfo();
+
+        console.log('✅ Datos de la propiedad actualizados correctamente');
+    }
+
+    updatePropertyFeatures() {
+        const featuresContainer = document.getElementById('propertyFeatures');
+        if (!featuresContainer || !this.property) return;
+
+        const area = this.property.total_area || this.property.built_area || 0;
+        const bedrooms = this.property.bedrooms || 0;
+        const bathrooms = this.property.bathrooms || 0;
+
+        featuresContainer.innerHTML = `
+            <div class="feature-item">
+                <span class="feature-icon">📐</span>
+                <span>${area}m² totales</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🛏️</span>
+                <span>${bedrooms} dormitorio${bedrooms !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🚿</span>
+                <span>${bathrooms} baño${bathrooms !== 1 ? 's' : ''}</span>
+            </div>
+        `;
+    }
+
+    updatePropertyDescription() {
+        const descriptionElement = document.getElementById('propertyDescription');
+        if (!descriptionElement || !this.property) return;
+
+        const description = this.property.description || 'No hay descripción disponible para esta propiedad.';
+        descriptionElement.innerHTML = `<p>${description}</p>`;
+    }
+
+    updatePropertyGallery() {
+        if (this.propertyImages.length === 0) return;
+
+        // Actualizar imagen principal
+        const mainImage = document.getElementById('mainImage');
+        if (mainImage) {
+            const firstImage = this.propertyImages.find(img => img.is_main) || this.propertyImages[0];
+            mainImage.src = firstImage.image_url;
+            mainImage.alt = this.property.title;
+        }
+
+        // Actualizar contador de fotos
+        const photoCountElement = document.getElementById('photoCount');
+        if (photoCountElement) {
+            photoCountElement.textContent = this.propertyImages.length;
+        }
+
+        // Actualizar array de imágenes para el modal
+        if (window.propertyImages) {
+            window.propertyImages.length = 0;
+            window.propertyImages.push(...this.propertyImages.map(img => img.image_url));
+        }
+    }
+
+    updatePropertyTours() {
+        const tourSection = document.querySelector('.tour-section');
+        if (!tourSection) return;
+
+        if (this.propertyTours.length === 0) {
+            // Ocultar sección de tours si no hay tours
+            tourSection.style.display = 'none';
+            return;
+        }
+
+        // Mostrar sección de tours
+        tourSection.style.display = 'block';
+
+        // Actualizar botón de tour con la URL real
+        const tourBtn = tourSection.querySelector('.tour-btn');
+        if (tourBtn && this.propertyTours.length > 0) {
+            const firstTour = this.propertyTours[0];
+            tourBtn.onclick = () => this.openTour(firstTour.tour_url);
+        }
+    }
+
+    updateContactInfo() {
+        if (!this.property) return;
+
+        // Actualizar información de contacto en sidebar
+        const contactItems = document.querySelectorAll('.contact-item');
+        if (contactItems.length >= 3) {
+            // Teléfono
+            const phoneItem = contactItems[0];
+            const phoneLink = phoneItem.querySelector('a');
+            if (phoneLink && this.property.contact_phone) {
+                phoneLink.href = `tel:${this.property.contact_phone}`;
+                phoneLink.textContent = this.property.contact_phone;
+            }
+
+            // Email
+            const emailItem = contactItems[1];
+            const emailLink = emailItem.querySelector('a');
+            if (emailLink && this.property.contact_email) {
+                emailLink.href = `mailto:${this.property.contact_email}`;
+                emailLink.textContent = this.property.contact_email;
+            }
+
+            // Nombre del agente
+            const agentItem = contactItems[2];
+            if (agentItem && this.property.contact_name) {
+                agentItem.querySelector('span').textContent = this.property.contact_name;
+            }
+        }
+    }
+
+    updatePriceInfo() {
+        if (!this.property) return;
+
+        // Actualizar precio en sidebar
+        const priceElement = document.querySelector('.property-price');
+        if (priceElement) {
+            const formattedPrice = this.formatPrice(this.property.price, this.property.currency);
+            priceElement.textContent = formattedPrice;
+        }
+
+        // Actualizar subtítulo de precio
+        const priceSubtitle = document.querySelector('.price-subtitle');
+        if (priceSubtitle && this.property.currency === 'CLP') {
+            const clpPrice = this.property.price * 40000; // Aproximación UF a CLP
+            priceSubtitle.textContent = `$${clpPrice.toLocaleString('es-CL')}`;
+        }
+    }
+
+    openTour(tourUrl) {
+        if (!tourUrl) {
+            alert('URL del tour no disponible');
+            return;
+        }
+
+        console.log('🌐 Abriendo tour:', tourUrl);
+
+        // Usar la función existente openTour360 pero con la URL real
+        const modal = document.getElementById('tourModal');
+        const iframe = document.getElementById('tourIframe');
+
+        if (modal && iframe) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            iframe.src = tourUrl;
+        } else {
+            // Fallback: abrir en nueva ventana
+            window.open(tourUrl, '_blank');
+        }
+    }
+
+    formatLocation(property) {
+        const parts = [];
+        
+        if (property.neighborhood) parts.push(property.neighborhood);
+        if (property.commune) parts.push(property.commune);
+        if (property.region && parts.length < 2) parts.push(property.region);
+        
+        return parts.length > 0 ? parts.join(', ') : (property.address || 'Ubicación no especificada');
+    }
+
+    formatPrice(price, currency = 'CLP') {
+        if (!price) return 'Precio a consultar';
+        
+        const numPrice = parseFloat(price);
+        if (isNaN(numPrice)) return 'Precio a consultar';
+        
+        switch (currency) {
+            case 'UF':
+                return `${numPrice.toLocaleString('es-CL')} UF`;
+            case 'USD':
+                return `US$${numPrice.toLocaleString('en-US')}`;
+            case 'CLP':
+            default:
+                return `$${numPrice.toLocaleString('es-CL')}`;
+        }
+    }
+}
+
+// Inicialización global
+let propertyDetailDynamic;
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🏠 Iniciando PropertyDetailDynamic...');
+    
+    propertyDetailDynamic = new PropertyDetailDynamic();
+});
+
+// Hacer disponible globalmente
+window.propertyDetailDynamic = propertyDetailDynamic;
