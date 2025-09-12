@@ -1104,6 +1104,7 @@
 
     <!-- Scripts -->
     <script src="supabase.js"></script>
+    <script src="property-detail-dynamic.js"></script>
 
     <script>
         // Variables globales
@@ -1349,6 +1350,14 @@
 
         // Tour 360° functions
         function openTour360() {
+            // Si hay tours dinámicos cargados, usar el primero
+            if (window.propertyDetailDynamic && window.propertyDetailDynamic.propertyTours && window.propertyDetailDynamic.propertyTours.length > 0) {
+                const firstTour = window.propertyDetailDynamic.propertyTours[0];
+                window.propertyDetailDynamic.openTour(firstTour.tour_url);
+                return;
+            }
+
+            // Fallback a tour por defecto
             const modal = document.getElementById('tourModal');
             const iframe = document.getElementById('tourIframe');
 
@@ -1385,14 +1394,31 @@
         });
 
         function contactViaWhatsApp() {
-            const title = currentProperty?.title || 'Departamento En Arriendo De 3 Dorm. En Colina';
-            const price = currentProperty?.price || 2473973;
+            // Usar datos dinámicos si están disponibles
+            let property = currentProperty;
+            if (window.propertyDetailDynamic && window.propertyDetailDynamic.property) {
+                property = window.propertyDetailDynamic.property;
+            }
 
-            const message = `Hola! Estoy interesado/a en arrendar el "${title}".
+            const title = property?.title || 'Propiedad';
+            const price = property?.price || 0;
+            const bedrooms = property?.bedrooms || 0;
+            const bathrooms = property?.bathrooms || 0;
+            const area = property?.total_area || property?.built_area || 0;
+            const location = property ? 
+                `${property.commune || property.neighborhood || 'Ubicación'}, ${property.region || 'Región'}` : 
+                'Ubicación no especificada';
 
-📍 Dirección: Colina, RM (Metropolitana)
-💰 Precio: $${price.toLocaleString('es-CL')}
-🏠 Características: 3 dormitorios, 3 baños, 260m²
+            const operation = property?.property_type === 'arriendo' ? 'arrendar' : 'comprar';
+            const priceText = property?.currency === 'UF' ? 
+                `${price} UF` : 
+                `$${price.toLocaleString('es-CL')}`;
+
+            const message = `Hola! Estoy interesado/a en ${operation} la propiedad "${title}".
+
+📍 Dirección: ${location}
+💰 Precio: ${priceText}
+🏠 Características: ${bedrooms} dormitorios, ${bathrooms} baños, ${area}m²
 
 Vi el tour virtual 360° y me interesa conocer más detalles.
 
@@ -1400,7 +1426,7 @@ Vi el tour virtual 360° y me interesa conocer más detalles.
 
 Saludos!`;
 
-            const phoneNumber = (currentProperty?.contact_phone || '+56948406684').replace(/[^0-9]/g, '');
+            const phoneNumber = (property?.contact_phone || '+56948406684').replace(/[^0-9]/g, '');
             const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             
             window.open(whatsappURL, '_blank');

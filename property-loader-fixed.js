@@ -141,7 +141,13 @@ class PropertyLoaderFixed {
         
         // Usar los campos reales de tu BD
         const title = property.title || 'Propiedad sin título';
-        const subtitle = property.description || `${property.property_type} en ${property.commune}` || 'Ver detalles';
+        
+        // 🎯 TRUNCAR DESCRIPCIÓN - MÁXIMO 120 CARACTERES
+        let subtitle = property.description || `${property.property_type} en ${property.commune}` || 'Ver detalles';
+        if (subtitle.length > 120) {
+            subtitle = subtitle.substring(0, 120).trim() + '...';
+        }
+        
         const location = this.formatLocation(property.commune, property.neighborhood, property.region);
         const formattedPrice = this.formatPrice(property.price, property.currency);
         const bedrooms = property.bedrooms || 0;
