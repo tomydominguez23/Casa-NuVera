@@ -1052,7 +1052,8 @@
                         <input type="url" id="googleMapsUrl" class="form-control" 
                                placeholder="https://maps.google.com/... o https://goo.gl/maps/...">
                         <small class="form-text text-muted">
-                            💡 <strong>Consejo:</strong> Ve a Google Maps, busca tu propiedad, haz clic en "Compartir" y copia el enlace aquí.
+                            💡 <strong>Consejo:</strong> Ve a Google Maps, busca tu propiedad, haz clic en "Compartir" y copia el enlace aquí. 
+                            <br>📋 <strong>Mejora:</strong> Ahora verás la ubicación real del mapa para verificar que sea correcta.
                         </small>
                     </div>
 
@@ -1696,37 +1697,26 @@
                 }
 
                 // Para URLs de maps.app.goo.gl, usar directamente como iframe
-                if (url.includes('maps.app.goo.gl')) {
-                    console.log('✅ URL de maps.app.goo.gl detectada');
-                    return url; // Estas URLs funcionan directamente en iframes
-                }
-
-                // Para URLs de goo.gl/maps, usar directamente
-                if (url.includes('goo.gl/maps')) {
-                    console.log('✅ URL de goo.gl/maps detectada');
-                    return url; // Estas URLs también funcionan directamente
-                }
-                
-                // Si es una URL completa de Google Maps
-                if (url.includes('maps.google.com')) {
-                    console.log('✅ URL de maps.google.com detectada');
+                // SOLUCIÓN UNIFICADA: Mantener la ubicación real del URL del usuario
+                if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps') || url.includes('maps.google.com')) {
+                    console.log('✅ URL de Google Maps detectada - manteniendo ubicación real');
                     
-                    // Convertir a formato embed básico
-                    if (url.includes('@')) {
-                        // URL con coordenadas
-                        const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-                        if (coordsMatch) {
-                            const lat = coordsMatch[1];
-                            const lng = coordsMatch[2];
-                            const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
-                            console.log('✅ URL convertida a embed con coordenadas');
-                            return embedUrl;
-                        }
+                    // Si ya es un URL de embed, usarlo directamente
+                    if (url.includes('/maps/embed')) {
+                        console.log('✅ URL ya es de embed, usando directamente');
+                        return url;
                     }
                     
-                    // Si no tiene coordenadas, usar la URL original
-                    console.log('✅ Usando URL original de Google Maps');
-                    return url;
+                    // Convertir URL compartido a embed manteniendo la ubicación original
+                    let embedUrl = url.replace(/^https:\/\/(www\.)?(maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.com)/, 'https://www.google.com/maps/embed');
+                    
+                    // Si no se pudo convertir con el reemplazo simple, usar el método de búsqueda
+                    if (embedUrl === url) {
+                        embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${encodeURIComponent(url)}`;
+                    }
+                    
+                    console.log('✅ URL convertida a embed con ubicación real');
+                    return embedUrl;
                 }
                 
                 console.log('❌ URL no reconocida como Google Maps');

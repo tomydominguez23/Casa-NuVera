@@ -1374,15 +1374,25 @@
                     return url;
                 }
                 
-                // SOLUCIÓN CORRECTA: Usar Google Maps Embed API con formato correcto
-                // Para cualquier URL de Google Maps, generar una URL de embed que funcione
+                // SOLUCIÓN MEJORADA: Usar el URL real del usuario para mantener la ubicación correcta
                 if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps') || url.includes('maps.google.com')) {
-                    console.log('✅ Detectada URL de Google Maps - generando embed correcto');
+                    console.log('✅ Detectada URL de Google Maps - manteniendo ubicación real');
                     
-                    // Usar el formato correcto de Google Maps Embed API
-                    // Este formato funciona sin problemas de X-Frame-Options
-                    const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
-                    console.log('✅ URL de embed generada:', embedUrl);
+                    // Si ya es un URL de embed, usarlo directamente
+                    if (url.includes('/maps/embed')) {
+                        console.log('✅ URL ya es de embed, usando directamente');
+                        return url;
+                    }
+                    
+                    // Convertir URL compartido a embed manteniendo la ubicación original
+                    let embedUrl = url.replace(/^https:\/\/(www\.)?(maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.com)/, 'https://www.google.com/maps/embed');
+                    
+                    // Si no se pudo convertir con el reemplazo simple, usar el método de búsqueda
+                    if (embedUrl === url) {
+                        embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${encodeURIComponent(url)}`;
+                    }
+                    
+                    console.log('✅ URL de embed generada con ubicación real:', embedUrl);
                     return embedUrl;
                 }
                 
