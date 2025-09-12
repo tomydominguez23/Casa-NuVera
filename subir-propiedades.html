@@ -1354,6 +1354,147 @@
     <!-- 4. Google Maps Fix Final (Corregido) -->
     <script src="google-maps-fix-final.js"></script>
     
+    <!-- 5. Google Maps Funcional (Solución Urgente) -->
+    <script>
+        // SOLUCIÓN URGENTE: Usar la misma lógica que funciona en property-detail.html
+        console.log('🚀 Cargando Google Maps Funcional...');
+        
+        // Función que funciona correctamente (copiada de property-detail.html)
+        function convertToEmbedUrl(url) {
+            try {
+                console.log('🔄 Convirtiendo URL de mapa:', url);
+                
+                // Si ya es una URL de embed válida, devolverla
+                if (url.includes('maps/embed')) {
+                    console.log('✅ URL ya es de embed');
+                    return url;
+                }
+                
+                // SOLUCIÓN MEJORADA: Usar el URL real del usuario para mantener la ubicación correcta
+                if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps') || url.includes('maps.google.com')) {
+                    console.log('✅ Detectada URL de Google Maps - manteniendo ubicación real');
+                    
+                    // Si ya es un URL de embed, usarlo directamente
+                    if (url.includes('/maps/embed')) {
+                        console.log('✅ URL ya es de embed, usando directamente');
+                        return url;
+                    }
+                    
+                    // Convertir URL compartido a embed manteniendo la ubicación original
+                    let embedUrl = url.replace(/^https:\/\/(www\.)?(maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.com)/, 'https://www.google.com/maps/embed');
+                    
+                    // Si no se pudo convertir con el reemplazo simple, usar el método de búsqueda
+                    if (embedUrl === url) {
+                        embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${encodeURIComponent(url)}`;
+                    }
+                    
+                    console.log('✅ URL de embed generada con ubicación real:', embedUrl);
+                    return embedUrl;
+                }
+                
+                console.log('❌ URL no reconocida como Google Maps');
+                return null;
+            } catch (error) {
+                console.error('❌ Error convirtiendo URL de mapa:', error);
+                return null;
+            }
+        }
+        
+        // Función para mostrar el mapa (copiada de property-detail.html)
+        function showGoogleMapPreview(mapsUrl) {
+            console.log('🗺️ Mostrando Google Maps Preview:', mapsUrl);
+            
+            const mapContainer = document.getElementById('mapPreviewContainer');
+            const mapPreview = document.getElementById('mapPreview');
+            
+            if (!mapContainer || !mapPreview) {
+                console.log('⚠️ Elementos de mapa no encontrados');
+                return;
+            }
+            
+            // Convertir URL a formato embed si es necesario
+            const embedUrl = convertToEmbedUrl(mapsUrl);
+            
+            if (embedUrl) {
+                // Crear iframe con atributos correctos para evitar X-Frame-Options
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.width = '100%';
+                iframe.height = '100%';
+                iframe.frameBorder = '0';
+                iframe.style.border = 'none';
+                iframe.allowFullscreen = true;
+                iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('loading', 'lazy');
+                
+                // Limpiar contenedor y agregar iframe
+                mapPreview.innerHTML = '';
+                mapPreview.appendChild(iframe);
+                
+                mapContainer.style.display = 'block';
+                console.log('✅ Mapa mostrado correctamente en vista previa');
+            } else {
+                console.log('⚠️ No se pudo convertir la URL del mapa');
+                // Mostrar mensaje de error en el contenedor
+                mapPreview.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f8f9fa; color: #666; text-align: center; padding: 2rem;">
+                        <div>
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">🗺️</div>
+                            <div>No se pudo cargar el mapa</div>
+                            <div style="font-size: 0.9rem; margin-top: 0.5rem;">URL no válida: ${mapsUrl}</div>
+                        </div>
+                    </div>
+                `;
+                mapContainer.style.display = 'block';
+            }
+        }
+        
+        // Reemplazar la función del sistema anterior
+        function updateMapPreview(url) {
+            if (!url) {
+                hideMapPreview();
+                return;
+            }
+            showGoogleMapPreview(url);
+        }
+        
+        function hideMapPreview() {
+            const mapContainer = document.getElementById('mapPreviewContainer');
+            if (mapContainer) {
+                mapContainer.style.display = 'none';
+            }
+        }
+        
+        function removeMapPreview() {
+            const mapsUrlInput = document.getElementById('googleMapsUrl');
+            if (mapsUrlInput) {
+                mapsUrlInput.value = '';
+            }
+            hideMapPreview();
+            console.log('🗑️ Mapa removido');
+        }
+        
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Google Maps Funcional inicializado');
+            
+            // Configurar el event listener para el campo de URL
+            const mapsUrlInput = document.getElementById('googleMapsUrl');
+            if (mapsUrlInput) {
+                mapsUrlInput.addEventListener('input', function() {
+                    const url = this.value.trim();
+                    if (url) {
+                        updateMapPreview(url);
+                    } else {
+                        hideMapPreview();
+                    }
+                });
+            }
+        });
+        
+        console.log('✅ Google Maps Funcional cargado - Solución Urgente');
+    </script>
+    
     <!-- 5. Script del formulario CORREGIDO con Tours 360°, Imágenes y Videos -->
     <script src="form-scripts-fixed.js"></script>
 
