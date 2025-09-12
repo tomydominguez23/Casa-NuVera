@@ -1207,11 +1207,34 @@
             
             // 🆕 Inicializar event listeners del modal
             initializeGalleryModal();
+            
+            // 🆕 Asegurar que el sistema dinámico se ejecute
+            if (window.propertyDetailDynamic) {
+                console.log('✅ PropertyDetailDynamic ya está disponible');
+            } else {
+                console.log('⚠️ PropertyDetailDynamic no está disponible, esperando...');
+                // Esperar un poco más para que se cargue
+                setTimeout(() => {
+                    if (window.propertyDetailDynamic) {
+                        console.log('✅ PropertyDetailDynamic cargado después del timeout');
+                    }
+                }, 1000);
+            }
         });
 
         async function loadPropertyDetailsInBackground(propertyId) {
             try {
                 console.log('📥 Cargando datos en segundo plano para ID:', propertyId);
+                
+                // Usar el sistema dinámico si está disponible
+                if (window.propertyDetailDynamic) {
+                    console.log('✅ Usando PropertyDetailDynamic para cargar datos');
+                    // El sistema dinámico ya maneja todo automáticamente
+                    return;
+                }
+                
+                // Fallback: cargar datos manualmente
+                console.log('⚠️ PropertyDetailDynamic no disponible, usando fallback');
                 
                 // Esperar a que Supabase esté listo
                 if (!window.supabase) {

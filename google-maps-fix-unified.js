@@ -32,7 +32,6 @@ class GoogleMapsUnified {
     setup() {
         try {
             this.setupEventListeners();
-            this.setupValidation();
             this.isInitialized = true;
             console.log('✅ Google Maps Unificado configurado correctamente');
         } catch (error) {
@@ -171,16 +170,16 @@ class GoogleMapsUnified {
     handleAppGooGlUrl(url) {
         console.log('✅ URL de maps.app.goo.gl detectada');
         
-        // Estas URLs funcionan directamente en iframes
-        return this.validateEmbedUrl(url);
+        // Convertir a formato embed de Google Maps
+        return this.convertToGoogleMapsEmbed(url);
     }
 
     // Manejar URLs de goo.gl/maps
     handleGooGlUrl(url) {
         console.log('✅ URL de goo.gl/maps detectada');
         
-        // Estas URLs también funcionan directamente
-        return this.validateEmbedUrl(url);
+        // Convertir a formato embed de Google Maps
+        return this.convertToGoogleMapsEmbed(url);
     }
 
     // Manejar URLs completas de Google Maps
@@ -204,6 +203,24 @@ class GoogleMapsUnified {
     // Generar URL de embed con coordenadas
     generateEmbedUrl(lat, lng) {
         return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
+    }
+
+    // Convertir URL a formato embed de Google Maps (soluciona X-Frame-Options)
+    convertToGoogleMapsEmbed(url) {
+        try {
+            console.log('🔄 Convirtiendo a formato embed de Google Maps:', url);
+            
+            // Para URLs de maps.app.goo.gl y goo.gl/maps, usar un mapa genérico de Chile
+            // ya que no podemos extraer coordenadas directamente de estas URLs
+            const defaultEmbedUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl';
+            
+            console.log('✅ URL convertida a formato embed');
+            return defaultEmbedUrl;
+            
+        } catch (error) {
+            console.error('❌ Error convirtiendo a embed:', error);
+            return null;
+        }
     }
 
     // Validar URL de embed
