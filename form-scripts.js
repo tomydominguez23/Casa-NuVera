@@ -38,6 +38,7 @@ function initializeApp() {
     setupFormSubmit();
     setupRegionCommune();
     setupToursSection();
+    setupGoogleMaps();
     
     document.getElementById('formContainer').style.display = 'block';
     document.getElementById('authWarning').style.display = 'none';
@@ -548,6 +549,7 @@ function getFormData() {
         contactName: document.getElementById('contactName').value,
         contactPhone: document.getElementById('contactPhone').value,
         contactEmail: document.getElementById('contactEmail').value,
+        googleMapsUrl: document.getElementById('googleMapsUrl').value || null,
         features: [],
         featured: false
     };
@@ -593,4 +595,119 @@ function setupRegionCommune() {
     }
 }
 
-console.log('✅ Form Script cargado correctamente - Casa Nuvera con Tours 360°');
+// Nueva función para configurar Google Maps
+function setupGoogleMaps() {
+    console.log('🗺️ Configurando Google Maps...');
+    
+    const mapsUrlInput = document.getElementById('googleMapsUrl');
+    if (!mapsUrlInput) {
+        console.log('⚠️ Campo de Google Maps no encontrado');
+        return;
+    }
+    
+    mapsUrlInput.addEventListener('input', function() {
+        const url = this.value.trim();
+        if (url) {
+            updateMapPreview(url);
+        } else {
+            hideMapPreview();
+        }
+    });
+
+    console.log('✅ Google Maps configurado correctamente');
+}
+
+function updateMapPreview(url) {
+    const container = document.getElementById('mapPreviewContainer');
+    const preview = document.getElementById('mapPreview');
+    
+    if (!container || !preview) {
+        console.log('⚠️ Elementos de preview de mapa no encontrados');
+        return;
+    }
+    
+    // Convertir URL de Google Maps a iframe embed
+    const embedUrl = convertToEmbedUrl(url);
+    
+    if (embedUrl) {
+        preview.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+        container.style.display = 'block';
+        console.log('🗺️ Mapa actualizado:', embedUrl);
+    } else {
+        showMapError();
+    }
+}
+
+function convertToEmbedUrl(url) {
+    try {
+        // Si ya es una URL de embed, devolverla tal como está
+        if (url.includes('embed')) {
+            return url;
+        }
+
+        // Convertir URL de Google Maps a embed
+        if (url.includes('maps.google.com') || url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
+            // Para URLs de compartir, usar directamente
+            if (url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
+                return url; // Usar la URL original
+            }
+            
+            // Si es una URL completa de Google Maps
+            if (url.includes('maps.google.com')) {
+                // Convertir a formato embed básico
+                if (url.includes('@')) {
+                    // URL con coordenadas
+                    const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                    if (coordsMatch) {
+                        const lat = coordsMatch[1];
+                        const lng = coordsMatch[2];
+                        return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
+                    }
+                }
+            }
+            
+            return url; // Fallback a la URL original
+        }
+        
+        return null;
+    } catch (error) {
+        console.error('Error convirtiendo URL de mapa:', error);
+        return null;
+    }
+}
+
+function showMapError() {
+    const container = document.getElementById('mapPreviewContainer');
+    const preview = document.getElementById('mapPreview');
+    
+    if (!container || !preview) return;
+    
+    preview.innerHTML = `
+        <div class="map-preview-placeholder">
+            <div class="icon">⚠️</div>
+            <div>
+                <strong>URL de mapa no válida</strong><br>
+                Por favor, usa una URL de Google Maps válida
+            </div>
+        </div>
+    `;
+    container.style.display = 'block';
+}
+
+function hideMapPreview() {
+    const container = document.getElementById('mapPreviewContainer');
+    if (container) {
+        container.style.display = 'none';
+    }
+}
+
+function removeMapPreview() {
+    const mapsUrlInput = document.getElementById('googleMapsUrl');
+    if (mapsUrlInput) {
+        mapsUrlInput.value = '';
+    }
+    hideMapPreview();
+    console.log('🗑️ Mapa removido');
+}
+
+console.log('✅ Form Script cargado correctamente - Casa Nuvera con Tours 360° y Google Maps');

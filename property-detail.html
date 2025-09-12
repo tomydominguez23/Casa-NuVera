@@ -584,6 +584,49 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Google Maps Section */
+        .property-map-section {
+            margin: 2rem 0 !important;
+            padding: 2.5rem !important;
+            background: #f8f9fa !important;
+            border: 2px solid #e9ecef !important;
+            border-radius: 12px !important;
+            color: #333 !important;
+            position: relative !important;
+            overflow: hidden !important;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .property-map-section:hover {
+            border-color: #333 !important;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .property-map-section h3 {
+            font-size: 1.8rem !important;
+            margin-bottom: 1.5rem !important;
+            font-weight: 600 !important;
+            color: #333 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.75rem !important;
+        }
+
+        .map-container {
+            height: 400px !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+        }
+
+        .map-container iframe {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+        }
+
         /* SIDEBAR DERECHA NUEVA */
         .property-sidebar {
             background: white !important;
@@ -984,6 +1027,14 @@
                                 <p>Hermoso departamento en arriendo con excelente ubicación y todas las comodidades. Cuenta con amplios espacios, buena iluminación natural y acabados de primera calidad. Ideal para familias que buscan comodidad y tranquilidad en una zona privilegiada de Colina.</p>
                             </div>
                         </div>
+
+                        <!-- Google Maps Section -->
+                        <div class="property-map-section" id="propertyMapSection" style="display: none;">
+                            <h3>📍 Ubicación</h3>
+                            <div class="map-container" id="propertyMapContainer">
+                                <!-- El iframe del mapa se insertará aquí -->
+                            </div>
+                        </div>
                     </section>
                 </div>
 
@@ -1203,6 +1254,11 @@
                             updateGalleryWithRealImages(validImages);
                         }
                     }
+
+                    // Cargar y mostrar Google Maps si existe
+                    if (property.google_maps_url) {
+                        showGoogleMap(property.google_maps_url);
+                    }
                 } else {
                     console.log('ℹ️ No se encontraron datos específicos, usando valores por defecto');
                 }
@@ -1223,6 +1279,67 @@
             
             // 🆕 Actualizar contador en botón
             document.getElementById('photoCount').textContent = images.length;
+        }
+
+        function showGoogleMap(mapsUrl) {
+            console.log('🗺️ Mostrando Google Maps:', mapsUrl);
+            
+            const mapSection = document.getElementById('propertyMapSection');
+            const mapContainer = document.getElementById('propertyMapContainer');
+            
+            if (!mapSection || !mapContainer) {
+                console.log('⚠️ Elementos de mapa no encontrados');
+                return;
+            }
+            
+            // Convertir URL a formato embed si es necesario
+            const embedUrl = convertToEmbedUrl(mapsUrl);
+            
+            if (embedUrl) {
+                mapContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+                mapSection.style.display = 'block';
+                console.log('✅ Mapa mostrado correctamente');
+            } else {
+                console.log('⚠️ No se pudo convertir la URL del mapa');
+            }
+        }
+
+        function convertToEmbedUrl(url) {
+            try {
+                // Si ya es una URL de embed, devolverla tal como está
+                if (url.includes('embed')) {
+                    return url;
+                }
+
+                // Convertir URL de Google Maps a embed
+                if (url.includes('maps.google.com') || url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
+                    // Para URLs de compartir, usar directamente
+                    if (url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
+                        return url; // Usar la URL original
+                    }
+                    
+                    // Si es una URL completa de Google Maps
+                    if (url.includes('maps.google.com')) {
+                        // Convertir a formato embed básico
+                        if (url.includes('@')) {
+                            // URL con coordenadas
+                            const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                            if (coordsMatch) {
+                                const lat = coordsMatch[1];
+                                const lng = coordsMatch[2];
+                                return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
+                            }
+                        }
+                    }
+                    
+                    return url; // Fallback a la URL original
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('Error convirtiendo URL de mapa:', error);
+                return null;
+            }
         }
 
         // 🆕 FUNCIONES DEL MODAL DE GALERÍA
