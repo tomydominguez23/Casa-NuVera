@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Google Maps - Casa Nuvera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .map-preview-container {
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .map-preview-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .map-preview-header h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+        }
+        .map-preview {
+            height: 400px;
+            position: relative;
+            background: #f8f9fa;
+        }
+        .map-preview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .map-preview-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #6c757d;
+            text-align: center;
+        }
+        .map-preview-placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        .test-urls {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .test-urls h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .test-url {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: background-color 0.3s;
+        }
+        .test-url:hover {
+            background-color: #f0f8ff;
+        }
+        .test-url strong {
+            color: #3498db;
+        }
+        .console-log {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🗺️ Test de Google Maps - Casa Nuvera</h1>
+        <p>Esta página permite probar la funcionalidad de Google Maps con diferentes tipos de URLs.</p>
+        
+        <div class="test-urls">
+            <h3>URLs de Prueba</h3>
+            <div class="test-url" onclick="testUrl('https://maps.app.goo.gl/gwUah7NsXmrLhqUL9')">
+                <strong>maps.app.goo.gl:</strong> https://maps.app.goo.gl/gwUah7NsXmrLhqUL9
+            </div>
+            <div class="test-url" onclick="testUrl('https://goo.gl/maps/abc123')">
+                <strong>goo.gl/maps:</strong> https://goo.gl/maps/abc123
+            </div>
+            <div class="test-url" onclick="testUrl('https://www.google.com/maps/@-33.4489,-70.6693,15z')">
+                <strong>maps.google.com con coordenadas:</strong> https://www.google.com/maps/@-33.4489,-70.6693,15z
+            </div>
+            <div class="test-url" onclick="testUrl('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM-33.4489%2C-70.6693!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl')">
+                <strong>URL embed:</strong> https://www.google.com/maps/embed?pb=...
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="googleMapsUrl">URL de Google Maps:</label>
+            <input type="url" id="googleMapsUrl" class="form-control" 
+                   placeholder="Pega aquí tu URL de Google Maps">
+        </div>
+        
+        <div class="map-preview-container" id="mapPreviewContainer" style="display: none;">
+            <div class="map-preview-header">
+                <h4>📍 Vista Previa del Mapa</h4>
+                <button type="button" onclick="removeMapPreview()" style="background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;">×</button>
+            </div>
+            <div class="map-preview" id="mapPreview">
+                <!-- El iframe del mapa se insertará aquí -->
+            </div>
+        </div>
+        
+        <div class="console-log" id="consoleLog">
+            <div>Console Log:</div>
+        </div>
+    </div>
+
+    <script>
+        // Función para mostrar logs en la página
+        function logToPage(message) {
+            const consoleLog = document.getElementById('consoleLog');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleLog.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        // Función para probar una URL específica
+        function testUrl(url) {
+            document.getElementById('googleMapsUrl').value = url;
+            updateMapPreview(url);
+        }
+
+        // Función para convertir URL de Google Maps a embed
+        function convertToEmbedUrl(url) {
+            try {
+                logToPage('🔄 Convirtiendo URL de mapa: ' + url);
+                
+                // Si ya es una URL de embed, devolverla tal como está
+                if (url.includes('embed')) {
+                    logToPage('✅ URL ya es embed');
+                    return url;
+                }
+
+                // Para URLs de maps.app.goo.gl, usar directamente como iframe
+                if (url.includes('maps.app.goo.gl')) {
+                    logToPage('✅ URL de maps.app.goo.gl detectada');
+                    return url; // Estas URLs funcionan directamente en iframes
+                }
+
+                // Para URLs de goo.gl/maps, usar directamente
+                if (url.includes('goo.gl/maps')) {
+                    logToPage('✅ URL de goo.gl/maps detectada');
+                    return url; // Estas URLs también funcionan directamente
+                }
+                
+                // Si es una URL completa de Google Maps
+                if (url.includes('maps.google.com')) {
+                    logToPage('✅ URL de maps.google.com detectada');
+                    
+                    // Convertir a formato embed básico
+                    if (url.includes('@')) {
+                        // URL con coordenadas
+                        const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                        if (coordsMatch) {
+                            const lat = coordsMatch[1];
+                            const lng = coordsMatch[2];
+                            const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
+                            logToPage('✅ URL convertida a embed con coordenadas');
+                            return embedUrl;
+                        }
+                    }
+                    
+                    // Si no tiene coordenadas, usar la URL original
+                    logToPage('✅ Usando URL original de Google Maps');
+                    return url;
+                }
+                
+                logToPage('❌ URL no reconocida como Google Maps');
+                return null;
+            } catch (error) {
+                logToPage('❌ Error convirtiendo URL de mapa: ' + error.message);
+                return null;
+            }
+        }
+
+        // Función para actualizar la vista previa del mapa
+        function updateMapPreview(url) {
+            const container = document.getElementById('mapPreviewContainer');
+            const preview = document.getElementById('mapPreview');
+            
+            if (!container || !preview) {
+                logToPage('⚠️ Elementos de preview de mapa no encontrados');
+                return;
+            }
+            
+            // Mostrar loading
+            preview.innerHTML = `
+                <div class="map-preview-placeholder">
+                    <div class="icon">⏳</div>
+                    <div>
+                        <strong>Cargando mapa...</strong><br>
+                        Por favor espera
+                    </div>
+                </div>
+            `;
+            container.style.display = 'block';
+            
+            // Convertir URL de Google Maps a iframe embed
+            const embedUrl = convertToEmbedUrl(url);
+            
+            if (embedUrl) {
+                // Crear iframe con manejo de errores
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.allowFullscreen = true;
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                
+                // Manejar errores de carga del iframe
+                iframe.onerror = function() {
+                    logToPage('❌ Error cargando iframe del mapa');
+                    showMapError('Error cargando el mapa. Verifica que la URL sea válida.');
+                };
+                
+                iframe.onload = function() {
+                    logToPage('✅ Mapa cargado exitosamente');
+                };
+                
+                // Limpiar placeholder y agregar iframe
+                preview.innerHTML = '';
+                preview.appendChild(iframe);
+                
+                logToPage('🗺️ Mapa actualizado: ' + embedUrl);
+            } else {
+                showMapError('URL de Google Maps no válida. Usa una URL de maps.google.com, goo.gl/maps o maps.app.goo.gl');
+            }
+        }
+
+        // Función para mostrar error del mapa
+        function showMapError(message = 'URL de mapa no válida') {
+            const container = document.getElementById('mapPreviewContainer');
+            const preview = document.getElementById('mapPreview');
+            
+            if (!container || !preview) return;
+            
+            preview.innerHTML = `
+                <div class="map-preview-placeholder">
+                    <div class="icon">⚠️</div>
+                    <div>
+                        <strong>${message}</strong><br>
+                        Por favor, usa una URL de Google Maps válida
+                    </div>
+                </div>
+            `;
+            container.style.display = 'block';
+            logToPage('⚠️ Error del mapa: ' + message);
+        }
+
+        // Función para ocultar la vista previa del mapa
+        function hideMapPreview() {
+            const container = document.getElementById('mapPreviewContainer');
+            if (container) {
+                container.style.display = 'none';
+                logToPage('🗑️ Vista previa del mapa ocultada');
+            }
+        }
+
+        // Función para remover la vista previa del mapa
+        function removeMapPreview() {
+            const mapsUrlInput = document.getElementById('googleMapsUrl');
+            if (mapsUrlInput) {
+                mapsUrlInput.value = '';
+            }
+            hideMapPreview();
+            logToPage('🗑️ Mapa removido');
+        }
+
+        // Inicializar cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            logToPage('🚀 Test de Google Maps inicializado');
+            
+            // Configurar el input para que actualice el mapa automáticamente
+            document.getElementById('googleMapsUrl').addEventListener('input', function() {
+                const url = this.value.trim();
+                if (url) {
+                    updateMapPreview(url);
+                } else {
+                    hideMapPreview();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

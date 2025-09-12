@@ -626,57 +626,103 @@ function updateMapPreview(url) {
         return;
     }
     
+    // Mostrar loading
+    preview.innerHTML = `
+        <div class="map-preview-placeholder">
+            <div class="icon">⏳</div>
+            <div>
+                <strong>Cargando mapa...</strong><br>
+                Por favor espera
+            </div>
+        </div>
+    `;
+    container.style.display = 'block';
+    
     // Convertir URL de Google Maps a iframe embed
     const embedUrl = convertToEmbedUrl(url);
     
     if (embedUrl) {
-        preview.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-        container.style.display = 'block';
+        // Crear iframe con manejo de errores
+        const iframe = document.createElement('iframe');
+        iframe.src = embedUrl;
+        iframe.allowFullscreen = true;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        
+        // Manejar errores de carga del iframe
+        iframe.onerror = function() {
+            console.error('❌ Error cargando iframe del mapa');
+            showMapError('Error cargando el mapa. Verifica que la URL sea válida.');
+        };
+        
+        iframe.onload = function() {
+            console.log('✅ Mapa cargado exitosamente');
+        };
+        
+        // Limpiar placeholder y agregar iframe
+        preview.innerHTML = '';
+        preview.appendChild(iframe);
+        
         console.log('🗺️ Mapa actualizado:', embedUrl);
     } else {
-        showMapError();
+        showMapError('URL de Google Maps no válida. Usa una URL de maps.google.com, goo.gl/maps o maps.app.goo.gl');
     }
 }
 
 function convertToEmbedUrl(url) {
     try {
+        console.log('🔄 Convirtiendo URL de mapa:', url);
+        
         // Si ya es una URL de embed, devolverla tal como está
         if (url.includes('embed')) {
+            console.log('✅ URL ya es embed');
             return url;
         }
 
-        // Convertir URL de Google Maps a embed
-        if (url.includes('maps.google.com') || url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
-            // Para URLs de compartir, usar directamente
-            if (url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
-                return url; // Usar la URL original
-            }
+        // Para URLs de maps.app.goo.gl, usar directamente como iframe
+        if (url.includes('maps.app.goo.gl')) {
+            console.log('✅ URL de maps.app.goo.gl detectada');
+            return url; // Estas URLs funcionan directamente en iframes
+        }
+
+        // Para URLs de goo.gl/maps, usar directamente
+        if (url.includes('goo.gl/maps')) {
+            console.log('✅ URL de goo.gl/maps detectada');
+            return url; // Estas URLs también funcionan directamente
+        }
+        
+        // Si es una URL completa de Google Maps
+        if (url.includes('maps.google.com')) {
+            console.log('✅ URL de maps.google.com detectada');
             
-            // Si es una URL completa de Google Maps
-            if (url.includes('maps.google.com')) {
-                // Convertir a formato embed básico
-                if (url.includes('@')) {
-                    // URL con coordenadas
-                    const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-                    if (coordsMatch) {
-                        const lat = coordsMatch[1];
-                        const lng = coordsMatch[2];
-                        return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
-                    }
+            // Convertir a formato embed básico
+            if (url.includes('@')) {
+                // URL con coordenadas
+                const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (coordsMatch) {
+                    const lat = coordsMatch[1];
+                    const lng = coordsMatch[2];
+                    const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
+                    console.log('✅ URL convertida a embed con coordenadas');
+                    return embedUrl;
                 }
             }
             
-            return url; // Fallback a la URL original
+            // Si no tiene coordenadas, usar la URL original
+            console.log('✅ Usando URL original de Google Maps');
+            return url;
         }
         
+        console.log('❌ URL no reconocida como Google Maps');
         return null;
     } catch (error) {
-        console.error('Error convirtiendo URL de mapa:', error);
+        console.error('❌ Error convirtiendo URL de mapa:', error);
         return null;
     }
 }
 
-function showMapError() {
+function showMapError(message = 'URL de mapa no válida') {
     const container = document.getElementById('mapPreviewContainer');
     const preview = document.getElementById('mapPreview');
     
@@ -686,7 +732,7 @@ function showMapError() {
         <div class="map-preview-placeholder">
             <div class="icon">⚠️</div>
             <div>
-                <strong>URL de mapa no válida</strong><br>
+                <strong>${message}</strong><br>
                 Por favor, usa una URL de Google Maps válida
             </div>
         </div>
