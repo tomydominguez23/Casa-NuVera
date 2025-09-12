@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Google Maps Fixed - Casa Nuvera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .map-preview-container {
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .map-preview-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .map-preview-header h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+        }
+        .map-preview {
+            height: 400px;
+            position: relative;
+            background: #f8f9fa;
+        }
+        .map-preview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .map-preview-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #6c757d;
+            text-align: center;
+        }
+        .map-preview-placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        .test-urls {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .test-urls h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .test-url {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: background-color 0.3s;
+        }
+        .test-url:hover {
+            background-color: #f0f8ff;
+        }
+        .test-url strong {
+            color: #3498db;
+        }
+        .console-log {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background-color: #27ae60; }
+        .status-error { background-color: #e74c3c; }
+        .status-warning { background-color: #f39c12; }
+        .status-info { background-color: #3498db; }
+        .test-results {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 4px solid #ddd;
+        }
+        .test-result.success {
+            background: #d4edda;
+            border-left-color: #27ae60;
+        }
+        .test-result.error {
+            background: #f8d7da;
+            border-left-color: #e74c3c;
+        }
+        .test-result.warning {
+            background: #fff3cd;
+            border-left-color: #f39c12;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🗺️ Test Google Maps Fixed - Casa Nuvera</h1>
+        <p>Esta página prueba la funcionalidad corregida de Google Maps con el script unificado.</p>
+        
+        <div class="test-results" id="testResults">
+            <h3>📊 Resultados de Pruebas</h3>
+            <div id="testResultsList">
+                <div class="test-result info">
+                    <span class="status-indicator status-info"></span>
+                    <strong>Iniciando pruebas...</strong> Esperando que se cargue el script unificado.
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-urls">
+            <h3>URLs de Prueba</h3>
+            <div class="test-url" onclick="testUrl('https://maps.app.goo.gl/gwUah7NsXmrLhqUL9')">
+                <strong>maps.app.goo.gl:</strong> https://maps.app.goo.gl/gwUah7NsXmrLhqUL9
+            </div>
+            <div class="test-url" onclick="testUrl('https://goo.gl/maps/abc123')">
+                <strong>goo.gl/maps:</strong> https://goo.gl/maps/abc123
+            </div>
+            <div class="test-url" onclick="testUrl('https://www.google.com/maps/@-33.4489,-70.6693,15z')">
+                <strong>maps.google.com con coordenadas:</strong> https://www.google.com/maps/@-33.4489,-70.6693,15z
+            </div>
+            <div class="test-url" onclick="testUrl('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM-33.4489%2C-70.6693!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl')">
+                <strong>URL embed:</strong> https://www.google.com/maps/embed?pb=...
+            </div>
+            <div class="test-url" onclick="testUrl('https://invalid-url.com')">
+                <strong>URL inválida:</strong> https://invalid-url.com
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="googleMapsUrl">URL de Google Maps:</label>
+            <input type="url" id="googleMapsUrl" class="form-control" 
+                   placeholder="Pega aquí tu URL de Google Maps">
+        </div>
+        
+        <div class="map-preview-container" id="mapPreviewContainer" style="display: none;">
+            <div class="map-preview-header">
+                <h4>📍 Vista Previa del Mapa</h4>
+                <button type="button" onclick="removeMapPreview()" style="background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;">×</button>
+            </div>
+            <div class="map-preview" id="mapPreview">
+                <!-- El iframe del mapa se insertará aquí -->
+            </div>
+        </div>
+        
+        <div class="console-log" id="consoleLog">
+            <div>Console Log:</div>
+        </div>
+    </div>
+
+    <!-- Cargar el script unificado -->
+    <script src="google-maps-fix-unified.js"></script>
+
+    <script>
+        // Función para mostrar logs en la página
+        function logToPage(message, type = 'info') {
+            const consoleLog = document.getElementById('consoleLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const statusClass = `status-${type}`;
+            consoleLog.innerHTML += `<div><span class="status-indicator ${statusClass}"></span>[${timestamp}] ${message}</div>`;
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        // Función para agregar resultado de prueba
+        function addTestResult(message, type = 'info') {
+            const resultsList = document.getElementById('testResultsList');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span class="status-indicator status-${type}"></span>${message}`;
+            resultsList.appendChild(resultDiv);
+        }
+
+        // Función para probar una URL específica
+        function testUrl(url) {
+            document.getElementById('googleMapsUrl').value = url;
+            logToPage(`🧪 Probando URL: ${url}`, 'info');
+            addTestResult(`Probando URL: ${url}`, 'info');
+            
+            // Simular el evento de input
+            const event = new Event('input', { bubbles: true });
+            document.getElementById('googleMapsUrl').dispatchEvent(event);
+        }
+
+        // Función para remover la vista previa del mapa
+        function removeMapPreview() {
+            const mapsUrlInput = document.getElementById('googleMapsUrl');
+            if (mapsUrlInput) {
+                mapsUrlInput.value = '';
+            }
+            if (window.googleMapsUnified) {
+                window.googleMapsUnified.hideMapPreview();
+            }
+            logToPage('🗑️ Mapa removido', 'info');
+        }
+
+        // Función para verificar el estado del script
+        function checkScriptStatus() {
+            if (window.googleMapsUnified) {
+                const stats = window.googleMapsUnified.getStats();
+                logToPage(`✅ Script unificado cargado - Inicializado: ${stats.isInitialized}`, 'success');
+                addTestResult(`Script unificado cargado correctamente`, 'success');
+                
+                if (stats.isInitialized) {
+                    addTestResult(`Sistema de mapas inicializado y listo`, 'success');
+                } else {
+                    addTestResult(`Sistema de mapas no inicializado`, 'warning');
+                }
+            } else {
+                logToPage('❌ Script unificado no encontrado', 'error');
+                addTestResult(`Script unificado no encontrado`, 'error');
+            }
+        }
+
+        // Función para ejecutar pruebas automáticas
+        function runAutomaticTests() {
+            logToPage('🚀 Iniciando pruebas automáticas...', 'info');
+            addTestResult(`Iniciando pruebas automáticas`, 'info');
+            
+            const testUrls = [
+                'https://maps.app.goo.gl/gwUah7NsXmrLhqUL9',
+                'https://goo.gl/maps/abc123',
+                'https://www.google.com/maps/@-33.4489,-70.6693,15z',
+                'https://invalid-url.com'
+            ];
+            
+            testUrls.forEach((url, index) => {
+                setTimeout(() => {
+                    logToPage(`🧪 Prueba ${index + 1}: ${url}`, 'info');
+                    testUrl(url);
+                }, index * 2000);
+            });
+        }
+
+        // Inicializar cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            logToPage('🚀 Test de Google Maps Fixed inicializado', 'info');
+            
+            // Verificar estado del script después de un breve delay
+            setTimeout(checkScriptStatus, 1000);
+            
+            // Configurar el input para que actualice el mapa automáticamente
+            document.getElementById('googleMapsUrl').addEventListener('input', function() {
+                const url = this.value.trim();
+                if (url) {
+                    logToPage(`📝 URL ingresada: ${url}`, 'info');
+                } else {
+                    logToPage('🗑️ Campo vaciado', 'info');
+                }
+            });
+            
+            // Ejecutar pruebas automáticas después de 3 segundos
+            setTimeout(runAutomaticTests, 3000);
+        });
+
+        // Interceptar console.log para mostrar en la página
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const message = args.join(' ');
+            if (message.includes('🗺️') || message.includes('✅') || message.includes('❌') || message.includes('⚠️')) {
+                logToPage(message, 'info');
+            }
+        };
+    </script>
+</body>
+</html>
