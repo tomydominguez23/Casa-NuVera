@@ -78,6 +78,7 @@ class PropertyDetailDynamic {
                     features,
                     featured,
                     published,
+                    google_maps_url,
                     created_at
                 `)
                 .eq('id', propertyId)
@@ -133,9 +134,10 @@ class PropertyDetailDynamic {
             
             const { data, error } = await window.supabase
                 .from('property_tours')
-                .select('id, tour_name, tour_url, tour_order')
+                .select('id, tour_title, tour_url, order_index, is_active')
                 .eq('property_id', propertyId)
-                .order('tour_order', { ascending: true });
+                .eq('is_active', true)
+                .order('order_index', { ascending: true });
 
             if (error) {
                 console.error('⚠️ Error al cargar tours:', error);
@@ -194,6 +196,9 @@ class PropertyDetailDynamic {
 
         // Actualizar tours 360°
         this.updatePropertyTours();
+
+        // Actualizar Google Maps
+        this.updateGoogleMaps();
 
         // Actualizar información de contacto
         this.updateContactInfo();
@@ -278,6 +283,72 @@ class PropertyDetailDynamic {
         if (tourBtn && this.propertyTours.length > 0) {
             const firstTour = this.propertyTours[0];
             tourBtn.onclick = () => this.openTour(firstTour.tour_url);
+        }
+    }
+
+    updateGoogleMaps() {
+        if (!this.property || !this.property.google_maps_url) {
+            console.log('ℹ️ No hay URL de Google Maps para mostrar');
+            return;
+        }
+
+        console.log('🗺️ Mostrando Google Maps:', this.property.google_maps_url);
+        
+        const mapSection = document.getElementById('propertyMapSection');
+        const mapContainer = document.getElementById('propertyMapContainer');
+        
+        if (!mapSection || !mapContainer) {
+            console.log('⚠️ Elementos de mapa no encontrados');
+            return;
+        }
+        
+        // Convertir URL a formato embed si es necesario
+        const embedUrl = this.convertToEmbedUrl(this.property.google_maps_url);
+        
+        if (embedUrl) {
+            mapContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+            mapSection.style.display = 'block';
+            console.log('✅ Mapa mostrado correctamente');
+        } else {
+            console.log('⚠️ No se pudo convertir la URL del mapa');
+        }
+    }
+
+    convertToEmbedUrl(url) {
+        try {
+            // Si ya es una URL de embed, devolverla tal como está
+            if (url.includes('embed')) {
+                return url;
+            }
+
+            // Convertir URL de Google Maps a embed
+            if (url.includes('maps.google.com') || url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
+                // Para URLs de compartir, usar directamente
+                if (url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
+                    return url; // Usar la URL original
+                }
+                
+                // Si es una URL completa de Google Maps
+                if (url.includes('maps.google.com')) {
+                    // Convertir a formato embed básico
+                    if (url.includes('@')) {
+                        // URL con coordenadas
+                        const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                        if (coordsMatch) {
+                            const lat = coordsMatch[1];
+                            const lng = coordsMatch[2];
+                            return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
+                        }
+                    }
+                }
+                
+                return url; // Fallback a la URL original
+            }
+            
+            return null;
+        } catch (error) {
+            console.error('Error convirtiendo URL de mapa:', error);
+            return null;
         }
     }
 
