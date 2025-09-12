@@ -205,14 +205,13 @@ class GoogleMapsUnified {
         return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
     }
 
-    // Convertir URL a formato embed de Google Maps (soluciona X-Frame-Options)
+    // Convertir URL a formato embed de Google Maps (SOLUCIÓN CORREGIDA)
     convertToGoogleMapsEmbed(url) {
         try {
             console.log('🔄 Convirtiendo a formato embed de Google Maps:', url);
             
-            // SOLUCIÓN SIMPLE: Si el usuario ya ingresó un URL de embed, usarlo directamente
-            // Si no, convertir el URL compartido a formato embed manteniendo la ubicación original
-            let embedUrl;
+            // SOLUCIÓN CORREGIDA: Los URLs de maps.app.goo.gl funcionan directamente en iframes
+            // NO necesitan conversión a /embed/
             
             // Si ya es un URL de embed, usarlo directamente
             if (url.includes('/maps/embed')) {
@@ -220,23 +219,40 @@ class GoogleMapsUnified {
                 return url;
             }
             
-            // Para cualquier URL de Google Maps, usar la forma más simple:
-            // Reemplazar la parte del dominio para convertir a embed
-            if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps') || url.includes('maps.google.com')) {
-                // Convertir URL compartido a embed manteniendo la ubicación
-                embedUrl = url.replace(/^https:\/\/(www\.)?(maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.com)/, 'https://www.google.com/maps/embed');
-                
-                // Si no se pudo convertir con el reemplazo simple, usar el método de búsqueda
-                if (embedUrl === url) {
-                    embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${encodeURIComponent(url)}`;
-                }
-            } else {
-                // URL no reconocida, usar como búsqueda
-                embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${encodeURIComponent(url)}`;
+            // CORRECCIÓN PRINCIPAL: URLs de maps.app.goo.gl funcionan directamente
+            if (url.includes('maps.app.goo.gl')) {
+                console.log('✅ URL de maps.app.goo.gl - usando directamente (sin conversión)');
+                return url; // ¡Estos URLs funcionan directamente en iframes!
             }
             
-            console.log('✅ URL convertida a formato embed con ubicación real');
-            return embedUrl;
+            // URLs de goo.gl/maps también funcionan directamente
+            if (url.includes('goo.gl/maps')) {
+                console.log('✅ URL de goo.gl/maps - usando directamente');
+                return url; // ¡Estos también funcionan directamente!
+            }
+            
+            // Para URLs completas de Google Maps con coordenadas
+            if (url.includes('maps.google.com') || url.includes('google.com/maps')) {
+                console.log('✅ URL de Google Maps detectada');
+                
+                // Extraer coordenadas si existen
+                const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (coordsMatch) {
+                    const [, lat, lng] = coordsMatch;
+                    const embedUrl = this.generateEmbedUrl(lat, lng);
+                    console.log('✅ URL generada con coordenadas');
+                    return embedUrl;
+                }
+                
+                // Si no tiene coordenadas, usar como búsqueda
+                const searchQuery = encodeURIComponent(url);
+                const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${searchQuery}`;
+                console.log('✅ URL convertida para búsqueda');
+                return embedUrl;
+            }
+            
+            console.log('❌ URL no reconocida como Google Maps');
+            return null;
             
         } catch (error) {
             console.error('❌ Error convirtiendo a embed:', error);

@@ -3,73 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Google Maps Fixed - Casa Nuvera</title>
+    <title>Test Google Maps Fix - Casa Nuvera</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 2rem;
+            background-color: #f8f9fa;
         }
+        
         .test-container {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
         }
+        
+        .test-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 1.5rem;
         }
+        
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            color: #2c3e50;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
+        
         .form-control {
             width: 100%;
-            padding: 10px;
+            padding: 1rem;
             border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
         }
+        
         .form-control:focus {
             outline: none;
             border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
+        
         .map-preview-container {
-            margin-top: 20px;
+            margin-top: 1.5rem;
             border: 2px solid #e9ecef;
             border-radius: 12px;
             overflow: hidden;
             background: white;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+        
         .map-preview-header {
             background: #f8f9fa;
-            padding: 15px;
+            padding: 1rem 1.5rem;
             border-bottom: 1px solid #e9ecef;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
         .map-preview-header h4 {
             margin: 0;
-            font-size: 16px;
+            font-size: 1rem;
             color: #333;
             font-weight: 600;
         }
+        
         .map-preview {
             height: 400px;
             position: relative;
             background: #f8f9fa;
         }
+        
         .map-preview iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
+        
         .map-preview-placeholder {
             display: flex;
             flex-direction: column;
@@ -79,252 +101,326 @@
             color: #6c757d;
             text-align: center;
         }
+        
         .map-preview-placeholder .icon {
             font-size: 3rem;
             margin-bottom: 1rem;
             opacity: 0.5;
         }
-        .test-urls {
+        
+        .test-results {
             background: #e8f4f8;
-            padding: 15px;
+            padding: 1rem;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
-        .test-urls h3 {
-            margin-top: 0;
+        
+        .test-urls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .test-url-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .test-url-item h5 {
+            margin: 0 0 0.5rem 0;
             color: #2c3e50;
         }
-        .test-url {
-            background: white;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
+        
+        .test-url-item code {
+            background: #e9ecef;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            word-break: break-all;
+        }
+        
+        .btn-test {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
             cursor: pointer;
-            border: 1px solid #ddd;
-            transition: background-color 0.3s;
+            font-size: 0.9rem;
+            margin: 0.25rem;
+            transition: background 0.3s;
         }
-        .test-url:hover {
-            background-color: #f0f8ff;
+        
+        .btn-test:hover {
+            background: #2980b9;
         }
-        .test-url strong {
-            color: #3498db;
+        
+        .success {
+            color: #27ae60;
+            font-weight: 600;
         }
-        .console-log {
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 20px;
-        }
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-        .status-success { background-color: #27ae60; }
-        .status-error { background-color: #e74c3c; }
-        .status-warning { background-color: #f39c12; }
-        .status-info { background-color: #3498db; }
-        .test-results {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        .test-result {
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
-            border-left: 4px solid #ddd;
-        }
-        .test-result.success {
-            background: #d4edda;
-            border-left-color: #27ae60;
-        }
-        .test-result.error {
-            background: #f8d7da;
-            border-left-color: #e74c3c;
-        }
-        .test-result.warning {
-            background: #fff3cd;
-            border-left-color: #f39c12;
+        
+        .error {
+            color: #e74c3c;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
     <div class="test-container">
-        <h1>🗺️ Test Google Maps Fixed - Casa Nuvera</h1>
-        <p>Esta página prueba la funcionalidad corregida de Google Maps con el script unificado.</p>
-        
-        <div class="test-results" id="testResults">
-            <h3>📊 Resultados de Pruebas</h3>
-            <div id="testResultsList">
-                <div class="test-result info">
-                    <span class="status-indicator status-info"></span>
-                    <strong>Iniciando pruebas...</strong> Esperando que se cargue el script unificado.
-                </div>
-            </div>
-        </div>
-        
-        <div class="test-urls">
-            <h3>URLs de Prueba</h3>
-            <div class="test-url" onclick="testUrl('https://maps.app.goo.gl/gwUah7NsXmrLhqUL9')">
-                <strong>maps.app.goo.gl:</strong> https://maps.app.goo.gl/gwUah7NsXmrLhqUL9
-            </div>
-            <div class="test-url" onclick="testUrl('https://goo.gl/maps/abc123')">
-                <strong>goo.gl/maps:</strong> https://goo.gl/maps/abc123
-            </div>
-            <div class="test-url" onclick="testUrl('https://www.google.com/maps/@-33.4489,-70.6693,15z')">
-                <strong>maps.google.com con coordenadas:</strong> https://www.google.com/maps/@-33.4489,-70.6693,15z
-            </div>
-            <div class="test-url" onclick="testUrl('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM-33.4489%2C-70.6693!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl')">
-                <strong>URL embed:</strong> https://www.google.com/maps/embed?pb=...
-            </div>
-            <div class="test-url" onclick="testUrl('https://invalid-url.com')">
-                <strong>URL inválida:</strong> https://invalid-url.com
-            </div>
-        </div>
+        <h1 class="test-title">🧪 Test de Google Maps Fix</h1>
+        <p>Esta página prueba la corrección del error de Google Maps en Casa Nuvera.</p>
         
         <div class="form-group">
-            <label for="googleMapsUrl">URL de Google Maps:</label>
-            <input type="url" id="googleMapsUrl" class="form-control" 
-                   placeholder="Pega aquí tu URL de Google Maps">
+            <label for="testUrl">URL de Google Maps para probar:</label>
+            <input type="url" id="testUrl" class="form-control" 
+                   placeholder="Pega aquí una URL de Google Maps">
         </div>
         
         <div class="map-preview-container" id="mapPreviewContainer" style="display: none;">
             <div class="map-preview-header">
                 <h4>📍 Vista Previa del Mapa</h4>
-                <button type="button" onclick="removeMapPreview()" style="background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;">×</button>
             </div>
             <div class="map-preview" id="mapPreview">
                 <!-- El iframe del mapa se insertará aquí -->
             </div>
         </div>
         
-        <div class="console-log" id="consoleLog">
-            <div>Console Log:</div>
+        <div class="test-results" id="testResults" style="display: none;">
+            <strong>📊 Resultados del Test:</strong>
+            <div id="resultsContent"></div>
+        </div>
+        
+        <div class="test-urls">
+            <h3>🔗 URLs de Prueba</h3>
+            
+            <div class="test-url-item">
+                <h5>maps.app.goo.gl (Formato actual)</h5>
+                <code>https://maps.app.goo.gl/5d7wLipgBWWBeos99?g_st=iwb</code>
+                <br><br>
+                <button class="btn-test" onclick="testUrl('https://maps.app.goo.gl/5d7wLipgBWWBeos99?g_st=iwb')">
+                    Probar este URL
+                </button>
+            </div>
+            
+            <div class="test-url-item">
+                <h5>goo.gl/maps (Formato anterior)</h5>
+                <code>https://goo.gl/maps/gwUah7NsXmrLhqUL9</code>
+                <br><br>
+                <button class="btn-test" onclick="testUrl('https://goo.gl/maps/gwUah7NsXmrLhqUL9')">
+                    Probar este URL
+                </button>
+            </div>
+            
+            <div class="test-url-item">
+                <h5>Google Maps con coordenadas</h5>
+                <code>https://www.google.com/maps/@-33.4489,-70.6693,15z</code>
+                <br><br>
+                <button class="btn-test" onclick="testUrl('https://www.google.com/maps/@-33.4489,-70.6693,15z')">
+                    Probar este URL
+                </button>
+            </div>
+            
+            <div class="test-url-item">
+                <h5>URL embed (ya formateado)</h5>
+                <code>https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl</code>
+                <br><br>
+                <button class="btn-test" onclick="testUrl('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl')">
+                    Probar este URL
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Cargar el script unificado -->
-    <script src="google-maps-fix-unified.js"></script>
-
     <script>
-        // Función para mostrar logs en la página
-        function logToPage(message, type = 'info') {
-            const consoleLog = document.getElementById('consoleLog');
-            const timestamp = new Date().toLocaleTimeString();
-            const statusClass = `status-${type}`;
-            consoleLog.innerHTML += `<div><span class="status-indicator ${statusClass}"></span>[${timestamp}] ${message}</div>`;
-            consoleLog.scrollTop = consoleLog.scrollHeight;
-        }
-
-        // Función para agregar resultado de prueba
-        function addTestResult(message, type = 'info') {
-            const resultsList = document.getElementById('testResultsList');
-            const resultDiv = document.createElement('div');
-            resultDiv.className = `test-result ${type}`;
-            resultDiv.innerHTML = `<span class="status-indicator status-${type}"></span>${message}`;
-            resultsList.appendChild(resultDiv);
-        }
-
-        // Función para probar una URL específica
-        function testUrl(url) {
-            document.getElementById('googleMapsUrl').value = url;
-            logToPage(`🧪 Probando URL: ${url}`, 'info');
-            addTestResult(`Probando URL: ${url}`, 'info');
-            
-            // Simular el evento de input
-            const event = new Event('input', { bubbles: true });
-            document.getElementById('googleMapsUrl').dispatchEvent(event);
-        }
-
-        // Función para remover la vista previa del mapa
-        function removeMapPreview() {
-            const mapsUrlInput = document.getElementById('googleMapsUrl');
-            if (mapsUrlInput) {
-                mapsUrlInput.value = '';
-            }
-            if (window.googleMapsUnified) {
-                window.googleMapsUnified.hideMapPreview();
-            }
-            logToPage('🗑️ Mapa removido', 'info');
-        }
-
-        // Función para verificar el estado del script
-        function checkScriptStatus() {
-            if (window.googleMapsUnified) {
-                const stats = window.googleMapsUnified.getStats();
-                logToPage(`✅ Script unificado cargado - Inicializado: ${stats.isInitialized}`, 'success');
-                addTestResult(`Script unificado cargado correctamente`, 'success');
+        // Función corregida para convertir URLs de Google Maps
+        function convertToEmbedUrl(url) {
+            try {
+                console.log('🔄 Convirtiendo URL de mapa:', url);
                 
-                if (stats.isInitialized) {
-                    addTestResult(`Sistema de mapas inicializado y listo`, 'success');
-                } else {
-                    addTestResult(`Sistema de mapas no inicializado`, 'warning');
+                // SOLUCIÓN CORREGIDA: URLs de maps.app.goo.gl funcionan directamente en iframes
+                // NO necesitan conversión a /embed/
+                
+                // Si ya es una URL de embed, devolverla tal como está
+                if (url.includes('embed')) {
+                    console.log('✅ URL ya es embed');
+                    return url;
                 }
-            } else {
-                logToPage('❌ Script unificado no encontrado', 'error');
-                addTestResult(`Script unificado no encontrado`, 'error');
+
+                // CORRECCIÓN PRINCIPAL: URLs de maps.app.goo.gl funcionan directamente
+                if (url.includes('maps.app.goo.gl')) {
+                    console.log('✅ URL de maps.app.goo.gl - usando directamente (sin conversión)');
+                    return url; // ¡Estos URLs funcionan directamente en iframes!
+                }
+
+                // URLs de goo.gl/maps también funcionan directamente
+                if (url.includes('goo.gl/maps')) {
+                    console.log('✅ URL de goo.gl/maps - usando directamente');
+                    return url; // ¡Estos también funcionan directamente!
+                }
+
+                // Para URLs completas de Google Maps con coordenadas
+                if (url.includes('maps.google.com') || url.includes('google.com/maps')) {
+                    console.log('✅ URL de Google Maps detectada');
+                    
+                    // Extraer coordenadas si existen
+                    const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                    if (coordsMatch) {
+                        const [, lat, lng] = coordsMatch;
+                        const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
+                        console.log('✅ URL generada con coordenadas');
+                        return embedUrl;
+                    }
+                    
+                    // Si no tiene coordenadas, usar como búsqueda
+                    const searchQuery = encodeURIComponent(url);
+                    const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${searchQuery}`;
+                    console.log('✅ URL convertida para búsqueda');
+                    return embedUrl;
+                }
+                
+                console.log('❌ URL no reconocida como Google Maps');
+                return null;
+            } catch (error) {
+                console.error('❌ Error convirtiendo URL de mapa:', error);
+                return null;
             }
         }
 
-        // Función para ejecutar pruebas automáticas
-        function runAutomaticTests() {
-            logToPage('🚀 Iniciando pruebas automáticas...', 'info');
-            addTestResult(`Iniciando pruebas automáticas`, 'info');
+        function updateMapPreview(url) {
+            const container = document.getElementById('mapPreviewContainer');
+            const preview = document.getElementById('mapPreview');
+            const results = document.getElementById('testResults');
+            const resultsContent = document.getElementById('resultsContent');
             
-            const testUrls = [
-                'https://maps.app.goo.gl/gwUah7NsXmrLhqUL9',
-                'https://goo.gl/maps/abc123',
-                'https://www.google.com/maps/@-33.4489,-70.6693,15z',
-                'https://invalid-url.com'
-            ];
+            if (!container || !preview) {
+                console.log('⚠️ Elementos de preview de mapa no encontrados');
+                return;
+            }
             
-            testUrls.forEach((url, index) => {
+            // Mostrar loading
+            preview.innerHTML = `
+                <div class="map-preview-placeholder">
+                    <div class="icon">⏳</div>
+                    <div>
+                        <strong>Cargando mapa...</strong><br>
+                        Procesando: ${url.length > 50 ? url.substring(0, 50) + '...' : url}
+                    </div>
+                </div>
+            `;
+            container.style.display = 'block';
+            
+            // Convertir URL de Google Maps a iframe embed
+            const embedUrl = convertToEmbedUrl(url);
+            
+            if (embedUrl) {
+                // Crear iframe con manejo de errores
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.allowFullscreen = true;
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                
+                let loadSuccess = false;
+                let loadError = false;
+                
+                // Manejar errores de carga del iframe
+                iframe.onerror = function() {
+                    console.error('❌ Error cargando iframe del mapa');
+                    loadError = true;
+                    showTestResults(false, 'Error cargando el mapa. Verifica que la URL sea válida.', url, embedUrl);
+                };
+                
+                iframe.onload = function() {
+                    console.log('✅ Mapa cargado exitosamente');
+                    loadSuccess = true;
+                    showTestResults(true, 'Mapa cargado correctamente', url, embedUrl);
+                };
+                
+                // Timeout para detectar si no carga
                 setTimeout(() => {
-                    logToPage(`🧪 Prueba ${index + 1}: ${url}`, 'info');
-                    testUrl(url);
-                }, index * 2000);
-            });
+                    if (!loadSuccess && !loadError) {
+                        console.log('⚠️ Timeout cargando mapa');
+                        showTestResults(false, 'Timeout cargando el mapa', url, embedUrl);
+                    }
+                }, 10000);
+                
+                // Limpiar placeholder y agregar iframe
+                preview.innerHTML = '';
+                preview.appendChild(iframe);
+                
+                console.log('🗺️ Mapa actualizado:', embedUrl);
+            } else {
+                showMapError('URL de Google Maps no válida. Usa una URL de maps.google.com, goo.gl/maps o maps.app.goo.gl');
+                showTestResults(false, 'URL no válida', url, null);
+            }
         }
 
-        // Inicializar cuando se carga la página
-        document.addEventListener('DOMContentLoaded', function() {
-            logToPage('🚀 Test de Google Maps Fixed inicializado', 'info');
+        function showMapError(message) {
+            const container = document.getElementById('mapPreviewContainer');
+            const preview = document.getElementById('mapPreview');
             
-            // Verificar estado del script después de un breve delay
-            setTimeout(checkScriptStatus, 1000);
+            if (!container || !preview) return;
             
-            // Configurar el input para que actualice el mapa automáticamente
-            document.getElementById('googleMapsUrl').addEventListener('input', function() {
-                const url = this.value.trim();
-                if (url) {
-                    logToPage(`📝 URL ingresada: ${url}`, 'info');
-                } else {
-                    logToPage('🗑️ Campo vaciado', 'info');
-                }
-            });
+            preview.innerHTML = `
+                <div class="map-preview-placeholder">
+                    <div class="icon">⚠️</div>
+                    <div>
+                        <strong>${message}</strong><br>
+                        Por favor, usa una URL de Google Maps válida
+                    </div>
+                </div>
+            `;
+            container.style.display = 'block';
+        }
+
+        function showTestResults(success, message, originalUrl, embedUrl) {
+            const results = document.getElementById('testResults');
+            const resultsContent = document.getElementById('resultsContent');
             
-            // Ejecutar pruebas automáticas después de 3 segundos
-            setTimeout(runAutomaticTests, 3000);
+            const statusClass = success ? 'success' : 'error';
+            const statusIcon = success ? '✅' : '❌';
+            
+            resultsContent.innerHTML = `
+                <div class="${statusClass}">
+                    ${statusIcon} <strong>${message}</strong>
+                </div>
+                <br>
+                <strong>URL Original:</strong><br>
+                <code style="word-break: break-all;">${originalUrl}</code>
+                <br><br>
+                <strong>URL Embed:</strong><br>
+                <code style="word-break: break-all;">${embedUrl || 'No se pudo convertir'}</code>
+                <br><br>
+                <strong>Timestamp:</strong> ${new Date().toLocaleString()}
+            `;
+            
+            results.style.display = 'block';
+        }
+
+        function testUrl(url) {
+            document.getElementById('testUrl').value = url;
+            updateMapPreview(url);
+        }
+
+        // Event listener para el campo de entrada
+        document.getElementById('testUrl').addEventListener('input', function() {
+            const url = this.value.trim();
+            if (url) {
+                updateMapPreview(url);
+            } else {
+                document.getElementById('mapPreviewContainer').style.display = 'none';
+                document.getElementById('testResults').style.display = 'none';
+            }
         });
 
-        // Interceptar console.log para mostrar en la página
-        const originalLog = console.log;
-        console.log = function(...args) {
-            originalLog.apply(console, args);
-            const message = args.join(' ');
-            if (message.includes('🗺️') || message.includes('✅') || message.includes('❌') || message.includes('⚠️')) {
-                logToPage(message, 'info');
-            }
-        };
+        console.log('🧪 Test de Google Maps Fix inicializado');
     </script>
 </body>
 </html>
