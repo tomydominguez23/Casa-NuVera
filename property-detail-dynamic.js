@@ -206,6 +206,9 @@ class PropertyDetailDynamic {
         // Actualizar precio en sidebar
         this.updatePriceInfo();
 
+        // Actualizar características del sidebar
+        this.updateSidebarFeatures();
+
         console.log('✅ Datos de la propiedad actualizados correctamente');
     }
 
@@ -385,6 +388,13 @@ class PropertyDetailDynamic {
     updatePriceInfo() {
         if (!this.property) return;
 
+        // Actualizar tipo de propiedad en sidebar
+        const typeElement = document.querySelector('.property-type');
+        if (typeElement) {
+            const typeText = this.property.property_type === 'arriendo' ? 'En Arriendo' : 'En Venta';
+            typeElement.textContent = `${this.property.category || 'Propiedad'} ${typeText}`;
+        }
+
         // Actualizar precio en sidebar
         const priceElement = document.querySelector('.property-price');
         if (priceElement) {
@@ -394,10 +404,46 @@ class PropertyDetailDynamic {
 
         // Actualizar subtítulo de precio
         const priceSubtitle = document.querySelector('.price-subtitle');
-        if (priceSubtitle && this.property.currency === 'CLP') {
-            const clpPrice = this.property.price * 40000; // Aproximación UF a CLP
-            priceSubtitle.textContent = `$${clpPrice.toLocaleString('es-CL')}`;
+        if (priceSubtitle) {
+            if (this.property.currency === 'UF') {
+                const clpPrice = this.property.price * 40000; // Aproximación UF a CLP
+                priceSubtitle.textContent = `$${clpPrice.toLocaleString('es-CL')}`;
+            } else if (this.property.currency === 'USD') {
+                const clpPrice = this.property.price * 900; // Aproximación USD a CLP
+                priceSubtitle.textContent = `$${clpPrice.toLocaleString('es-CL')}`;
+            } else {
+                priceSubtitle.textContent = ''; // No mostrar subtítulo para CLP
+            }
         }
+    }
+
+    updateSidebarFeatures() {
+        if (!this.property) return;
+
+        // Actualizar características del sidebar
+        const sidebarFeatures = document.querySelector('.sidebar-features');
+        if (!sidebarFeatures) return;
+
+        const area = this.property.total_area || this.property.built_area || 0;
+        const bedrooms = this.property.bedrooms || 0;
+        const bathrooms = this.property.bathrooms || 0;
+
+        sidebarFeatures.innerHTML = `
+            <div class="sidebar-feature">
+                <span class="sidebar-feature-label">Superficie total</span>
+                <span class="sidebar-feature-value">${area} m²</span>
+            </div>
+            <div class="sidebar-feature">
+                <span class="sidebar-feature-label">Dormitorios</span>
+                <span class="sidebar-feature-value">${bedrooms}</span>
+            </div>
+            <div class="sidebar-feature">
+                <span class="sidebar-feature-label">Baños</span>
+                <span class="sidebar-feature-value">${bathrooms}</span>
+            </div>
+        `;
+
+        console.log('✅ Características del sidebar actualizadas');
     }
 
     openTour(tourUrl) {
