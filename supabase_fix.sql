@@ -39,9 +39,10 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 SELECT 
     schemaname, 
     tablename, 
-    replicaidentity,
+    relreplident as replicaidentity,
     rowsecurity
-FROM pg_tables 
+FROM pg_tables t
+JOIN pg_class c ON c.relname = t.tablename
 WHERE tablename IN ('properties', 'property_images', 'property_tours')
 ORDER BY tablename;
 
