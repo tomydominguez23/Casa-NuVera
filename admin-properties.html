@@ -42,6 +42,11 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
+        .property-card.deleting {
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         .property-image {
             width: 100%;
             height: 200px;
@@ -799,6 +804,67 @@
             }, 3000);
         }
 
+        function showDetailedNotification(title, details, type = 'info') {
+            console.log(`Notificación detallada ${type}: ${title}`);
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type} detailed`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1.5rem;
+                border-radius: 12px;
+                color: white;
+                font-weight: 500;
+                z-index: 3000;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                max-width: 400px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            `;
+            
+            // Colores según el tipo
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                warning: '#f39c12',
+                info: '#3498db'
+            };
+            
+            notification.style.background = colors[type] || colors.info;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">
+                        ${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}
+                    </span>
+                    <strong style="font-size: 1.1rem;">${title}</strong>
+                </div>
+                <div style="font-size: 0.9rem; line-height: 1.4;">
+                    ${details.map(detail => `<div style="margin: 0.25rem 0;">${detail}</div>`).join('')}
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
         // Funciones de manejo de botones
         function handleEdit(id) {
             console.log(`✏️ Editando propiedad ID: ${id}`);
@@ -818,8 +884,45 @@
             console.log(`🗑️ Iniciando eliminación de propiedad ID: ${id}, Título: ${title}`);
             pendingDeleteId = id;
             pendingDeleteTitle = title;
-            document.getElementById('confirmMessage').textContent = 
-                `¿Estás seguro de que deseas eliminar "${title}"? Esta acción no se puede deshacer.`;
+            
+            // Obtener información detallada de la propiedad
+            const property = allProperties.find(p => p.id === id);
+            if (property) {
+                const price = formatPrice(property.price, property.currency);
+                const location = `${property.neighborhood || ''} ${property.commune || ''}`.trim();
+                const statusText = property.published ? 'ACTIVA' : 'PENDIENTE';
+                
+                document.getElementById('confirmMessage').innerHTML = `
+                    <div style="text-align: left; margin-bottom: 1rem;">
+                        <h4 style="margin: 0 0 0.5rem 0; color: #2c3e50;">⚠️ Confirmar Eliminación</h4>
+                        <p style="margin: 0 0 1rem 0; font-weight: 600; color: #e74c3c;">"${title}"</p>
+                        
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <p style="margin: 0 0 0.5rem 0;"><strong>📍 Ubicación:</strong> ${location || 'No especificada'}</p>
+                            <p style="margin: 0 0 0.5rem 0;"><strong>💰 Precio:</strong> ${price}</p>
+                            <p style="margin: 0 0 0.5rem 0;"><strong>🏠 Tipo:</strong> ${property.category || 'No especificado'}</p>
+                            <p style="margin: 0 0 0.5rem 0;"><strong>📊 Estado:</strong> ${statusText}</p>
+                            <p style="margin: 0;"><strong>🛏️ Dormitorios:</strong> ${property.bedrooms || 0} | <strong>🚿 Baños:</strong> ${property.bathrooms || 0}</p>
+                        </div>
+                        
+                        <div style="background: #fff3cd; padding: 1rem; border-radius: 8px; border-left: 4px solid #f39c12;">
+                            <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #856404;">Se eliminará:</p>
+                            <ul style="margin: 0; padding-left: 1.5rem; color: #856404;">
+                                <li>La propiedad de la base de datos</li>
+                                <li>Todas las imágenes asociadas</li>
+                                <li>Todos los tours 360°</li>
+                                <li>La subpágina de la web</li>
+                            </ul>
+                        </div>
+                        
+                        <p style="margin: 1rem 0 0 0; font-weight: 600; color: #e74c3c;">Esta acción NO se puede deshacer.</p>
+                    </div>
+                `;
+            } else {
+                document.getElementById('confirmMessage').innerHTML = 
+                    `<p>¿Estás seguro de que deseas eliminar "${title}"? Esta acción no se puede deshacer.</p>`;
+            }
+            
             document.getElementById('confirmModal').classList.add('active');
         }
 
@@ -835,28 +938,48 @@
                     throw new Error('Supabase no está configurado. Verifica la conexión.');
                 }
                 
-                console.log('💾 Eliminando de Supabase...');
-                
-                // Usar el UUID real de la propiedad
-                const { error } = await supabase
-                    .from('properties')
-                    .delete()
-                    .eq('id', pendingDeleteId);
-                
-                if (error) {
-                    console.error('❌ Error al eliminar de Supabase:', error);
-                    showNotification(`Error al eliminar: ${error.message}`, 'error');
-                    return;
+                // Obtener información de la propiedad antes de eliminar
+                const propertyToDelete = allProperties.find(p => p.id === pendingDeleteId);
+                if (!propertyToDelete) {
+                    throw new Error('Propiedad no encontrada');
                 }
                 
-                console.log('✅ Propiedad eliminada de Supabase exitosamente');
-                showNotification('Propiedad eliminada exitosamente de la base de datos', 'success');
+                console.log('💾 Eliminando propiedad completa (datos, imágenes, tours)...');
                 
-                // Eliminar visualmente la propiedad
+                // Usar la función completa del property-handler que elimina todo
+                const result = await window.propertyHandler.deleteProperty(pendingDeleteId);
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Error al eliminar la propiedad');
+                }
+                
+                console.log('✅ Propiedad eliminada completamente de la base de datos');
+                
+                // Mostrar información de lo eliminado
+                const deletedInfo = [];
+                deletedInfo.push(`✓ Propiedad: "${propertyToDelete.title}"`);
+                deletedInfo.push(`✓ Ubicación: ${propertyToDelete.commune || 'No especificada'}`);
+                deletedInfo.push(`✓ Precio: ${formatPrice(propertyToDelete.price, propertyToDelete.currency)}`);
+                deletedInfo.push(`✓ Imágenes relacionadas eliminadas`);
+                deletedInfo.push(`✓ Tours 360° eliminados`);
+                deletedInfo.push(`✓ Subpágina de la web eliminada`);
+                
+                // Mostrar notificación con información detallada
+                showDetailedNotification('Propiedad eliminada exitosamente', deletedInfo, 'success');
+                
+                // Eliminar visualmente la propiedad con animación mejorada
                 const propertyCard = document.querySelector(`[data-property-id="${pendingDeleteId}"]`);
                 if (propertyCard) {
-                    propertyCard.style.transform = 'scale(0)';
-                    propertyCard.style.opacity = '0';
+                    // Agregar clase de animación de eliminación
+                    propertyCard.classList.add('deleting');
+                    propertyCard.style.transform = 'scale(0.95)';
+                    propertyCard.style.opacity = '0.7';
+                    
+                    setTimeout(() => {
+                        propertyCard.style.transform = 'scale(0) rotate(5deg)';
+                        propertyCard.style.opacity = '0';
+                        propertyCard.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    }, 100);
                     
                     setTimeout(() => {
                         if (propertyCard.parentNode) {
@@ -870,7 +993,10 @@
                         // Recargar estadísticas
                         allProperties = allProperties.filter(p => p.id !== pendingDeleteId);
                         updateStats(allProperties);
-                    }, 300);
+                        
+                        // Mostrar notificación de actualización
+                        showNotification(`Lista actualizada: ${remaining} propiedades restantes`, 'info');
+                    }, 600);
                 }
                 
             } catch (error) {

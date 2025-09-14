@@ -312,14 +312,54 @@ class PropertyHandler {
         }
     }
 
-    // Función para eliminar propiedad (admin) - actualizada para tours
+    // Función para eliminar propiedad (admin) - actualizada para tours y archivos
     async deleteProperty(propertyId) {
         try {
             if (!propertyId) {
                 throw new Error('ID de propiedad requerido');
             }
 
-            // Eliminar tours primero
+            console.log(`🗑️ Iniciando eliminación completa de propiedad ${propertyId}...`);
+
+            // 1. Obtener información de imágenes antes de eliminar
+            const { data: images, error: imagesQueryError } = await window.supabase
+                .from('property_images')
+                .select('image_url')
+                .eq('property_id', propertyId);
+
+            if (imagesQueryError) {
+                console.warn('⚠️ Error obteniendo imágenes:', imagesQueryError);
+            }
+
+            // 2. Eliminar archivos de Storage si existen
+            if (images && images.length > 0) {
+                console.log(`📸 Eliminando ${images.length} archivos de Storage...`);
+                
+                for (const image of images) {
+                    if (image.image_url && image.image_url.includes('supabase')) {
+                        try {
+                            // Extraer nombre del archivo de la URL
+                            const fileName = image.image_url.split('/').pop();
+                            if (fileName) {
+                                const { error: storageError } = await window.supabase.storage
+                                    .from('property-images')
+                                    .remove([fileName]);
+                                
+                                if (storageError) {
+                                    console.warn(`⚠️ Error eliminando archivo ${fileName}:`, storageError);
+                                } else {
+                                    console.log(`✅ Archivo eliminado: ${fileName}`);
+                                }
+                            }
+                        } catch (storageError) {
+                            console.warn('⚠️ Error eliminando archivo de Storage:', storageError);
+                        }
+                    }
+                }
+            }
+
+            // 3. Eliminar tours primero
+            console.log('🌐 Eliminando tours 360°...');
             const { error: toursError } = await window.supabase
                 .from('property_tours')
                 .delete()
@@ -327,19 +367,25 @@ class PropertyHandler {
 
             if (toursError) {
                 console.warn('⚠️ Error eliminando tours:', toursError);
+            } else {
+                console.log('✅ Tours eliminados');
             }
 
-            // Eliminar imágenes
+            // 4. Eliminar registros de imágenes de la base de datos
+            console.log('📸 Eliminando registros de imágenes...');
             const { error: imagesError } = await window.supabase
                 .from('property_images')
                 .delete()
                 .eq('property_id', propertyId);
 
             if (imagesError) {
-                console.warn('⚠️ Error eliminando imágenes:', imagesError);
+                console.warn('⚠️ Error eliminando registros de imágenes:', imagesError);
+            } else {
+                console.log('✅ Registros de imágenes eliminados');
             }
 
-            // Eliminar propiedad
+            // 5. Eliminar propiedad principal
+            console.log('🏠 Eliminando propiedad principal...');
             const { error } = await window.supabase
                 .from('properties')
                 .delete()
@@ -349,14 +395,19 @@ class PropertyHandler {
                 throw error;
             }
 
-            console.log('🗑️ Propiedad eliminada:', propertyId);
+            console.log('✅ Propiedad eliminada completamente:', propertyId);
             
-            // Refrescar propiedades
+            // 6. Refrescar propiedades en la web
             if (window.propertyLoader) {
+                console.log('🔄 Refrescando lista de propiedades...');
                 window.propertyLoader.refreshProperties();
             }
 
-            return { success: true };
+            return { 
+                success: true, 
+                message: 'Propiedad eliminada completamente de la base de datos y archivos',
+                deletedImages: images ? images.length : 0
+            };
 
         } catch (error) {
             console.error('❌ Error eliminando propiedad:', error);
