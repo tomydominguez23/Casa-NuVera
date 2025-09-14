@@ -197,15 +197,16 @@ class DeleteIssueDebugger {
 
 // Función global para ejecutar diagnóstico
 window.runDeleteDiagnostics = function() {
-    const debugger = new DeleteIssueDebugger();
-    return debugger.runDiagnostics();
+    const deleteDebugger = new DeleteIssueDebugger();
+    return deleteDebugger.runDiagnostics();
 };
 
 // Auto-ejecutar si estamos en admin-properties
 if (document.getElementById('propertiesGrid')) {
     console.log('🔍 Ejecutando diagnóstico automático...');
     setTimeout(() => {
-        window.runDeleteDiagnostics();
+        const deleteDebugger = new DeleteIssueDebugger();
+        deleteDebugger.runDiagnostics();
     }, 2000);
 }
 
