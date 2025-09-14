@@ -449,12 +449,16 @@ class PropertyHandler {
                     .from('properties')
                     .select('id')
                     .eq('id', propertyId)
-                    .single();
+                    .maybeSingle();
 
-                if (verifyError && verifyError.code === 'PGRST116') {
-                    // Error PGRST116 significa que no se encontró el registro (eliminación exitosa)
-                    propertyStillExists = false;
-                    console.log('✅ Verificación exitosa: La propiedad fue eliminada de la BD');
+                if (verifyError) {
+                    // Si hay error, probablemente significa que no existe (eliminación exitosa)
+                    if (verifyError.code === 'PGRST116' || verifyError.message.includes('No rows')) {
+                        propertyStillExists = false;
+                        console.log('✅ Verificación exitosa: La propiedad fue eliminada de la BD');
+                    } else {
+                        console.warn(`⚠️ Error verificando eliminación: ${verifyError.message}`);
+                    }
                 } else if (!verifyDelete) {
                     propertyStillExists = false;
                     console.log('✅ Verificación exitosa: La propiedad fue eliminada de la BD');
