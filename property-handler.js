@@ -321,6 +321,19 @@ class PropertyHandler {
 
             console.log(`🗑️ Iniciando eliminación completa de propiedad ${propertyId}...`);
 
+            // Verificar que la propiedad existe antes de eliminar
+            const { data: propertyExists, error: checkError } = await window.supabase
+                .from('properties')
+                .select('id, title')
+                .eq('id', propertyId)
+                .single();
+
+            if (checkError || !propertyExists) {
+                throw new Error('La propiedad no existe o ya fue eliminada');
+            }
+
+            console.log(`📋 Propiedad encontrada: "${propertyExists.title}"`);
+
             // 1. Obtener información de imágenes antes de eliminar
             const { data: images, error: imagesQueryError } = await window.supabase
                 .from('property_images')
@@ -397,16 +410,33 @@ class PropertyHandler {
 
             console.log('✅ Propiedad eliminada completamente:', propertyId);
             
-            // 6. Refrescar propiedades en la web
+            // 6. Verificar que la eliminación fue exitosa
+            const { data: verifyDelete, error: verifyError } = await window.supabase
+                .from('properties')
+                .select('id')
+                .eq('id', propertyId)
+                .single();
+
+            if (verifyDelete) {
+                console.warn('⚠️ La propiedad aún existe después de la eliminación');
+                throw new Error('La eliminación no fue exitosa - la propiedad aún existe en la BD');
+            } else {
+                console.log('✅ Verificación exitosa: La propiedad fue eliminada de la BD');
+            }
+            
+            // 7. Refrescar propiedades en la web
             if (window.propertyLoader) {
                 console.log('🔄 Refrescando lista de propiedades...');
-                window.propertyLoader.refreshProperties();
+                // Forzar recarga desde BD, no usar cache
+                window.propertyLoader.useFallbackData = false;
+                await window.propertyLoader.refreshProperties();
             }
 
             return { 
                 success: true, 
                 message: 'Propiedad eliminada completamente de la base de datos y archivos',
-                deletedImages: images ? images.length : 0
+                deletedImages: images ? images.length : 0,
+                propertyTitle: propertyExists.title
             };
 
         } catch (error) {

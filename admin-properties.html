@@ -470,9 +470,17 @@
                     <h2>Todas las Propiedades</h2>
                     <p id="propertiesCount">Cargando propiedades...</p>
                 </div>
-                <a href="subir-propiedades.html" class="btn btn-primary">
-                    ➕ Nueva Propiedad
-                </a>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <button onclick="window.runDeleteDiagnostics()" class="btn btn-secondary" style="background: #6c757d; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer;">
+                        🔍 Diagnosticar
+                    </button>
+                    <button onclick="forceReloadFromDB()" class="btn btn-secondary" style="background: #17a2b8; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer;">
+                        🔄 Recargar BD
+                    </button>
+                    <a href="subir-propiedades.html" class="btn btn-primary">
+                        ➕ Nueva Propiedad
+                    </a>
+                </div>
             </div>
 
             <!-- Estadísticas -->
@@ -576,6 +584,8 @@
     <!-- Scripts - ORDEN CORRECTO -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
+    <script src="property-handler.js"></script>
+    <script src="debug-delete-issue.js"></script>
     <script>
         // Variables globales
         let pendingDeleteId = null;
@@ -946,6 +956,11 @@
                 
                 console.log('💾 Eliminando propiedad completa (datos, imágenes, tours)...');
                 
+                // Verificar que property-handler esté disponible
+                if (!window.propertyHandler) {
+                    throw new Error('Property handler no está disponible. Recarga la página.');
+                }
+                
                 // Usar la función completa del property-handler que elimina todo
                 const result = await window.propertyHandler.deleteProperty(pendingDeleteId);
                 
@@ -954,6 +969,20 @@
                 }
                 
                 console.log('✅ Propiedad eliminada completamente de la base de datos');
+                
+                // Verificar que la eliminación fue real verificando en la BD
+                const { data: verifyData, error: verifyError } = await supabase
+                    .from('properties')
+                    .select('id')
+                    .eq('id', pendingDeleteId)
+                    .single();
+                
+                if (verifyData) {
+                    console.warn('⚠️ La propiedad aún existe en la BD después de la eliminación');
+                    showNotification('Advertencia: La propiedad puede no haberse eliminado completamente', 'warning');
+                } else {
+                    console.log('✅ Verificación: La propiedad fue eliminada de la BD');
+                }
                 
                 // Mostrar información de lo eliminado
                 const deletedInfo = [];
@@ -996,12 +1025,20 @@
                         
                         // Mostrar notificación de actualización
                         showNotification(`Lista actualizada: ${remaining} propiedades restantes`, 'info');
+                        
+                        // Recargar propiedades desde la BD para asegurar sincronización
+                        setTimeout(() => {
+                            loadPropertiesFromDB();
+                        }, 1000);
                     }, 600);
                 }
                 
             } catch (error) {
                 console.error('❌ Error general al eliminar:', error);
                 showNotification(`Error al eliminar propiedad: ${error.message}`, 'error');
+                
+                // Mostrar botón de diagnóstico si hay error
+                showNotification('Ejecuta window.runDeleteDiagnostics() en la consola para diagnosticar', 'info');
             }
             
             closeModal();
@@ -1025,6 +1062,25 @@
             
             // Recargar todas las propiedades
             renderProperties(allProperties);
+        }
+
+        // Función para forzar recarga desde la base de datos
+        async function forceReloadFromDB() {
+            console.log('🔄 Forzando recarga desde la base de datos...');
+            showNotification('Recargando desde la base de datos...', 'info');
+            
+            try {
+                // Limpiar cache local
+                allProperties = [];
+                
+                // Forzar recarga desde BD
+                await loadPropertiesFromDB();
+                
+                showNotification('Datos recargados desde la base de datos', 'success');
+            } catch (error) {
+                console.error('❌ Error recargando desde BD:', error);
+                showNotification('Error al recargar datos', 'error');
+            }
         }
 
         function logout() {
