@@ -945,6 +945,41 @@
                 font-size: 0.8rem !important;
                 padding: 0.5rem 1rem !important;
             }
+
+            /* 🆕 Sticky CTA WhatsApp en móvil */
+            .sticky-cta {
+                position: fixed !important;
+                left: 16px !important;
+                right: 16px !important;
+                bottom: 16px !important;
+                z-index: 1500 !important;
+                display: flex !important;
+                gap: 0.75rem !important;
+            }
+
+            .sticky-cta .cta-btn {
+                flex: 1 !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                height: 56px !important;
+                border-radius: 12px !important;
+                font-weight: 700 !important;
+                text-decoration: none !important;
+                letter-spacing: 0.5px !important;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+                border: 2px solid #333 !important;
+            }
+
+            .sticky-cta .cta-btn.primary {
+                background: #333 !important;
+                color: #fff !important;
+            }
+
+            .sticky-cta .cta-btn.secondary {
+                background: #fff !important;
+                color: #333 !important;
+            }
         }
     </style>
 </head>
@@ -1096,6 +1131,12 @@
         </div>
     </main>
 
+    <!-- 🆕 Sticky CTA móvil -->
+    <div class="sticky-cta" id="stickyCta" style="display:none;">
+        <a href="#" class="cta-btn primary" onclick="contactViaWhatsApp(); return false;">WhatsApp</a>
+        <a href="tel:+56948406684" class="cta-btn secondary">Llamar</a>
+    </div>
+
     <!-- 🆕 MODAL DE GALERÍA COMPLETO -->
     <div class="gallery-modal" id="galleryModal">
         <div class="gallery-modal-content">
@@ -1220,6 +1261,15 @@
                     }
                 }, 1000);
             }
+
+            // Mostrar CTA sticky solo en pantallas móviles
+            try {
+                const cta = document.getElementById('stickyCta');
+                const isMobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+                if (cta && isMobile) {
+                    cta.style.display = 'flex';
+                }
+            } catch (e) { /* noop */ }
         });
 
         async function loadPropertyDetailsInBackground(propertyId) {
