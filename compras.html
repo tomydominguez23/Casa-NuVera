@@ -900,6 +900,31 @@
         let allProperties = [];
         let filtered = [];
 
+        // Navegación móvil: toggle hamburguesa y cierre al navegar
+        (function(){
+            const navToggle = document.getElementById('navToggle');
+            if (navToggle) {
+                navToggle.addEventListener('click', () => {
+                    const headerEl = document.querySelector('.header');
+                    const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+                    navToggle.setAttribute('aria-expanded', (!expanded).toString());
+                    if (headerEl) headerEl.classList.toggle('open');
+                });
+
+                // Cerrar menú al hacer click en links del menú
+                const menuLinks = document.querySelectorAll('.nav-menu a');
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        const headerEl = document.querySelector('.header');
+                        if (headerEl && headerEl.classList.contains('open')) {
+                            headerEl.classList.remove('open');
+                            navToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                });
+            }
+        })();
+
         // 🔥 FUNCIÓN FAVORITOS UNIFICADA
         function toggleFavorite(propertyId, event) {
             event.stopPropagation(); // Evitar que se ejecute el onclick de la card
