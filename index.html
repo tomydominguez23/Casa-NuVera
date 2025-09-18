@@ -57,6 +57,10 @@
             overflow-x: hidden;
         }
 
+        /* iOS/mobile safety: evitar cualquier desbordamiento horizontal */
+        html { width: 100%; overflow-x: hidden; }
+        img, video { max-width: 100%; height: auto; display: block; }
+
         /* Header flotante sobre imágenes */
         .header {
             position: fixed;
@@ -123,6 +127,7 @@
 
         /* Hero Section con imagen de fondo full */
         .hero {
+            min-height: 100dvh; /* Mejor comportamiento en iOS Safari */
             height: 100vh;
             background: linear-gradient(var(--overlay-light), var(--overlay-light)), 
                         url('https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752024246180_1.jpg');
@@ -238,6 +243,7 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 0; /* Sin espacios entre imágenes */
             height: 500px; /* Altura fija para alineación uniforme */
+            overflow: hidden; /* Previene desbordes en móvil */
         }
 
         .nav-item {
@@ -306,8 +312,10 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            right: 0;
+            width: 100%; /* Evita issues con 100vw en iOS */
+            height: 100dvh; /* Usa viewport dinámico en navegadores modernos */
+            min-height: 100vh; /* Fallback */
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
             display: none;
@@ -519,9 +527,7 @@
             /* Eliminado: grid de 2 columnas */
         }
 
-        .new-era-content {
-            /* Ya no tiene grid - layout centrado como Hero */
-        }
+        /* .new-era-content sin grid, centrado mediante contenedor */
 
         .new-era-content h2 {
             font-size: 4rem !important;
@@ -971,6 +977,7 @@
             width: 100%;
             height: 600px;
             overflow: hidden;
+            will-change: transform; /* suaviza en iOS */
         }
 
         .gallery-slide {
@@ -1311,7 +1318,7 @@
             }
 
             .nav-item {
-                height: 400px;
+                height: 360px;
             }
 
             .nav-item-content {
@@ -1321,6 +1328,12 @@
 
             .search-filters {
                 grid-template-columns: 1fr;
+            }
+
+            /* Evitar zoom en iOS al enfocar (>=16px) */
+            .search-select,
+            .search-input {
+                font-size: 16px !important;
             }
 
             .properties-grid-container,
@@ -1382,7 +1395,7 @@
             }
             
             .gallery-slides-container {
-                height: 400px;
+                height: 380px;
             }
             
             .gallery-nav-btn {
