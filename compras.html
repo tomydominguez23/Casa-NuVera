@@ -41,6 +41,9 @@
             --charcoal: #36454F;
         }
 
+        /* Toggle de navegación (oculto por defecto en desktop) */
+        .nav-toggle { display: none; }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.5;
@@ -896,6 +899,31 @@
         // Variables globales
         let allProperties = [];
         let filtered = [];
+
+        // Navegación móvil: toggle hamburguesa y cierre al navegar
+        (function(){
+            const navToggle = document.getElementById('navToggle');
+            if (navToggle) {
+                navToggle.addEventListener('click', () => {
+                    const headerEl = document.querySelector('.header');
+                    const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+                    navToggle.setAttribute('aria-expanded', (!expanded).toString());
+                    if (headerEl) headerEl.classList.toggle('open');
+                });
+
+                // Cerrar menú al hacer click en links del menú
+                const menuLinks = document.querySelectorAll('.nav-menu a');
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        const headerEl = document.querySelector('.header');
+                        if (headerEl && headerEl.classList.contains('open')) {
+                            headerEl.classList.remove('open');
+                            navToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                });
+            }
+        })();
 
         // 🔥 FUNCIÓN FAVORITOS UNIFICADA
         function toggleFavorite(propertyId, event) {
