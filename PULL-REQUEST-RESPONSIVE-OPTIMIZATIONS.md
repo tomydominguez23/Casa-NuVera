@@ -1,39 +1,31 @@
-## PR: Responsive – Navegación móvil, CTA sticky y ajustes iniciales
+## PR: Responsive – Menú móvil unificado y mejoras Admin (Mobile/Tablet)
 
 ### Resumen
-- Agrega navegación móvil (hamburguesa) con el mismo menú que desktop en `index.html` y `compras.html`.
-- Añade CTA sticky de WhatsApp y Llamar en mobile en `property-detail.html`.
-- Estilos y comportamiento mobile-only, sin impacto en desktop.
+- Unifica el menú hamburguesa (☰) y comportamiento mobile en `compras.html`, `compras-nuevo.html`, `arriendos.html` y `arriendos-nuevo.html`.
+- Optimiza panel de administración en mobile/tablet: agrega toggle superior para abrir/cerrar sidebar y corrige overflow horizontal de tablas.
 
 ### Archivos editados
-- `index.html`
-  - Añadido botón `nav-toggle` (hamburguesa) y estilos mobile en media query.
-  - Lógica JS para abrir/cerrar el menú y cerrar al navegar entre anchors.
-- `compras.html`
-  - Añadido botón `nav-toggle` (hamburguesa) y estilos mobile en media query.
-  - Lógica JS para toggle del menú y cierre al hacer click en links.
-- `property-detail.html`
-  - Agregado contenedor de CTA sticky (`.sticky-cta`) visible solo en mobile.
-  - Estilos mobile para CTA y activación condicional en `DOMContentLoaded`.
+- Público
+  - `compras.html`, `compras-nuevo.html`:
+    - Botón `nav-toggle` (☰), media query mobile y JS para abrir/cerrar menú y autocierre al navegar.
+  - `arriendos.html`, `arriendos-nuevo.html`:
+    - Misma integración del botón `nav-toggle` (☰) y lógica mobile.
+- Administración
+  - `admin-styles.css`:
+    - `overflow-x: auto` en contenedores de tablas y `-webkit-overflow-scrolling: touch`.
+    - Nuevo `.mobile-sidebar-toggle` visible en mobile.
+  - `admin-scripts.js`:
+    - Soporte para `#mobileSidebarToggle` además de `#sidebarToggle`.
+  - `admin-dashboard.html`, `admin-properties.html`, `admin-images.html`, `admin-contacts.html`, `admin-analytics.html`, `admin-settings.html`:
+    - Inserta botón `#mobileSidebarToggle` en el header.
 
 ### Cómo probar
-1) Navegación móvil
-   - Abrir `index.html` y `compras.html` en viewport ≤ 768px.
-   - Verificar que aparezca botón hamburguesa (☰).
-   - Pulsar para abrir el menú; verificar items: Inicio, Comprar, Arrendar, Contacto.
-   - Pulsar un link; el menú debe cerrarse automáticamente.
-
-2) CTA sticky en detalle
-   - Abrir `property-detail.html` en viewport ≤ 768px.
-   - Ver la banda inferior con dos botones: WhatsApp (primario) y Llamar (secundario).
-   - Pulsar WhatsApp debe abrir `wa.me` con mensaje prellenado.
-   - Pulsar Llamar debe abrir `tel:+56948406684`.
+1) Menú móvil (≤768px)
+   - Abrir `compras*.html` y `arriendos*.html`.
+   - Ver botón ☰ en el header. Tocar para abrir/cerrar. Tocar un link debe cerrar el menú.
+2) Admin (≤768px)
+   - En cada página admin, tocar ☰ del header para abrir/cerrar la sidebar.
+   - Revisar tablas anchas: se debe permitir scroll horizontal sin cortar contenido ni romper layout.
 
 ### Notas
-- Desktop se mantiene inalterado; `.nav-toggle` se oculta por defecto y solo se muestra en mobile por media query.
-- El CTA sticky solo se muestra en mobile mediante `matchMedia('(max-width: 768px)')`.
-
-### Próximos pasos (siguientes PRs propuestos)
-- Ajustar alturas de hero y parallax en mobile con `clamp` para tipografías y mejorar CLS.
-- Unificar rejilla responsiva de cards (minmax 320–350px) y consolidar breakpoints.
-- Verificación de admin: colapso de sidebar por defecto en <1024 y ocultar widget en admin.
+- Cambios encapsulados en cada página para minimizar regresiones. Siguiente paso aconsejado: extraer header a un parcial reutilizable.
