@@ -74,18 +74,8 @@ class AdminPanel {
             });
         }
 
-        // Cerrar sidebar al hacer click fuera (móviles)
-        document.addEventListener('click', (e) => {
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.querySelector('.main-content');
-            
-            if (window.innerWidth <= 768 && 
-                sidebar && 
-                !sidebar.contains(e.target) && 
-                sidebar.classList.contains('active')) {
-                this.closeSidebar();
-            }
-        });
+        // Crear overlay para móviles
+        this.createSidebarOverlay();
 
         // Responsive sidebar
         window.addEventListener('resize', () => {
@@ -94,6 +84,19 @@ class AdminPanel {
 
         // Auto-save drafts (para formularios)
         this.setupAutoSave();
+    }
+
+    createSidebarOverlay() {
+        // Crear overlay si no existe
+        if (!document.getElementById('sidebarOverlay')) {
+            const overlay = document.createElement('div');
+            overlay.id = 'sidebarOverlay';
+            overlay.className = 'sidebar-overlay';
+            overlay.addEventListener('click', () => {
+                this.closeSidebar();
+            });
+            document.body.appendChild(overlay);
+        }
     }
 
     initializeSidebar() {
@@ -117,10 +120,16 @@ class AdminPanel {
     toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.querySelector('.main-content');
+        const overlay = document.getElementById('sidebarOverlay');
         
         if (window.innerWidth <= 768) {
-            // En móviles, mostrar/ocultar sidebar
-            sidebar.classList.toggle('active');
+            // En móviles, mostrar/ocultar sidebar con overlay
+            const isActive = sidebar.classList.toggle('active');
+            if (overlay) {
+                overlay.classList.toggle('active', isActive);
+            }
+            // Prevenir scroll del body cuando el sidebar está abierto
+            document.body.style.overflow = isActive ? 'hidden' : '';
         } else {
             // En desktop, colapsar/expandir
             this.sidebarCollapsed = !this.sidebarCollapsed;
@@ -131,14 +140,22 @@ class AdminPanel {
 
     closeSidebar() {
         const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
         if (sidebar) {
             sidebar.classList.remove('active');
         }
+        if (overlay) {
+            overlay.classList.remove('active');
+        }
+        // Restaurar scroll del body
+        document.body.style.overflow = '';
     }
 
     handleResize() {
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.querySelector('.main-content');
+        const overlay = document.getElementById('sidebarOverlay');
         
         if (window.innerWidth <= 768) {
             // Modo móvil
@@ -146,8 +163,12 @@ class AdminPanel {
             mainContent.classList.remove('expanded');
             this.sidebarCollapsed = false;
         } else {
-            // Modo desktop
+            // Modo desktop - cerrar sidebar móvil si está abierto
             sidebar.classList.remove('active');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+            document.body.style.overflow = '';
         }
     }
 

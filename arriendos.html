@@ -41,6 +41,9 @@
             --charcoal: #36454F;
         }
 
+        /* Toggle de navegación (oculto por defecto en desktop) */
+        .nav-toggle { display: none; }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.5;
@@ -313,9 +316,38 @@
                 padding: 0.8rem 1.2rem;
                 font-size: 0.8rem;
             }
+
+            .nav-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem;
+                border: 1px solid rgba(0,0,0,0.1);
+                border-radius: 8px;
+                background: rgba(255,255,255,0.9);
+                color: var(--primary-black);
+                cursor: pointer;
+            }
             
             .nav-menu {
                 display: none;
+                position: absolute;
+                top: 72px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                padding: 1rem 2rem;
+                border-bottom: 1px solid rgba(0,0,0,0.06);
+                flex-direction: column;
+                gap: 1rem;
+                z-index: 1001;
+            }
+
+            .header.open .nav-menu {
+                display: flex;
             }
 
             .hero h1 {
@@ -350,6 +382,7 @@
                      class="logo-image">
                 <span class="logo-text">Casa Nuvera</span>
             </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.html">Inicio</a></li>
@@ -409,9 +442,37 @@
         // Variables globales
         let allProperties = [];
 
+        // Navegación móvil: toggle hamburguesa
+        function setupMobileNavigation() {
+            const navToggle = document.getElementById('navToggle');
+            if (navToggle) {
+                navToggle.addEventListener('click', () => {
+                    const headerEl = document.querySelector('.header');
+                    const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+                    navToggle.setAttribute('aria-expanded', (!expanded).toString());
+                    if (headerEl) headerEl.classList.toggle('open');
+                });
+
+                // Cerrar menú al hacer click en links del menú
+                const menuLinks = document.querySelectorAll('.nav-menu a');
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        const headerEl = document.querySelector('.header');
+                        if (headerEl && headerEl.classList.contains('open')) {
+                            headerEl.classList.remove('open');
+                            navToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                });
+            }
+        }
+
         // Inicializar página
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🏠 Iniciando página de arriendos...');
+            
+            // Configurar navegación móvil
+            setupMobileNavigation();
             
             // Esperar a que Supabase esté listo
             if (window.supabase) {
