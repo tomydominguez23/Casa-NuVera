@@ -187,6 +187,71 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+
+            /* Mejorar experiencia táctil en móviles */
+            .stat-card {
+                padding: 1.25rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .quick-action {
+                padding: 1.25rem;
+                min-height: 120px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .quick-action-icon {
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .quick-action-title {
+                font-size: 0.95rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .quick-action-desc {
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+
+            /* Optimizar actividad reciente para móviles */
+            .recent-activity {
+                margin-top: 1rem;
+            }
+
+            .activity-list {
+                max-height: 300px;
+            }
+
+            .activity-header {
+                padding: 1.25rem;
+            }
+
+            .activity-header h3 {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Optimizaciones específicas para tablets */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .stat-card {
+                padding: 1.25rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
