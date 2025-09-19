@@ -8,6 +8,7 @@ class AdminPanel {
         this.isInitialized = false;
         this.currentUser = null;
         this.sidebarCollapsed = false;
+        this.sidebarBackdrop = null;
         
         this.init();
     }
@@ -100,6 +101,13 @@ class AdminPanel {
             this.handleResize();
         });
 
+        // Cerrar con tecla Escape en móvil
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeSidebar();
+            }
+        });
+
         // Auto-save drafts (para formularios)
         this.setupAutoSave();
     }
@@ -120,6 +128,8 @@ class AdminPanel {
 
         // Configurar responsive sidebar
         this.handleResize();
+        // Crear backdrop para móvil
+        this.ensureSidebarBackdrop();
     }
 
     toggleSidebar() {
@@ -128,7 +138,13 @@ class AdminPanel {
         
         if (window.innerWidth <= 768) {
             // En móviles, mostrar/ocultar sidebar
+            const isOpening = !sidebar.classList.contains('active');
             sidebar.classList.toggle('active');
+            if (isOpening) {
+                this.showSidebarBackdrop();
+            } else {
+                this.hideSidebarBackdrop();
+            }
         } else {
             // En desktop, colapsar/expandir
             this.sidebarCollapsed = !this.sidebarCollapsed;
@@ -141,6 +157,7 @@ class AdminPanel {
         const sidebar = document.getElementById('sidebar');
         if (sidebar) {
             sidebar.classList.remove('active');
+            this.hideSidebarBackdrop();
         }
     }
 
@@ -156,7 +173,32 @@ class AdminPanel {
         } else {
             // Modo desktop
             sidebar.classList.remove('active');
+            this.hideSidebarBackdrop(true);
         }
+    }
+
+    ensureSidebarBackdrop() {
+        if (this.sidebarBackdrop) return;
+        const backdrop = document.createElement('div');
+        backdrop.className = 'sidebar-backdrop';
+        backdrop.addEventListener('click', () => this.closeSidebar());
+        document.body.appendChild(backdrop);
+        this.sidebarBackdrop = backdrop;
+    }
+
+    showSidebarBackdrop() {
+        this.ensureSidebarBackdrop();
+        if (this.sidebarBackdrop) {
+            this.sidebarBackdrop.classList.add('show');
+        }
+        document.body.classList.add('menu-open');
+    }
+
+    hideSidebarBackdrop(force = false) {
+        if (this.sidebarBackdrop) {
+            this.sidebarBackdrop.classList.remove('show');
+        }
+        document.body.classList.remove('menu-open');
     }
 
     setupAutoSave() {
