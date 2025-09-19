@@ -117,6 +117,11 @@
             transform: translateY(-1px);
         }
 
+        /* Botón hamburguesa (oculto por defecto) */
+        .nav-toggle {
+            display: none;
+        }
+
         /* ===== HERO SECTION ===== */
         .hero {
             background: linear-gradient(135deg, var(--charcoal) 0%, var(--dark-gray) 100%);
@@ -575,6 +580,35 @@
                 display: none;
             }
 
+            .nav-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem;
+                border: 1px solid rgba(0,0,0,0.1);
+                border-radius: 8px;
+                background: rgba(255,255,255,0.9);
+                color: var(--primary-black);
+                cursor: pointer;
+            }
+
+            .header.open .nav-menu {
+                display: flex;
+                position: absolute;
+                top: 72px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                padding: 1rem 2rem;
+                border-bottom: 1px solid rgba(0,0,0,0.06);
+                flex-direction: column;
+                gap: 1rem;
+                z-index: 1001;
+            }
+
             .hero {
                 padding: 100px 1rem 40px;
             }
@@ -640,6 +674,7 @@
                 <i class="fas fa-home"></i>
                 Casa Nuvera
             </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.html">Inicio</a></li>
@@ -774,6 +809,32 @@
 
     <!-- Scripts -->
     <script src="supabase.js"></script>
+    <script>
+        // Toggle menú móvil (hamburguesa)
+        (function(){
+            const navToggle = document.getElementById('navToggle');
+            if (navToggle) {
+                navToggle.addEventListener('click', () => {
+                    const headerEl = document.querySelector('.header');
+                    const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+                    navToggle.setAttribute('aria-expanded', (!expanded).toString());
+                    if (headerEl) headerEl.classList.toggle('open');
+                });
+
+                // Cerrar menú al navegar
+                const menuLinks = document.querySelectorAll('.nav-menu a');
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        const headerEl = document.querySelector('.header');
+                        if (headerEl && headerEl.classList.contains('open')) {
+                            headerEl.classList.remove('open');
+                            navToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                });
+            }
+        })();
+    </script>
 
     <script>
         // Datos de ejemplo de propiedades en venta
@@ -1040,7 +1101,7 @@
                     return currency === 'UF' ? `UF ${formatted}` : `$${formatted}`;
                 };
 
-                const message = `Hola! Estoy interesado/a en la propiedad "${property.title}" ubicada en ${property.location}.\\n\\n💰 Precio: ${formatPrice(property.price, property.currency)}\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📐 Superficie: ${property.area}m²\\n\\n¿Podrías darme más información?`;
+                const message = `Hola! Estoy interesado/a en la propiedad "${property.title}" ubicada en ${property.location}.\n\n💰 Precio: ${formatPrice(property.price, property.currency)}\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\n📐 Superficie: ${property.area}m²\n\n¿Podrías darme más información?`;
                 const whatsappURL = `https://wa.me/56912345678?text=${encodeURIComponent(message)}`;
                 window.open(whatsappURL, '_blank');
             }
