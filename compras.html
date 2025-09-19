@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casa Nuvera | Propiedades en venta</title>
     <link rel="stylesheet" href="property-styles.css">
+    <link rel="stylesheet" href="css/global-search.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -894,6 +895,7 @@
     <script src="supabase.js"></script>
     <!-- 🤖 Widget WhatsApp -->
     <script src="whatsapp-widget.js"></script>
+    <script src="js/global-search.js"></script>
 
     <script>
         // Variables globales
@@ -967,6 +969,8 @@
             await loadProperties();
             document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
             document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
+            // Prefill and apply filters from URL params if present
+            applyFiltersFromParams();
         }
 
         async function loadProperties() {
@@ -1058,6 +1062,31 @@
             }
             
             console.log('🖼️ Imágenes cargadas para todas las propiedades');
+        }
+
+        // Lee parámetros de la URL y aplica filtros iniciales
+        function applyFiltersFromParams() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const type = (params.get('type') || params.get('t') || '').toLowerCase();
+                const loc = params.get('loc') || params.get('q') || '';
+
+                if (type) {
+                    const sel = document.getElementById('filter-type');
+                    if (sel) sel.value = type;
+                }
+                if (loc) {
+                    const input = document.getElementById('filter-location');
+                    if (input) input.value = loc;
+                }
+
+                if (type || loc) {
+                    // Ejecuta búsqueda inmediata
+                    applyFilters();
+                }
+            } catch (e) {
+                console.warn('No se pudieron aplicar filtros desde la URL', e);
+            }
         }
 
         function renderProperties() {
