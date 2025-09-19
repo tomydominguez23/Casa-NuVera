@@ -117,6 +117,11 @@
             color: var(--charcoal);
         }
 
+        /* Botón hamburguesa (oculto por defecto) */
+        .nav-toggle { 
+            display: none; 
+        }
+
         /* Hero Section con nueva imagen de fondo */
         .hero {
             height: 60vh;
@@ -626,8 +631,37 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            .nav-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem;
+                border: 1px solid rgba(0,0,0,0.1);
+                border-radius: 8px;
+                background: rgba(255,255,255,0.9);
+                color: var(--primary-black);
+                cursor: pointer;
+            }
+
             .nav-menu {
                 display: none;
+                position: absolute;
+                top: 72px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                padding: 1rem 2rem;
+                border-bottom: 1px solid rgba(0,0,0,0.06);
+                flex-direction: column;
+                gap: 1rem;
+                z-index: 1001;
+            }
+
+            .header.open .nav-menu {
+                display: flex;
             }
 
             .hero h1 {
@@ -691,6 +725,7 @@
                      class="logo-image">
                 <span class="logo-text">Casa Nuvera</span>
             </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.html">Inicio</a></li>

@@ -74,6 +74,14 @@ class AdminPanel {
             });
         }
 
+        // Toggle superior (en header) para móvil
+        const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+        if (mobileSidebarToggle) {
+            mobileSidebarToggle.addEventListener('click', () => {
+                this.toggleSidebar();
+            });
+        }
+
         // Cerrar sidebar al hacer click fuera (móviles)
         document.addEventListener('click', (e) => {
             const sidebar = document.getElementById('sidebar');
