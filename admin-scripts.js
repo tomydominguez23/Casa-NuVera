@@ -86,14 +86,11 @@ class AdminPanel {
         // Cerrar sidebar al hacer click fuera (móviles)
         document.addEventListener('click', (e) => {
             const sidebar = document.getElementById('sidebar');
-            const mainContent = document.querySelector('.main-content');
-            
-            if (window.innerWidth <= 768 && 
-                sidebar && 
-                !sidebar.contains(e.target) && 
-                sidebar.classList.contains('active')) {
-                this.closeSidebar();
-            }
+            const clickedToggle = e.target.closest('#mobileSidebarToggle') || e.target.closest('#sidebarToggle');
+            if (!(window.innerWidth <= 768) || !sidebar || !sidebar.classList.contains('active')) return;
+            // Si el click fue en el botón toggle o dentro del sidebar, no cerrar
+            if (clickedToggle || sidebar.contains(e.target)) return;
+            this.closeSidebar();
         });
 
         // Responsive sidebar
