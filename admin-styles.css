@@ -21,7 +21,7 @@ body {
     left: 0;
     top: 0;
     width: 280px;
-    height: 100vh;
+    height: 100dvh;
     background: #2c3e50;
     color: white;
     transition: transform 0.3s ease;
@@ -136,6 +136,26 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Botón hamburguesa (visible en móvil) */
+.mobile-sidebar-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-right: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #ecf0f1;
+    background: #fff;
+    color: #2c3e50;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+.mobile-sidebar-toggle:focus-visible {
+    outline: 3px solid rgba(52, 152, 219, 0.4);
+    outline-offset: 2px;
 }
 
 .header-left h1 {
@@ -404,6 +424,28 @@ body {
     margin-bottom: 2rem;
 }
 
+/* Backdrop para el sidebar en móvil */
+.sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    height: 100dvh;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 900;
+}
+.sidebar-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Evitar scroll del body cuando el menú está abierto */
+body.menu-open {
+    overflow: hidden;
+    touch-action: none;
+}
+
 /* Loading */
 .loading-overlay {
     position: fixed;
@@ -576,11 +618,16 @@ body {
     .dashboard-content {
         padding: 1rem;
     }
+
+    .mobile-sidebar-toggle {
+        display: inline-flex;
+    }
 }
 
 @media (max-width: 480px) {
     .sidebar {
-        width: 100%;
+        width: 85%;
+        max-width: 340px;
     }
     
     .content-header {
