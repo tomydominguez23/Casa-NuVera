@@ -594,7 +594,8 @@ body.menu-open {
 /* Responsive */
 @media (max-width: 768px) {
     .sidebar {
-        transform: translateX(-280px);
+        /* Ocultar totalmente el menú en móviles (evita la barra azul visible) */
+        transform: translateX(-100%);
     }
     
     .sidebar.active {
