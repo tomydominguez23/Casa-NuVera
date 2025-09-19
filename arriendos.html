@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Propiedades en Arriendo - Casa Nuvera</title>
     <link rel="stylesheet" href="property-styles.css">
+    <link rel="stylesheet" href="css/global-search.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -404,6 +405,7 @@
 
     <!-- Scripts -->
     <script src="supabase.js"></script>
+    <script src="js/global-search.js"></script>
 
     <script>
         // Variables globales
@@ -496,7 +498,23 @@
             const grid = document.getElementById('propertiesGrid');
             const resultsCount = document.getElementById('resultsCount');
 
-            if (allProperties.length === 0) {
+            // Aplicar filtros desde la URL si existen
+            const params = new URLSearchParams(window.location.search);
+            const urlType = (params.get('type') || params.get('t') || '').toLowerCase();
+            const urlLoc = (params.get('loc') || params.get('q') || '').toLowerCase();
+            let list = allProperties.slice();
+            if (urlType) {
+                list = list.filter(p => String(p.property_type || '').toLowerCase().includes(urlType));
+            }
+            if (urlLoc) {
+                list = list.filter(p => (
+                    String(p.commune || p.neighborhood || p.region || p.address || p.location || '')
+                        .toLowerCase()
+                        .includes(urlLoc)
+                ));
+            }
+
+            if (list.length === 0) {
                 grid.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: #cccccc;">
                         <h3>No hay propiedades en arriendo disponibles</h3>
@@ -509,10 +527,10 @@
             }
 
             // Renderizar propiedades con el nuevo diseño oscuro
-            const propertiesHTML = allProperties.map(property => {
+            const propertiesHTML = list.map(property => {
                 const price = property.price ? `$${parseInt(property.price).toLocaleString('es-CL')}/mes` : 'Precio a consultar';
                 const title = property.title || 'Propiedad sin título';
-                const location = property.location || 'Ubicación no disponible';
+                const location = property.location || property.commune || property.neighborhood || property.region || 'Ubicación no disponible';
                 const bedrooms = property.bedrooms || 0;
                 const bathrooms = property.bathrooms || 0;
                 const area = property.area || 0;
@@ -554,7 +572,7 @@
             }).join('');
 
             grid.innerHTML = propertiesHTML;
-            resultsCount.textContent = `Mostrando ${allProperties.length} propiedades en arriendo`;
+            resultsCount.textContent = `Mostrando ${list.length} propiedades en arriendo`;
 
             // Mostrar la sección de propiedades
             document.getElementById('propertiesSection').style.display = 'block';
