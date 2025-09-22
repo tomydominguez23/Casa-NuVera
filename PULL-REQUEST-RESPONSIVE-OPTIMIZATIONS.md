@@ -1,31 +1,29 @@
-## PR: Responsive – Menú móvil unificado y mejoras Admin (Mobile/Tablet)
+## PR: Responsive – Correcciones móviles clave (aspect-ratio, 100dvh/100svh, overflow)
 
 ### Resumen
-- Unifica el menú hamburguesa (☰) y comportamiento mobile en `compras.html`, `compras-nuevo.html`, `arriendos.html` y `arriendos-nuevo.html`.
-- Optimiza panel de administración en mobile/tablet: agrega toggle superior para abrir/cerrar sidebar y corrige overflow horizontal de tablas.
+- Soluciona cortes y desbordes en vistas móviles al eliminar alturas rígidas en grillas de propiedades y el widget de WhatsApp.
+- Adopta `aspect-ratio` en contenedores de imagen y limita alturas del chat con `min(…vh, …dvh)` para mejor compatibilidad iOS/Android.
+- Corrige bloque CSS inválido en `property-styles.css` que causaba errores de linter y posibles rupturas de estilo.
 
 ### Archivos editados
-- Público
-  - `compras.html`, `compras-nuevo.html`:
-    - Botón `nav-toggle` (☰), media query mobile y JS para abrir/cerrar menú y autocierre al navegar.
-  - `arriendos.html`, `arriendos-nuevo.html`:
-    - Misma integración del botón `nav-toggle` (☰) y lógica mobile.
-- Administración
-  - `admin-styles.css`:
-    - `overflow-x: auto` en contenedores de tablas y `-webkit-overflow-scrolling: touch`.
-    - Nuevo `.mobile-sidebar-toggle` visible en mobile.
-  - `admin-scripts.js`:
-    - Soporte para `#mobileSidebarToggle` además de `#sidebarToggle`.
-  - `admin-dashboard.html`, `admin-properties.html`, `admin-images.html`, `admin-contacts.html`, `admin-analytics.html`, `admin-settings.html`:
-    - Inserta botón `#mobileSidebarToggle` en el header.
+- Estilos de propiedades (público)
+  - `css/property-grid-dark.css`:
+    - Reemplaza `height: Npx` por `aspect-ratio` en `.property-card .property-image` con ratios adaptativos por breakpoint.
+  - `property-styles.css`:
+    - Corrige secuencias literales `\n` en `@keyframes` y bloques siguientes; elimina errores de linter.
+- Widget
+  - `whatsapp-widget.css`:
+    - Ajusta tamaño del chat a `width: min(320px, 92vw)` y `max-height: min(70vh, 70dvh)`.
+    - Breakpoints: usa `min(…vh, …dvh)` y `calc(100% - 30px)` en ≤480px para evitar overflow horizontal en iOS.
 
 ### Cómo probar
-1) Menú móvil (≤768px)
-   - Abrir `compras*.html` y `arriendos*.html`.
-   - Ver botón ☰ en el header. Tocar para abrir/cerrar. Tocar un link debe cerrar el menú.
-2) Admin (≤768px)
-   - En cada página admin, tocar ☰ del header para abrir/cerrar la sidebar.
-   - Revisar tablas anchas: se debe permitir scroll horizontal sin cortar contenido ni romper layout.
+1) Cards de propiedades
+   - Abrir `arriendos.html` (usa `css/property-grid-dark.css`).
+   - Reducir ancho del viewport a 375px/320px: las imágenes mantienen proporción, sin cortes.
+2) Página principal y listados
+   - Abrir `index.html` y `compras.html` en móvil: sin desplazamiento horizontal; hero y grillas se adaptan.
+3) Widget WhatsApp
+   - En móviles (≤480px) abrir/cerrar el chat: el contenedor no supera la altura útil, no se corta contenido.
 
 ### Notas
-- Cambios encapsulados en cada página para minimizar regresiones. Siguiente paso aconsejado: extraer header a un parcial reutilizable.
+- Los cambios son CSS-only; no requieren migraciones. Próximo paso: unificar ratios vía variables CSS y revisar `background-attachment: fixed` en secciones con parallax en móviles.

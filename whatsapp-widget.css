@@ -102,8 +102,8 @@
     position: absolute;
     bottom: 75px;
     right: 0;
-    width: 320px;
-    max-height: 450px;
+    width: min(320px, 92vw);
+    max-height: min(70vh, 70dvh);
     background: white;
     border-radius: 15px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
@@ -471,8 +471,8 @@
     }
     
     .whatsapp-chat {
-        width: 280px;
-        max-height: 400px;
+        width: min(280px, 92vw);
+        max-height: min(65vh, 65dvh);
     }
     
     .whatsapp-tooltip {
@@ -500,6 +500,7 @@
     .whatsapp-chat {
         width: calc(100% - 30px); /* Evita overflow horizontal en iOS */
         max-width: 300px;
+        max-height: min(65vh, 65dvh);
         right: 0; /* No empujar fuera del viewport */
         left: auto;
     }
