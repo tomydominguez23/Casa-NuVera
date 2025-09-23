@@ -242,12 +242,14 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 0; /* Sin espacios entre imágenes */
-            height: 500px; /* Altura fija para alineación uniforme */
+            /* Altura fija eliminada para evitar recortes */
+            height: auto;
             overflow: hidden; /* Previene desbordes en móvil */
         }
 
         .nav-item {
-            height: 100%;
+            /* Altura relativa a su contenido para evitar recortes */
+            min-height: 320px;
             padding: 0;
             text-align: left;
             transition: all 0.3s ease;
@@ -400,7 +402,8 @@
             align-items: flex-start;
             gap: 1rem;
             background: none;
-            min-height: 400px;
+            /* Evitar forzar altura mínima que cause recortes */
+            min-height: 0;
         }
 
         .nav-item-label {
@@ -1153,23 +1156,23 @@
         }
 
         .contact-grid {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(160px, 1fr));
             justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            flex-wrap: wrap;
+            align-items: stretch;
+            gap: 1.25rem;
         }
 
         .contact-item {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
-            padding: 0.6rem 1rem;
+            padding: 0.8rem 1rem;
             border: 2px solid rgba(255, 255, 255, 0.3);
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
-            display: inline-block;
-            max-width: 180px;
+            display: block;
+            width: 100%;
         }
 
         .contact-item:hover {
@@ -1305,11 +1308,30 @@
             }
 
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 2.25rem;
+                line-height: 1.15;
+                word-break: break-word;
             }
 
             .new-era-content h2 {
-                font-size: 2.5rem !important;
+                font-size: 2.25rem !important;
+                line-height: 1.15 !important;
+            }
+
+            /* Botones del hero en una columna y tamaño táctil cómodo */
+            .hero-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+                justify-items: center;
+            }
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                max-width: 320px;
+                padding: 0.9rem 1.25rem;
+                font-size: 1rem;
+                text-align: center;
             }
 
             .nav-container-grid {
@@ -1318,12 +1340,12 @@
             }
 
             .nav-item {
-                height: 360px;
+                min-height: 300px;
             }
 
             .nav-item-content {
                 padding: 2rem;
-                min-height: 300px;
+                min-height: 0;
             }
 
             .search-filters {
@@ -1357,16 +1379,7 @@
 
             .contact-grid {
                 grid-template-columns: 1fr;
-                gap: 0;
-            }
-
-            .contact-item {
-                border-right: 1px solid rgba(255, 255, 255, 0.2);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            }
-
-            .contact-item:last-child {
-                border-bottom: none;
+                gap: 0.75rem;
             }
 
             .footer-content {
@@ -1395,13 +1408,13 @@
             }
             
             .gallery-slides-container {
-                height: 380px;
+                height: clamp(300px, 60vh, 420px);
             }
             
             .gallery-nav-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
+                width: 44px;
+                height: 44px;
+                font-size: 1.25rem;
             }
             
             .prev-btn {
@@ -1417,7 +1430,7 @@
             }
             
             .slide-overlay h3 {
-                font-size: 1.4rem;
+                font-size: 1.25rem;
             }
             
             .slide-overlay p {
