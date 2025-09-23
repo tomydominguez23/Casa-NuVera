@@ -1197,8 +1197,8 @@
                     <div class="file-upload-area" onclick="document.getElementById('imageInput').click()">
                         <div class="upload-icon">📎</div>
                         <div class="upload-text">Sube las imágenes de tu propiedad</div>
-                        <div class="upload-subtext">Haz clic aquí o arrastra y suelta • JPG, PNG, WebP • Máximo 10MB cada una</div>
-                        <input type="file" id="imageInput" class="file-input" multiple accept="image/*">
+                        <div class="upload-subtext">Haz clic aquí o arrastra y suelta • JPG, PNG, WebP, HEIC • Máximo 10MB cada una</div>
+                        <input type="file" id="imageInput" class="file-input" multiple accept="image/*,.heic,.heif">
                     </div>
                     
                     <div class="file-list" id="fileList"></div>
@@ -1495,6 +1495,8 @@
         console.log('✅ Google Maps Funcional cargado - Solución Urgente');
     </script>
     
+    <!-- Librería para convertir HEIC a JPEG en el navegador -->
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
     <!-- 5. Script del formulario CORREGIDO con Tours 360°, Imágenes y Videos -->
     <script src="form-scripts-fixed.js"></script>
 
@@ -1613,10 +1615,40 @@
             handleFileUpload(e.target.files, 'video');
         });
 
+        // Utilidades para soporte HEIC
+        function isHeicFile(file) {
+            const name = file.name || '';
+            const type = file.type || '';
+            return /\.(heic|heif)$/i.test(name) || /heic|heif/i.test(type);
+        }
+
+        async function convertHeicToJpeg(file) {
+            try {
+                if (!window.heic2any) return null;
+                const blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.8 });
+                const newName = (file.name || 'imagen').replace(/\.(heic|heif)$/i, '') + '.jpg';
+                return new File([blob], newName, { type: 'image/jpeg' });
+            } catch (e) {
+                console.warn('⚠️ No se pudo convertir HEIC, subiendo original:', e);
+                return null;
+            }
+        }
+
+        function fileToDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
         function handleFileUpload(files, type) {
-            Array.from(files).forEach(file => {
+            Array.from(files).forEach(async (file) => {
                 if (type === 'image') {
-                    if (!file.type.startsWith('image/')) {
+                    const isImage = file.type && file.type.startsWith('image/');
+                    const isHeic = isHeicFile(file);
+                    if (!(isImage || isHeic)) {
                         alert('Por favor selecciona solo archivos de imagen');
                         return;
                     }
@@ -1628,7 +1660,13 @@
                         alert('Máximo 20 imágenes por propiedad');
                         return;
                     }
-                    addImageToList(file);
+                    // Convertir HEIC a JPEG para mejor compatibilidad de vista previa y web
+                    let finalFile = file;
+                    if (isHeic) {
+                        const converted = await convertHeicToJpeg(file);
+                        if (converted) finalFile = converted;
+                    }
+                    addImageToList(finalFile);
                 } else if (type === 'video') {
                     if (!file.type.startsWith('video/')) {
                         alert('Por favor selecciona solo archivos de video');
@@ -1647,22 +1685,22 @@
             });
         }
 
-        function addImageToList(file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
+        async function addImageToList(file) {
+            try {
+                const preview = await fileToDataUrl(file);
                 const imageData = {
                     id: Date.now() + Math.random(),
                     file: file,
-                    preview: e.target.result,
+                    preview: preview,
                     name: file.name,
                     size: file.size
                 };
-                
                 propertyImages.push(imageData);
                 renderImageList();
                 console.log('📸 Imagen agregada:', file.name);
-            };
-            reader.readAsDataURL(file);
+            } catch (e) {
+                console.error('❌ Error agregando imagen:', e);
+            }
         }
 
         function addVideoToList(file) {
