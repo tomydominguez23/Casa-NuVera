@@ -1335,7 +1335,7 @@
             }
 
             .nav-container-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
                 height: auto;
             }
 
@@ -1454,6 +1454,19 @@
 
         .parallax {
             background-attachment: fixed;
+        }
+        
+        /* iOS Safari: evitar fondos en blanco con background-attachment: fixed */
+        @supports (-webkit-touch-callout: none) {
+            .hero,
+            .parallax {
+                background-attachment: scroll !important;
+            }
+        }
+
+        /* Refuerzo en móviles: deshabilitar parallax fijo */
+        @media (max-width: 768px) {
+            .parallax { background-attachment: scroll !important; }
         }
     </style>
 </head>
