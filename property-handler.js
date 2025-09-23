@@ -167,15 +167,51 @@ class PropertyHandler {
     // Subir imágenes y crear registros en property_images
     async uploadAndLinkImages(propertyId, files) {
         try {
-            console.log(`📸 Procesando ${files.length} imágenes para propiedad ${propertyId}...`);
+            // Filtrar solo archivos de imagen (incluye HEIC/HEIF por extensión si viene sin MIME)
+            const imageFiles = (files || []).filter((candidate) => {
+                const candidateName = (candidate && candidate.name ? candidate.name : '').toLowerCase();
+                const candidateType = (candidate && candidate.type ? candidate.type : '');
+                const looksLikeImage = candidateType.startsWith('image/');
+                const hasImageExtension = /\.(jpe?g|png|webp|gif|bmp|heic|heif)$/i.test(candidateName);
+                return looksLikeImage || hasImageExtension;
+            });
 
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
+            console.log(`📸 Procesando ${imageFiles.length} imágenes para propiedad ${propertyId}...`);
+
+            for (let i = 0; i < imageFiles.length; i++) {
+                let file = imageFiles[i];
                 
                 // Generar nombre único para el archivo
                 const timestamp = Date.now();
                 const randomId = Math.random().toString(36).substring(2, 15);
-                const fileExtension = file.name.split('.').pop().toLowerCase();
+                const originalName = (file && file.name) ? file.name : `imagen_${timestamp}`;
+
+                // Detectar HEIC/HEIF y convertir a JPEG cuando sea posible
+                const fileType = (file && file.type) ? file.type : '';
+                const isHeic = /heic|heif/i.test(fileType) || /\.(heic|heif)$/i.test(originalName);
+                if (isHeic) {
+                    try {
+                        if (window && window.heic2any) {
+                            const blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.8 });
+                            const newName = originalName.replace(/\.(heic|heif)$/i, '') + '.jpg';
+                            file = new File([blob], newName, { type: 'image/jpeg' });
+                            console.log('🔄 HEIC convertido a JPEG:', newName);
+                        } else {
+                            console.warn('⚠️ heic2any no está disponible. Se usará fallback.');
+                            // Como fallback, si no podemos convertir, usaremos data URL en la BD para asegurar compatibilidad visual
+                            const dataUrl = await this.fileToDataUrl(file);
+                            await this.#insertImageRecordWithoutStorage(propertyId, dataUrl, i);
+                            continue;
+                        }
+                    } catch (conversionError) {
+                        console.warn('⚠️ Falló conversión HEIC → JPEG. Usando data URL como fallback.', conversionError);
+                        const dataUrl = await this.fileToDataUrl(file);
+                        await this.#insertImageRecordWithoutStorage(propertyId, dataUrl, i);
+                        continue;
+                    }
+                }
+
+                const fileExtension = (file && file.name ? file.name : originalName).split('.').pop().toLowerCase();
                 const fileName = `property_${propertyId}_${i}_${timestamp}.${fileExtension}`;
                 
                 console.log(`📤 Subiendo imagen ${i + 1}/${files.length}: ${fileName}`);
@@ -188,7 +224,8 @@ class PropertyHandler {
                         .from('property-images')
                         .upload(fileName, file, {
                             cacheControl: '3600',
-                            upsert: false
+                            upsert: false,
+                            contentType: file && file.type ? file.type : undefined
                         });
 
                     if (error) {
@@ -233,6 +270,24 @@ class PropertyHandler {
 
         } catch (error) {
             console.error('❌ Error general en uploadAndLinkImages:', error);
+        }
+    }
+
+    // Insertar registro en la BD cuando no se sube a Storage (usa data URL)
+    async #insertImageRecordWithoutStorage(propertyId, imageUrl, index) {
+        const imageRecord = {
+            property_id: propertyId,
+            image_url: imageUrl,
+            image_order: index,
+            is_main: index === 0
+        };
+        const { error: insertError } = await window.supabase
+            .from('property_images')
+            .insert([imageRecord]);
+        if (insertError) {
+            console.error(`❌ Error insertando imagen ${index}:`, insertError);
+        } else {
+            console.log(`✅ Imagen ${index} vinculada a propiedad (sin Storage)`);
         }
     }
 

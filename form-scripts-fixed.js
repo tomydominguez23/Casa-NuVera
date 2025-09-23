@@ -503,12 +503,9 @@ async function handleFormSubmit(event) {
         console.log('📸 Imágenes incluidas:', propertyImages.length);
         console.log('🎥 Videos incluidos:', propertyVideos.length);
         
-        // Preparar archivos para envío
+        // Preparar archivos para envío (solo imágenes)
         const imageFiles = propertyImages.map(img => img.file);
-        const videoFiles = propertyVideos.map(vid => vid.file);
-        const allFiles = [...imageFiles, ...videoFiles];
-        
-        const result = await window.propertyHandler.submitProperty(formData, allFiles, getToursForSaving());
+        const result = await window.propertyHandler.submitProperty(formData, imageFiles, getToursForSaving());
         
         showLoading(false);
         
