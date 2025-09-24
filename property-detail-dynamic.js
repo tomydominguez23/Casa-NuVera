@@ -253,6 +253,10 @@ class PropertyDetailDynamic {
             const firstImage = this.propertyImages.find(img => img.is_main) || this.propertyImages[0];
             mainImage.src = firstImage.image_url;
             mainImage.alt = this.property.title;
+            // Reiniciar índice de la galería principal
+            if (typeof window.currentImageIndex !== 'undefined') {
+                window.currentImageIndex = 0;
+            }
         }
 
         // Actualizar contador de fotos
@@ -269,23 +273,50 @@ class PropertyDetailDynamic {
     }
 
     updatePropertyTours() {
-        const tourSection = document.querySelector('.tour-section');
-        if (!tourSection) return;
+        const tourBtn = document.getElementById('sidebarTourBtn');
+        const tourSelect = document.getElementById('tourSelect');
+        const stickyTourBtn = document.getElementById('stickyTourBtn');
 
-        if (this.propertyTours.length === 0) {
-            // Ocultar sección de tours si no hay tours
-            tourSection.style.display = 'none';
+        if (!tourBtn || !tourSelect) return;
+
+        // Por defecto, ocultar todo
+        tourBtn.style.display = 'none';
+        tourSelect.style.display = 'none';
+        if (stickyTourBtn) stickyTourBtn.style.display = 'none';
+
+        // Sin tours: no mostrar nada
+        if (!this.propertyTours || this.propertyTours.length === 0) {
             return;
         }
 
-        // Mostrar sección de tours
-        tourSection.style.display = 'block';
+        // Con tours: mostrar botón y opcionalmente selector
+        const tours = this.propertyTours.filter(t => t && t.tour_url);
+        if (tours.length === 0) return;
 
-        // Actualizar botón de tour con la URL real
-        const tourBtn = tourSection.querySelector('.tour-btn');
-        if (tourBtn && this.propertyTours.length > 0) {
-            const firstTour = this.propertyTours[0];
-            tourBtn.onclick = () => this.openTour(firstTour.tour_url);
+        // Rellenar selector si hay más de uno
+        if (tours.length > 1) {
+            tourSelect.innerHTML = tours.map((t, i) => `
+                <option value="${t.tour_url}">${t.tour_title || t.tour_name || `Tour ${i + 1}`}</option>
+            `).join('');
+            tourSelect.style.display = '';
+        } else {
+            tourSelect.innerHTML = '';
+            tourSelect.style.display = 'none';
+        }
+
+        // Configurar botón para abrir el tour seleccionado (o el único)
+        tourBtn.onclick = () => {
+            const url = tourSelect && tourSelect.style.display !== 'none' && tourSelect.value
+                ? tourSelect.value
+                : tours[0].tour_url;
+            this.openTour(url);
+        };
+        tourBtn.style.display = '';
+
+        // Botón sticky en móvil
+        if (stickyTourBtn) {
+            stickyTourBtn.onclick = (e) => { e.preventDefault(); tourBtn.click(); };
+            stickyTourBtn.style.display = '';
         }
     }
 
