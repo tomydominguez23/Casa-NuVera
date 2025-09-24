@@ -100,7 +100,7 @@ Estoy interesado/a en la propiedad #[ID].
 ### **Configuración Principal**
 ```javascript
 const config = {
-    phoneNumber: '+56977944695',
+    phoneNumber: '+56912345678',
     companyName: 'Casa Nuvera',
     agentName: 'Equipo Casa Nuvera',
     businessHours: {

@@ -431,7 +431,7 @@ window.contactProperty = function(propertyId) {
 
         const message = `Hola! Estoy interesado/a en la propiedad "${property.title}".\n\n💰 Precio: ${formatPrice(property.price, property.currency)}\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\n📍 ${property.region}\n\n¿Podrías darme más información?`;
 
-        const phoneNumber = '+56977944695'; // Número por defecto
+        const phoneNumber = '+56912345678'; // Número por defecto
         const whatsappURL = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
         
         console.log('📱 Abriendo WhatsApp para propiedad:', property.title);

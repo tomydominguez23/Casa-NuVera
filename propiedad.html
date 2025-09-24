@@ -882,7 +882,7 @@
                 const property = this.property;
                 const message = `Hola! Estoy interesado/a en la propiedad "${property.title}".\\n\\n💰 Precio: ${this.formatPrice(property.price)}\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📍 ${property.region}\\n🔗 ${window.location.href}\\n\\n¿Podrías darme más información?`;
 
-                const phoneNumber = '+56977944695';
+                const phoneNumber = '+56912345678';
                 const whatsappURL = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
                 
                 console.log('📱 Abriendo WhatsApp');
@@ -890,7 +890,7 @@
             }
 
             showPhone() {
-                alert('📞 Teléfono: +569 77944695\\n\\nPuedes llamarnos directamente o contactarnos por WhatsApp.');
+                alert('📞 Teléfono: +56 9 1234 5678\\n\\nPuedes llamarnos directamente o contactarnos por WhatsApp.');
             }
 
             contactEmail() {
@@ -898,7 +898,7 @@
                 const subject = `Consulta por propiedad: ${property.title}`;
                 const body = `Hola,\\n\\nEstoy interesado/a en la propiedad "${property.title}".\\n\\nPrecio: ${this.formatPrice(property.price)}\\nUbicación: ${property.region}\\nCódigo: #${property.id}\\n\\n¿Podrían darme más información?\\n\\nSaludos.`;
 
-                const mailtoURL = `mailto:Contacto@casanuvera.cl?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                const mailtoURL = `mailto:hola@casanuvera.cl?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                 window.location.href = mailtoURL;
             }
 
