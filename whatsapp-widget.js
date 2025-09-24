@@ -7,7 +7,7 @@ class WhatsAppWidget {
     constructor(config = {}) {
         // Configuración por defecto
         this.config = {
-            phoneNumber: '+56912345678',
+            phoneNumber: '+56977944695',
             companyName: 'Casa Nuvera',
             agentName: 'Equipo Casa Nuvera',
             businessHours: {
@@ -859,7 +859,7 @@ function initWhatsAppWidget() {
     
     // Configuración específica para Casa Nuvera
     const config = {
-        phoneNumber: '+56912345678',
+        phoneNumber: '+56977944695',
         companyName: 'Casa Nuvera',
         agentName: 'Casa Nuvera',
         businessHours: {
