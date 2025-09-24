@@ -540,7 +540,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🏠 Iniciando PropertyDetailDynamic...');
     
     propertyDetailDynamic = new PropertyDetailDynamic();
+    // Asegurar exportación global correcta después de la instanciación
+    window.propertyDetailDynamic = propertyDetailDynamic;
 });
-
-// Hacer disponible globalmente
-window.propertyDetailDynamic = propertyDetailDynamic;
