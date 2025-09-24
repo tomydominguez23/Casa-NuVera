@@ -126,7 +126,7 @@
 
         /* ===== HERO SECTION ===== */
         .hero {
-            background: linear-gradient(135deg, var(--rent-accent) 0%, #1976D2 100%);
+            background: linear-gradient(135deg, var(--charcoal) 0%, var(--dark-gray) 100%);
             color: white;
             padding: 120px 2rem 60px;
             text-align: center;
@@ -313,198 +313,53 @@
             font-weight: 500;
         }
 
-        /* 🔥 GRID DE PROPIEDADES - DISEÑO IMAGEN 1 SIN BORDES */
+        /* ===== GRID DE PROPIEDADES (estilo compras) ===== */
         .properties-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 2rem;
-            padding: 0;
         }
 
-        /* 🔥 CARDS SIN BORDES - EXACTAMENTE COMO IMAGEN 1 */
         .property-card {
-            background: transparent !important; /* Sin fondo contenedor */
-            border: none !important; /* SIN BORDER */
-            border-radius: 0 !important; /* SIN BORDER-RADIUS */
-            box-shadow: none !important; /* SIN BOX-SHADOW */
-            overflow: visible !important;
-            transition: all 0.3s ease !important;
-            cursor: pointer !important;
-            display: flex !important;
-            flex-direction: column !important;
-            position: relative !important;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow-light);
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
         }
 
         .property-card:hover {
-            transform: translateY(-2px) !important; /* Solo movimiento, sin sombra */
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px var(--shadow-medium);
+            border-color: var(--elegant-beige);
         }
 
-        /* 🔥 IMAGEN PRINCIPAL - PEGADA AL FONDO - MÁS CUADRADA Y GRANDE */
         .property-image {
-            height: 280px !important;
-            position: relative !important;
-            overflow: hidden !important;
-            flex-shrink: 0 !important;
-            border-radius: 0 !important; /* SIN BORDER-RADIUS */
-            margin: 0 !important;
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+            background: var(--light-gray);
         }
 
         .property-image img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-            transition: transform 0.3s ease !important;
-            border-radius: 0 !important; /* SIN BORDER-RADIUS EN IMAGEN */
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
         }
 
         .property-card:hover .property-image img {
-            transform: scale(1.03) !important;
+            transform: scale(1.05);
         }
 
-        .no-image-placeholder {
-            width: 100% !important;
-            height: 100% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%) !important;
-            color: #999 !important;
-            font-size: 0.85rem !important;
-            font-weight: 500 !important;
-        }
-
-        /* 🔥 CÍRCULO FAVORITOS - COMO IMAGEN 1 */
-        .property-favorite {
-            position: absolute !important;
-            top: 12px !important;
-            right: 12px !important;
-            width: 32px !important;
-            height: 32px !important;
-            background: rgba(255, 255, 255, 0.9) !important;
-            border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-            backdrop-filter: blur(10px) !important;
-            border: 1px solid rgba(0, 0, 0, 0.1) !important;
-            z-index: 5 !important;
-        }
-
-        .property-favorite:hover {
-            background: white !important;
-            transform: scale(1.1) !important;
-        }
-
-        .property-favorite.active {
-            background: #e74c3c !important;
-            color: white !important;
-        }
-
-        .property-favorite-icon {
-            width: 16px !important;
-            height: 16px !important;
-            transition: all 0.2s ease !important;
-        }
-
-        /* 🔥 CONTENIDO SIN FONDO - PEGADO A LA IMAGEN */
-        .property-content {
-            padding: 1.5rem 0 !important; /* Sin padding lateral - pegado al fondo */
-            background: transparent !important; /* SIN FONDO BLANCO */
-            flex: 1 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 0.75rem !important;
-        }
-
-        /* 🔥 TÍTULO + UBICACIÓN COMO IMAGEN 1 */
-        .property-title {
-            font-size: 1.1rem !important;
-            font-weight: 600 !important;
-            color: #333 !important;
-            margin: 0 !important;
-            line-height: 1.3 !important;
-            overflow: visible !important;
-            white-space: normal !important;
-        }
-
-        .property-subtitle {
-            font-size: 0.85rem !important;
-            color: #888 !important;
-            margin: 0 !important;
-            font-weight: 400 !important;
-        }
-
-        /* 🔥 ICONOS HORIZONTALES VISIBLES - IMAGEN 1 */
-        .property-features {
-            display: flex !important;
-            gap: 1.5rem !important;
-            margin: 0.5rem 0 !important;
-            align-items: center !important;
-        }
-
-        .property-feature {
-            display: flex !important;
-            align-items: center !important;
-            gap: 0.4rem !important;
-            font-size: 0.8rem !important;
-            color: #666 !important;
-            font-weight: 500 !important;
-        }
-
-        /* 🔥 ICONOS SVG VISIBLES Y CORRECTOS */
-        .property-feature-icon {
-            width: 16px !important;
-            height: 16px !important;
-            color: #666 !important;
-            flex-shrink: 0 !important;
-            fill: currentColor !important;
-        }
-
-        /* 🔥 PRECIO ALINEADO DERECHA - COMO IMAGEN 1 */
-        .property-price-section {
-            display: flex !important;
-            justify-content: flex-end !important;
-            align-items: center !important;
-            margin-top: auto !important;
-            padding-top: 0.5rem !important;
-            border-top: 1px solid #f0f0f0 !important;
-        }
-
-        .property-price-badge {
-            font-size: 1.1rem !important;
-            font-weight: 700 !important;
-            color: #333 !important;
-            background: none !important;
-            padding: 0 !important;
-            border-radius: 0 !important;
-            position: static !important;
-            box-shadow: none !important;
-        }
-
-        /* BADGE DESTACADA SUPERIOR */
-        .featured-badge {
-            position: absolute !important;
-            top: 12px !important;
-            left: 12px !important;
-            background: linear-gradient(135deg, #333333, #000000) !important;
-            color: white !important;
-            padding: 6px 10px !important;
-            border-radius: 6px !important;
-            font-size: 0.75rem !important;
-            font-weight: 600 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-            z-index: 2 !important;
-        }
-
-        /* BADGE DE ARRIENDO */
         .property-badge {
             position: absolute;
             top: 1rem;
             left: 1rem;
-            background: var(--rent-accent);
+            background: var(--charcoal);
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 6px;
@@ -518,6 +373,111 @@
         .property-badge.featured {
             background: linear-gradient(135deg, var(--elegant-beige), var(--warm-beige));
             color: var(--primary-black);
+        }
+
+        .property-content {
+            padding: 1.5rem;
+        }
+
+        .property-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .property-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .property-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--secondary-gray);
+            margin-bottom: 1rem;
+        }
+
+        .property-features {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+        }
+
+        .feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.85rem;
+            color: var(--secondary-gray);
+        }
+
+        .feature i {
+            font-size: 1rem;
+            color: var(--charcoal);
+        }
+
+        .feature-value {
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .property-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .contact-btn {
+            flex: 1;
+            background: var(--charcoal);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .contact-btn:hover {
+            background: var(--elegant-beige);
+            color: var(--primary-black);
+            transform: translateY(-1px);
+        }
+
+        .details-btn {
+            background: transparent;
+            color: var(--charcoal);
+            border: 2px solid var(--border-light);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .details-btn:hover {
+            border-color: var(--charcoal);
+            background: var(--charcoal);
+            color: white;
         }
 
         /* ===== PLACEHOLDER PARA IMÁGENES ===== */
@@ -703,11 +663,6 @@
     </style>
 </head>
 <body>
-    <!-- Botón flotante para subir propiedades -->
-    <a href="subir-propiedades.html" class="floating-upload-btn" aria-label="Subir nueva propiedad">
-        <i class="fas fa-plus"></i>
-        Subir Propiedad
-    </a>
 
     <!-- Header profesional -->
     <header class="header">
@@ -723,10 +678,6 @@
                     <li><a href="compras.html">Comprar</a></li>
                     <li><a href="arriendos-nuevo.html" class="active">Arrendar</a></li>
                     <li><a href="index.html#contacto">Contacto</a></li>
-                    <li><a href="subir-propiedades.html" class="nav-cta">
-                        <i class="fas fa-plus"></i>
-                        Subir Propiedad
-                    </a></li>
                 </ul>
             </nav>
         </div>
@@ -1013,10 +964,10 @@
             document.getElementById('results-count').innerHTML = `<strong>${count}</strong> propiedades en arriendo encontradas`;
         }
 
-        // 🔥 RENDER PROPERTIES REDISEÑADO EXACTAMENTE COMO IMAGEN 1 CON ICONOS SVG VISIBLES
+        // Renderizado de propiedades (estilo compras) con textos de arriendo
         function renderProperties() {
             const grid = document.getElementById('properties-grid');
-            
+
             if (filteredProperties.length === 0) {
                 grid.innerHTML = `
                     <div class="no-results">
@@ -1032,73 +983,60 @@
                 return;
             }
 
-            // 🔥 RENDERIZAR EXACTAMENTE COMO IMAGEN 1 CON SVG ICONS VISIBLES
             grid.innerHTML = filteredProperties.map(property => {
                 const formatPrice = (price, currency) => {
                     const formatted = new Intl.NumberFormat('es-CL').format(price);
-                    return currency === 'UF' ? `${formatted} UF` : `$${formatted}`;
+                    return currency === 'UF' ? `UF ${formatted}` : `$${formatted}`;
                 };
-
-                const propertyId = `prop_${Math.random().toString(36).substr(2, 9)}`;
-                const featuredBadge = property.featured ? '<div class="featured-badge">Destacada</div>' : '';
 
                 return `
                     <div class="property-card" onclick="goToProperty(${property.id})">
                         <div class="property-image">
                             ${property.image ? 
                                 `<img src="${property.image}" alt="${property.title}" loading="lazy">` :
-                                `<div class="no-image-placeholder">Sin imagen disponible</div>`
+                                `<div class=\"placeholder-image\">\n                                    <div class=\"placeholder-icon\">🏠</div>\n                                    <div class=\"placeholder-text\">Imagen no disponible</div>\n                                </div>`
                             }
-                            ${featuredBadge}
-                            
-                            <!-- 🔥 CÍRCULO FAVORITOS BLANCO -->
-                            <div class="property-favorite" onclick="toggleFavorite('${propertyId}', event)" id="fav_${propertyId}">
-                                <svg class="property-favorite-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                </svg>
+                            <div class="property-badge ${property.featured ? 'featured' : ''}">
+                                ${property.featured ? '⭐ DESTACADA' : 'ARRIENDO'}
                             </div>
                         </div>
-                        
-                        <!-- 🔥 CONTENIDO SIN FONDO - PEGADO -->
                         <div class="property-content">
+                            <div class="property-price">${formatPrice(property.price, property.currency)}</div>
                             <h3 class="property-title">${property.title}</h3>
-                            <p class="property-subtitle">${property.location}</p>
-                            
-                            <!-- 🔥 ICONOS HORIZONTALES VISIBLES - CAMA, DUCHA, METROS -->
+                            <div class="property-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${property.location}
+                            </div>
                             <div class="property-features">
-                                <div class="property-feature">
-                                    <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M7 14c1.66 0 3-1.34 3-3S8.66 8 7 8s-3 1.34-3 3 1.34 3 3 3zm0-4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm12-3h-8v8H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/>
-                                    </svg>
-                                    ${property.bedrooms || 0} hab
+                                <div class="feature">
+                                    <i class="fas fa-bed"></i>
+                                    <span class="feature-value">${property.bedrooms}</span>
+                                    <span>dorm</span>
                                 </div>
-                                <div class="property-feature">
-                                    <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.25l1.25-2.75-6-6-3.5 3.5-4.5-4.5L1 12.75l6.5 6.5 3.5-3.5 6 6z"/>
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM7.07 18.28c.43-.9 3.05-.99 4.93-.99s4.51.09 4.93.99c-.73 1.13-1.87 2.02-3.21 2.53C12.75 21.27 11.25 21.27 10.28 20.81c-1.34-.51-2.48-1.4-3.21-2.53z"/>
-                                    </svg>
-                                    ${property.bathrooms || 0} baños
+                                <div class="feature">
+                                    <i class="fas fa-bath"></i>
+                                    <span class="feature-value">${property.bathrooms}</span>
+                                    <span>baños</span>
                                 </div>
-                                <div class="property-feature">
-                                    <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16z"/>
-                                        <path d="M6 10h2v2H6zm0 4h2v2H6zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"/>
-                                    </svg>
-                                    ${property.area}m²
+                                <div class="feature">
+                                    <i class="fas fa-ruler-combined"></i>
+                                    <span class="feature-value">${property.area}</span>
+                                    <span>m²</span>
                                 </div>
-                                <div class="property-feature">
-                                    <svg class="property-feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
-                                    </svg>
-                                    ${property.parking} est
+                                <div class="feature">
+                                    <i class="fas fa-car"></i>
+                                    <span class="feature-value">${property.parking}</span>
+                                    <span>est</span>
                                 </div>
                             </div>
-                            
-                            <!-- 🔥 PRECIO ALINEADO DERECHA -->
-                            <div class="property-price-section">
-                                <div class="property-price-badge">
-                                    ${formatPrice(property.price, property.currency)}
-                                </div>
+                            <div class="property-actions">
+                                <button class="contact-btn" onclick="event.stopPropagation(); contactProperty(${property.id})">
+                                    <i class="fab fa-whatsapp"></i>
+                                    WhatsApp
+                                </button>
+                                <button class="details-btn" onclick="goToProperty(${property.id})">
+                                    Ver Detalles
+                                </button>
                             </div>
                         </div>
                     </div>
