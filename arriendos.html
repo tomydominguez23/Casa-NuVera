@@ -336,10 +336,7 @@
 </head>
 <body>
     <!-- Botón flotante para subir propiedades -->
-    <a href="subir-propiedades.html" class="floating-upload-btn">
-        <span>🏠</span>
-        Subir Propiedad
-    </a>
+    
 
     <!-- Header flotante -->
     <header class="header">
@@ -358,7 +355,6 @@
                     <li><a href="index.html#servicios">Servicios</a></li>
                     <li><a href="index.html#nosotros">Nosotros</a></li>
                     <li><a href="index.html#contacto">Contacto</a></li>
-                    <li><a href="subir-propiedades.html" class="nav-cta">🏠 Subir Propiedad</a></li>
                 </ul>
             </nav>
         </div>
@@ -510,7 +506,7 @@
 
             // Renderizar propiedades con el nuevo diseño oscuro
             const propertiesHTML = allProperties.map(property => {
-                const price = property.price ? `$${parseInt(property.price).toLocaleString('es-CL')}/mes` : 'Precio a consultar';
+                const price = property.price ? `UF ${Number(property.price).toLocaleString('es-CL')}` : 'Precio a consultar';
                 const title = property.title || 'Propiedad sin título';
                 const location = property.location || 'Ubicación no disponible';
                 const bedrooms = property.bedrooms || 0;
