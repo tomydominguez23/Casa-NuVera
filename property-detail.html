@@ -168,6 +168,44 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
         }
 
+        /* 🆕 Flechas para galería principal (sin abrir modal) */
+        .gallery-nav-btn {
+            position: absolute !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            background: rgba(255,255,255,0.9) !important;
+            color: #333 !important;
+            border: none !important;
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            font-size: 1.2rem !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            backdrop-filter: blur(10px) !important;
+            z-index: 6 !important;
+        }
+
+        .gallery-nav-btn:hover {
+            background: white !important;
+            transform: translateY(-50%) scale(1.06) !important;
+        }
+
+        .gallery-nav-btn.prev { left: 1rem !important; }
+        .gallery-nav-btn.next { right: 1rem !important; }
+
+        /* 🆕 Selector de tours en sidebar */
+        .tour-select {
+            width: 100% !important;
+            padding: 0.6rem 0.8rem !important;
+            border: 1px solid #dee2e6 !important;
+            border-radius: 6px !important;
+            background: #fff !important;
+            color: #333 !important;
+            font-size: 0.9rem !important;
+        }
+        .contact-buttons .tour-btn { width: 100% !important; }
+
         /* 🆕 MODAL DE GALERÍA COMPLETO */
         .gallery-modal {
             display: none !important;
@@ -1015,6 +1053,10 @@
                             <button class="gallery-view-all-btn" onclick="openGalleryModal()" id="galleryViewBtn">
                                 VER <span id="photoCount">12</span> FOTOS
                             </button>
+
+                            <!-- 🆕 Flechas de navegación de la galería principal -->
+                            <button class="gallery-nav-btn prev" onclick="previousMainImage()">‹</button>
+                            <button class="gallery-nav-btn next" onclick="nextMainImage()">›</button>
                         </div>
                     </section>
 
@@ -1042,18 +1084,7 @@
                             </div>
                         </div>
 
-                        <!-- Tour 360° Section - REDISEÑO SOBRIO -->
-                        <div class="tour-section">
-                            <h3>
-                                <span class="tour-icon">🌐</span>
-                                Tour Virtual 360°
-                            </h3>
-                            <p>Explora esta propiedad en detalle con nuestro tour virtual interactivo y descubre cada rincón como si estuvieras ahí.</p>
-                            <button class="tour-btn" onclick="openTour360()">
-                                <span class="tour-icon">🔄</span>
-                                Ver Tour Virtual
-                            </button>
-                        </div>
+                        <!-- Tour 360° Section REMOVIDA: solo botón en sidebar -->
 
                         <!-- Description -->
                         <div class="property-description">
@@ -1100,6 +1131,12 @@
 
                     <!-- Botones de contacto -->
                     <div class="contact-buttons">
+                        <!-- 🆕 Contenedor Tour: selector + botón (visible solo si hay tours) -->
+                        <select id="tourSelect" class="tour-select" style="display:none;"></select>
+                        <button id="sidebarTourBtn" class="tour-btn" style="display:none;">
+                            <span class="tour-icon">🔄</span>
+                            Ver Tour Virtual
+                        </button>
                         <a href="#" class="contact-btn whatsapp" onclick="contactViaWhatsApp(); return false;">
                             📱 CONTACTAR POR WHATSAPP
                         </a>
@@ -1133,6 +1170,7 @@
 
     <!-- 🆕 Sticky CTA móvil -->
     <div class="sticky-cta" id="stickyCta" style="display:none;">
+        <a href="#" class="cta-btn secondary" id="stickyTourBtn" style="display:none;" onclick="openSelectedTour(); return false;">Tour</a>
         <a href="#" class="cta-btn primary" onclick="contactViaWhatsApp(); return false;">WhatsApp</a>
         <a href="tel:+56948406684" class="cta-btn secondary">Llamar</a>
     </div>
@@ -1361,6 +1399,7 @@
             
             // Actualizar imagen principal
             document.getElementById('mainImage').src = images[0];
+            currentImageIndex = 0;
             
             // 🆕 Actualizar contador en botón
             document.getElementById('photoCount').textContent = images.length;
@@ -1613,6 +1652,45 @@
             if (event.key === 'Escape') {
                 closeTour360();
             }
+        }
+
+        // 🆕 Navegación de imagen principal sin abrir modal
+        function showMainImageByIndex(index) {
+            if (!propertyImages || propertyImages.length === 0) return;
+            const bounded = ((index % propertyImages.length) + propertyImages.length) % propertyImages.length;
+            currentImageIndex = bounded;
+            const img = document.getElementById('mainImage');
+            if (img) img.src = propertyImages[bounded];
+        }
+
+        function previousMainImage() {
+            showMainImageByIndex(currentImageIndex - 1);
+        }
+
+        function nextMainImage() {
+            showMainImageByIndex(currentImageIndex + 1);
+        }
+
+        function openSelectedTour() {
+            try {
+                const tourSelect = document.getElementById('tourSelect');
+                const url = tourSelect && tourSelect.style.display !== 'none' && tourSelect.value
+                    ? tourSelect.value
+                    : (window.propertyDetailDynamic && window.propertyDetailDynamic.propertyTours && window.propertyDetailDynamic.propertyTours[0]?.tour_url) || defaultTourUrl;
+                if (url) {
+                    if (window.propertyDetailDynamic && window.propertyDetailDynamic.openTour) {
+                        window.propertyDetailDynamic.openTour(url);
+                    } else {
+                        // Fallback: usar modal local
+                        const modal = document.getElementById('tourModal');
+                        const iframe = document.getElementById('tourIframe');
+                        modal.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                        iframe.src = url;
+                        document.addEventListener('keydown', handleEscKey);
+                    }
+                }
+            } catch (e) { /* noop */ }
         }
 
         // Close modal on outside click
