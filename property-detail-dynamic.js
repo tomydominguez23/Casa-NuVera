@@ -511,15 +511,13 @@ class PropertyDetailDynamic {
 
     formatPrice(price, currency = 'CLP') {
         if (!price) return 'Precio a consultar';
-        
         const numPrice = parseFloat(price);
         if (isNaN(numPrice)) return 'Precio a consultar';
-        
         switch (currency) {
             case 'UF':
                 return `${numPrice.toLocaleString('es-CL')} UF`;
             case 'USD':
-                return `US$${numPrice.toLocaleString('en-US')}`;
+                return `US$ ${numPrice.toLocaleString('en-US')}`;
             case 'CLP':
             default:
                 return `$${numPrice.toLocaleString('es-CL')}`;
