@@ -207,7 +207,7 @@ Para soporte técnico o consultas sobre el panel de administración:
 
 **Casa Nuvera - Departamento de TI**
 - 📧 Email: soporte@casanuvera.cl
-- 📱 WhatsApp: +56 9 1234 5678
+- 📱 WhatsApp: +569 77944695
 - 🌐 Web: https://casanuvera.cl
 
 ---
