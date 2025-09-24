@@ -708,7 +708,7 @@ function getFormData() {
         builtArea: document.getElementById('builtArea').value,
         parkingSpaces: document.getElementById('parkingSpaces').value,
         currency: document.getElementById('currency').value,
-        price: document.getElementById('price').value,
+        price: normalizeLocalizedNumber(document.getElementById('price').value),
         expenses: document.getElementById('expenses').value,
         availability: document.getElementById('availability').value,
         contactName: document.getElementById('contactName').value,
@@ -729,6 +729,19 @@ function getFormData() {
     });
     
     return data;
+}
+
+// Normaliza entradas tipo "6.000" o "6.000,5" -> 6000 o 6000.5
+function normalizeLocalizedNumber(input) {
+    if (input == null) return '';
+    const raw = String(input).trim();
+    if (raw === '') return '';
+    // Quitar separadores de miles (puntos y espacios finos)
+    let sanitized = raw.replace(/\.(?=\d{3}(\D|$))/g, '').replace(/[\u00A0\s]/g, '');
+    // Convertir coma decimal a punto
+    sanitized = sanitized.replace(/,(\d+)$/, '.$1');
+    const num = parseFloat(sanitized);
+    return isNaN(num) ? '' : num;
 }
 
 function setupRegionCommune() {

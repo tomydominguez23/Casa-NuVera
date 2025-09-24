@@ -116,6 +116,17 @@ class PropertyHandler {
 
     // Preparar datos para insertar en la base de datos (SIN imágenes)
     preparePropertyData(formData) {
+        const normalizeNumber = (value) => {
+            if (value == null) return 0;
+            const raw = String(value).trim();
+            if (raw === '') return 0;
+            // remover separadores de miles y convertir coma decimal
+            let sanitized = raw.replace(/\.(?=\d{3}(\D|$))/g, '').replace(/[\u00A0\s]/g, '');
+            sanitized = sanitized.replace(/,(\d+)$/, '.$1');
+            const num = parseFloat(sanitized);
+            return isNaN(num) ? 0 : num;
+        };
+
         const propertyData = {
             // Campos básicos - EXACTOS a tu estructura
             title: formData.title || '',
@@ -132,14 +143,14 @@ class PropertyHandler {
             neighborhood: formData.neighborhood || '',
             
             // Medidas
-            total_area: formData.totalArea ? parseFloat(formData.totalArea) : null,
-            built_area: formData.builtArea ? parseFloat(formData.builtArea) : null,
+            total_area: formData.totalArea ? normalizeNumber(formData.totalArea) : null,
+            built_area: formData.builtArea ? normalizeNumber(formData.builtArea) : null,
             parking_spaces: formData.parkingSpaces ? parseInt(formData.parkingSpaces) : 0,
             
             // Precio
-            price: parseFloat(formData.price) || 0,
+            price: normalizeNumber(formData.price) || 0,
             currency: formData.currency || 'CLP',
-            expenses: formData.expenses ? parseFloat(formData.expenses) : null,
+            expenses: formData.expenses ? normalizeNumber(formData.expenses) : null,
             availability: formData.availability || 'inmediata',
             
             // Contacto
