@@ -432,7 +432,7 @@ function validateField(event) {
     if (field.type === 'tel' && value) {
         const phoneRegex = /^(\+56|56)?[\s\-]?[2-9][\s\-]?\d{4}[\s\-]?\d{4}$/;
         if (!phoneRegex.test(value.replace(/\s/g, ''))) {
-            showFieldError(field, 'Ingrese un teléfono válido (+56 9 1234 5678)');
+            showFieldError(field, 'Ingrese un teléfono válido (+569 77944695)');
             return false;
         }
     }
