@@ -51,7 +51,7 @@ He creado un sistema completo de widget WhatsApp inteligente con captura automá
 
 ```javascript
 const config = {
-    phoneNumber: '+56977944695', // 👈 CAMBIAR POR TU NÚMERO REAL
+    phoneNumber: '+56912345678', // 👈 CAMBIAR POR TU NÚMERO REAL
     companyName: 'Casa Nuvera',
     agentName: 'María - Casa Nuvera'
 };
