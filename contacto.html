@@ -1229,7 +1229,7 @@ ${formData.budget ? '• Presupuesto: ' + getBudgetText(formData.budget) : ''}
                 value = '+56 ' + value;
             }
             
-            // Format: +56 9 1234 5678
+            // Formato ejemplo: +569 77944695
             if (value.startsWith('+56')) {
                 value = value.replace(/(\+56)(\d{1})(\d{4})(\d{4})/, '$1 $2 $3 $4');
             }
