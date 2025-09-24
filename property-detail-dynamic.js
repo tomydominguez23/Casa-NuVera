@@ -134,10 +134,9 @@ class PropertyDetailDynamic {
             
             const { data, error } = await window.supabase
                 .from('property_tours')
-                .select('id, tour_title, tour_url, order_index, is_active')
+                .select('id, tour_title, tour_name, tour_url, order_index, tour_order, is_active')
                 .eq('property_id', propertyId)
-                .eq('is_active', true)
-                .order('order_index', { ascending: true });
+                .or('is_active.is.null,is_active.eq.true');
 
             if (error) {
                 console.error('⚠️ Error al cargar tours:', error);
@@ -145,7 +144,14 @@ class PropertyDetailDynamic {
                 return;
             }
 
-            this.propertyTours = data || [];
+            const tours = (data || []).filter(t => t && t.tour_url);
+            tours.sort((a, b) => {
+                const aOrder = (typeof a.order_index === 'number' ? a.order_index : (typeof a.tour_order === 'number' ? a.tour_order : 9999));
+                const bOrder = (typeof b.order_index === 'number' ? b.order_index : (typeof b.tour_order === 'number' ? b.tour_order : 9999));
+                return aOrder - bOrder;
+            });
+
+            this.propertyTours = tours;
             console.log(`✅ ${this.propertyTours.length} tours 360° cargados`);
             
         } catch (error) {
