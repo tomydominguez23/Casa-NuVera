@@ -719,7 +719,7 @@
             generatePropertyHTML(property) {
                 const formatPrice = (precio, moneda) => {
                     const formatted = new Intl.NumberFormat('es-CL').format(precio);
-                    return moneda === 'UF' ? `UF ${formatted}` : `$${formatted}`;
+                    return moneda === 'UF' ? `${formatted} UF` : `$${formatted}`;
                 };
 
                 const imageUrl = property.main_image || `https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop`;
@@ -814,7 +814,7 @@
             if (property) {
                 const formatPrice = (precio, moneda) => {
                     const formatted = new Intl.NumberFormat('es-CL').format(precio);
-                    return moneda === 'UF' ? `UF ${formatted}` : `$${formatted}`;
+                    return moneda === 'UF' ? `${formatted} UF` : `$${formatted}`;
                 };
 
                 const message = `Hola! Estoy interesado/a en la propiedad "${property.title}" ubicada en ${property.address}.\\n\\n💰 Precio: ${formatPrice(property.price, property.currency)}\\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\\n📐 Superficie: ${property.total_area}m²\\n\\n¿Podrías darme más información?`;

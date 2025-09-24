@@ -227,7 +227,7 @@ class PropertyLoader {
             const formatted = new Intl.NumberFormat('es-CL').format(precio);
             switch(moneda) {
                 case 'CLP': return `$ ${formatted}`;
-                case 'UF': return `UF ${formatted}`;
+                case 'UF': return `${formatted} UF`;
                 case 'USD': return `US$ ${formatted}`;
                 default: return `UF ${formatted}`;
             }
@@ -423,7 +423,7 @@ window.contactProperty = function(propertyId) {
             const formatted = new Intl.NumberFormat('es-CL').format(precio);
             switch(moneda) {
                 case 'CLP': return `$${formatted}`;
-                case 'UF': return `UF ${formatted}`;
+                case 'UF': return `${formatted} UF`;
                 case 'USD': return `US$${formatted}`;
                 default: return `UF ${formatted}`;
             }
