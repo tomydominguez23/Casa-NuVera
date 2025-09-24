@@ -865,7 +865,7 @@
             formatPrice(price) {
                 if (!price) return 'Precio a consultar';
                 const formatted = new Intl.NumberFormat('es-CL').format(price);
-                return `UF ${formatted}`;
+                return `${formatted} UF`;
             }
 
             getRandomImage() {

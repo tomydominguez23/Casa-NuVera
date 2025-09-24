@@ -222,7 +222,7 @@ class ComprasPageLoader {
             case 'CLP':
                 return `$${numPrice.toLocaleString('es-CL', { maximumFractionDigits: 0 })}`;
             case 'UF':
-                return `UF ${numPrice.toLocaleString('es-CL', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}`;
+                return `${numPrice.toLocaleString('es-CL', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} UF`;
             case 'USD':
                 return `US$ ${numPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
             default:
