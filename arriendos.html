@@ -506,7 +506,7 @@
 
             // Renderizar propiedades con el nuevo diseño oscuro
             const propertiesHTML = allProperties.map(property => {
-                const price = property.price ? `$${parseInt(property.price).toLocaleString('es-CL')}/mes` : 'Precio a consultar';
+                const price = property.price ? `UF ${Number(property.price).toLocaleString('es-CL')}` : 'Precio a consultar';
                 const title = property.title || 'Propiedad sin título';
                 const location = property.location || 'Ubicación no disponible';
                 const bedrooms = property.bedrooms || 0;

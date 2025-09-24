@@ -748,7 +748,7 @@
                 </div>
                 
                 <div class="filter-group">
-                    <label class="filter-label">Rango de Precio (CLP)</label>
+                    <label class="filter-label">Rango de Precio (UF)</label>
                     <div class="price-range">
                         <input type="number" class="filter-input" id="filter-price-min" placeholder="Mínimo">
                         <span class="price-separator">-</span>
@@ -908,8 +908,8 @@
             const commune = document.getElementById('filter-commune').value;
             const bedrooms = document.getElementById('filter-bedrooms').value;
             const bathrooms = document.getElementById('filter-bathrooms').value;
-            const priceMin = parseInt(document.getElementById('filter-price-min').value) || 0;
-            const priceMax = parseInt(document.getElementById('filter-price-max').value) || Infinity;
+            const priceMin = parseFloat(document.getElementById('filter-price-min').value) || 0;
+            const priceMax = parseFloat(document.getElementById('filter-price-max').value) || Infinity;
             const areaMin = parseInt(document.getElementById('filter-area').value) || 0;
 
             filteredProperties = allProperties.filter(property => {
@@ -986,7 +986,7 @@
             grid.innerHTML = filteredProperties.map(property => {
                 const formatPrice = (price, currency) => {
                     const formatted = new Intl.NumberFormat('es-CL').format(price);
-                    return currency === 'UF' ? `UF ${formatted}` : `$${formatted}`;
+                    return `UF ${formatted}`;
                 };
 
                 return `
@@ -1055,7 +1055,7 @@
             if (property) {
                 const formatPrice = (price, currency) => {
                     const formatted = new Intl.NumberFormat('es-CL').format(price);
-                    return currency === 'UF' ? `${formatted} UF` : `$${formatted}`;
+                    return `${formatted} UF`;
                 };
 
                 const message = `Hola! Estoy interesado/a en arrendar la propiedad "${property.title}" ubicada en ${property.location}.\n\n💰 Precio: ${formatPrice(property.price, property.currency)}\n🏠 ${property.bedrooms} dormitorios, ${property.bathrooms} baños\n📜 Superficie: ${property.area}m²\n\n¿Podrías darme más información sobre disponibilidad y condiciones?`;
