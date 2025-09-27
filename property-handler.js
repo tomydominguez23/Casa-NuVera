@@ -8,7 +8,7 @@ class PropertyHandler {
     }
 
     // Función principal para enviar propiedad (actualizada para incluir tours)
-    async submitProperty(formData, files = [], tours = []) {
+    async submitProperty(formData, files = [], tours = [], videos = []) {
         if (this.isSubmitting) {
             return { success: false, message: 'Ya hay una propiedad siendo enviada' };
         }
@@ -50,7 +50,12 @@ class PropertyHandler {
                 await this.saveTours(data.id, tours);
             }
 
-            // 5. Recargar propiedades en la página si existe el loader
+            // 5. Subir videos si existen
+            if (videos && videos.length > 0) {
+                await this.uploadAndLinkVideos(data.id, videos);
+            }
+
+            // 6. Recargar propiedades en la página si existe el loader
             if (window.propertyLoader) {
                 setTimeout(() => {
                     window.propertyLoader.refreshProperties();
@@ -284,6 +289,83 @@ class PropertyHandler {
         }
     }
 
+    // Subir videos y crear registros en property_videos
+    async uploadAndLinkVideos(propertyId, files) {
+        try {
+            const videoFiles = (files || []).filter((candidate) => {
+                const candidateName = (candidate && candidate.name ? candidate.name : '').toLowerCase();
+                const candidateType = (candidate && candidate.type ? candidate.type : '');
+                const looksLikeVideo = candidateType.startsWith('video/');
+                const hasVideoExtension = /\.(mp4|mov|avi|webm|mkv)$/i.test(candidateName);
+                return looksLikeVideo || hasVideoExtension;
+            });
+
+            if (!videoFiles.length) {
+                console.log('ℹ️ No hay videos para subir');
+                return;
+            }
+
+            console.log(`🎥 Procesando ${videoFiles.length} videos para propiedad ${propertyId}...`);
+
+            for (let i = 0; i < videoFiles.length; i++) {
+                const file = videoFiles[i];
+                const timestamp = Date.now();
+                const originalName = (file && file.name) ? file.name : `video_${timestamp}`;
+                const fileExtension = (originalName.includes('.') ? originalName.split('.').pop() : 'mp4').toLowerCase();
+                const fileName = `property_${propertyId}_${i}_${timestamp}.${fileExtension}`;
+
+                console.log(`📤 Subiendo video ${i + 1}/${videoFiles.length}: ${fileName}`);
+
+                let videoUrl = null;
+                try {
+                    const { data: uploadData, error: uploadError } = await window.supabase.storage
+                        .from('property-videos')
+                        .upload(fileName, file, {
+                            cacheControl: '3600',
+                            upsert: false,
+                            contentType: file && file.type ? file.type : undefined
+                        });
+
+                    if (uploadError) {
+                        console.error('❌ Error subiendo video a Storage:', uploadError);
+                        throw uploadError;
+                    }
+
+                    const { data: urlData } = window.supabase.storage
+                        .from('property-videos')
+                        .getPublicUrl(fileName);
+                    videoUrl = urlData.publicUrl;
+                } catch (e) {
+                    console.error('❌ Error de Storage en video:', e);
+                    // No hay fallback viable para videos pesados, continuar con el siguiente
+                    continue;
+                }
+
+                if (videoUrl) {
+                    const videoRecord = {
+                        property_id: propertyId,
+                        video_url: videoUrl,
+                        video_title: originalName,
+                        video_order: i + 1
+                    };
+
+                    const { error: insertError } = await window.supabase
+                        .from('property_videos')
+                        .insert([videoRecord]);
+                    if (insertError) {
+                        console.error(`❌ Error insertando video ${i}:`, insertError);
+                    } else {
+                        console.log(`✅ Video ${i + 1} vinculado a propiedad`);
+                    }
+                }
+            }
+
+            console.log(`✅ ${videoFiles.length} videos procesados para propiedad ${propertyId}`);
+        } catch (error) {
+            console.error('❌ Error general en uploadAndLinkVideos:', error);
+        }
+    }
+
     // Insertar registro en la BD cuando no se sube a Storage (usa data URL)
     async #insertImageRecordWithoutStorage(propertyId, imageUrl, index) {
         const imageRecord = {
@@ -437,6 +519,39 @@ class PropertyHandler {
                 }
             }
 
+            // 2b. Obtener y eliminar videos del Storage
+            const { data: videos, error: videosQueryError } = await window.supabase
+                .from('property_videos')
+                .select('video_url')
+                .eq('property_id', propertyId);
+
+            if (videosQueryError) {
+                console.warn('⚠️ Error obteniendo videos:', videosQueryError);
+            }
+
+            if (videos && videos.length > 0) {
+                console.log(`🎥 Eliminando ${videos.length} archivos de video de Storage...`);
+                for (const video of videos) {
+                    if (video.video_url && video.video_url.includes('supabase')) {
+                        try {
+                            const fileName = video.video_url.split('/').pop();
+                            if (fileName) {
+                                const { error: storageError } = await window.supabase.storage
+                                    .from('property-videos')
+                                    .remove([fileName]);
+                                if (storageError) {
+                                    console.warn(`⚠️ Error eliminando video ${fileName}:`, storageError);
+                                } else {
+                                    console.log(`✅ Video eliminado: ${fileName}`);
+                                }
+                            }
+                        } catch (storageError) {
+                            console.warn('⚠️ Error eliminando video de Storage:', storageError);
+                        }
+                    }
+                }
+            }
+
             // 3. Eliminar tours primero
             console.log('🌐 Eliminando tours 360°...');
             const { error: toursError } = await window.supabase
@@ -485,6 +600,18 @@ class PropertyHandler {
                 }
             } else {
                 console.log('✅ Registros de imágenes eliminados');
+            }
+
+            // 4b. Eliminar registros de videos de la base de datos
+            console.log('🎥 Eliminando registros de videos...');
+            const { error: videosError } = await window.supabase
+                .from('property_videos')
+                .delete()
+                .eq('property_id', propertyId);
+            if (videosError) {
+                console.warn('⚠️ Error eliminando registros de videos:', videosError);
+            } else {
+                console.log('✅ Registros de videos eliminados');
             }
 
             // 5. Eliminar propiedad principal

@@ -70,3 +70,23 @@ FROM information_schema.columns
 WHERE table_name IN ('properties', 'property_images', 'property_tours') 
 AND table_schema = 'public'
 ORDER BY table_name, ordinal_position;
+
+-- 9. Crear tabla para videos si no existe
+CREATE TABLE IF NOT EXISTS public.property_videos (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    property_id uuid NOT NULL REFERENCES public.properties(id) ON DELETE CASCADE,
+    video_url text NOT NULL,
+    video_title text,
+    video_order integer DEFAULT 1,
+    created_at timestamptz DEFAULT now()
+);
+
+-- 10. REPLICA IDENTITY y RLS (si aplica) para property_videos
+ALTER TABLE property_videos REPLICA IDENTITY FULL;
+-- ALTER TABLE property_videos ENABLE ROW LEVEL SECURITY;
+-- CREATE POLICY "Allow read videos" ON property_videos FOR SELECT USING (true);
+-- CREATE POLICY "Allow insert videos" ON property_videos FOR INSERT WITH CHECK (true);
+-- CREATE POLICY "Allow delete videos" ON property_videos FOR DELETE USING (true);
+
+-- 11. Verificar que la tabla de videos existe
+SELECT table_name FROM information_schema.tables WHERE table_name = 'property_videos' AND table_schema = 'public';

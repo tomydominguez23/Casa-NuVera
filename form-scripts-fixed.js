@@ -536,6 +536,12 @@ async function handleFormSubmit(event) {
                 await window.propertyHandler.uploadAndLinkImages(editingPropertyId, newImageFiles);
             }
 
+            // Subir nuevos videos si el usuario agregó
+            const newVideoFiles = propertyVideos.map(v => v.file).filter(Boolean);
+            if (newVideoFiles.length > 0) {
+                await window.propertyHandler.uploadAndLinkVideos(editingPropertyId, newVideoFiles);
+            }
+
             showLoading(false);
             showSuccess();
 
@@ -544,7 +550,8 @@ async function handleFormSubmit(event) {
         } else {
             // Crear nueva propiedad
             const imageFiles = propertyImages.map(img => img.file);
-            const result = await window.propertyHandler.submitProperty(formData, imageFiles, getToursForSaving());
+            const videoFiles = propertyVideos.map(v => v.file);
+            const result = await window.propertyHandler.submitProperty(formData, imageFiles, getToursForSaving(), videoFiles);
             showLoading(false);
             if (result.success) {
                 showSuccess();
@@ -710,6 +717,14 @@ async function loadPropertyForEdit(propertyId) {
             .order('image_order', { ascending: true });
         renderExistingImages(images || []);
 
+        // Cargar videos existentes (solo mostrar)
+        const { data: videos } = await window.supabase
+            .from('property_videos')
+            .select('video_url, video_order, video_title')
+            .eq('property_id', propertyId)
+            .order('video_order', { ascending: true });
+        renderExistingVideos(videos || []);
+
         console.log('✅ Datos cargados para edición');
     } catch (e) {
         console.error('❌ Error cargando propiedad para editar:', e);
@@ -739,6 +754,25 @@ function renderExistingImages(images) {
         <div class="file-item">
             <img src="${img.image_url}" alt="Imagen existente ${index + 1}">
             <div class="file-name">${img.is_main ? '📌 Principal' : 'Imagen ' + (index + 1)}</div>
+        </div>
+    `).join('');
+}
+
+function renderExistingVideos(videos) {
+    const section = document.getElementById('existingVideosSection');
+    const list = document.getElementById('existingVideosList');
+    if (!section || !list) return;
+    if (!videos || videos.length === 0) {
+        section.style.display = 'none';
+        list.innerHTML = '';
+        return;
+    }
+    section.style.display = 'block';
+    list.innerHTML = videos.map((vid, index) => `
+        <div class="video-item">
+            <video src="${vid.video_url}" controls muted preload="metadata"></video>
+            <div class="video-name">${vid.video_title || ('Video ' + (index + 1))}</div>
+            <div class="video-info">Orden: ${vid.video_order || (index + 1)}</div>
         </div>
     `).join('');
 }
