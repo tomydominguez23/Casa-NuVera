@@ -284,6 +284,109 @@ class PropertyHandler {
         }
     }
 
+    // Eliminar UNA imagen de una propiedad (DB + Storage) y reordenar
+    async deletePropertyImage(propertyId, imageUrl) {
+        try {
+            if (!propertyId || !imageUrl) {
+                throw new Error('Parámetros inválidos para eliminar imagen');
+            }
+
+            // Buscar el registro exacto de la imagen
+            const { data: imageRow, error: fetchError } = await window.supabase
+                .from('property_images')
+                .select('id, image_url, is_main')
+                .eq('property_id', propertyId)
+                .eq('image_url', imageUrl)
+                .single();
+
+            if (fetchError || !imageRow) {
+                throw new Error('Imagen no encontrada para esta propiedad');
+            }
+
+            // Intentar eliminar archivo de Storage si corresponde a Supabase
+            try {
+                if (imageUrl.includes('/storage/v1/object/public/property-images/')) {
+                    let storagePath = null;
+                    const match = imageUrl.match(/\/object\/public\/property-images\/(.+)$/);
+                    if (match && match[1]) {
+                        storagePath = match[1];
+                    } else {
+                        storagePath = imageUrl.split('/').pop();
+                    }
+                    if (storagePath) {
+                        storagePath = storagePath.split('?')[0];
+                        const { error: storageError } = await window.supabase.storage
+                            .from('property-images')
+                            .remove([storagePath]);
+                        if (storageError) {
+                            console.warn('⚠️ No se pudo eliminar el archivo de Storage:', storageError);
+                        }
+                    }
+                }
+            } catch (storageEx) {
+                console.warn('⚠️ Error eliminando archivo de Storage:', storageEx);
+            }
+
+            // Eliminar registro en BD
+            const { error: deleteRowError } = await window.supabase
+                .from('property_images')
+                .delete()
+                .eq('id', imageRow.id);
+
+            if (deleteRowError) {
+                throw new Error(`No se pudo eliminar el registro de la imagen: ${deleteRowError.message}`);
+            }
+
+            // Reasignar imagen principal si era principal y reordenar índices
+            const { data: remaining, error: remainingError } = await window.supabase
+                .from('property_images')
+                .select('id, image_order')
+                .eq('property_id', propertyId)
+                .order('image_order', { ascending: true });
+
+            if (remainingError) {
+                console.warn('⚠️ Error obteniendo imágenes restantes para reordenar:', remainingError);
+            } else if (remaining && remaining.length > 0) {
+                // Si la eliminada era principal, marcar la primera como principal
+                if (imageRow.is_main) {
+                    try {
+                        const newMainId = remaining[0].id;
+                        await window.supabase
+                            .from('property_images')
+                            .update({ is_main: true })
+                            .eq('id', newMainId);
+                        await window.supabase
+                            .from('property_images')
+                            .update({ is_main: false })
+                            .eq('property_id', propertyId)
+                            .neq('id', newMainId);
+                    } catch (reassignErr) {
+                        console.warn('⚠️ Error reasignando imagen principal:', reassignErr);
+                    }
+                }
+
+                // Reindexar image_order secuencialmente
+                for (let i = 0; i < remaining.length; i++) {
+                    const img = remaining[i];
+                    try {
+                        await window.supabase
+                            .from('property_images')
+                            .update({ image_order: i })
+                            .eq('id', img.id);
+                    } catch (orderErr) {
+                        console.warn('⚠️ Error actualizando image_order:', orderErr);
+                    }
+                }
+            }
+
+            console.log('✅ Imagen eliminada correctamente de la propiedad');
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Error en deletePropertyImage:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
     // Insertar registro en la BD cuando no se sube a Storage (usa data URL)
     async #insertImageRecordWithoutStorage(propertyId, imageUrl, index) {
         const imageRecord = {
