@@ -713,12 +713,21 @@ async function loadPropertyForEdit(propertyId) {
         updateTourOrder();
 
         // Cargar imágenes existentes (solo mostrar)
-        const { data: images } = await window.supabase
-            .from('property_images')
-            .select('id, image_url, image_order, is_main')
-            .eq('property_id', propertyId)
-            .order('image_order', { ascending: true });
-        renderExistingImages(images || []);
+        let images = [];
+        try {
+            const { data: imgs } = await window.supabase
+                .from('property_images')
+                .select('id, image_url, image_order, is_main')
+                .eq('property_id', propertyId)
+                .order('image_order', { ascending: true });
+            images = imgs || [];
+        } catch (_) { images = []; }
+
+        // Fallback: si no hay filas en property_images pero la propiedad tiene image_url, mostrarla editable
+        if ((!images || images.length === 0) && property.image_url) {
+            images = [{ id: null, image_url: property.image_url, image_order: 0, is_main: true }];
+        }
+        renderExistingImages(images);
 
         // Cargar videos existentes (solo mostrar, no editar orden/títulos desde aquí aún)
         try {

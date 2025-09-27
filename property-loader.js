@@ -398,7 +398,7 @@ window.goToProperty = function(propertyId) {
     try {
         console.log('🔗 Navegando a propiedad:', propertyId);
         // Navegar a la página de detalle
-        window.location.href = `propiedad.html?id=${propertyId}`;
+window.location.href = `property-detail.html?id=${propertyId}`;
     } catch (error) {
         console.error('❌ Error navegando a propiedad:', error);
         alert('Error al abrir la propiedad. Por favor, intenta nuevamente.');
