@@ -715,7 +715,7 @@ async function loadPropertyForEdit(propertyId) {
         // Cargar imágenes existentes (solo mostrar)
         const { data: images } = await window.supabase
             .from('property_images')
-            .select('image_url, image_order, is_main')
+            .select('id, image_url, image_order, is_main')
             .eq('property_id', propertyId)
             .order('image_order', { ascending: true });
         renderExistingImages(images || []);
@@ -772,20 +772,20 @@ function renderExistingImages(images) {
         <div class="file-item">
             <img src="${img.image_url}" alt="Imagen existente ${index + 1}">
             <div class="file-name">${img.is_main ? '📌 Principal' : 'Imagen ' + (index + 1)}</div>
-            <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, '${encodeURIComponent(img.image_url)}')">×</button>
+            <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, ${img.id || 'null'}, '${encodeURIComponent(img.image_url)}')">×</button>
         </div>
     `).join('');
 }
 
 // Eliminar imagen existente (modo edición)
-async function deleteExistingImage(buttonEl, encodedUrl) {
+async function deleteExistingImage(buttonEl, imageId, encodedUrl) {
     try {
         if (!editMode || !editingPropertyId) {
             alert('No estás en modo edición');
             return;
         }
 
-        const imageUrl = decodeURIComponent(encodedUrl);
+        const imageUrl = encodedUrl ? decodeURIComponent(encodedUrl) : null;
         if (!confirm('¿Eliminar esta imagen de la propiedad?')) {
             return;
         }
@@ -800,7 +800,7 @@ async function deleteExistingImage(buttonEl, encodedUrl) {
             throw new Error('Property handler no está disponible');
         }
 
-        const result = await window.propertyHandler.deletePropertyImage(editingPropertyId, imageUrl);
+        const result = await window.propertyHandler.deletePropertyImage(editingPropertyId, imageUrl, imageId);
         if (!result || !result.success) {
             throw new Error(result && result.error ? result.error : 'No se pudo eliminar la imagen');
         }

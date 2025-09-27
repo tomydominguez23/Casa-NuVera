@@ -416,9 +416,9 @@ class PropertyHandler {
     }
 
     // Eliminar UNA imagen de una propiedad (DB + Storage) y reordenar
-    async deletePropertyImage(propertyId, imageUrl) {
+    async deletePropertyImage(propertyId, imageUrl, imageId = null) {
         try {
-            if (!propertyId || !imageUrl) {
+            if (!propertyId || (!imageUrl && !imageId)) {
                 throw new Error('Parámetros inválidos para eliminar imagen');
             }
 
@@ -426,20 +426,31 @@ class PropertyHandler {
             let imageRow = null;
             let fetchError = null;
             try {
-                const exact = await window.supabase
-                    .from('property_images')
-                    .select('id, image_url, is_main')
-                    .eq('property_id', propertyId)
-                    .eq('image_url', imageUrl)
-                    .maybeSingle();
-                imageRow = exact.data;
-                fetchError = exact.error;
+                if (imageId) {
+                    const byId = await window.supabase
+                        .from('property_images')
+                        .select('id, image_url, is_main')
+                        .eq('property_id', propertyId)
+                        .eq('id', imageId)
+                        .maybeSingle();
+                    imageRow = byId.data;
+                    fetchError = byId.error;
+                } else {
+                    const exact = await window.supabase
+                        .from('property_images')
+                        .select('id, image_url, is_main')
+                        .eq('property_id', propertyId)
+                        .eq('image_url', imageUrl)
+                        .maybeSingle();
+                    imageRow = exact.data;
+                    fetchError = exact.error;
+                }
             } catch (e) {
                 fetchError = e;
             }
 
             // Fallback: intentar buscar por el nombre del archivo/path si no se encontró
-            if (!imageRow) {
+            if (!imageRow && imageUrl) {
                 try {
                     let pathTail = null;
                     if (imageUrl.includes('/storage/v1/object/public/property-images/')) {
@@ -477,13 +488,14 @@ class PropertyHandler {
 
             // Intentar eliminar archivo de Storage si corresponde a Supabase
             try {
-                if (imageUrl.includes('/storage/v1/object/public/property-images/')) {
+                const urlToUse = imageUrl || imageRow.image_url || '';
+                if (urlToUse.includes('/storage/v1/object/public/property-images/')) {
                     let storagePath = null;
-                    const match = imageUrl.match(/\/object\/public\/property-images\/(.+)$/);
+                    const match = urlToUse.match(/\/object\/public\/property-images\/(.+)$/);
                     if (match && match[1]) {
                         storagePath = match[1];
                     } else {
-                        storagePath = imageUrl.split('/').pop();
+                        storagePath = urlToUse.split('/').pop();
                     }
                     if (storagePath) {
                         storagePath = storagePath.split('?')[0];
