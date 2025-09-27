@@ -8,7 +8,7 @@ class PropertyHandler {
     }
 
     // Función principal para enviar propiedad (actualizada para incluir tours)
-    async submitProperty(formData, files = [], tours = []) {
+    async submitProperty(formData, files = [], tours = [], videos = []) {
         if (this.isSubmitting) {
             return { success: false, message: 'Ya hay una propiedad siendo enviada' };
         }
@@ -50,7 +50,12 @@ class PropertyHandler {
                 await this.saveTours(data.id, tours);
             }
 
-            // 5. Recargar propiedades en la página si existe el loader
+            // 5. Subir y asociar videos si existen
+            if (videos && videos.length > 0) {
+                await this.uploadAndLinkVideos(data.id, videos);
+            }
+
+            // 6. Recargar propiedades en la página si existe el loader
             if (window.propertyLoader) {
                 setTimeout(() => {
                     window.propertyLoader.refreshProperties();
@@ -71,6 +76,132 @@ class PropertyHandler {
             };
         } finally {
             this.isSubmitting = false;
+        }
+    }
+
+    // Subir videos y crear registros en property_videos
+    async uploadAndLinkVideos(propertyId, videos) {
+        try {
+            // Permitir dos formatos de entrada:
+            // - Array<File>
+            // - Array<{ file: File, video_order?: number, video_title?: string }>
+            const asObjects = (videos || []).map((candidate) => {
+                if (candidate && candidate.file instanceof File) {
+                    return {
+                        file: candidate.file,
+                        video_order: candidate.video_order || null,
+                        video_title: candidate.video_title || null
+                    };
+                }
+                return {
+                    file: candidate,
+                    video_order: null,
+                    video_title: null
+                };
+            }).filter(v => !!v.file);
+
+            // Filtrar solo archivos de video por MIME o extensión
+            const videoObjects = asObjects.filter(({ file }) => {
+                const name = (file && file.name ? file.name : '').toLowerCase();
+                const type = (file && file.type ? file.type : '');
+                const looksLikeVideo = type.startsWith('video/');
+                const hasVideoExtension = /\.(mp4|mov|avi|webm|mkv)$/i.test(name);
+                return looksLikeVideo || hasVideoExtension;
+            });
+
+            if (videoObjects.length === 0) {
+                console.log('ℹ️ No hay videos válidos para subir');
+                return { success: true, uploaded: 0 };
+            }
+
+            console.log(`🎬 Procesando ${videoObjects.length} videos para propiedad ${propertyId}...`);
+
+            for (let i = 0; i < videoObjects.length; i++) {
+                const { file, video_order, video_title } = videoObjects[i];
+
+                const timestamp = Date.now();
+                const randomId = Math.random().toString(36).substring(2, 10);
+                const originalName = (file && file.name) ? file.name : `video_${timestamp}.mp4`;
+                const extension = originalName.split('.').pop().toLowerCase();
+                const safeExt = extension.match(/^(mp4|mov|avi|webm|mkv)$/i) ? extension : 'mp4';
+                const fileName = `property_${propertyId}_${i}_${timestamp}_${randomId}.${safeExt}`;
+
+                console.log(`📤 Subiendo video ${i + 1}/${videoObjects.length}: ${fileName}`);
+
+                let videoUrl = null;
+                try {
+                    const { data, error } = await window.supabase.storage
+                        .from('property-videos')
+                        .upload(fileName, file, {
+                            cacheControl: '3600',
+                            upsert: false,
+                            contentType: file && file.type ? file.type : undefined
+                        });
+
+                    if (error) {
+                        console.error('❌ Error subiendo video a Storage:', error);
+                        continue; // No crear registro sin URL
+                    }
+
+                    const { data: urlData } = window.supabase.storage
+                        .from('property-videos')
+                        .getPublicUrl(fileName);
+                    videoUrl = urlData.publicUrl;
+                } catch (storageError) {
+                    console.error('❌ Error de Storage al subir video:', storageError);
+                    continue; // No crear registro sin URL
+                }
+
+                if (!videoUrl) continue;
+
+                const record = {
+                    property_id: propertyId,
+                    video_url: videoUrl,
+                    video_title: video_title || originalName,
+                    video_order: (typeof video_order === 'number' && !isNaN(video_order)) ? video_order : (i + 1)
+                };
+
+                const { error: insertError } = await window.supabase
+                    .from('property_videos')
+                    .insert([record]);
+
+                if (insertError) {
+                    console.error('❌ Error insertando registro de video:', insertError);
+                } else {
+                    console.log('✅ Video vinculado a propiedad');
+                }
+            }
+
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Error general en uploadAndLinkVideos:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Reemplazar videos de una propiedad por los provistos
+    async updatePropertyVideos(propertyId, videos) {
+        try {
+            console.log(`🎬 Actualizando videos para propiedad ${propertyId}...`);
+
+            // Eliminar registros existentes
+            const { error: delErr } = await window.supabase
+                .from('property_videos')
+                .delete()
+                .eq('property_id', propertyId);
+
+            if (delErr) {
+                console.warn('⚠️ Error eliminando videos existentes:', delErr);
+            }
+
+            if (videos && videos.length > 0) {
+                return await this.uploadAndLinkVideos(propertyId, videos);
+            }
+
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Error en updatePropertyVideos:', error);
+            return { success: false, error: error.message };
         }
     }
 
@@ -292,14 +423,55 @@ class PropertyHandler {
             }
 
             // Buscar el registro exacto de la imagen
-            const { data: imageRow, error: fetchError } = await window.supabase
-                .from('property_images')
-                .select('id, image_url, is_main')
-                .eq('property_id', propertyId)
-                .eq('image_url', imageUrl)
-                .single();
+            let imageRow = null;
+            let fetchError = null;
+            try {
+                const exact = await window.supabase
+                    .from('property_images')
+                    .select('id, image_url, is_main')
+                    .eq('property_id', propertyId)
+                    .eq('image_url', imageUrl)
+                    .maybeSingle();
+                imageRow = exact.data;
+                fetchError = exact.error;
+            } catch (e) {
+                fetchError = e;
+            }
 
-            if (fetchError || !imageRow) {
+            // Fallback: intentar buscar por el nombre del archivo/path si no se encontró
+            if (!imageRow) {
+                try {
+                    let pathTail = null;
+                    if (imageUrl.includes('/storage/v1/object/public/property-images/')) {
+                        const match = imageUrl.match(/\/object\/public\/property-images\/(.+)$/);
+                        if (match && match[1]) {
+                            pathTail = match[1].split('?')[0];
+                        }
+                    }
+                    const fileName = imageUrl.split('/').pop()?.split('?')[0] || null;
+
+                    let altQuery = window.supabase
+                        .from('property_images')
+                        .select('id, image_url, is_main')
+                        .eq('property_id', propertyId)
+                        .limit(1);
+
+                    if (pathTail) {
+                        altQuery = altQuery.ilike('image_url', `%${pathTail}`);
+                    } else if (fileName) {
+                        altQuery = altQuery.ilike('image_url', `%${fileName}`);
+                    }
+
+                    const { data: altData, error: altErr } = await altQuery;
+                    if (!altErr && altData && altData.length > 0) {
+                        imageRow = altData[0];
+                    }
+                } catch (e) {
+                    // ignore
+                }
+            }
+
+            if (!imageRow) {
                 throw new Error('Imagen no encontrada para esta propiedad');
             }
 
@@ -590,7 +762,19 @@ class PropertyHandler {
                 console.log('✅ Registros de imágenes eliminados');
             }
 
-            // 5. Eliminar propiedad principal
+            // 5. Eliminar videos
+            console.log('🎬 Eliminando videos asociados...');
+            const { error: videosError } = await window.supabase
+                .from('property_videos')
+                .delete()
+                .eq('property_id', propertyId);
+            if (videosError) {
+                console.warn('⚠️ Error eliminando videos:', videosError);
+            } else {
+                console.log('✅ Videos eliminados');
+            }
+
+            // 6. Eliminar propiedad principal
             console.log('🏠 Eliminando propiedad principal...');
             const { error: propertyError } = await window.supabase
                 .from('properties')
@@ -604,7 +788,7 @@ class PropertyHandler {
 
             console.log('✅ Propiedad eliminada completamente:', propertyId);
             
-            // 6. Verificar que la eliminación fue exitosa (con reintentos)
+            // 7. Verificar que la eliminación fue exitosa (con reintentos)
             let verificationAttempts = 0;
             let propertyStillExists = true;
             
@@ -734,8 +918,8 @@ class PropertyHandler {
 window.propertyHandler = new PropertyHandler();
 
 // Función de conveniencia para el formulario (actualizada)
-window.submitProperty = async function(formData, files, tours) {
-    return await window.propertyHandler.submitProperty(formData, files, tours);
+window.submitProperty = async function(formData, files, tours, videos) {
+    return await window.propertyHandler.submitProperty(formData, files, tours, videos);
 };
 
 // Auto-validar conexión cuando se carga
