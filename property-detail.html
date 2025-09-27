@@ -1145,9 +1145,8 @@
                     <div class="contact-buttons">
                         <!-- 🆕 Contenedor Tour: selector + botón (visible solo si hay tours) -->
                         <select id="tourSelect" class="tour-select" style="display:none;"></select>
-                        <button id="sidebarTourBtn" class="tour-btn" style="display:none;">
-                            <span class="tour-icon">🔄</span>
-                            Ver Tour Virtual
+                        <button id="sidebarTourBtn" class="contact-btn whatsapp" style="display:none;">
+                            🔄 VER TOUR VIRTUAL
                         </button>
                         <a href="#" class="contact-btn whatsapp" onclick="contactViaWhatsApp(); return false;">
                             📱 CONTACTAR POR WHATSAPP
@@ -1182,7 +1181,7 @@
 
     <!-- 🆕 Sticky CTA móvil -->
     <div class="sticky-cta" id="stickyCta" style="display:none;">
-        <a href="#" class="cta-btn secondary" id="stickyTourBtn" style="display:none;" onclick="openSelectedTour(); return false;">Tour</a>
+        <a href="#" class="cta-btn primary" id="stickyTourBtn" style="display:none;" onclick="openSelectedTour(); return false;">Tour</a>
         <a href="#" class="cta-btn primary" onclick="contactViaWhatsApp(); return false;">WhatsApp</a>
         <a href="tel:+56948406684" class="cta-btn secondary">Llamar</a>
     </div>
