@@ -4,6 +4,7 @@ class PropertyDetailDynamic {
         this.property = null;
         this.propertyImages = [];
         this.propertyTours = [];
+        this.propertyVideos = [];
         this.init();
     }
 
@@ -30,6 +31,7 @@ class PropertyDetailDynamic {
             await this.loadProperty(propertyId);
             await this.loadPropertyImages(propertyId);
             await this.loadPropertyTours(propertyId);
+            await this.loadPropertyVideos(propertyId);
 
             // Actualizar la página con los datos reales
             this.updatePropertyData();
@@ -154,6 +156,27 @@ class PropertyDetailDynamic {
         }
     }
 
+    async loadPropertyVideos(propertyId) {
+        try {
+            console.log('🎬 Cargando videos de la propiedad...');
+            const { data, error } = await window.supabase
+                .from('property_videos')
+                .select('video_url, video_title, video_order')
+                .eq('property_id', propertyId)
+                .order('video_order', { ascending: true });
+            if (error) {
+                console.error('⚠️ Error al cargar videos:', error);
+                this.propertyVideos = [];
+                return;
+            }
+            this.propertyVideos = data || [];
+            console.log(`✅ ${this.propertyVideos.length} videos cargados`);
+        } catch (error) {
+            console.error('💥 Error en loadPropertyVideos:', error);
+            this.propertyVideos = [];
+        }
+    }
+
     updatePropertyData() {
         if (!this.property) {
             console.log('ℹ️ No hay datos de propiedad para actualizar');
@@ -195,7 +218,9 @@ class PropertyDetailDynamic {
         this.updatePropertyGallery();
 
         // Actualizar tours 360°
-        this.updatePropertyTours();
+            this.updatePropertyTours();
+        this.updatePropertyVideos();
+            this.updatePropertyVideos();
 
         // Actualizar Google Maps
         this.updateGoogleMaps();
@@ -210,6 +235,32 @@ class PropertyDetailDynamic {
         this.updateSidebarFeatures();
 
         console.log('✅ Datos de la propiedad actualizados correctamente');
+    }
+
+    updatePropertyVideos() {
+        const container = document.getElementById('propertyVideosSection');
+        if (!container) return;
+        container.style.display = 'none';
+
+        if (!this.propertyVideos || this.propertyVideos.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        const items = this.propertyVideos.map((v, idx) => `
+            <div class="video-item">
+                <div class="video-wrapper">
+                    <video controls preload="metadata" src="${v.video_url}"></video>
+                </div>
+                <div class="video-caption">${v.video_title || `Video ${idx + 1}`}</div>
+            </div>
+        `).join('');
+
+        container.innerHTML = `
+            <h3 style="margin-bottom: 1rem;">🎬 Videos de la Propiedad</h3>
+            <div class="videos-grid">${items}</div>
+        `;
+        container.style.display = '';
     }
 
     updatePropertyFeatures() {

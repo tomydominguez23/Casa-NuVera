@@ -536,6 +536,15 @@ async function handleFormSubmit(event) {
                 await window.propertyHandler.uploadAndLinkImages(editingPropertyId, newImageFiles);
             }
 
+            // Subir y vincular videos si el usuario agregó
+            const newVideos = getVideosForSaving();
+            if (newVideos.length > 0) {
+                const videosResult = await window.propertyHandler.updatePropertyVideos(editingPropertyId, newVideos);
+                if (videosResult && videosResult.success === false) {
+                    console.warn('⚠️ Error actualizando videos:', videosResult.error);
+                }
+            }
+
             showLoading(false);
             showSuccess();
 
@@ -544,7 +553,8 @@ async function handleFormSubmit(event) {
         } else {
             // Crear nueva propiedad
             const imageFiles = propertyImages.map(img => img.file);
-            const result = await window.propertyHandler.submitProperty(formData, imageFiles, getToursForSaving());
+            const videos = getVideosForSaving();
+            const result = await window.propertyHandler.submitProperty(formData, imageFiles, getToursForSaving(), videos);
             showLoading(false);
             if (result.success) {
                 showSuccess();
@@ -709,6 +719,29 @@ async function loadPropertyForEdit(propertyId) {
             .eq('property_id', propertyId)
             .order('image_order', { ascending: true });
         renderExistingImages(images || []);
+
+        // Cargar videos existentes (solo mostrar, no editar orden/títulos desde aquí aún)
+        try {
+            const { data: videosData } = await window.supabase
+                .from('property_videos')
+                .select('video_url, video_title, video_order')
+                .eq('property_id', propertyId)
+                .order('video_order', { ascending: true });
+            if (Array.isArray(videosData) && videosData.length > 0) {
+                const container = document.getElementById('videoList');
+                if (container) {
+                    container.innerHTML = videosData.map((v, idx) => `
+                        <div class="video-item">
+                            <video src="${v.video_url}" controls muted preload="metadata"></video>
+                            <div class="video-name">${v.video_title || `Video ${idx + 1}`}</div>
+                            <div class="video-info">Orden: ${v.video_order || (idx + 1)}</div>
+                        </div>
+                    `).join('');
+                }
+            }
+        } catch (e) {
+            console.warn('⚠️ No se pudieron cargar videos existentes:', e);
+        }
 
         console.log('✅ Datos cargados para edición');
     } catch (e) {

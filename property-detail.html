@@ -634,6 +634,41 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Videos Section */
+        .property-videos-section {
+            margin: 2rem 0 !important;
+            padding: 2rem !important;
+            background: #f8f9fa !important;
+            border: 2px solid #e9ecef !important;
+            border-radius: 12px !important;
+        }
+
+        .videos-grid {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+            gap: 1rem !important;
+        }
+
+        .video-item .video-wrapper {
+            position: relative !important;
+            background: #000 !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            aspect-ratio: 16 / 9 !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .video-item video {
+            width: 100% !important;
+            height: 100% !important;
+            display: block !important;
+        }
+
+        .video-caption {
+            font-size: 0.9rem !important;
+            color: #555 !important;
+        }
+
         /* Google Maps Section */
         .property-map-section {
             margin: 2rem 0 !important;
@@ -1105,6 +1140,9 @@
                                 <p>Hermoso departamento en arriendo con excelente ubicación y todas las comodidades. Cuenta con amplios espacios, buena iluminación natural y acabados de primera calidad. Ideal para familias que buscan comodidad y tranquilidad en una zona privilegiada de Colina.</p>
                             </div>
                         </div>
+
+                        <!-- Videos Section (arriba del mapa) -->
+                        <div class="property-videos-section" id="propertyVideosSection" style="display:none;"></div>
 
                         <!-- Google Maps Section -->
                         <div class="property-map-section" id="propertyMapSection" style="display: none;">
