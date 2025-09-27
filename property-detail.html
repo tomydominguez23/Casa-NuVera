@@ -1474,6 +1474,13 @@
                 // q=lat,lng
                 m = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
                 if (m) { return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) }; }
+                // OpenStreetMap mlat/mlon
+                let qLat = url.match(/[?&]mlat=(-?\d+\.\d+)/);
+                let qLon = url.match(/[?&]mlon=(-?\d+\.\d+)/);
+                if (qLat && qLon) { return { lat: parseFloat(qLat[1]), lng: parseFloat(qLon[1]) }; }
+                // OpenStreetMap #map=zoom/lat/lon
+                m = url.match(/#map=\d+\/(-?\d+\.\d+)\/(-?\d+\.\d+)/);
+                if (m) { return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) }; }
                 return null;
             } catch (_) { return null; }
         }
