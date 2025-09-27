@@ -138,6 +138,28 @@
             display: block !important;
         }
 
+        /* 🆕 Animaciones de deslizamiento para cambio de imagen */
+        .slide-image {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            transform: translateX(0) !important;
+        }
+
+        .slide-animate {
+            transition: transform 0.35s ease-in-out !important;
+            will-change: transform !important;
+        }
+
+        .enter-from-right { transform: translateX(100%) !important; }
+        .enter-from-left { transform: translateX(-100%) !important; }
+        .exit-to-left { transform: translateX(-100%) !important; }
+        .exit-to-right { transform: translateX(100%) !important; }
+
+        .gallery-main.is-animating .gallery-nav-btn { pointer-events: none !important; opacity: 0.8 !important; }
+
         /* 🆕 BOTÓN "VER X FOTOS" ESTILO REFERENCIA */
         .gallery-view-all-btn {
             position: absolute !important;
@@ -350,6 +372,9 @@
             object-fit: contain !important;
             display: block !important;
         }
+
+        /* Deshabilitar interacción durante animación del viewer */
+        .viewer-main-container.is-animating .viewer-nav-btn { pointer-events: none !important; opacity: 0.8 !important; }
 
         .viewer-nav-btn {
             position: absolute !important;
@@ -1253,6 +1278,8 @@
         let currentImageIndex = 0;
         let currentModalImageIndex = 0;
         const defaultTourUrl = 'https://kuula.co/share/collection/7D9k8?logo=0&info=0&fs=1&vr=1&sd=1&initload=0&thumbs=1';
+        let isAnimatingMain = false;
+        let isAnimatingViewer = false;
 
         // 🆕 IMÁGENES EXPANDIDAS - SISTEMA DE 12 FOTOS
         const propertyImages = [
@@ -1561,14 +1588,57 @@
         function updateViewerImage() {
             const viewerImage = document.getElementById('viewerMainImage');
             const counter = document.getElementById('viewerCounter');
-            
             viewerImage.src = propertyImages[currentModalImageIndex];
             counter.textContent = `${currentModalImageIndex + 1} / ${propertyImages.length}`;
-            
-            // Update active thumbnail in strip
             document.querySelectorAll('.viewer-thumb').forEach((thumb, i) => {
                 thumb.classList.toggle('active', i === currentModalImageIndex);
             });
+        }
+
+        function animateViewerImageChange(newIndex, direction) {
+            if (isAnimatingViewer) return;
+            const container = document.querySelector('.viewer-main-container');
+            const baseImg = document.getElementById('viewerMainImage');
+            if (!container || !baseImg) return;
+
+            isAnimatingViewer = true;
+            container.classList.add('is-animating');
+
+            // Prepare outgoing and incoming
+            baseImg.classList.add('slide-image', 'slide-animate');
+
+            const incoming = document.createElement('img');
+            incoming.src = propertyImages[newIndex];
+            incoming.alt = 'Vista completa';
+            incoming.className = 'viewer-main-image slide-image slide-animate ' + (direction === 'right' ? 'enter-from-right' : 'enter-from-left');
+            container.appendChild(incoming);
+
+            // Force reflow to apply starting transform
+            void incoming.offsetWidth;
+
+            // Animate
+            baseImg.classList.add(direction === 'right' ? 'exit-to-left' : 'exit-to-right');
+            incoming.classList.remove(direction === 'right' ? 'enter-from-right' : 'enter-from-left');
+
+            const onDone = () => {
+                incoming.removeEventListener('transitionend', onDone);
+                // Commit new state
+                baseImg.classList.remove('exit-to-left', 'exit-to-right', 'slide-image', 'slide-animate');
+                baseImg.src = propertyImages[newIndex];
+                // Clean temp
+                if (incoming && incoming.parentNode) incoming.parentNode.removeChild(incoming);
+                container.classList.remove('is-animating');
+                isAnimatingViewer = false;
+                // Update index and UI counters/thumbnails
+                currentModalImageIndex = newIndex;
+                const counter = document.getElementById('viewerCounter');
+                if (counter) counter.textContent = `${currentModalImageIndex + 1} / ${propertyImages.length}`;
+                document.querySelectorAll('.viewer-thumb').forEach((thumb, i) => {
+                    thumb.classList.toggle('active', i === currentModalImageIndex);
+                });
+            };
+
+            incoming.addEventListener('transitionend', onDone);
         }
 
         function generateViewerThumbnails() {
@@ -1591,24 +1661,32 @@
         }
 
         function previousImage() {
-            currentModalImageIndex = (currentModalImageIndex - 1 + propertyImages.length) % propertyImages.length;
-            updateViewerImage();
+            if (isAnimatingViewer) return;
+            const nextIndex = (currentModalImageIndex - 1 + propertyImages.length) % propertyImages.length;
+            animateViewerImageChange(nextIndex, 'left');
         }
 
         function nextImage() {
-            currentModalImageIndex = (currentModalImageIndex + 1) % propertyImages.length;
-            updateViewerImage();
+            if (isAnimatingViewer) return;
+            const nextIndex = (currentModalImageIndex + 1) % propertyImages.length;
+            animateViewerImageChange(nextIndex, 'right');
         }
 
         function goToImage(index) {
-            currentModalImageIndex = index;
-            updateViewerImage();
+            if (isAnimatingViewer) return;
+            const direction = index === currentModalImageIndex
+                ? 'right'
+                : (index > currentModalImageIndex ? 'right' : 'left');
+            animateViewerImageChange(index, direction);
         }
 
         function goToImageFromGrid(index) {
-            currentModalImageIndex = index;
             setGalleryMode('viewer');
-            updateViewerImage();
+            if (isAnimatingViewer) return;
+            const direction = index === currentModalImageIndex
+                ? 'right'
+                : (index > currentModalImageIndex ? 'right' : 'left');
+            animateViewerImageChange(index, direction);
         }
 
         function handleGalleryKeydown(e) {
@@ -1666,20 +1744,75 @@
         }
 
         // 🆕 Navegación de imagen principal sin abrir modal
-        function showMainImageByIndex(index) {
+        function animateMainImageChange(newIndex, direction) {
+            if (isAnimatingMain) return;
+            const container = document.querySelector('.gallery-main');
+            const baseImg = document.getElementById('mainImage');
+            if (!container || !baseImg) return;
+
+            isAnimatingMain = true;
+            container.classList.add('is-animating');
+
+            // Prepare outgoing and incoming
+            baseImg.classList.add('slide-image', 'slide-animate');
+
+            const incoming = document.createElement('img');
+            incoming.src = propertyImages[newIndex];
+            incoming.alt = baseImg.alt || 'Imagen de propiedad';
+            incoming.className = 'slide-image slide-animate ' + (direction === 'right' ? 'enter-from-right' : 'enter-from-left');
+            container.appendChild(incoming);
+
+            // Force reflow
+            void incoming.offsetWidth;
+
+            // Animate
+            baseImg.classList.add(direction === 'right' ? 'exit-to-left' : 'exit-to-right');
+            incoming.classList.remove(direction === 'right' ? 'enter-from-right' : 'enter-from-left');
+
+            const onDone = () => {
+                incoming.removeEventListener('transitionend', onDone);
+                // Commit new state
+                baseImg.classList.remove('exit-to-left', 'exit-to-right', 'slide-image', 'slide-animate');
+                baseImg.src = propertyImages[newIndex];
+                // Clean temp
+                if (incoming && incoming.parentNode) incoming.parentNode.removeChild(incoming);
+                container.classList.remove('is-animating');
+                isAnimatingMain = false;
+                currentImageIndex = newIndex;
+            };
+
+            incoming.addEventListener('transitionend', onDone);
+        }
+
+        function showMainImageByIndex(index, opts = {}) {
             if (!propertyImages || propertyImages.length === 0) return;
             const bounded = ((index % propertyImages.length) + propertyImages.length) % propertyImages.length;
-            currentImageIndex = bounded;
-            const img = document.getElementById('mainImage');
-            if (img) img.src = propertyImages[bounded];
+            if (bounded === currentImageIndex) return;
+            const animate = opts.animate !== false; // por defecto true
+            let direction = opts.direction;
+            if (!direction) {
+                const len = propertyImages.length;
+                const delta = (bounded - currentImageIndex + len) % len;
+                // delta 1 avanza derecha, delta len-1 retrocede izquierda
+                direction = (delta === 0) ? 'right' : (delta <= len / 2 ? 'right' : 'left');
+            }
+            if (animate) {
+                animateMainImageChange(bounded, direction);
+            } else {
+                const img = document.getElementById('mainImage');
+                if (img) img.src = propertyImages[bounded];
+                currentImageIndex = bounded;
+            }
         }
 
         function previousMainImage() {
-            showMainImageByIndex(currentImageIndex - 1);
+            if (isAnimatingMain) return;
+            showMainImageByIndex(currentImageIndex - 1, { animate: true, direction: 'left' });
         }
 
         function nextMainImage() {
-            showMainImageByIndex(currentImageIndex + 1);
+            if (isAnimatingMain) return;
+            showMainImageByIndex(currentImageIndex + 1, { animate: true, direction: 'right' });
         }
 
         function openSelectedTour() {
