@@ -737,6 +737,12 @@
             border: none !important;
         }
 
+        /* Leaflet overrides to fit container */
+        .leaflet-container {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
         /* SIDEBAR DERECHA NUEVA */
         .property-sidebar {
             background: white !important;
@@ -1307,6 +1313,9 @@
     </div>
 
     <!-- Scripts -->
+    <!-- Leaflet CSS/JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="supabase.js"></script>
     <script src="property-detail-dynamic.js"></script>
 
@@ -1445,10 +1454,10 @@
                         }
                     }
 
-                    // Cargar y mostrar Google Maps si existe
-                    if (property.google_maps_url) {
-                        console.log('🗺️ URL de Google Maps encontrada:', property.google_maps_url);
-                        showGoogleMap(property.google_maps_url);
+        // Cargar y mostrar mapa si existe URL
+        if (property.google_maps_url) {
+            console.log('🗺️ URL de mapa encontrada:', property.google_maps_url);
+            showGoogleMap(property.google_maps_url);
                     } else {
                         console.log('ℹ️ No se encontró URL de Google Maps en la propiedad');
                         // Mostrar mapa por defecto para testing
@@ -1482,51 +1491,63 @@
         }
 
         function showGoogleMap(mapsUrl) {
-            console.log('🗺️ Mostrando Google Maps:', mapsUrl);
-            
+            console.log('🗺️ Mostrando mapa (Leaflet/OSM):', mapsUrl);
+
             const mapSection = document.getElementById('propertyMapSection');
             const mapContainer = document.getElementById('propertyMapContainer');
-            
+
             if (!mapSection || !mapContainer) {
                 console.log('⚠️ Elementos de mapa no encontrados');
                 return;
             }
-            
-            // Convertir URL a formato embed si es necesario
-            const embedUrl = convertToEmbedUrl(mapsUrl);
-            
-            if (embedUrl) {
-                // Crear iframe con atributos correctos para evitar X-Frame-Options
-                const iframe = document.createElement('iframe');
-                iframe.src = embedUrl;
-                iframe.width = '100%';
-                iframe.height = '100%';
-                iframe.frameBorder = '0';
-                iframe.style.border = 'none';
-                iframe.allowFullscreen = true;
-                iframe.setAttribute('allowfullscreen', '');
-                iframe.setAttribute('loading', 'lazy');
-                
-                // Limpiar contenedor y agregar iframe
-                mapContainer.innerHTML = '';
-                mapContainer.appendChild(iframe);
-                
-                mapSection.style.display = 'block';
-                console.log('✅ Mapa mostrado correctamente');
-            } else {
-                console.log('⚠️ No se pudo convertir la URL del mapa');
-                // Mostrar mensaje de error en el contenedor
-                mapContainer.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f8f9fa; color: #666; text-align: center; padding: 2rem;">
-                        <div>
-                            <div style="font-size: 2rem; margin-bottom: 1rem;">🗺️</div>
-                            <div>No se pudo cargar el mapa</div>
-                            <div style="font-size: 0.9rem; margin-top: 0.5rem;">URL no válida: ${mapsUrl}</div>
-                        </div>
-                    </div>
-                `;
-                mapSection.style.display = 'block';
-            }
+
+            // Intentar extraer coordenadas desde la URL (Google Maps comparte @lat,lng o !3d lat !4d lng)
+            const coords = extractLatLng(mapsUrl);
+            const center = coords || { lat: -33.4489, lng: -70.6693 }; // Santiago fallback
+
+            // Limpiar contenedor
+            mapContainer.innerHTML = '';
+
+            // Crear div interno para Leaflet
+            const leafletDiv = document.createElement('div');
+            leafletDiv.id = 'leafletMap';
+            leafletDiv.style.width = '100%';
+            leafletDiv.style.height = '100%';
+            mapContainer.appendChild(leafletDiv);
+
+            // Inicializar Leaflet
+            const map = L.map('leafletMap');
+            map.setView([center.lat, center.lng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+            L.marker([center.lat, center.lng]).addTo(map);
+
+            mapSection.style.display = 'block';
+        }
+
+        function extractLatLng(url) {
+            try {
+                if (!url) return null;
+                // @lat,lng
+                let m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (m) { return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) }; }
+                // !3dlat!4dlng
+                m = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+                if (m) { return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) }; }
+                // q=lat,lng
+                m = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (m) { return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) }; }
+                // OpenStreetMap mlat/mlon
+                let qLat = url.match(/[?&]mlat=(-?\d+\.\d+)/);
+                let qLon = url.match(/[?&]mlon=(-?\d+\.\d+)/);
+                if (qLat && qLon) { return { lat: parseFloat(qLat[1]), lng: parseFloat(qLon[1]) }; }
+                // OpenStreetMap #map=zoom/lat/lon
+                m = url.match(/#map=\d+\/(-?\d+\.\d+)\/(-?\d+\.\d+)/);
+                if (m) { return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) }; }
+                return null;
+            } catch (_) { return null; }
         }
 
         function convertToEmbedUrl(url) {
