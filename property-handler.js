@@ -366,6 +366,108 @@ class PropertyHandler {
         }
     }
 
+    // Eliminar imagen individual por URL
+    async deleteImageByUrl(propertyId, imageUrl) {
+        try {
+            if (!propertyId || !imageUrl) throw new Error('Parámetros inválidos');
+
+            // Intentar eliminar del Storage
+            try {
+                if (imageUrl.includes('supabase')) {
+                    const fileName = imageUrl.split('/').pop();
+                    if (fileName) {
+                        await window.supabase.storage
+                            .from('property-images')
+                            .remove([fileName]);
+                    }
+                }
+            } catch (e) {
+                console.warn('⚠️ No se pudo eliminar archivo de Storage (imagen):', e);
+            }
+
+            // Eliminar registro de BD
+            const { error } = await window.supabase
+                .from('property_images')
+                .delete()
+                .eq('property_id', propertyId)
+                .eq('image_url', imageUrl);
+            if (error) throw error;
+
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Error eliminando imagen:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Eliminar video individual por URL
+    async deleteVideoByUrl(propertyId, videoUrl) {
+        try {
+            if (!propertyId || !videoUrl) throw new Error('Parámetros inválidos');
+
+            // Intentar eliminar del Storage
+            try {
+                if (videoUrl.includes('supabase')) {
+                    const fileName = videoUrl.split('/').pop();
+                    if (fileName) {
+                        await window.supabase.storage
+                            .from('property-videos')
+                            .remove([fileName]);
+                    }
+                }
+            } catch (e) {
+                console.warn('⚠️ No se pudo eliminar archivo de Storage (video):', e);
+            }
+
+            // Eliminar registro de BD
+            const { error } = await window.supabase
+                .from('property_videos')
+                .delete()
+                .eq('property_id', propertyId)
+                .eq('video_url', videoUrl);
+            if (error) throw error;
+
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Error eliminando video:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Eliminar todos los videos de una propiedad
+    async deleteAllVideos(propertyId) {
+        try {
+            const { data: videos } = await window.supabase
+                .from('property_videos')
+                .select('video_url')
+                .eq('property_id', propertyId);
+            if (Array.isArray(videos)) {
+                for (const v of videos) {
+                    try {
+                        if (v.video_url && v.video_url.includes('supabase')) {
+                            const fileName = v.video_url.split('/').pop();
+                            if (fileName) {
+                                await window.supabase.storage
+                                    .from('property-videos')
+                                    .remove([fileName]);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('⚠️ Error eliminando archivo de video:', e);
+                    }
+                }
+            }
+            await window.supabase
+                .from('property_videos')
+                .delete()
+                .eq('property_id', propertyId);
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Error eliminando todos los videos:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
     // Insertar registro en la BD cuando no se sube a Storage (usa data URL)
     async #insertImageRecordWithoutStorage(propertyId, imageUrl, index) {
         const imageRecord = {

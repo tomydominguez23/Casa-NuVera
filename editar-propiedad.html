@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Propiedad - Casa Nuvera</title>
+    <link rel="stylesheet" href="property-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <style>
+        body { background: #f8f9fa; }
+        .main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.06); padding: 1.5rem; }
+        .header { display:flex; justify-content: space-between; align-items:center; margin-bottom:1rem; }
+        .header h1 { font-weight: 500; }
+        .actions { display:flex; gap: .5rem; }
+        .btn { border: none; border-radius: 8px; padding: .7rem 1rem; cursor:pointer; }
+        .btn-primary { background: linear-gradient(135deg, #3498db, #2980b9); color: #fff; }
+        .btn-secondary { background: #95a5a6; color: #fff; }
+        .danger { background: #e74c3c; color:#fff; }
+        .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap:1rem; }
+        .form-group { display:flex; flex-direction:column; }
+        .form-group label { font-weight:600; margin-bottom:.4rem; }
+        .form-control { padding: .9rem; border: 2px solid #ddd; border-radius:8px; }
+        .section { margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid #eee; }
+        .file-list, .video-list { display:grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap:1rem; }
+        .file-item, .video-item { background:#f8f9fa; border:1px solid #ddd; border-radius:10px; padding: .7rem; position:relative; text-align:center; }
+        .remove-file { position:absolute; top:-5px; right:-5px; background:#e74c3c; color:#fff; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; }
+        .note { background:#fff3cd; border-left:4px solid #f39c12; padding: .8rem 1rem; border-radius:8px; color:#856404; margin-top:.8rem; }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="card">
+            <div class="header">
+                <div>
+                    <h1>Editar Propiedad</h1>
+                    <div id="propId" style="color:#6c757d; font-size:.9rem;"></div>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-secondary" id="backBtn">← Volver</button>
+                    <button class="btn btn-primary" id="saveBtn">💾 Guardar</button>
+                </div>
+            </div>
+
+            <form id="editForm">
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="title">Título</label>
+                        <input id="title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="property_type">Tipo de Operación</label>
+                        <select id="property_type" class="form-control" required>
+                            <option value="venta">Venta</option>
+                            <option value="arriendo">Arriendo</option>
+                            <option value="arriendo-temporal">Arriendo Temporal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="category">Categoría</label>
+                        <select id="category" class="form-control" required>
+                            <option value="casa">Casa</option>
+                            <option value="departamento">Departamento</option>
+                            <option value="oficina">Oficina</option>
+                            <option value="local-comercial">Local Comercial</option>
+                            <option value="terreno">Terreno</option>
+                            <option value="bodega">Bodega</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Precio</label>
+                        <input type="number" id="price" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="bedrooms">Dormitorios</label>
+                        <select id="bedrooms" class="form-control" required>
+                            <option value="0">Studio</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bathrooms">Baños</label>
+                        <select id="bathrooms" class="form-control" required>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" class="form-control" rows="4"></textarea>
+                </div>
+
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="region">Región</label>
+                        <input id="region" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="commune">Comuna</label>
+                        <input id="commune" class="form-control">
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="address">Dirección</label>
+                        <input id="address" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="neighborhood">Barrio</label>
+                        <input id="neighborhood" class="form-control">
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="currency">Moneda</label>
+                        <select id="currency" class="form-control">
+                            <option value="CLP">CLP</option>
+                            <option value="UF">UF</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenses">Gastos Comunes (CLP)</label>
+                        <input type="number" id="expenses" class="form-control">
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="total_area">Superficie Total (m²)</label>
+                        <input type="number" id="total_area" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="built_area">Superficie Construida (m²)</label>
+                        <input type="number" id="built_area" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="parking_spaces">Estacionamientos</label>
+                        <select id="parking_spaces" class="form-control">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="google_maps_url">URL Google Maps</label>
+                    <input id="google_maps_url" class="form-control" placeholder="https://maps.google.com/...">
+                    <div class="note">Si cambia el mapa, se actualizará el iframe de la propiedad.</div>
+                </div>
+
+                <div class="section">
+                    <h3>Imágenes</h3>
+                    <div id="existingImages" class="file-list"></div>
+                    <div class="note">Puedes eliminar imágenes existentes. Luego agrega imágenes nuevas si quieres.</div>
+                    <input type="file" id="newImages" accept="image/*,.heic,.heif" multiple style="margin-top:1rem;">
+                    <div id="newImagesList" class="file-list" style="margin-top:1rem;"></div>
+                </div>
+
+                <div class="section">
+                    <h3>Video (único)</h3>
+                    <div id="existingVideo" class="video-list"></div>
+                    <div class="note">Solo 1 video. Puedes eliminar el existente y subir uno nuevo.</div>
+                    <input type="file" id="newVideo" accept="video/*" style="margin-top:1rem;">
+                    <div id="newVideoPreview" class="video-list" style="margin-top:1rem;"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let propertyId = null;
+        let dirty = false;
+        let newImageFiles = [];
+        let newVideoFile = null;
+
+        window.addEventListener('beforeunload', function(e) {
+            if (dirty) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const params = new URLSearchParams(window.location.search);
+            propertyId = params.get('id');
+            if (!propertyId) {
+                alert('Falta id de propiedad');
+                window.location.href = 'admin-properties.html';
+                return;
+            }
+            document.getElementById('propId').textContent = 'ID: ' + propertyId;
+
+            document.getElementById('backBtn').addEventListener('click', () => {
+                window.location.href = 'admin-properties.html';
+            });
+            document.getElementById('saveBtn').addEventListener('click', onSave);
+
+            const inputs = document.querySelectorAll('#editForm input, #editForm select, #editForm textarea');
+            inputs.forEach(i => i.addEventListener('input', () => dirty = true));
+
+            document.getElementById('newImages').addEventListener('change', onPickNewImages);
+            document.getElementById('newVideo').addEventListener('change', onPickNewVideo);
+
+            await ensureSupabase();
+            await loadProperty();
+            await loadImages();
+            await loadVideo();
+        });
+
+        async function ensureSupabase() {
+            if (window.supabase) return;
+            await new Promise(resolve => {
+                window.addEventListener('supabaseReady', resolve);
+            });
+        }
+
+        async function loadProperty() {
+            const { data, error } = await window.supabase
+                .from('properties')
+                .select('*')
+                .eq('id', propertyId)
+                .single();
+            if (error) { alert('No se pudo cargar la propiedad'); return; }
+            setValue('title', data.title);
+            setValue('property_type', data.property_type);
+            setValue('category', data.category);
+            setValue('price', data.price);
+            setValue('bedrooms', data.bedrooms);
+            setValue('bathrooms', data.bathrooms);
+            setValue('description', data.description || '');
+            setValue('region', data.region || '');
+            setValue('commune', data.commune || '');
+            setValue('address', data.address || '');
+            setValue('neighborhood', data.neighborhood || '');
+            setValue('currency', data.currency || 'CLP');
+            setValue('expenses', data.expenses || '');
+            setValue('total_area', data.total_area || '');
+            setValue('built_area', data.built_area || '');
+            setValue('parking_spaces', data.parking_spaces || '0');
+            setValue('google_maps_url', data.google_maps_url || '');
+            dirty = false;
+        }
+
+        function setValue(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.value = value == null ? '' : value;
+        }
+
+        async function loadImages() {
+            const { data } = await window.supabase
+                .from('property_images')
+                .select('image_url, is_main, image_order')
+                .eq('property_id', propertyId)
+                .order('image_order', { ascending: true });
+            const container = document.getElementById('existingImages');
+            container.innerHTML = (data || []).map(img => `
+                <div class="file-item">
+                    <img src="${img.image_url}" style="width:100%; height:120px; object-fit:cover; border-radius:6px; margin-bottom:.4rem;">
+                    <div style="font-size:.8rem; color:#666;">${img.is_main ? '📌 Principal' : ''}</div>
+                    <button class="remove-file" onclick="deleteImage('${encodeURIComponent(img.image_url)}')">×</button>
+                </div>
+            `).join('');
+        }
+
+        window.deleteImage = async function(encUrl) {
+            const url = decodeURIComponent(encUrl);
+            if (!confirm('Eliminar esta imagen?')) return;
+            const res = await window.propertyHandler.deleteImageByUrl(propertyId, url);
+            if (!res.success) { alert('No se pudo eliminar la imagen'); return; }
+            dirty = true;
+            await loadImages();
+        }
+
+        async function loadVideo() {
+            const { data } = await window.supabase
+                .from('property_videos')
+                .select('video_url, video_title, video_order')
+                .eq('property_id', propertyId)
+                .order('video_order', { ascending: true });
+            const container = document.getElementById('existingVideo');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div style="color:#6c757d">Sin video</div>';
+                return;
+            }
+            const vid = data[0];
+            container.innerHTML = `
+                <div class="video-item">
+                    <video src="${vid.video_url}" controls muted preload="metadata" style="width:100%; height:150px; object-fit:cover; border-radius:6px;"></video>
+                    <div class="video-name">${vid.video_title || 'Video'}</div>
+                    <button class="remove-file" onclick="deleteVideo('${encodeURIComponent(vid.video_url)}')">×</button>
+                </div>
+            `;
+        }
+
+        window.deleteVideo = async function(encUrl) {
+            const url = decodeURIComponent(encUrl);
+            if (!confirm('Eliminar el video actual?')) return;
+            const res = await window.propertyHandler.deleteVideoByUrl(propertyId, url);
+            if (!res.success) { alert('No se pudo eliminar el video'); return; }
+            dirty = true;
+            await loadVideo();
+        }
+
+        function onPickNewImages(e) {
+            newImageFiles = Array.from(e.target.files || []);
+            const list = document.getElementById('newImagesList');
+            list.innerHTML = '';
+            newImageFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const div = document.createElement('div');
+                    div.className = 'file-item';
+                    div.innerHTML = `<img src="${reader.result}" style="width:100%; height:120px; object-fit:cover; border-radius:6px;">`;
+                    list.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+            dirty = true;
+        }
+
+        function onPickNewVideo(e) {
+            const files = Array.from(e.target.files || []);
+            newVideoFile = files[0] || null;
+            const container = document.getElementById('newVideoPreview');
+            container.innerHTML = '';
+            if (newVideoFile) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    container.innerHTML = `<div class="video-item"><video src="${reader.result}" controls muted preload="metadata" style="width:100%; height:150px; object-fit:cover; border-radius:6px;"></video></div>`;
+                };
+                reader.readAsDataURL(newVideoFile);
+                dirty = true;
+            }
+        }
+
+        async function onSave() {
+            await ensureSupabase();
+            const payload = collectPayload();
+            const { error } = await window.supabase
+                .from('properties')
+                .update({ ...payload, updated_at: new Date().toISOString() })
+                .eq('id', propertyId);
+            if (error) { alert('No se pudo guardar cambios'); return; }
+
+            if (newImageFiles.length > 0) {
+                await window.propertyHandler.uploadAndLinkImages(propertyId, newImageFiles);
+            }
+
+            if (newVideoFile) {
+                // Borrar videos existentes, luego subir el nuevo (único)
+                await window.propertyHandler.deleteAllVideos(propertyId);
+                await window.propertyHandler.uploadAndLinkVideos(propertyId, [newVideoFile]);
+            }
+
+            dirty = false;
+            window.location.href = `property-detail.html?id=${propertyId}`;
+        }
+
+        function collectPayload() {
+            return {
+                title: document.getElementById('title').value,
+                property_type: document.getElementById('property_type').value,
+                category: document.getElementById('category').value,
+                price: parseFloat(document.getElementById('price').value || '0') || 0,
+                bedrooms: parseInt(document.getElementById('bedrooms').value || '0'),
+                bathrooms: parseInt(document.getElementById('bathrooms').value || '1'),
+                description: document.getElementById('description').value || null,
+                region: document.getElementById('region').value || null,
+                commune: document.getElementById('commune').value || null,
+                address: document.getElementById('address').value || null,
+                neighborhood: document.getElementById('neighborhood').value || null,
+                currency: document.getElementById('currency').value || 'CLP',
+                expenses: document.getElementById('expenses').value ? parseFloat(document.getElementById('expenses').value) : null,
+                total_area: document.getElementById('total_area').value ? parseFloat(document.getElementById('total_area').value) : null,
+                built_area: document.getElementById('built_area').value ? parseFloat(document.getElementById('built_area').value) : null,
+                parking_spaces: document.getElementById('parking_spaces').value ? parseInt(document.getElementById('parking_spaces').value) : 0,
+                google_maps_url: document.getElementById('google_maps_url').value || null,
+                published: true
+            };
+        }
+    </script>
+    <script src="property-handler.js"></script>
+</body>
+</html>
