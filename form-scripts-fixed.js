@@ -739,8 +739,58 @@ function renderExistingImages(images) {
         <div class="file-item">
             <img src="${img.image_url}" alt="Imagen existente ${index + 1}">
             <div class="file-name">${img.is_main ? '📌 Principal' : 'Imagen ' + (index + 1)}</div>
+            <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, '${encodeURIComponent(img.image_url)}')">×</button>
         </div>
     `).join('');
+}
+
+// Eliminar imagen existente (modo edición)
+async function deleteExistingImage(buttonEl, encodedUrl) {
+    try {
+        if (!editMode || !editingPropertyId) {
+            alert('No estás en modo edición');
+            return;
+        }
+
+        const imageUrl = decodeURIComponent(encodedUrl);
+        if (!confirm('¿Eliminar esta imagen de la propiedad?')) {
+            return;
+        }
+
+        // Deshabilitar botón visualmente
+        if (buttonEl) {
+            buttonEl.disabled = true;
+            buttonEl.style.opacity = '0.6';
+        }
+
+        if (!window.propertyHandler) {
+            throw new Error('Property handler no está disponible');
+        }
+
+        const result = await window.propertyHandler.deletePropertyImage(editingPropertyId, imageUrl);
+        if (!result || !result.success) {
+            throw new Error(result && result.error ? result.error : 'No se pudo eliminar la imagen');
+        }
+
+        // Recargar la lista de imágenes desde la BD
+        const { data: updatedImages, error } = await window.supabase
+            .from('property_images')
+            .select('image_url, image_order, is_main')
+            .eq('property_id', editingPropertyId)
+            .order('image_order', { ascending: true });
+        if (error) {
+            console.warn('⚠️ Error recargando imágenes:', error);
+        }
+        renderExistingImages(updatedImages || []);
+
+    } catch (e) {
+        console.error('❌ Error eliminando imagen:', e);
+        alert('Error al eliminar la imagen: ' + (e.message || e));
+        if (buttonEl) {
+            buttonEl.disabled = false;
+            buttonEl.style.opacity = '1';
+        }
+    }
 }
 
 function showPreview() {
