@@ -729,27 +729,17 @@ async function loadPropertyForEdit(propertyId) {
         }
         renderExistingImages(images);
 
-        // Cargar videos existentes (solo mostrar, no editar orden/títulos desde aquí aún)
+        // Cargar videos existentes con controles (eliminar y reordenar)
         try {
             const { data: videosData } = await window.supabase
                 .from('property_videos')
-                .select('video_url, video_title, video_order')
+                .select('id, video_url, video_title, video_order')
                 .eq('property_id', propertyId)
                 .order('video_order', { ascending: true });
-            if (Array.isArray(videosData) && videosData.length > 0) {
-                const container = document.getElementById('videoList');
-                if (container) {
-                    container.innerHTML = videosData.map((v, idx) => `
-                        <div class="video-item">
-                            <video src="${v.video_url}" controls muted preload="metadata"></video>
-                            <div class="video-name">${v.video_title || `Video ${idx + 1}`}</div>
-                            <div class="video-info">Orden: ${v.video_order || (idx + 1)}</div>
-                        </div>
-                    `).join('');
-                }
-            }
+            renderExistingVideos(videosData || []);
         } catch (e) {
             console.warn('⚠️ No se pudieron cargar videos existentes:', e);
+            renderExistingVideos([]);
         }
 
         console.log('✅ Datos cargados para edición');
@@ -784,6 +774,122 @@ function renderExistingImages(images) {
             <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, ${img.id || 'null'}, '${encodeURIComponent(img.image_url)}')">×</button>
         </div>
     `).join('');
+}
+
+// ======================
+// VIDEOS EXISTENTES: listar, eliminar y reordenar
+// ======================
+function renderExistingVideos(videos) {
+    const section = document.getElementById('existingVideosSection');
+    const list = document.getElementById('existingVideosList');
+    if (!section || !list) return;
+    if (!videos || videos.length === 0) {
+        section.style.display = 'none';
+        list.innerHTML = '';
+        return;
+    }
+    section.style.display = 'block';
+    list.innerHTML = videos.map((v, index) => `
+        <div class="video-item" data-video-id="${v.id || ''}">
+            <div class="video-wrapper">
+                <video src="${v.video_url}" controls muted preload="metadata"></video>
+            </div>
+            <div class="video-name">${v.video_title || `Video ${index + 1}`}</div>
+            <div class="video-info">Orden: <strong>${(typeof v.video_order === 'number' ? v.video_order : index + 1)}</strong></div>
+            <div style="display:flex; gap:0.5rem; margin-top:0.5rem; justify-content:center;">
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingVideo(${v.id || 'null'}, -1)">↑ Subir</button>
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingVideo(${v.id || 'null'}, 1)">↓ Bajar</button>
+                <button class="remove-file" title="Eliminar video" onclick="deleteExistingVideo(${v.id || 'null'}, '${encodeURIComponent(v.video_url)}')">×</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function deleteExistingVideo(videoId, encodedUrl) {
+    try {
+        if (!editMode || !editingPropertyId) {
+            alert('No estás en modo edición');
+            return;
+        }
+        if (!confirm('¿Eliminar este video de la propiedad?')) return;
+
+        const url = encodedUrl ? decodeURIComponent(encodedUrl) : null;
+        // Eliminar registro de video (y dejamos el archivo en storage por ahora)
+        const del = await window.supabase
+            .from('property_videos')
+            .delete()
+            .match(videoId ? { id: videoId, property_id: editingPropertyId } : { property_id: editingPropertyId, video_url: url });
+        if (del.error) throw del.error;
+
+        // Reindexar orden restante
+        await reindexExistingVideos();
+        // Recargar
+        const { data: videosData } = await window.supabase
+            .from('property_videos')
+            .select('id, video_url, video_title, video_order')
+            .eq('property_id', editingPropertyId)
+            .order('video_order', { ascending: true });
+        renderExistingVideos(videosData || []);
+    } catch (e) {
+        console.error('❌ Error eliminando video:', e);
+        alert('Error al eliminar el video: ' + (e.message || e));
+    }
+}
+
+async function moveExistingVideo(videoId, direction) {
+    try {
+        if (!editMode || !editingPropertyId) return;
+        // Obtener lista actual
+        const { data: videos } = await window.supabase
+            .from('property_videos')
+            .select('id, video_order')
+            .eq('property_id', editingPropertyId)
+            .order('video_order', { ascending: true });
+        if (!videos || videos.length === 0) return;
+
+        // Encontrar índice
+        const index = videos.findIndex(v => v.id === videoId);
+        if (index === -1) return;
+        const targetIndex = index + (direction > 0 ? 1 : -1);
+        if (targetIndex < 0 || targetIndex >= videos.length) return;
+
+        // Intercambiar órdenes (swap)
+        const a = videos[index];
+        const b = videos[targetIndex];
+        const orderA = typeof a.video_order === 'number' ? a.video_order : index + 1;
+        const orderB = typeof b.video_order === 'number' ? b.video_order : targetIndex + 1;
+
+        await window.supabase.from('property_videos').update({ video_order: orderB }).eq('id', a.id);
+        await window.supabase.from('property_videos').update({ video_order: orderA }).eq('id', b.id);
+
+        // Volver a cargar y renderizar
+        const { data: videosData } = await window.supabase
+            .from('property_videos')
+            .select('id, video_url, video_title, video_order')
+            .eq('property_id', editingPropertyId)
+            .order('video_order', { ascending: true });
+        renderExistingVideos(videosData || []);
+    } catch (e) {
+        console.error('❌ Error moviendo video:', e);
+        alert('No se pudo reordenar el video');
+    }
+}
+
+async function reindexExistingVideos() {
+    try {
+        const { data: videos } = await window.supabase
+            .from('property_videos')
+            .select('id')
+            .eq('property_id', editingPropertyId)
+            .order('video_order', { ascending: true });
+        if (!videos) return;
+        for (let i = 0; i < videos.length; i++) {
+            await window.supabase
+                .from('property_videos')
+                .update({ video_order: i + 1 })
+                .eq('id', videos[i].id);
+        }
+    } catch (_) { /* noop */ }
 }
 
 // Eliminar imagen existente (modo edición)
