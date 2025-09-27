@@ -5,6 +5,8 @@ let uploadedFiles = [];
 let propertyTours = [];
 let propertyImages = [];
 let propertyVideos = [];
+let editMode = false;
+let editingPropertyId = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🧪 Modo Casa Nuvera - Formulario iniciado (VERSIÓN CORREGIDA)');
@@ -49,6 +51,17 @@ function initializeApp() {
     document.getElementById('formContainer').style.display = 'block';
     document.getElementById('authWarning').style.display = 'none';
     
+    // Detectar modo edición
+    const params = new URLSearchParams(window.location.search);
+    const editId = params.get('edit');
+    if (editId) {
+        editMode = true;
+        editingPropertyId = editId;
+        console.log('✏️ Modo edición activado. ID:', editingPropertyId);
+        enableEditUI();
+        loadPropertyForEdit(editingPropertyId);
+    }
+
     console.log('✅ Aplicación inicializada correctamente');
 }
 
@@ -502,23 +515,48 @@ async function handleFormSubmit(event) {
         console.log('🌐 Tours incluidos:', getToursForSaving());
         console.log('📸 Imágenes incluidas:', propertyImages.length);
         console.log('🎥 Videos incluidos:', propertyVideos.length);
-        
-        // Preparar archivos para envío (solo imágenes)
-        const imageFiles = propertyImages.map(img => img.file);
-        const result = await window.propertyHandler.submitProperty(formData, imageFiles, getToursForSaving());
-        
-        showLoading(false);
-        
-        if (result.success) {
+
+        if (editMode) {
+            // Actualizar propiedad existente
+            const updatePayload = window.propertyHandler.preparePropertyData(formData);
+            const updateResult = await window.propertyHandler.updateProperty(editingPropertyId, updatePayload);
+            if (!updateResult.success) {
+                throw new Error(updateResult.error || 'No se pudo actualizar la propiedad');
+            }
+
+            // Actualizar tours: reemplazar todos por los actuales del formulario
+            const toursResult = await window.propertyHandler.updatePropertyTours(editingPropertyId, getToursForSaving());
+            if (toursResult && toursResult.success === false) {
+                console.warn('⚠️ Error actualizando tours:', toursResult.error);
+            }
+
+            // Subir nuevas imágenes si el usuario agregó
+            const newImageFiles = propertyImages.map(img => img.file).filter(Boolean);
+            if (newImageFiles.length > 0) {
+                await window.propertyHandler.uploadAndLinkImages(editingPropertyId, newImageFiles);
+            }
+
+            showLoading(false);
             showSuccess();
-            resetForm();
+
+            // Mantener en página de edición y refrescar datos
+            await loadPropertyForEdit(editingPropertyId);
         } else {
-            alert('Error: ' + result.message);
+            // Crear nueva propiedad
+            const imageFiles = propertyImages.map(img => img.file);
+            const result = await window.propertyHandler.submitProperty(formData, imageFiles, getToursForSaving());
+            showLoading(false);
+            if (result.success) {
+                showSuccess();
+                resetForm();
+            } else {
+                alert('Error: ' + result.message);
+            }
         }
     } catch (error) {
         console.error('💥 Error:', error);
         showLoading(false);
-        alert('Error al publicar la propiedad: ' + error.message);
+        alert((editMode ? 'Error al actualizar la propiedad: ' : 'Error al publicar la propiedad: ') + error.message);
     }
 }
 
@@ -588,6 +626,121 @@ function resetForm() {
     document.querySelectorAll('.form-control').forEach(field => {
         field.style.borderColor = '#ddd';
     });
+}
+
+// ======================
+// MODO EDICIÓN
+// ======================
+function enableEditUI() {
+    const header = document.querySelector('.page-header h1');
+    const subtitle = document.getElementById('welcomeMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    if (header) header.textContent = 'Editar Propiedad';
+    if (subtitle) subtitle.textContent = 'Modifica la información de la propiedad seleccionada';
+    if (submitBtn) submitBtn.textContent = '💾 Guardar Cambios';
+}
+
+async function loadPropertyForEdit(propertyId) {
+    try {
+        if (!window.supabase) throw new Error('Supabase no disponible');
+        // Cargar datos principales
+        const { data: property, error } = await window.supabase
+            .from('properties')
+            .select('*')
+            .eq('id', propertyId)
+            .single();
+        if (error) throw error;
+
+        // Prefill campos
+        setFormValue('propertyTitle', property.title || '');
+        setFormValue('propertyType', property.property_type || '');
+        setFormValue('category', property.category || '');
+        setFormValue('bedrooms', String(property.bedrooms ?? ''));
+        setFormValue('bathrooms', String(property.bathrooms ?? ''));
+        setFormValue('description', property.description || '');
+        setFormValue('region', property.region || '');
+        setFormValue('commune', property.commune || '');
+        setFormValue('address', property.address || '');
+        setFormValue('neighborhood', property.neighborhood || '');
+        setFormValue('totalArea', property.total_area ?? '');
+        setFormValue('builtArea', property.built_area ?? '');
+        setFormValue('parkingSpaces', property.parking_spaces ?? '');
+        setFormValue('currency', property.currency || 'CLP');
+        setFormValue('price', property.price ?? '');
+        setFormValue('expenses', property.expenses ?? '');
+        setFormValue('availability', property.availability || 'inmediata');
+        setFormValue('contactName', property.contact_name || '');
+        setFormValue('contactPhone', property.contact_phone || '');
+        setFormValue('contactEmail', property.contact_email || '');
+        setFormValue('googleMapsUrl', property.google_maps_url || '');
+
+        // Features
+        document.querySelectorAll('input[name="features"]').forEach(cb => cb.checked = false);
+        if (Array.isArray(property.features)) {
+            property.features.forEach(val => {
+                const el = document.querySelector(`input[name="features"][value="${val}"]`);
+                if (el) el.checked = true;
+            });
+        }
+        const featuredEl = document.getElementById('destacada');
+        if (featuredEl) featuredEl.checked = !!property.featured;
+
+        // Cargar tours
+        const { data: tours, error: toursError } = await window.supabase
+            .from('property_tours')
+            .select('*')
+            .eq('property_id', propertyId)
+            .order('order_index', { ascending: true });
+        if (toursError) console.warn('⚠️ Error cargando tours:', toursError);
+        propertyTours = (tours || []).map(t => ({
+            id: t.id,
+            tour_title: t.tour_title,
+            tour_url: t.tour_url,
+            order_index: t.order_index || 1,
+            is_active: t.is_active !== false
+        }));
+        renderToursList();
+        updateTourOrder();
+
+        // Cargar imágenes existentes (solo mostrar)
+        const { data: images } = await window.supabase
+            .from('property_images')
+            .select('image_url, image_order, is_main')
+            .eq('property_id', propertyId)
+            .order('image_order', { ascending: true });
+        renderExistingImages(images || []);
+
+        console.log('✅ Datos cargados para edición');
+    } catch (e) {
+        console.error('❌ Error cargando propiedad para editar:', e);
+        alert('No se pudo cargar la propiedad para editar: ' + (e.message || e));
+    }
+}
+
+function setFormValue(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'SELECT' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.value = value == null ? '' : value;
+    }
+}
+
+function renderExistingImages(images) {
+    const section = document.getElementById('existingImagesSection');
+    const list = document.getElementById('existingImagesList');
+    if (!section || !list) return;
+    if (!images || images.length === 0) {
+        section.style.display = 'none';
+        list.innerHTML = '';
+        return;
+    }
+    section.style.display = 'block';
+    list.innerHTML = images.map((img, index) => `
+        <div class="file-item">
+            <img src="${img.image_url}" alt="Imagen existente ${index + 1}">
+            <div class="file-name">${img.is_main ? '📌 Principal' : 'Imagen ' + (index + 1)}</div>
+        </div>
+    `).join('');
 }
 
 function showPreview() {
