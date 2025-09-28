@@ -768,12 +768,118 @@ function renderExistingImages(images) {
     }
     section.style.display = 'block';
     list.innerHTML = images.map((img, index) => `
-        <div class="file-item">
+        <div class="file-item" data-image-id="${img.id || ''}">
             <img src="${img.image_url}" alt="Imagen existente ${index + 1}">
             <div class="file-name">${img.is_main ? '📌 Principal' : 'Imagen ' + (index + 1)}</div>
-            <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, ${img.id || 'null'}, '${encodeURIComponent(img.image_url)}')">×</button>
+            <div style="display:flex; gap:0.5rem; margin-top:0.5rem; justify-content:center;">
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage(${img.id || 'null'}, -1)">↑ Subir</button>
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage(${img.id || 'null'}, 1)">↓ Bajar</button>
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="setImageAsMain(${img.id || 'null'})">📌 Principal</button>
+                <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, ${img.id || 'null'}, '${encodeURIComponent(img.image_url)}')">×</button>
+            </div>
         </div>
     `).join('');
+}
+
+// ======================
+// REORDENAR IMÁGENES EXISTENTES
+// ======================
+async function moveExistingImage(imageId, direction) {
+    try {
+        if (!editMode || !editingPropertyId) return;
+        // Obtener lista actual con su orden
+        const { data: images } = await window.supabase
+            .from('property_images')
+            .select('id, image_order')
+            .eq('property_id', editingPropertyId)
+            .order('image_order', { ascending: true });
+        if (!images || images.length === 0) return;
+
+        const index = images.findIndex(i => i.id === imageId);
+        if (index === -1) return;
+        const targetIndex = index + (direction > 0 ? 1 : -1);
+        if (targetIndex < 0 || targetIndex >= images.length) return;
+
+        const a = images[index];
+        const b = images[targetIndex];
+        const orderA = typeof a.image_order === 'number' ? a.image_order : index;
+        const orderB = typeof b.image_order === 'number' ? b.image_order : targetIndex;
+
+        await window.supabase.from('property_images').update({ image_order: orderB }).eq('id', a.id);
+        await window.supabase.from('property_images').update({ image_order: orderA }).eq('id', b.id);
+
+        // Recargar lista y renderizar
+        const { data: updated } = await window.supabase
+            .from('property_images')
+            .select('id, image_url, image_order, is_main')
+            .eq('property_id', editingPropertyId)
+            .order('image_order', { ascending: true });
+        renderExistingImages(updated || []);
+    } catch (e) {
+        console.error('❌ Error reordenando imagen:', e);
+        alert('No se pudo reordenar la imagen');
+    }
+}
+
+async function setImageAsMain(imageId) {
+    try {
+        if (!editMode || !editingPropertyId) return;
+        if (!imageId) return;
+        // Marcar imagen como principal y desmarcar el resto
+        await window.supabase
+            .from('property_images')
+            .update({ is_main: true })
+            .eq('id', imageId);
+        await window.supabase
+            .from('property_images')
+            .update({ is_main: false })
+            .eq('property_id', editingPropertyId)
+            .neq('id', imageId);
+
+        // Opcional: colocarla al inicio (orden 0) y reindexar
+        try {
+            const { data: imgs } = await window.supabase
+                .from('property_images')
+                .select('id')
+                .eq('property_id', editingPropertyId)
+                .order('image_order', { ascending: true });
+            if (imgs && imgs.length > 0) {
+                // Poner seleccionada primero
+                const others = imgs.filter(i => i.id !== imageId);
+                await window.supabase.from('property_images').update({ image_order: 0 }).eq('id', imageId);
+                for (let i = 0; i < others.length; i++) {
+                    await window.supabase.from('property_images').update({ image_order: i + 1 }).eq('id', others[i].id);
+                }
+            }
+        } catch (_) { /* noop */ }
+
+        const { data: updated } = await window.supabase
+            .from('property_images')
+            .select('id, image_url, image_order, is_main')
+            .eq('property_id', editingPropertyId)
+            .order('image_order', { ascending: true });
+        renderExistingImages(updated || []);
+    } catch (e) {
+        console.error('❌ Error marcando imagen principal:', e);
+        alert('No se pudo marcar como principal');
+    }
+}
+
+async function reindexExistingImages() {
+    try {
+        const { data: imgs } = await window.supabase
+            .from('property_images')
+            .select('id')
+            .eq('property_id', editingPropertyId)
+            .order('image_order', { ascending: true });
+        if (!imgs) return;
+        for (let i = 0; i < imgs.length; i++) {
+            await window.supabase
+                .from('property_images')
+                .update({ image_order: i })
+                .eq('id', imgs[i].id);
+        }
+    } catch (_) { /* noop */ }
 }
 
 // ======================
