@@ -1106,13 +1106,7 @@ async function deleteExistingImage(buttonEl, imageId, encodedUrl) {
             throw new Error('Property handler no está disponible');
         }
 
-        // Usar función mejorada si está disponible, sino la original
-        const deleteFunction = window.deletePropertyImageImproved || window.propertyHandler?.deletePropertyImage;
-        if (!deleteFunction) {
-            throw new Error('No hay función de eliminación disponible');
-        }
-        
-        const result = await deleteFunction(editingPropertyId, imageUrl, imageId);
+        const result = await window.propertyHandler.deletePropertyImage(editingPropertyId, imageUrl, imageId);
         if (!result || !result.success) {
             throw new Error(result && result.error ? result.error : 'No se pudo eliminar la imagen');
         }
