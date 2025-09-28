@@ -774,52 +774,46 @@ function renderExistingImages(images) {
     }
     section.style.display = 'block';
     list.innerHTML = images.map((img, index) => `
-        <div class="file-item" data-image-id="${img.id || ''}">
+        <div class="file-item" data-image-url="${img.image_url || ''}">
             <img src="${img.image_url}" alt="Imagen existente ${index + 1}">
             <div class="file-name">${img.is_main ? '📌 Principal' : 'Imagen ' + (index + 1)}</div>
             <div style="display:flex; gap:0.5rem; margin-top:0.5rem; justify-content:center;">
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage('${img.id || ''}', -1)">↑ Subir</button>
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage('${img.id || ''}', 1)">↓ Bajar</button>
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="setImageAsMain('${img.id || ''}')">📌 Principal</button>
-                <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, '${img.id || 'null'}', '${encodeURIComponent(img.image_url || '')}')">×</button>
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage('${encodeURIComponent(img.image_url || '')}', -1)">↑ Subir</button>
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage('${encodeURIComponent(img.image_url || '')}', 1)">↓ Bajar</button>
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="setImageAsMain('${encodeURIComponent(img.image_url || '')}')">📌 Principal</button>
+                <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, 'null', '${encodeURIComponent(img.image_url || '')}')">×</button>
             </div>
         </div>
     `).join('');
 }
 
-// Carga robusta de imágenes existentes sin usar ORDER ni seleccionar columnas inexistentes.
-// Evita errores 400 por columnas ausentes y ordena en el cliente.
+// Carga robusta de imágenes existentes - CORREGIDA para estructura real sin columna 'id'
 async function fetchExistingImagesForProperty(propertyId, property) {
     try {
-        // Seleccionar todas las columnas para no fallar si faltan algunas
+        // Seleccionar solo las columnas que existen en la estructura real
         const { data, error } = await window.supabase
             .from('property_images')
-            .select('*')
+            .select('property_id, image_url, image_order, is_main, created_at')
             .eq('property_id', propertyId);
 
         if (!error && Array.isArray(data) && data.length > 0) {
-            // Ordenar en cliente: por image_order si existe, si no por created_at, luego por id
-            const hasOrder = data.some(r => typeof r.image_order === 'number');
-            const hasCreated = data.some(r => typeof r.created_at === 'string' || r.created_at instanceof Date);
+            // Ordenar en cliente: por image_order si existe, si no por created_at
             const sorted = [...data].sort((a, b) => {
-                if (hasOrder) {
-                    const ao = (typeof a.image_order === 'number') ? a.image_order : Number.MAX_SAFE_INTEGER;
-                    const bo = (typeof b.image_order === 'number') ? b.image_order : Number.MAX_SAFE_INTEGER;
-                    if (ao !== bo) return ao - bo;
+                const orderA = a.image_order || 0;
+                const orderB = b.image_order || 0;
+                if (orderA !== orderB) return orderA - orderB;
+                
+                if (a.created_at && b.created_at) {
+                    const ta = new Date(a.created_at).getTime();
+                    const tb = new Date(b.created_at).getTime();
+                    return ta - tb;
                 }
-                if (hasCreated) {
-                    const ta = new Date(a.created_at || 0).getTime();
-                    const tb = new Date(b.created_at || 0).getTime();
-                    if (ta !== tb) return ta - tb;
-                }
-                const ida = String(a.id || '');
-                const idb = String(b.id || '');
-                return ida.localeCompare(idb);
+                return 0;
             });
 
-            // Normalizar estructura esperada
+            // Normalizar estructura esperada (sin id ya que no existe)
             return sorted.map((row, index) => ({
-                id: row.id || null,
+                id: null, // No existe columna id en la estructura real
                 image_url: row.image_url,
                 image_order: (typeof row.image_order === 'number') ? row.image_order : index,
                 is_main: !!row.is_main
@@ -845,7 +839,7 @@ async function fetchExistingImagesForProperty(propertyId, property) {
                     .from('property-images')
                     .getPublicUrl(entry.name);
                 return {
-                    id: null,
+                    id: null, // No existe columna id
                     image_url: urlData.publicUrl,
                     image_order: index,
                     is_main: index === 0
@@ -869,81 +863,108 @@ async function fetchExistingImagesForProperty(propertyId, property) {
 // ======================
 // REORDENAR IMÁGENES EXISTENTES
 // ======================
-async function moveExistingImage(imageId, direction) {
+async function moveExistingImage(imageUrl, direction) {
     try {
         if (!editMode || !editingPropertyId) return;
         // Obtener lista actual con su orden
         const { data: images } = await window.supabase
             .from('property_images')
-            .select('id, image_order')
-            .eq('property_id', editingPropertyId)
-            .order('image_order', { ascending: true });
+            .select('property_id, image_url, image_order, is_main, created_at')
+            .eq('property_id', editingPropertyId);
         if (!images || images.length === 0) return;
 
-        const index = images.findIndex(i => i.id === imageId);
+        // Ordenar por image_order
+        const sortedImages = images.sort((a, b) => {
+            const orderA = a.image_order || 0;
+            const orderB = b.image_order || 0;
+            return orderA - orderB;
+        });
+
+        const index = sortedImages.findIndex(i => i.image_url === imageUrl);
         if (index === -1) return;
         const targetIndex = index + (direction > 0 ? 1 : -1);
-        if (targetIndex < 0 || targetIndex >= images.length) return;
+        if (targetIndex < 0 || targetIndex >= sortedImages.length) return;
 
-        const a = images[index];
-        const b = images[targetIndex];
+        const a = sortedImages[index];
+        const b = sortedImages[targetIndex];
         const orderA = typeof a.image_order === 'number' ? a.image_order : index;
         const orderB = typeof b.image_order === 'number' ? b.image_order : targetIndex;
 
-        await window.supabase.from('property_images').update({ image_order: orderB }).eq('id', a.id);
-        await window.supabase.from('property_images').update({ image_order: orderA }).eq('id', b.id);
+        // Intercambiar usando property_id e image_url
+        await window.supabase
+            .from('property_images')
+            .update({ image_order: orderB })
+            .eq('property_id', editingPropertyId)
+            .eq('image_url', a.image_url);
+        
+        await window.supabase
+            .from('property_images')
+            .update({ image_order: orderA })
+            .eq('property_id', editingPropertyId)
+            .eq('image_url', b.image_url);
 
         // Recargar lista y renderizar
-        const { data: updated } = await window.supabase
-            .from('property_images')
-            .select('id, image_url, image_order, is_main')
-            .eq('property_id', editingPropertyId)
-            .order('image_order', { ascending: true });
-        renderExistingImages(updated || []);
+        const updatedImages = await fetchExistingImagesForProperty(editingPropertyId, null);
+        renderExistingImages(updatedImages);
     } catch (e) {
         console.error('❌ Error reordenando imagen:', e);
         alert('No se pudo reordenar la imagen');
     }
 }
 
-async function setImageAsMain(imageId) {
+async function setImageAsMain(imageUrl) {
     try {
         if (!editMode || !editingPropertyId) return;
-        if (!imageId) return;
+        if (!imageUrl) return;
+        
         // Marcar imagen como principal y desmarcar el resto
         await window.supabase
             .from('property_images')
             .update({ is_main: true })
-            .eq('id', imageId);
+            .eq('property_id', editingPropertyId)
+            .eq('image_url', imageUrl);
+            
         await window.supabase
             .from('property_images')
             .update({ is_main: false })
             .eq('property_id', editingPropertyId)
-            .neq('id', imageId);
+            .neq('image_url', imageUrl);
 
         // Opcional: colocarla al inicio (orden 0) y reindexar
         try {
             const { data: imgs } = await window.supabase
                 .from('property_images')
-                .select('id')
-                .eq('property_id', editingPropertyId)
-                .order('image_order', { ascending: true });
+                .select('property_id, image_url, image_order, is_main, created_at')
+                .eq('property_id', editingPropertyId);
+                
             if (imgs && imgs.length > 0) {
+                // Ordenar por image_order
+                const sortedImgs = imgs.sort((a, b) => {
+                    const orderA = a.image_order || 0;
+                    const orderB = b.image_order || 0;
+                    return orderA - orderB;
+                });
+                
                 // Poner seleccionada primero
-                const others = imgs.filter(i => i.id !== imageId);
-                await window.supabase.from('property_images').update({ image_order: 0 }).eq('id', imageId);
+                const others = sortedImgs.filter(i => i.image_url !== imageUrl);
+                await window.supabase
+                    .from('property_images')
+                    .update({ image_order: 0 })
+                    .eq('property_id', editingPropertyId)
+                    .eq('image_url', imageUrl);
+                    
                 for (let i = 0; i < others.length; i++) {
-                    await window.supabase.from('property_images').update({ image_order: i + 1 }).eq('id', others[i].id);
+                    await window.supabase
+                        .from('property_images')
+                        .update({ image_order: i + 1 })
+                        .eq('property_id', editingPropertyId)
+                        .eq('image_url', others[i].image_url);
                 }
             }
         } catch (_) { /* noop */ }
 
-        const { data: updated } = await window.supabase
-            .from('property_images')
-            .select('id, image_url, image_order, is_main')
-            .eq('property_id', editingPropertyId)
-            .order('image_order', { ascending: true });
-        renderExistingImages(updated || []);
+        const updatedImages = await fetchExistingImagesForProperty(editingPropertyId, null);
+        renderExistingImages(updatedImages);
     } catch (e) {
         console.error('❌ Error marcando imagen principal:', e);
         alert('No se pudo marcar como principal');
@@ -954,15 +975,24 @@ async function reindexExistingImages() {
     try {
         const { data: imgs } = await window.supabase
             .from('property_images')
-            .select('id')
-            .eq('property_id', editingPropertyId)
-            .order('image_order', { ascending: true });
+            .select('property_id, image_url, image_order, is_main, created_at')
+            .eq('property_id', editingPropertyId);
+            
         if (!imgs) return;
-        for (let i = 0; i < imgs.length; i++) {
+        
+        // Ordenar por image_order actual
+        const sortedImgs = imgs.sort((a, b) => {
+            const orderA = a.image_order || 0;
+            const orderB = b.image_order || 0;
+            return orderA - orderB;
+        });
+        
+        for (let i = 0; i < sortedImgs.length; i++) {
             await window.supabase
                 .from('property_images')
                 .update({ image_order: i })
-                .eq('id', imgs[i].id);
+                .eq('property_id', editingPropertyId)
+                .eq('image_url', sortedImgs[i].image_url);
         }
     } catch (_) { /* noop */ }
 }
@@ -1102,8 +1132,8 @@ async function deleteExistingImage(buttonEl, imageId, encodedUrl) {
             buttonEl.style.opacity = '0.6';
         }
 
-        if (!window.propertyHandler) {
-            throw new Error('Property handler no está disponible');
+        if (!window.supabase) {
+            throw new Error('Supabase no está disponible');
         }
 
         // Usar función mejorada si está disponible, sino la original
@@ -1112,21 +1142,18 @@ async function deleteExistingImage(buttonEl, imageId, encodedUrl) {
             throw new Error('No hay función de eliminación disponible');
         }
         
+        console.log(`🗑️ Eliminando imagen - PropertyId: ${editingPropertyId}, ImageId: ${imageId}, ImageUrl: ${imageUrl}`);
+        
         const result = await deleteFunction(editingPropertyId, imageUrl, imageId);
         if (!result || !result.success) {
             throw new Error(result && result.error ? result.error : 'No se pudo eliminar la imagen');
         }
 
-        // Recargar la lista de imágenes desde la BD
-        const { data: updatedImages, error } = await window.supabase
-        .from('property_images')
-        .select('id, image_url, image_order, is_main')
-            .eq('property_id', editingPropertyId)
-            .order('image_order', { ascending: true });
-        if (error) {
-            console.warn('⚠️ Error recargando imágenes:', error);
-        }
-        renderExistingImages(updatedImages || []);
+        console.log('✅ Imagen eliminada exitosamente, recargando lista...');
+
+        // Recargar la lista de imágenes desde la BD usando la función robusta
+        const updatedImages = await fetchExistingImagesForProperty(editingPropertyId, null);
+        renderExistingImages(updatedImages);
 
     } catch (e) {
         console.error('❌ Error eliminando imagen:', e);
