@@ -287,6 +287,12 @@ class PropertyDetailDynamic {
                 <span class="feature-icon">📐</span>
                 <span>${area}m² totales</span>
             </div>
+            ${this.property.built_area ? `
+            <div class="feature-item">
+                <span class="feature-icon">🏠</span>
+                <span>${this.property.built_area}m² construidos</span>
+            </div>
+            ` : ''}
             <div class="feature-item">
                 <span class="feature-icon">🛏️</span>
                 <span>${bedrooms} dormitorio${bedrooms !== 1 ? 's' : ''}</span>
