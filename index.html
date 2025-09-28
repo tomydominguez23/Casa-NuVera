@@ -1803,15 +1803,13 @@
         function navigateToProperty(propertyId, slug) {
             console.log(`🎯 Navegando a propiedad ID: ${propertyId}, Slug: ${slug}`);
             
-            // Mostrar modal de animación
+            // Mostrar modal de animación INMEDIATAMENTE
             const modal = document.getElementById('propertyLoadingModal');
             modal.classList.add('active');
             
-            // Simular carga y redirigir después de 2 segundos
-            setTimeout(() => {
-                const url = `property-detail.html?id=${propertyId}&slug=${slug}`;
-                window.location.href = url;
-            }, 2000);
+            // Redirigir inmediatamente - la pantalla de carga se mantendrá en property-detail.html
+            const url = `property-detail.html?id=${propertyId}&slug=${slug}`;
+            window.location.href = url;
         }
 
         // 🎯 JAVASCRIPT DEL CARRUSEL MIXTO - AUTOPLAY Y CONTROLES

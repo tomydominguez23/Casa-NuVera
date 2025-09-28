@@ -235,6 +235,9 @@ class PropertyDetailDynamic {
         this.updateSidebarFeatures();
 
         console.log('✅ Datos de la propiedad actualizados correctamente');
+        
+        // 🎯 OCULTAR PANTALLA DE CARGA CUANDO TODO ESTÉ LISTO
+        this.hideLoadingScreen();
     }
 
     updatePropertyVideos() {
@@ -618,6 +621,21 @@ class PropertyDetailDynamic {
             case 'CLP':
             default:
                 return `$${numPrice.toLocaleString('es-CL')}`;
+        }
+    }
+
+    // 🎯 FUNCIÓN PARA OCULTAR PANTALLA DE CARGA
+    hideLoadingScreen() {
+        console.log('🎯 PropertyDetailDynamic: Ocultando pantalla de carga');
+        const loadingModal = document.getElementById('propertyLoadingModal');
+        const mainContent = document.getElementById('mainContent');
+        
+        if (loadingModal) {
+            loadingModal.classList.remove('active');
+        }
+        
+        if (mainContent) {
+            mainContent.style.display = 'block';
         }
     }
 }

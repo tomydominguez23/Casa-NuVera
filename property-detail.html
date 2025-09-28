@@ -957,6 +957,86 @@
             border: none !important;
         }
 
+        /* 🎯 PANTALLA DE CARGA - ESTILOS COPIADOS DE INDEX.HTML */
+        .property-loading-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .property-loading-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .loading-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .loading-logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        .loading-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .loading-subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .loading-spinner-custom {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* MOBILE RESPONSIVE */
         @media (max-width: 768px) {
             .property-layout {
@@ -1115,9 +1195,19 @@
         </div>
     </header>
 
-    <!-- Main Content - SIEMPRE VISIBLE -->
-    <main class="main-content">
-        <!-- Property Content - DIRECTO SIN LOADING -->
+    <!-- 🎯 PANTALLA DE CARGA - VISIBLE AL INICIO -->
+    <div class="property-loading-modal active" id="propertyLoadingModal">
+        <div class="loading-logo-container">
+            <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1752020935606_0.png" alt="Casa Nuvera Logo" class="loading-logo">
+            <div class="loading-text">Casa Nuvera</div>
+            <div class="loading-subtitle">Cargando propiedad...</div>
+            <div class="loading-spinner-custom"></div>
+        </div>
+    </div>
+
+    <!-- Main Content - OCULTO INICIALMENTE -->
+    <main class="main-content" id="mainContent" style="display: none;">
+        <!-- Property Content -->
         <div class="property-container">
             <div class="property-layout">
                 <!-- Columna izquierda - contenido principal -->
@@ -1360,21 +1450,22 @@
             return urlParams.get('id');
         }
 
-        // Inicializar página - SIN LOADING, CONTENIDO DIRECTO
+        // Inicializar página - CON PANTALLA DE CARGA
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🏠 Cargando página directamente - SIN LOADING');
+            console.log('🏠 Iniciando carga de propiedad con pantalla de carga');
             
             const propertyId = getPropertyIdFromURL();
             
             // 🆕 Actualizar botón con número real de fotos
             document.getElementById('photoCount').textContent = propertyImages.length;
             
-            // Contenido ya está visible, solo cargar datos en segundo plano
+            // Cargar datos y ocultar pantalla de carga cuando esté listo
             if (propertyId) {
-                loadPropertyDetailsInBackground(propertyId);
+                loadPropertyDetailsWithLoading(propertyId);
             } else {
                 // Mostrar mapa por defecto para testing
                 showGoogleMap('https://maps.app.goo.gl/eTgr7Rofa76tBGYc6');
+                hideLoadingScreen();
             }
             
             // 🆕 Inicializar event listeners del modal
@@ -1402,6 +1493,128 @@
                 }
             } catch (e) { /* noop */ }
         });
+
+        // 🎯 FUNCIÓN PARA CARGAR PROPIEDAD CON PANTALLA DE CARGA
+        async function loadPropertyDetailsWithLoading(propertyId) {
+            try {
+                console.log('📥 Cargando datos de propiedad con pantalla de carga...');
+                
+                // Usar el sistema dinámico si está disponible
+                if (window.propertyDetailDynamic) {
+                    console.log('✅ Usando PropertyDetailDynamic para cargar datos');
+                    // El sistema dinámico ya maneja todo automáticamente
+                    // Esperar a que termine de cargar
+                    await waitForPropertyDetailDynamic();
+                    return;
+                }
+                
+                // Fallback: cargar datos manualmente
+                console.log('⚠️ PropertyDetailDynamic no disponible, usando fallback');
+                
+                // Esperar a que Supabase esté listo
+                if (!window.supabase) {
+                    await new Promise(resolve => {
+                        const checkSupabase = () => {
+                            if (window.supabase) {
+                                resolve();
+                            } else {
+                                setTimeout(checkSupabase, 100);
+                            }
+                        };
+                        checkSupabase();
+                    });
+                }
+
+                // Cargar propiedad
+                const { data: property, error: propertyError } = await window.supabase
+                    .from('properties')
+                    .select('*')
+                    .eq('id', propertyId)
+                    .single();
+
+                if (!propertyError && property) {
+                    currentProperty = property;
+                    console.log('✅ Propiedad cargada:', property);
+
+                    // Actualizar título y datos
+                    if (property.title) {
+                        document.getElementById('propertyTitle').textContent = property.title;
+                        document.title = `${property.title} - Casa Nuvera`;
+                    }
+
+                    // Cargar imágenes reales si existen
+                    const { data: images } = await window.supabase
+                        .from('property_images')
+                        .select('*')
+                        .eq('property_id', propertyId)
+                        .order('image_order', { ascending: true });
+
+                    if (images && images.length > 0) {
+                        const validImages = images.map(img => img.image_url).filter(url => url && url.trim() !== '');
+                        if (validImages.length > 0) {
+                            updateGalleryWithRealImages(validImages);
+                        }
+                    }
+
+                    // Cargar y mostrar mapa si existe URL
+                    if (property.google_maps_url) {
+                        console.log('🗺️ URL de mapa encontrada:', property.google_maps_url);
+                        showGoogleMap(property.google_maps_url);
+                    } else {
+                        console.log('ℹ️ No se encontró URL de Google Maps en la propiedad');
+                        showGoogleMap('https://maps.app.goo.gl/eTgr7Rofa76tBGYc6');
+                    }
+                } else {
+                    console.log('ℹ️ No se encontraron datos específicos, usando valores por defecto');
+                    showGoogleMap('https://maps.app.goo.gl/eTgr7Rofa76tBGYc6');
+                }
+                
+                // Ocultar pantalla de carga cuando todo esté listo
+                hideLoadingScreen();
+                
+            } catch (error) {
+                console.log('⚠️ Error cargando datos, usando valores por defecto:', error);
+                showGoogleMap('https://maps.app.goo.gl/eTgr7Rofa76tBGYc6');
+                hideLoadingScreen();
+            }
+        }
+
+        // 🎯 FUNCIÓN PARA ESPERAR A QUE PROPERTYDETAILDYNAMIC TERMINE
+        async function waitForPropertyDetailDynamic() {
+            return new Promise((resolve) => {
+                const checkInterval = setInterval(() => {
+                    if (window.propertyDetailDynamic && window.propertyDetailDynamic.property) {
+                        clearInterval(checkInterval);
+                        console.log('✅ PropertyDetailDynamic terminó de cargar');
+                        hideLoadingScreen();
+                        resolve();
+                    }
+                }, 100);
+                
+                // Timeout de seguridad
+                setTimeout(() => {
+                    clearInterval(checkInterval);
+                    console.log('⚠️ Timeout esperando PropertyDetailDynamic');
+                    hideLoadingScreen();
+                    resolve();
+                }, 5000);
+            });
+        }
+
+        // 🎯 FUNCIÓN PARA OCULTAR PANTALLA DE CARGA
+        function hideLoadingScreen() {
+            console.log('🎯 Ocultando pantalla de carga');
+            const loadingModal = document.getElementById('propertyLoadingModal');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (loadingModal) {
+                loadingModal.classList.remove('active');
+            }
+            
+            if (mainContent) {
+                mainContent.style.display = 'block';
+            }
+        }
 
         async function loadPropertyDetailsInBackground(propertyId) {
             try {
