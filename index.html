@@ -504,12 +504,21 @@
             align-self: flex-start;
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
             text-decoration: none;
+            cursor: pointer;
         }
 
         .nav-item-link:hover {
             background: rgba(0, 0, 0, 0.5);
             border-color: rgba(255, 255, 255, 0.25);
             transform: translateY(-2px);
+        }
+
+        .nav-item-link:visited {
+            color: #ffffff;
+        }
+
+        .nav-item-link:active {
+            transform: translateY(0);
         }
 
         /* 🔄 Nueva Era Section - ESTILO HERO COMPLETO CON IMAGEN DE FONDO */
@@ -1536,7 +1545,7 @@
                     <div class="nav-item-label">Compra</div>
                     <h3>Propiedades en Venta</h3>
                     <p>Casas y departamentos cuidadosamente seleccionados en las mejores ubicaciones de Santiago.</p>
-                    <span class="nav-item-link">Explorar Propiedades →</span>
+                    <a href="#propiedades" class="nav-item-link">Explorar Propiedades →</a>
                 </div>
             </div>
 
@@ -1550,7 +1559,7 @@
                         <h4>Apoyo integral</h4>
                         <p>Contamos con un equipo interdisciplinario que te acompañarán en todas las etapas de compra y venta.</p>
                     </div>
-                    <span class="nav-item-link">Conocer Más →</span>
+                    <a href="#contacto" class="nav-item-link">Conocer Más →</a>
                 </div>
             </div>
 
@@ -1560,7 +1569,7 @@
                     <div class="nav-item-label">Vende</div>
                     <h3>Vende tu propiedad</h3>
                     <p>Te ayudamos a vender tu propiedad de manera rápida y al mejor precio del mercado.</p>
-                    <span class="nav-item-link">Más información →</span>
+                    <a href="#contacto" class="nav-item-link">Más información →</a>
                 </div>
             </div>
 
@@ -1574,7 +1583,7 @@
                         <h4>Experiencia digital</h4>
                         <p>Integramos la tecnología de hoy al sector inmobiliario, creando experiencias digitales que transforman la manera de encontrar tu nuevo hogar.</p>
                     </div>
-                    <span class="nav-item-link">Ver más →</span>
+                    <a href="#redefiniendo" class="nav-item-link">Ver más →</a>
                 </div>
             </div>
         </div>
