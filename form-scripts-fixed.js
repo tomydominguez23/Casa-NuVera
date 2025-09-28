@@ -1102,8 +1102,8 @@ async function deleteExistingImage(buttonEl, imageId, encodedUrl) {
             buttonEl.style.opacity = '0.6';
         }
 
-        if (!window.propertyHandler) {
-            throw new Error('Property handler no está disponible');
+        if (!window.supabase) {
+            throw new Error('Supabase no está disponible');
         }
 
         // Usar función mejorada si está disponible, sino la original
@@ -1112,21 +1112,18 @@ async function deleteExistingImage(buttonEl, imageId, encodedUrl) {
             throw new Error('No hay función de eliminación disponible');
         }
         
+        console.log(`🗑️ Eliminando imagen - PropertyId: ${editingPropertyId}, ImageId: ${imageId}, ImageUrl: ${imageUrl}`);
+        
         const result = await deleteFunction(editingPropertyId, imageUrl, imageId);
         if (!result || !result.success) {
             throw new Error(result && result.error ? result.error : 'No se pudo eliminar la imagen');
         }
 
-        // Recargar la lista de imágenes desde la BD
-        const { data: updatedImages, error } = await window.supabase
-        .from('property_images')
-        .select('id, image_url, image_order, is_main')
-            .eq('property_id', editingPropertyId)
-            .order('image_order', { ascending: true });
-        if (error) {
-            console.warn('⚠️ Error recargando imágenes:', error);
-        }
-        renderExistingImages(updatedImages || []);
+        console.log('✅ Imagen eliminada exitosamente, recargando lista...');
+
+        // Recargar la lista de imágenes desde la BD usando la función robusta
+        const updatedImages = await fetchExistingImagesForProperty(editingPropertyId, null);
+        renderExistingImages(updatedImages);
 
     } catch (e) {
         console.error('❌ Error eliminando imagen:', e);
