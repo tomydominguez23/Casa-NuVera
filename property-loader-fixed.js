@@ -303,25 +303,84 @@ class PropertyLoaderFixed {
         
         let filteredProperties = [...this.properties];
 
-        if (filters.type) {
+        // Filtro por tipo de operación (venta/arriendo)
+        if (filters.operation && filters.operation !== '') {
+            filteredProperties = filteredProperties.filter(property => {
+                const category = (property.category || '').toLowerCase();
+                const operation = filters.operation.toLowerCase();
+                
+                if (operation === 'venta') {
+                    return !category.includes('arriendo') && !category.includes('rent');
+                } else if (operation === 'arriendo') {
+                    return category.includes('arriendo') || category.includes('rent');
+                }
+                return true;
+            });
+        }
+
+        // Filtro por tipo de propiedad
+        if (filters.type && filters.type !== '') {
             filteredProperties = filteredProperties.filter(property => 
                 (property.property_type && property.property_type.toLowerCase().includes(filters.type.toLowerCase())) ||
                 (property.category && property.category.toLowerCase().includes(filters.type.toLowerCase()))
             );
         }
 
-        if (filters.location) {
+        // Filtro por ubicación
+        if (filters.location && filters.location.trim() !== '') {
+            const locationTerm = filters.location.toLowerCase().trim();
             filteredProperties = filteredProperties.filter(property => 
-                (property.commune && property.commune.toLowerCase().includes(filters.location.toLowerCase())) ||
-                (property.neighborhood && property.neighborhood.toLowerCase().includes(filters.location.toLowerCase())) ||
-                (property.region && property.region.toLowerCase().includes(filters.location.toLowerCase()))
+                (property.commune && property.commune.toLowerCase().includes(locationTerm)) ||
+                (property.neighborhood && property.neighborhood.toLowerCase().includes(locationTerm)) ||
+                (property.region && property.region.toLowerCase().includes(locationTerm)) ||
+                (property.address && property.address.toLowerCase().includes(locationTerm))
             );
+        }
+
+        // Filtro por proyectos (propiedades destacadas)
+        if (filters.projects) {
+            filteredProperties = filteredProperties.filter(property => property.featured === true);
         }
 
         console.log(`🎯 ${filteredProperties.length} propiedades encontradas después del filtro`);
 
         // Renderizar propiedades filtradas
         this.renderFilteredProperties(filteredProperties);
+    }
+
+    // Método para buscar por código de propiedad
+    searchByPropertyCode(propertyCode) {
+        console.log('🔍 Buscando propiedad por código:', propertyCode);
+        
+        // Buscar por ID exacto o por título que contenga el código
+        const foundProperties = this.properties.filter(property => 
+            property.id.toString() === propertyCode ||
+            (property.title && property.title.toLowerCase().includes(propertyCode.toLowerCase())) ||
+            (property.description && property.description.toLowerCase().includes(propertyCode.toLowerCase()))
+        );
+
+        if (foundProperties.length > 0) {
+            console.log(`✅ Encontrada(s) ${foundProperties.length} propiedad(es) con código ${propertyCode}`);
+            this.renderFilteredProperties(foundProperties);
+        } else {
+            console.log(`❌ No se encontraron propiedades con código ${propertyCode}`);
+            this.showNoResultsForCode(propertyCode);
+        }
+    }
+
+    showNoResultsForCode(propertyCode) {
+        const container = document.getElementById('featuredProperties');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="loading-container">
+                <p style="color: #7f8c8d;">🔍 No se encontraron propiedades con el código "${propertyCode}".</p>
+                <p style="color: #999; font-size: 0.9rem; margin-top: 0.5rem;">Verifica el código e intenta nuevamente.</p>
+                <button onclick="window.propertyLoader.renderProperties()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Mostrar todas las propiedades
+                </button>
+            </div>
+        `;
     }
 
     renderFilteredProperties(properties) {
