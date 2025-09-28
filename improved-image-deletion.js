@@ -2,6 +2,7 @@
 console.log('🔧 Cargando función mejorada de eliminación de imágenes...');
 
 // Función mejorada para eliminar imágenes de propiedades
+// CORREGIDA para la estructura real: property_images NO tiene columna 'id'
 window.deletePropertyImageImproved = async function(propertyId, imageUrl, imageId = null) {
     try {
         console.log(`🗑️ Eliminando imagen mejorada - PropertyId: ${propertyId}, ImageId: ${imageId}, ImageUrl: ${imageUrl}`);
@@ -14,11 +15,11 @@ window.deletePropertyImageImproved = async function(propertyId, imageUrl, imageI
             throw new Error('Supabase no está disponible');
         }
         
-        // Primero, obtener todas las imágenes de la propiedad para entender la estructura
+        // Obtener todas las imágenes de la propiedad
         console.log('🔍 Obteniendo todas las imágenes de la propiedad...');
         const { data: allImages, error: allImagesError } = await window.supabase
             .from('property_images')
-            .select('*')
+            .select('property_id, image_url, image_order, is_main, created_at')
             .eq('property_id', propertyId);
         
         if (allImagesError) {
@@ -35,10 +36,7 @@ window.deletePropertyImageImproved = async function(propertyId, imageUrl, imageI
         // Buscar la imagen específica a eliminar
         let imageToDelete = null;
         
-        if (imageId && imageId !== 'null' && imageId !== '') {
-            console.log('🔍 Buscando por ID:', imageId);
-            imageToDelete = allImages.find(img => img.id === imageId);
-        } else if (imageUrl) {
+        if (imageUrl) {
             console.log('🔍 Buscando por URL:', imageUrl);
             // Buscar por URL exacta primero
             imageToDelete = allImages.find(img => img.image_url === imageUrl);
@@ -52,6 +50,8 @@ window.deletePropertyImageImproved = async function(propertyId, imageUrl, imageI
                     );
                 }
             }
+        } else {
+            throw new Error('Se requiere URL de imagen para eliminar');
         }
         
         if (!imageToDelete) {
@@ -60,28 +60,13 @@ window.deletePropertyImageImproved = async function(propertyId, imageUrl, imageI
         
         console.log('📋 Imagen a eliminar encontrada:', imageToDelete);
         
-        // Eliminar de la base de datos usando la clave primaria disponible
-        let deleteError = null;
-        
-        // Intentar diferentes estrategias de eliminación según la estructura de la tabla
-        if (imageToDelete.id) {
-            console.log('🗑️ Eliminando por ID...');
-            const { error } = await window.supabase
-                .from('property_images')
-                .delete()
-                .eq('id', imageToDelete.id);
-            deleteError = error;
-        } else if (imageToDelete.property_id && imageToDelete.image_url) {
-            console.log('🗑️ Eliminando por property_id e image_url...');
-            const { error } = await window.supabase
-                .from('property_images')
-                .delete()
-                .eq('property_id', propertyId)
-                .eq('image_url', imageToDelete.image_url);
-            deleteError = error;
-        } else {
-            throw new Error('No se puede determinar cómo eliminar la imagen');
-        }
+        // Eliminar de la base de datos usando property_id e image_url
+        console.log('🗑️ Eliminando por property_id e image_url...');
+        const { error: deleteError } = await window.supabase
+            .from('property_images')
+            .delete()
+            .eq('property_id', propertyId)
+            .eq('image_url', imageToDelete.image_url);
         
         if (deleteError) {
             console.error('❌ Error eliminando de BD:', deleteError);
@@ -96,23 +81,30 @@ window.deletePropertyImageImproved = async function(propertyId, imageUrl, imageI
             
             const { data: remainingImages, error: remainingError } = await window.supabase
                 .from('property_images')
-                .select('*')
+                .select('property_id, image_url, image_order, is_main, created_at')
                 .eq('property_id', propertyId);
             
             if (!remainingError && remainingImages && remainingImages.length > 0) {
-                // Marcar la primera imagen restante como principal
-                const firstImage = remainingImages[0];
-                if (firstImage.id) {
-                    const { error: updateError } = await window.supabase
-                        .from('property_images')
-                        .update({ is_main: true })
-                        .eq('id', firstImage.id);
-                    
-                    if (updateError) {
-                        console.warn('⚠️ Error reasignando imagen principal:', updateError);
-                    } else {
-                        console.log('✅ Nueva imagen principal asignada');
-                    }
+                // Ordenar por image_order y tomar la primera
+                const sortedImages = remainingImages.sort((a, b) => {
+                    const orderA = a.image_order || 0;
+                    const orderB = b.image_order || 0;
+                    return orderA - orderB;
+                });
+                
+                const firstImage = sortedImages[0];
+                console.log('📋 Marcando como principal:', firstImage);
+                
+                const { error: updateError } = await window.supabase
+                    .from('property_images')
+                    .update({ is_main: true })
+                    .eq('property_id', propertyId)
+                    .eq('image_url', firstImage.image_url);
+                
+                if (updateError) {
+                    console.warn('⚠️ Error reasignando imagen principal:', updateError);
+                } else {
+                    console.log('✅ Nueva imagen principal asignada');
                 }
             }
         }
@@ -136,7 +128,7 @@ async function reorderRemainingImages(propertyId) {
         
         const { data: remainingImages, error } = await window.supabase
             .from('property_images')
-            .select('*')
+            .select('property_id, image_url, image_order, is_main, created_at')
             .eq('property_id', propertyId);
         
         if (error) {
@@ -149,39 +141,28 @@ async function reorderRemainingImages(propertyId) {
             return;
         }
         
-        // Ordenar por image_order si existe, sino por created_at, sino por id
+        // Ordenar por image_order si existe, sino por created_at
         const sortedImages = remainingImages.sort((a, b) => {
-            if (a.image_order !== undefined && b.image_order !== undefined) {
-                return a.image_order - b.image_order;
+            const orderA = a.image_order || 0;
+            const orderB = b.image_order || 0;
+            if (orderA !== orderB) {
+                return orderA - orderB;
             }
             if (a.created_at && b.created_at) {
                 return new Date(a.created_at) - new Date(b.created_at);
             }
-            if (a.id && b.id) {
-                return a.id.localeCompare(b.id);
-            }
             return 0;
         });
         
-        // Actualizar image_order secuencialmente
+        // Actualizar image_order secuencialmente usando property_id e image_url
         for (let i = 0; i < sortedImages.length; i++) {
             const image = sortedImages[i];
-            let updateError = null;
             
-            if (image.id) {
-                const { error } = await window.supabase
-                    .from('property_images')
-                    .update({ image_order: i })
-                    .eq('id', image.id);
-                updateError = error;
-            } else if (image.property_id && image.image_url) {
-                const { error } = await window.supabase
-                    .from('property_images')
-                    .update({ image_order: i })
-                    .eq('property_id', propertyId)
-                    .eq('image_url', image.image_url);
-                updateError = error;
-            }
+            const { error: updateError } = await window.supabase
+                .from('property_images')
+                .update({ image_order: i })
+                .eq('property_id', propertyId)
+                .eq('image_url', image.image_url);
             
             if (updateError) {
                 console.warn(`⚠️ Error actualizando orden de imagen ${i}:`, updateError);
@@ -204,7 +185,7 @@ window.getPropertyImages = async function(propertyId) {
         
         const { data, error } = await window.supabase
             .from('property_images')
-            .select('*')
+            .select('property_id, image_url, image_order, is_main, created_at')
             .eq('property_id', propertyId);
         
         if (error) {
@@ -216,16 +197,15 @@ window.getPropertyImages = async function(propertyId) {
             return [];
         }
         
-        // Ordenar por image_order si existe, sino por created_at, sino por id
+        // Ordenar por image_order si existe, sino por created_at
         const sortedImages = data.sort((a, b) => {
-            if (a.image_order !== undefined && b.image_order !== undefined) {
-                return a.image_order - b.image_order;
+            const orderA = a.image_order || 0;
+            const orderB = b.image_order || 0;
+            if (orderA !== orderB) {
+                return orderA - orderB;
             }
             if (a.created_at && b.created_at) {
                 return new Date(a.created_at) - new Date(b.created_at);
-            }
-            if (a.id && b.id) {
-                return a.id.localeCompare(b.id);
             }
             return 0;
         });
@@ -239,14 +219,14 @@ window.getPropertyImages = async function(propertyId) {
 };
 
 // Función para marcar una imagen como principal
-window.setMainImage = async function(propertyId, imageId) {
+window.setMainImage = async function(propertyId, imageUrl) {
     try {
         if (!window.supabase) {
             throw new Error('Supabase no está disponible');
         }
         
-        if (!imageId) {
-            throw new Error('ID de imagen requerido');
+        if (!imageUrl) {
+            throw new Error('URL de imagen requerida');
         }
         
         // Primero, quitar la marca de principal de todas las imágenes
@@ -260,36 +240,11 @@ window.setMainImage = async function(propertyId, imageId) {
         }
         
         // Luego, marcar la imagen seleccionada como principal
-        let setError = null;
-        
-        // Intentar por ID primero
-        const { error: idError } = await window.supabase
+        const { error: setError } = await window.supabase
             .from('property_images')
             .update({ is_main: true })
-            .eq('id', imageId)
-            .eq('property_id', propertyId);
-        
-        if (idError) {
-            console.warn('⚠️ Error marcando por ID, intentando método alternativo:', idError);
-            // Si falla por ID, intentar por property_id e image_url
-            const { data: imageData } = await window.supabase
-                .from('property_images')
-                .select('image_url')
-                .eq('property_id', propertyId)
-                .eq('id', imageId)
-                .single();
-            
-            if (imageData && imageData.image_url) {
-                const { error: urlError } = await window.supabase
-                    .from('property_images')
-                    .update({ is_main: true })
-                    .eq('property_id', propertyId)
-                    .eq('image_url', imageData.image_url);
-                setError = urlError;
-            } else {
-                setError = idError;
-            }
-        }
+            .eq('property_id', propertyId)
+            .eq('image_url', imageUrl);
         
         if (setError) {
             throw new Error(`Error marcando imagen como principal: ${setError.message}`);
@@ -305,7 +260,7 @@ window.setMainImage = async function(propertyId, imageId) {
 };
 
 // Función para mover una imagen en el orden
-window.moveImage = async function(propertyId, imageId, direction) {
+window.moveImage = async function(propertyId, imageUrl, direction) {
     try {
         if (!window.supabase) {
             throw new Error('Supabase no está disponible');
@@ -319,7 +274,7 @@ window.moveImage = async function(propertyId, imageId, direction) {
         }
         
         // Encontrar la imagen actual
-        const currentIndex = images.findIndex(img => img.id === imageId);
+        const currentIndex = images.findIndex(img => img.image_url === imageUrl);
         if (currentIndex === -1) {
             throw new Error('Imagen no encontrada');
         }
@@ -336,41 +291,18 @@ window.moveImage = async function(propertyId, imageId, direction) {
         images[currentIndex].image_order = images[newIndex].image_order || newIndex;
         images[newIndex].image_order = temp;
         
-        // Actualizar en la base de datos
-        let updateCurrentError = null;
-        let updateNewError = null;
+        // Actualizar en la base de datos usando property_id e image_url
+        const { error: updateCurrentError } = await window.supabase
+            .from('property_images')
+            .update({ image_order: images[currentIndex].image_order })
+            .eq('property_id', propertyId)
+            .eq('image_url', images[currentIndex].image_url);
         
-        // Actualizar imagen actual
-        if (images[currentIndex].id) {
-            const { error } = await window.supabase
-                .from('property_images')
-                .update({ image_order: images[currentIndex].image_order })
-                .eq('id', images[currentIndex].id);
-            updateCurrentError = error;
-        } else if (images[currentIndex].property_id && images[currentIndex].image_url) {
-            const { error } = await window.supabase
-                .from('property_images')
-                .update({ image_order: images[currentIndex].image_order })
-                .eq('property_id', propertyId)
-                .eq('image_url', images[currentIndex].image_url);
-            updateCurrentError = error;
-        }
-        
-        // Actualizar imagen nueva
-        if (images[newIndex].id) {
-            const { error } = await window.supabase
-                .from('property_images')
-                .update({ image_order: images[newIndex].image_order })
-                .eq('id', images[newIndex].id);
-            updateNewError = error;
-        } else if (images[newIndex].property_id && images[newIndex].image_url) {
-            const { error } = await window.supabase
-                .from('property_images')
-                .update({ image_order: images[newIndex].image_order })
-                .eq('property_id', propertyId)
-                .eq('image_url', images[newIndex].image_url);
-            updateNewError = error;
-        }
+        const { error: updateNewError } = await window.supabase
+            .from('property_images')
+            .update({ image_order: images[newIndex].image_order })
+            .eq('property_id', propertyId)
+            .eq('image_url', images[newIndex].image_url);
         
         if (updateCurrentError || updateNewError) {
             console.warn('⚠️ Error actualizando orden de imágenes:', { updateCurrentError, updateNewError });
