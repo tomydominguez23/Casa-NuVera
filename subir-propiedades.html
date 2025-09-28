@@ -787,11 +787,6 @@
             border: none;
         }
 
-        .map-preview .leaflet-container {
-            width: 100%;
-            height: 100%;
-        }
-
         .map-preview-placeholder {
             display: flex;
             flex-direction: column;
@@ -865,8 +860,6 @@
             }
         }
     </style>
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -1385,9 +1378,6 @@
     <!-- 4. Google Maps Fix Urgente (Solución Inmediata) -->
     <script src="google-maps-fix-urgente.js"></script>
     
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
     <!-- 5. Google Maps Funcional (Solución Urgente) -->
     <script>
         // SOLUCIÓN URGENTE: Usar la misma lógica que funciona en property-detail.html
@@ -1436,43 +1426,50 @@
         
         // Función para mostrar el mapa (copiada de property-detail.html)
         function showGoogleMapPreview(mapsUrl) {
-            console.log('🗺️ Mostrando vista previa con Leaflet/OSM:', mapsUrl);
+            console.log('🗺️ Mostrando Google Maps Preview:', mapsUrl);
+            
             const mapContainer = document.getElementById('mapPreviewContainer');
             const mapPreview = document.getElementById('mapPreview');
-            if (!mapContainer || !mapPreview) return;
-
-            const coords = extractLatLng(mapsUrl) || { lat: -33.4489, lng: -70.6693 };
-            mapPreview.innerHTML = '';
-            const inner = document.createElement('div');
-            inner.id = 'leafletUploadPreview';
-            inner.style.width = '100%';
-            inner.style.height = '100%';
-            mapPreview.appendChild(inner);
-
-            try {
-                const map = L.map('leafletUploadPreview');
-                map.setView([coords.lat, coords.lng], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
-                let marker = L.marker([coords.lat, coords.lng], { draggable: true }).addTo(map);
-                marker.on('dragend', () => syncUrlFromMarker(marker.getLatLng()));
-                map.on('click', (e) => { marker.setLatLng(e.latlng); syncUrlFromMarker(e.latlng); });
+            
+            if (!mapContainer || !mapPreview) {
+                console.log('⚠️ Elementos de mapa no encontrados');
+                return;
+            }
+            
+            // Convertir URL a formato embed si es necesario
+            const embedUrl = convertToEmbedUrl(mapsUrl);
+            
+            if (embedUrl) {
+                // Crear iframe con atributos correctos para evitar X-Frame-Options
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.width = '100%';
+                iframe.height = '100%';
+                iframe.frameBorder = '0';
+                iframe.style.border = 'none';
+                iframe.allowFullscreen = true;
+                iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('loading', 'lazy');
+                
+                // Limpiar contenedor y agregar iframe
+                mapPreview.innerHTML = '';
+                mapPreview.appendChild(iframe);
+                
                 mapContainer.style.display = 'block';
-            } catch (e) {
-                console.warn('⚠️ Leaflet no disponible, usando iframe fallback', e);
-                // Fallback previo con iframe
-                const embedUrl = convertToEmbedUrl(mapsUrl);
-                if (embedUrl) {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = embedUrl;
-                    iframe.width = '100%';
-                    iframe.height = '100%';
-                    iframe.frameBorder = '0';
-                    iframe.style.border = 'none';
-                    iframe.setAttribute('loading', 'lazy');
-                    mapPreview.innerHTML = '';
-                    mapPreview.appendChild(iframe);
-                    mapContainer.style.display = 'block';
-                }
+                console.log('✅ Mapa mostrado correctamente en vista previa');
+            } else {
+                console.log('⚠️ No se pudo convertir la URL del mapa');
+                // Mostrar mensaje de error en el contenedor
+                mapPreview.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f8f9fa; color: #666; text-align: center; padding: 2rem;">
+                        <div>
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">🗺️</div>
+                            <div>No se pudo cargar el mapa</div>
+                            <div style="font-size: 0.9rem; margin-top: 0.5rem;">URL no válida: ${mapsUrl}</div>
+                        </div>
+                    </div>
+                `;
+                mapContainer.style.display = 'block';
             }
         }
         
@@ -1842,10 +1839,54 @@
         function updateMapPreview(url) {
             const container = document.getElementById('mapPreviewContainer');
             const preview = document.getElementById('mapPreview');
-            if (!container || !preview) return;
-            preview.innerHTML = `<div class="map-preview-placeholder"><div class="icon">⏳</div><div><strong>Cargando mapa...</strong><br>Por favor espera</div></div>`;
+            
+            if (!container || !preview) {
+                console.log('⚠️ Elementos de preview de mapa no encontrados');
+                return;
+            }
+            
+            // Mostrar loading
+            preview.innerHTML = `
+                <div class="map-preview-placeholder">
+                    <div class="icon">⏳</div>
+                    <div>
+                        <strong>Cargando mapa...</strong><br>
+                        Por favor espera
+                    </div>
+                </div>
+            `;
             container.style.display = 'block';
-            showGoogleMapPreview(url);
+            
+            // Convertir URL de Google Maps a iframe embed
+            const embedUrl = convertToEmbedUrl(url);
+            
+            if (embedUrl) {
+                // Crear iframe con manejo de errores
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.allowFullscreen = true;
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                
+                // Manejar errores de carga del iframe
+                iframe.onerror = function() {
+                    console.error('❌ Error cargando iframe del mapa');
+                    showMapError('Error cargando el mapa. Verifica que la URL sea válida.');
+                };
+                
+                iframe.onload = function() {
+                    console.log('✅ Mapa cargado exitosamente');
+                };
+                
+                // Limpiar placeholder y agregar iframe
+                preview.innerHTML = '';
+                preview.appendChild(iframe);
+                
+                console.log('🗺️ Mapa actualizado:', embedUrl);
+            } else {
+                showMapError('URL de Google Maps no válida. Usa una URL de maps.google.com, goo.gl/maps o maps.app.goo.gl');
+            }
         }
 
         function convertToEmbedUrl(url) {
@@ -1899,29 +1940,6 @@
                 console.error('❌ Error convirtiendo URL de mapa:', error);
                 return null;
             }
-        }
-
-        function extractLatLng(url) {
-            try {
-                if (!url) return null;
-                let m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-                if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-                m = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
-                if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-                m = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
-                if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-                return null;
-            } catch (_) { return null; }
-        }
-
-        function syncUrlFromMarker(latlng) {
-            const input = document.getElementById('googleMapsUrl');
-            if (!input) return;
-            // Generar un enlace OSM tipo https://www.openstreetmap.org/?mlat=lat&mlon=lng#map=15/lat/lng
-            const lat = latlng.lat.toFixed(6);
-            const lng = latlng.lng.toFixed(6);
-            const osmUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`;
-            input.value = osmUrl;
         }
 
         function showMapError(message = 'URL de mapa no válida') {
@@ -1988,11 +2006,14 @@
         }
 
         function getGoogleMapsUrl() {
-            // Devolver siempre el valor del input, que ahora puede ser OSM o Google.
-            const mapsUrl = (document.getElementById('googleMapsUrl').value || '').trim();
-            if (!mapsUrl) return null;
-            // Si el usuario pegó Google, lo guardamos tal cual; si seleccionó en el mapa, ya generamos URL OSM.
-            return mapsUrl;
+            // Usar la función procesada del nuevo script
+            if (window.getGoogleMapsUrl) {
+                return window.getGoogleMapsUrl();
+            }
+            
+            // Fallback a la función original
+            const mapsUrl = document.getElementById('googleMapsUrl').value.trim();
+            return mapsUrl || null;
         }
 
         function getImagesForSaving() {

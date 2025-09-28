@@ -222,7 +222,7 @@ class PropertyDetailDynamic {
         this.updatePropertyVideos();
             this.updatePropertyVideos();
 
-        // Actualizar mapa (Leaflet/OSM)
+        // Actualizar Google Maps
         this.updateGoogleMaps();
 
         // Actualizar información de contacto
@@ -373,47 +373,29 @@ class PropertyDetailDynamic {
 
     updateGoogleMaps() {
         if (!this.property || !this.property.google_maps_url) {
-            console.log('ℹ️ No hay URL de mapa para mostrar');
+            console.log('ℹ️ No hay URL de Google Maps para mostrar');
             return;
         }
 
-        console.log('🗺️ Mostrando mapa (Leaflet/OSM):', this.property.google_maps_url);
-
+        console.log('🗺️ Mostrando Google Maps:', this.property.google_maps_url);
+        
         const mapSection = document.getElementById('propertyMapSection');
         const mapContainer = document.getElementById('propertyMapContainer');
+        
         if (!mapSection || !mapContainer) {
             console.log('⚠️ Elementos de mapa no encontrados');
             return;
         }
-
-        // Extraer coordenadas desde URL de Google si existen
-        const coords = this.extractLatLng(this.property.google_maps_url) || { lat: -33.4489, lng: -70.6693 };
-
-        // Limpiar contenedor y crear div para Leaflet
-        mapContainer.innerHTML = '';
-        const inner = document.createElement('div');
-        inner.id = 'leafletMapDynamic';
-        inner.style.width = '100%';
-        inner.style.height = '100%';
-        mapContainer.appendChild(inner);
-
-        try {
-            const map = L.map('leafletMapDynamic');
-            map.setView([coords.lat, coords.lng], 15);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(map);
-            L.marker([coords.lat, coords.lng]).addTo(map);
+        
+        // Convertir URL a formato embed si es necesario
+        const embedUrl = this.convertToEmbedUrl(this.property.google_maps_url);
+        
+        if (embedUrl) {
+            mapContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
             mapSection.style.display = 'block';
-        } catch (e) {
-            console.warn('⚠️ Leaflet no disponible, usando fallback de iframe si es posible', e);
-            // Fallback: intentar iframe embed si el CSS/JS de Leaflet no se cargó aún
-            const embedUrl = this.convertToEmbedUrl(this.property.google_maps_url);
-            if (embedUrl) {
-                mapContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-                mapSection.style.display = 'block';
-            }
+            console.log('✅ Mapa mostrado correctamente');
+        } else {
+            console.log('⚠️ No se pudo convertir la URL del mapa');
         }
     }
 
@@ -451,28 +433,6 @@ class PropertyDetailDynamic {
             return null;
         } catch (error) {
             console.error('Error convirtiendo URL de mapa:', error);
-            return null;
-        }
-    }
-
-    extractLatLng(url) {
-        try {
-            if (!url) return null;
-            let m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-            if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-            m = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
-            if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-            m = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
-            if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-            // OpenStreetMap mlat/mlon
-            let qLat = url.match(/[?&]mlat=(-?\d+\.\d+)/);
-            let qLon = url.match(/[?&]mlon=(-?\d+\.\d+)/);
-            if (qLat && qLon) return { lat: parseFloat(qLat[1]), lng: parseFloat(qLon[1]) };
-            // OpenStreetMap #map=zoom/lat/lon
-            m = url.match(/#map=\d+\/(-?\d+\.\d+)\/(-?\d+\.\d+)/);
-            if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-            return null;
-        } catch (_) {
             return null;
         }
     }
