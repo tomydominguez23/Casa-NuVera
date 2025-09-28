@@ -489,30 +489,77 @@ class PropertyDetailDynamic {
     updateContactInfo() {
         if (!this.property) return;
 
+        console.log('📞 Actualizando información de contacto:', this.property.contact_name, this.property.contact_phone, this.property.contact_email);
+
         // Actualizar información de contacto en sidebar
         const contactItems = document.querySelectorAll('.contact-item');
         if (contactItems.length >= 3) {
             // Teléfono
             const phoneItem = contactItems[0];
-            const phoneLink = phoneItem.querySelector('a');
-            if (phoneLink && this.property.contact_phone) {
-                phoneLink.href = `tel:${this.property.contact_phone}`;
-                phoneLink.textContent = this.property.contact_phone;
+            if (phoneItem && this.property.contact_phone) {
+                // Buscar el span dentro del contact-item
+                const phoneSpan = phoneItem.querySelector('span:last-child');
+                if (phoneSpan) {
+                    phoneSpan.textContent = this.property.contact_phone;
+                }
             }
 
             // Email
             const emailItem = contactItems[1];
-            const emailLink = emailItem.querySelector('a');
-            if (emailLink && this.property.contact_email) {
-                emailLink.href = `mailto:${this.property.contact_email}`;
-                emailLink.textContent = this.property.contact_email;
+            if (emailItem && this.property.contact_email) {
+                // Buscar el span dentro del contact-item
+                const emailSpan = emailItem.querySelector('span:last-child');
+                if (emailSpan) {
+                    emailSpan.textContent = this.property.contact_email;
+                }
             }
 
             // Nombre del agente
             const agentItem = contactItems[2];
             if (agentItem && this.property.contact_name) {
-                agentItem.querySelector('span').textContent = this.property.contact_name;
+                // Buscar el span dentro del contact-item
+                const agentSpan = agentItem.querySelector('span:last-child');
+                if (agentSpan) {
+                    agentSpan.textContent = this.property.contact_name;
+                }
             }
+        }
+
+        // Actualizar enlaces de los botones de contacto
+        this.updateContactButtons();
+    }
+
+    updateContactButtons() {
+        if (!this.property) return;
+
+        console.log('🔗 Actualizando botones de contacto...');
+
+        // Actualizar enlace de WhatsApp
+        const whatsappBtn = document.querySelector('a[onclick*="contactViaWhatsApp"]');
+        if (whatsappBtn) {
+            // El botón ya tiene la función contactViaWhatsApp que usa los datos dinámicos
+            console.log('✅ Botón de WhatsApp actualizado');
+        }
+
+        // Actualizar enlace de email
+        const emailBtn = document.querySelector('a[href^="mailto:"]');
+        if (emailBtn && this.property.contact_email) {
+            emailBtn.href = `mailto:${this.property.contact_email}`;
+            console.log('✅ Botón de email actualizado:', this.property.contact_email);
+        }
+
+        // Actualizar enlace de teléfono
+        const phoneBtn = document.querySelector('a[href^="tel:"]');
+        if (phoneBtn && this.property.contact_phone) {
+            phoneBtn.href = `tel:${this.property.contact_phone}`;
+            console.log('✅ Botón de teléfono actualizado:', this.property.contact_phone);
+        }
+
+        // Actualizar también los botones sticky en móvil
+        const stickyPhoneBtn = document.querySelector('.sticky-cta a[href^="tel:"]');
+        if (stickyPhoneBtn && this.property.contact_phone) {
+            stickyPhoneBtn.href = `tel:${this.property.contact_phone}`;
+            console.log('✅ Botón sticky de teléfono actualizado:', this.property.contact_phone);
         }
     }
 

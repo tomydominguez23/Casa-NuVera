@@ -2160,6 +2160,9 @@ Saludos!`;
             const phoneNumber = (property?.contact_phone || '+56948406684').replace(/[^0-9]/g, '');
             const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             
+            console.log('📱 Enviando WhatsApp a:', phoneNumber);
+            console.log('📱 Mensaje:', message);
+            
             window.open(whatsappURL, '_blank');
         }
     </script>
