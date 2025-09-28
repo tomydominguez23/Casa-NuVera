@@ -595,6 +595,9 @@
     <script src="debug-delete-issue.js"></script>
     <script src="diagnostico-bd.js"></script>
     <script src="diagnostico-maps.js"></script>
+    <script src="fix-image-issues.js"></script>
+    <script src="improved-image-deletion.js"></script>
+    <script src="test-image-functionality.js"></script>
     <script>
         // Variables globales
         let pendingDeleteId = null;
@@ -668,6 +671,25 @@
                 }
                 
                 console.log(`✅ ${properties.length} propiedades cargadas`);
+                
+                // Cargar imágenes para cada propiedad
+                for (const property of properties) {
+                    try {
+                        const { data: mainImage } = await supabase
+                            .from('property_images')
+                            .select('image_url')
+                            .eq('property_id', property.id)
+                            .eq('is_main', true)
+                            .limit(1)
+                            .single();
+                        
+                        property.mainImage = mainImage?.image_url || null;
+                    } catch (imgError) {
+                        console.warn(`⚠️ Error cargando imagen para propiedad ${property.id}:`, imgError);
+                        property.mainImage = null;
+                    }
+                }
+                
                 allProperties = properties;
                 
                 // Renderizar propiedades
@@ -700,7 +722,10 @@
                 return `
                     <div class="property-card" data-property-id="${property.id}">
                         <div class="property-image">
-                            ${property.category === 'casa' ? '🏠' : '🏢'}
+                            ${property.mainImage 
+                                ? `<img src="${property.mainImage}" alt="${property.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">`
+                                : `<div style="display: flex; align-items: center; justify-content: center; background: #f8f9fa; color: #7f8c8d; font-size: 3rem; height: 200px; border-radius: 8px;">${property.category === 'casa' ? '🏠' : '🏢'}</div>`
+                            }
                         </div>
                         <div class="property-content">
                             <h3 class="property-title">
