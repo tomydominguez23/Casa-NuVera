@@ -787,49 +787,41 @@ function renderExistingImages(images) {
     `).join('');
 }
 
-// Carga robusta de imágenes existentes sin usar ORDER ni seleccionar columnas inexistentes.
-// Evita errores 400 por columnas ausentes y ordena en el cliente.
+// Intentar obtener imágenes desde BD; si falla o viene vacío, reintentar sin image_order;
+// si aún no hay, listar desde Storage por prefijo de archivo (property_<propertyId>_)
 async function fetchExistingImagesForProperty(propertyId, property) {
     try {
-        // Seleccionar todas las columnas para no fallar si faltan algunas
-        const { data, error } = await window.supabase
+        // Intento 1: consulta estándar con image_order
+        const firstTry = await window.supabase
             .from('property_images')
-            .select('*')
-            .eq('property_id', propertyId);
+            .select('id, image_url, image_order, is_main')
+            .eq('property_id', propertyId)
+            .order('image_order', { ascending: true });
+        if (!firstTry.error && Array.isArray(firstTry.data) && firstTry.data.length > 0) {
+            return firstTry.data;
+        }
 
-        if (!error && Array.isArray(data) && data.length > 0) {
-            // Ordenar en cliente: por image_order si existe, si no por created_at, luego por id
-            const hasOrder = data.some(r => typeof r.image_order === 'number');
-            const hasCreated = data.some(r => typeof r.created_at === 'string' || r.created_at instanceof Date);
-            const sorted = [...data].sort((a, b) => {
-                if (hasOrder) {
-                    const ao = (typeof a.image_order === 'number') ? a.image_order : Number.MAX_SAFE_INTEGER;
-                    const bo = (typeof b.image_order === 'number') ? b.image_order : Number.MAX_SAFE_INTEGER;
-                    if (ao !== bo) return ao - bo;
-                }
-                if (hasCreated) {
-                    const ta = new Date(a.created_at || 0).getTime();
-                    const tb = new Date(b.created_at || 0).getTime();
-                    if (ta !== tb) return ta - tb;
-                }
-                const ida = String(a.id || '');
-                const idb = String(b.id || '');
-                return ida.localeCompare(idb);
-            });
-
-            // Normalizar estructura esperada
-            return sorted.map((row, index) => ({
+        // Intento 2: consulta sin image_order (por si la columna no existe)
+        const secondTry = await window.supabase
+            .from('property_images')
+            .select('id, image_url, is_main, created_at')
+            .eq('property_id', propertyId)
+            .order('created_at', { ascending: true });
+        if (!secondTry.error && Array.isArray(secondTry.data) && secondTry.data.length > 0) {
+            // Adaptar al formato esperado
+            return (secondTry.data || []).map((row, index) => ({
                 id: row.id || null,
                 image_url: row.image_url,
-                image_order: (typeof row.image_order === 'number') ? row.image_order : index,
+                image_order: typeof row.image_order === 'number' ? row.image_order : index,
                 is_main: !!row.is_main
             }));
         }
     } catch (e) {
+        // continuar a fallback de Storage
         console.warn('⚠️ Error consultando property_images, usando fallback de Storage:', e);
     }
 
-    // Fallback desde Storage (buscar archivos con prefijo property_<id>_)
+    // Intento 3: Fallback desde Storage (nombres que contienen el ID de la propiedad)
     try {
         const prefix = `property_${propertyId}_`;
         const list = await window.supabase.storage
