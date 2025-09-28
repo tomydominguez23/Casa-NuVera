@@ -723,21 +723,8 @@ async function loadPropertyForEdit(propertyId) {
         renderToursList();
         updateTourOrder();
 
-        // Cargar imágenes existentes (solo mostrar)
-        let images = [];
-        try {
-            const { data: imgs } = await window.supabase
-                .from('property_images')
-                .select('id, image_url, image_order, is_main')
-                .eq('property_id', propertyId)
-                .order('image_order', { ascending: true });
-            images = imgs || [];
-        } catch (_) { images = []; }
-
-        // Fallback: si no hay filas en property_images pero la propiedad tiene image_url, mostrarla editable
-        if ((!images || images.length === 0) && property.image_url) {
-            images = [{ id: null, image_url: property.image_url, image_order: 0, is_main: true }];
-        }
+        // Cargar imágenes existentes (con fallback robusto)
+        const images = await fetchExistingImagesForProperty(propertyId, property);
         renderExistingImages(images);
 
         // Cargar videos existentes con controles (eliminar y reordenar)
@@ -790,6 +777,77 @@ function renderExistingImages(images) {
             </div>
         </div>
     `).join('');
+}
+
+// Intentar obtener imágenes desde BD; si falla o viene vacío, reintentar sin image_order;
+// si aún no hay, listar desde Storage por prefijo de archivo (property_<propertyId>_)
+async function fetchExistingImagesForProperty(propertyId, property) {
+    try {
+        // Intento 1: consulta estándar con image_order
+        const firstTry = await window.supabase
+            .from('property_images')
+            .select('id, image_url, image_order, is_main')
+            .eq('property_id', propertyId)
+            .order('image_order', { ascending: true });
+        if (!firstTry.error && Array.isArray(firstTry.data) && firstTry.data.length > 0) {
+            return firstTry.data;
+        }
+
+        // Intento 2: consulta sin image_order (por si la columna no existe)
+        const secondTry = await window.supabase
+            .from('property_images')
+            .select('id, image_url, is_main, created_at')
+            .eq('property_id', propertyId)
+            .order('created_at', { ascending: true });
+        if (!secondTry.error && Array.isArray(secondTry.data) && secondTry.data.length > 0) {
+            // Adaptar al formato esperado
+            return (secondTry.data || []).map((row, index) => ({
+                id: row.id || null,
+                image_url: row.image_url,
+                image_order: typeof row.image_order === 'number' ? row.image_order : index,
+                is_main: !!row.is_main
+            }));
+        }
+    } catch (e) {
+        // continuar a fallback de Storage
+        console.warn('⚠️ Error consultando property_images, usando fallback de Storage:', e);
+    }
+
+    // Intento 3: Fallback desde Storage (nombres que contienen el ID de la propiedad)
+    try {
+        const prefix = `property_${propertyId}_`;
+        const list = await window.supabase.storage
+            .from('property-images')
+            .list('', { limit: 1000 });
+        if (!list.error && Array.isArray(list.data)) {
+            const matches = list.data
+                .filter((entry) => entry && typeof entry.name === 'string' && entry.name.includes(prefix))
+                .sort((a, b) => (a.created_at || 0) > (b.created_at || 0) ? 1 : -1);
+
+            const mapped = matches.map((entry, index) => {
+                const { data: urlData } = window.supabase.storage
+                    .from('property-images')
+                    .getPublicUrl(entry.name);
+                return {
+                    id: null,
+                    image_url: urlData.publicUrl,
+                    image_order: index,
+                    is_main: index === 0
+                };
+            });
+
+            if (mapped.length > 0) return mapped;
+        }
+    } catch (e) {
+        console.warn('⚠️ Fallback de Storage falló:', e);
+    }
+
+    // Último fallback: si la propiedad tuviera image_url directa
+    if (property && property.image_url) {
+        return [{ id: null, image_url: property.image_url, image_order: 0, is_main: true }];
+    }
+
+    return [];
 }
 
 // ======================
