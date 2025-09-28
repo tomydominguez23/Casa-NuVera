@@ -1187,11 +1187,11 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--elegant-black);
+            color: white;
         }
 
         .contact-item a {
-            color: rgba(255, 255, 255, 0.9);
+            color: white;
             text-decoration: none;
             font-weight: 500;
             letter-spacing: 0.5px;
@@ -1199,7 +1199,7 @@
         }
 
         .contact-item p {
-            color: rgba(255, 255, 255, 0.9);
+            color: white;
             font-weight: 500;
             letter-spacing: 0.5px;
             font-size: 0.8rem;
@@ -1630,10 +1630,10 @@
                         <button class="search-btn search-btn-primary" onclick="searchProperties()">Buscar</button>
                     </div>
                     <div class="search-group">
-                        <button class="search-btn search-btn-secondary">Buscar en Mapa</button>
+                        <button class="search-btn search-btn-secondary" onclick="searchInMap()">Buscar en Mapa</button>
                     </div>
                 </div>
-                <a href="#" class="search-link">Buscar por código de propiedad</a>
+                <a href="#" class="search-link" onclick="searchByPropertyCode(); return false;">Buscar por código de propiedad</a>
             </div>
             
             <!-- 🎯 Grid de Propiedades REALES - Se carga desde property-loader-fixed.js -->
@@ -1892,7 +1892,48 @@
                 });
             } else {
                 console.warn('⚠️ PropertyLoader no está disponible aún - esperando conexión a Supabase');
+                // Mostrar mensaje de espera
+                const container = document.getElementById('featuredProperties');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="loading-container">
+                            <div class="loading-spinner"></div>
+                            <p>Conectando con la base de datos...</p>
+                        </div>
+                    `;
+                }
             }
+        }
+
+        // 🔍 FUNCIÓN PARA BUSCAR POR CÓDIGO DE PROPIEDAD
+        function searchByPropertyCode() {
+            const propertyCode = prompt('Ingresa el código de la propiedad:');
+            if (propertyCode && propertyCode.trim() !== '') {
+                console.log('🔍 Buscando propiedad por código:', propertyCode);
+                
+                if (window.propertyLoader) {
+                    window.propertyLoader.searchByPropertyCode(propertyCode.trim());
+                } else {
+                    alert('Sistema de búsqueda no disponible en este momento. Intenta recargar la página.');
+                }
+            }
+        }
+
+        // 🗺️ FUNCIÓN PARA BUSCAR EN MAPA
+        function searchInMap() {
+            const operation = document.getElementById('operation-filter').value;
+            const type = document.getElementById('type-filter').value;
+            const location = document.getElementById('location-filter').value;
+            
+            // Construir URL con parámetros para la página de mapa
+            const params = new URLSearchParams();
+            if (operation) params.append('operation', operation);
+            if (type) params.append('type', type);
+            if (location) params.append('location', location);
+            
+            const mapUrl = `mapa.html?${params.toString()}`;
+            console.log('🗺️ Redirigiendo a mapa con filtros:', mapUrl);
+            window.location.href = mapUrl;
         }
 
         // 🔥 RENDERIZADO DE PROPERTY CARD - EXACTAMENTE IMAGEN 1 CON ICONOS SVG
@@ -1986,8 +2027,60 @@
             // Iniciar autoplay del carrusel
             startAutoplay();
             
+            // 🔍 CONFIGURAR BÚSQUEDA AUTOMÁTICA EN TIEMPO REAL
+            setupRealTimeSearch();
+            
             // El property-loader-fixed.js se encarga de cargar las propiedades reales
         });
+
+        // 🔍 CONFIGURAR BÚSQUEDA EN TIEMPO REAL
+        function setupRealTimeSearch() {
+            const locationInput = document.getElementById('location-filter');
+            const typeSelect = document.getElementById('type-filter');
+            const operationSelect = document.getElementById('operation-filter');
+            const projectsCheckbox = document.getElementById('projects-filter');
+            
+            let searchTimeout;
+            
+            // Búsqueda automática al escribir en ubicación (con debounce)
+            if (locationInput) {
+                locationInput.addEventListener('input', () => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        if (window.propertyLoader) {
+                            searchProperties();
+                        }
+                    }, 500); // Esperar 500ms después de que el usuario deje de escribir
+                });
+            }
+            
+            // Búsqueda automática al cambiar tipo de propiedad
+            if (typeSelect) {
+                typeSelect.addEventListener('change', () => {
+                    if (window.propertyLoader) {
+                        searchProperties();
+                    }
+                });
+            }
+            
+            // Búsqueda automática al cambiar operación
+            if (operationSelect) {
+                operationSelect.addEventListener('change', () => {
+                    if (window.propertyLoader) {
+                        searchProperties();
+                    }
+                });
+            }
+            
+            // Búsqueda automática al cambiar checkbox de proyectos
+            if (projectsCheckbox) {
+                projectsCheckbox.addEventListener('change', () => {
+                    if (window.propertyLoader) {
+                        searchProperties();
+                    }
+                });
+            }
+        }
 
         // Animations on scroll
         const observerOptions = {
