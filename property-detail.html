@@ -1125,11 +1125,11 @@
                     <!-- 🆕 GALERÍA REDISEÑADA - SOLO IMAGEN + BOTÓN ELEGANTE -->
                     <section class="property-gallery">
                         <div class="gallery-main">
-                            <img id="mainImage" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&crop=center" alt="Departamento en arriendo">
+                            <img id="mainImage" src="" alt="Cargando imagen..." style="display:none;">
                             
                             <!-- 🆕 BOTÓN "VER X FOTOS" ESTILO REFERENCIA -->
-                            <button class="gallery-view-all-btn" onclick="openGalleryModal()" id="galleryViewBtn">
-                                VER <span id="photoCount">12</span> FOTOS
+                            <button class="gallery-view-all-btn" onclick="openGalleryModal()" id="galleryViewBtn" style="display:none;">
+                                VER <span id="photoCount">0</span> FOTOS
                             </button>
 
                             <!-- 🆕 Flechas de navegación de la galería principal -->
@@ -1140,36 +1140,21 @@
 
                     <!-- Property Info -->
                     <section class="property-info">
-                        <div class="property-badge">Departamento en Arriendo</div>
-                        <h1 class="property-title" id="propertyTitle">Departamento En Arriendo De 3 Dorm. En Colina</h1>
-                        <div class="property-location">
-                            <span>Publicado hace 15 días</span>
+                        <div class="property-badge" style="display:none;"></div>
+                        <h1 class="property-title" id="propertyTitle" style="display:none;"></h1>
+                        <div class="property-location" style="display:none;">
+                            <span></span>
                         </div>
 
                         <!-- Features horizontales -->
-                        <div class="property-features" id="propertyFeatures">
-                            <div class="feature-item">
-                                <span class="feature-icon">📐</span>
-                                <span>260m² totales</span>
-                            </div>
-                            <div class="feature-item">
-                                <span class="feature-icon">🛏️</span>
-                                <span>3 dormitorios</span>
-                            </div>
-                            <div class="feature-item">
-                                <span class="feature-icon">🚿</span>
-                                <span>3 baños</span>
-                            </div>
-                        </div>
+                        <div class="property-features" id="propertyFeatures" style="display:none;"></div>
 
                         <!-- Tour 360° Section REMOVIDA: solo botón en sidebar -->
 
                         <!-- Description -->
-                        <div class="property-description">
+                        <div class="property-description" style="display:none;">
                             <h3>Descripción</h3>
-                            <div id="propertyDescription">
-                                <p>Hermoso departamento en arriendo con excelente ubicación y todas las comodidades. Cuenta con amplios espacios, buena iluminación natural y acabados de primera calidad. Ideal para familias que buscan comodidad y tranquilidad en una zona privilegiada de Colina.</p>
-                            </div>
+                            <div id="propertyDescription"></div>
                         </div>
 
                         <!-- Videos Section (arriba del mapa) -->
@@ -1188,27 +1173,14 @@
                 <!-- Sidebar derecha -->
                 <div class="property-sidebar">
                     <!-- Precio -->
-                    <div class="price-section">
-                        <div class="property-type">Departamento en Arriendo</div>
-                        <div class="property-price">6.000 UF</div>
-                        <div class="price-subtitle">$2.473.973</div>
+                    <div class="price-section" style="display:none;">
+                        <div class="property-type"></div>
+                        <div class="property-price"></div>
+                        <div class="price-subtitle"></div>
                     </div>
 
                     <!-- Características -->
-                    <div class="sidebar-features">
-                        <div class="sidebar-feature">
-                            <span class="sidebar-feature-label">Superficie total</span>
-                            <span class="sidebar-feature-value">260 m²</span>
-                        </div>
-                        <div class="sidebar-feature">
-                            <span class="sidebar-feature-label">Dormitorios</span>
-                            <span class="sidebar-feature-value">3</span>
-                        </div>
-                        <div class="sidebar-feature">
-                            <span class="sidebar-feature-label">Baños</span>
-                            <span class="sidebar-feature-value">3</span>
-                        </div>
-                    </div>
+                    <div class="sidebar-features" style="display:none;"></div>
 
                     <!-- Botones de contacto -->
                     <div class="contact-buttons">
@@ -1217,30 +1189,30 @@
                         <button id="sidebarTourBtn" class="contact-btn whatsapp" style="display:none;">
                             🔄 VER TOUR VIRTUAL
                         </button>
-                        <a href="#" class="contact-btn whatsapp" onclick="contactViaWhatsApp(); return false;">
+                        <a href="#" class="contact-btn whatsapp" id="whatsappBtn" onclick="contactViaWhatsApp(); return false;">
                             📱 CONTACTAR POR WHATSAPP
                         </a>
-                        <a href="mailto:tomasdominguezcarrizo.23@gmail.com" class="contact-btn secondary">
+                        <a href="#" class="contact-btn secondary" id="emailBtn">
                             ENVIAR EMAIL
                         </a>
-                        <a href="tel:+56948406684" class="contact-btn secondary">
+                        <a href="#" class="contact-btn secondary" id="phoneBtn">
                             📞 LLAMAR AHORA
                         </a>
                     </div>
 
                     <!-- Info del contacto -->
-                    <div class="contact-info">
-                        <div class="contact-item">
+                    <div class="contact-info" style="display:none;">
+                        <div class="contact-item" id="phoneInfo">
                             <span>📞</span>
-                            <span>+56948406684</span>
+                            <span></span>
                         </div>
-                        <div class="contact-item">
+                        <div class="contact-item" id="emailInfo">
                             <span>✉️</span>
-                            <span>tomasdominguezcarrizo.23@gmail.com</span>
+                            <span></span>
                         </div>
-                        <div class="contact-item">
+                        <div class="contact-item" id="agentInfo">
                             <span>🏢</span>
-                            <span>Martina Lewitt Benavides</span>
+                            <span></span>
                         </div>
                     </div>
                 </div>
@@ -1251,8 +1223,8 @@
     <!-- 🆕 Sticky CTA móvil -->
     <div class="sticky-cta" id="stickyCta" style="display:none;">
         <a href="#" class="cta-btn primary" id="stickyTourBtn" style="display:none;" onclick="openSelectedTour(); return false;">Tour</a>
-        <a href="#" class="cta-btn primary" onclick="contactViaWhatsApp(); return false;">WhatsApp</a>
-        <a href="tel:+56948406684" class="cta-btn secondary">Llamar</a>
+        <a href="#" class="cta-btn primary" id="stickyWhatsappBtn" onclick="contactViaWhatsApp(); return false;">WhatsApp</a>
+        <a href="#" class="cta-btn secondary" id="stickyPhoneBtn">Llamar</a>
     </div>
 
     <!-- 🆕 MODAL DE GALERÍA COMPLETO -->
@@ -1328,23 +1300,8 @@
         let isAnimatingMain = false;
         let isAnimatingViewer = false;
 
-        // 🆕 IMÁGENES EXPANDIDAS - SISTEMA DE 12 FOTOS
-        const propertyImages = [
-            // 5 imágenes originales
-            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&crop=center',
-            'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&h=600&fit=crop&crop=center',
-            'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&h=600&fit=crop&crop=center',
-            'https://images.unsplash.com/photo-1560448075-bb485b067938?w=800&h=600&fit=crop&crop=center',
-            'https://images.unsplash.com/photo-1560185008-b033106af5c3?w=800&h=600&fit=crop&crop=center',
-            // 7 nuevas imágenes
-            'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop&crop=center', // Cocina moderna
-            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop&crop=center', // Baño elegante  
-            'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&h=600&fit=crop&crop=center', // Dormitorio
-            'https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=800&h=600&fit=crop&crop=center', // Balcón/terraza
-            'https://images.unsplash.com/photo-1565182999561-18d7dc61c393?w=800&h=600&fit=crop&crop=center', // Vista exterior
-            'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop&crop=center', // Sala estar
-            'https://images.unsplash.com/photo-1556909114-4f4e0d69ac04?w=800&h=600&fit=crop&crop=center'  // Comedor
-        ];
+        // 🆕 IMÁGENES - Inicialmente vacío, se llenará con datos reales
+        const propertyImages = [];
 
         // Obtener ID de la propiedad desde URL
         function getPropertyIdFromURL() {
@@ -1352,127 +1309,61 @@
             return urlParams.get('id');
         }
 
-        // Inicializar página - SIN LOADING, CONTENIDO DIRECTO
+        // Inicializar página - Esperar datos antes de mostrar
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🏠 Cargando página directamente - SIN LOADING');
+            console.log('🏠 Inicializando página de detalle de propiedad...');
             
             const propertyId = getPropertyIdFromURL();
             
-            // 🆕 Actualizar botón con número real de fotos
-            document.getElementById('photoCount').textContent = propertyImages.length;
+            // No actualizar nada hasta tener datos reales
             
-            // Contenido ya está visible, solo cargar datos en segundo plano
+            // Ocultar las flechas de navegación hasta tener imágenes
+            const navButtons = document.querySelectorAll('.gallery-nav-btn');
+            navButtons.forEach(btn => btn.style.display = 'none');
+            
+            // Solo cargar datos si hay ID
             if (propertyId) {
-                loadPropertyDetailsInBackground(propertyId);
+                console.log('📥 ID de propiedad encontrado:', propertyId);
+                // El sistema dinámico se encargará de cargar todo
             } else {
-                // Mostrar mapa por defecto para testing
-                showGoogleMap('https://maps.app.goo.gl/eTgr7Rofa76tBGYc6');
+                console.warn('⚠️ No se encontró ID de propiedad en la URL');
+                // Mostrar mensaje de error
+                showNoPropertyMessage();
             }
             
             // 🆕 Inicializar event listeners del modal
             initializeGalleryModal();
             
-            // 🆕 Asegurar que el sistema dinámico se ejecute
-            if (window.propertyDetailDynamic) {
-                console.log('✅ PropertyDetailDynamic ya está disponible');
-            } else {
-                console.log('⚠️ PropertyDetailDynamic no está disponible, esperando...');
-                // Esperar un poco más para que se cargue
-                setTimeout(() => {
-                    if (window.propertyDetailDynamic) {
-                        console.log('✅ PropertyDetailDynamic cargado después del timeout');
+            // Mostrar CTA sticky solo en pantallas móviles DESPUÉS de cargar datos
+            window.addEventListener('propertyDataLoaded', function() {
+                try {
+                    const cta = document.getElementById('stickyCta');
+                    const isMobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+                    if (cta && isMobile) {
+                        cta.style.display = 'flex';
                     }
-                }, 1000);
-            }
-
-            // Mostrar CTA sticky solo en pantallas móviles
-            try {
-                const cta = document.getElementById('stickyCta');
-                const isMobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
-                if (cta && isMobile) {
-                    cta.style.display = 'flex';
-                }
-            } catch (e) { /* noop */ }
+                } catch (e) { /* noop */ }
+            });
         });
-
-        async function loadPropertyDetailsInBackground(propertyId) {
-            try {
-                console.log('📥 Cargando datos en segundo plano para ID:', propertyId);
-                
-                // Usar el sistema dinámico si está disponible
-                if (window.propertyDetailDynamic) {
-                    console.log('✅ Usando PropertyDetailDynamic para cargar datos');
-                    // El sistema dinámico ya maneja todo automáticamente
-                    return;
-                }
-                
-                // Fallback: cargar datos manualmente
-                console.log('⚠️ PropertyDetailDynamic no disponible, usando fallback');
-                
-                // Esperar a que Supabase esté listo
-                if (!window.supabase) {
-                    await new Promise(resolve => {
-                        const checkSupabase = () => {
-                            if (window.supabase) {
-                                resolve();
-                            } else {
-                                setTimeout(checkSupabase, 100);
-                            }
-                        };
-                        checkSupabase();
-                    });
-                }
-
-                // Cargar propiedad
-                const { data: property, error: propertyError } = await window.supabase
-                    .from('properties')
-                    .select('*')
-                    .eq('id', propertyId)
-                    .single();
-
-                if (!propertyError && property) {
-                    currentProperty = property;
-                    console.log('✅ Propiedad cargada en segundo plano:', property);
-
-                    // Actualizar título y datos si es necesario
-                    if (property.title) {
-                        document.getElementById('propertyTitle').textContent = property.title;
-                        document.title = `${property.title} - Casa Nuvera`;
-                    }
-
-                    // Cargar imágenes reales si existen
-                    const { data: images } = await window.supabase
-                        .from('property_images')
-                        .select('*')
-                        .eq('property_id', propertyId)
-                        .order('image_order', { ascending: true });
-
-                    if (images && images.length > 0) {
-                        const validImages = images.map(img => img.image_url).filter(url => url && url.trim() !== '');
-                        if (validImages.length > 0) {
-                            updateGalleryWithRealImages(validImages);
-                        }
-                    }
-
-        // Cargar y mostrar mapa si existe URL
-        if (property.google_maps_url) {
-            console.log('🗺️ URL de mapa encontrada:', property.google_maps_url);
-            showGoogleMap(property.google_maps_url);
-                    } else {
-                        console.log('ℹ️ No se encontró URL de Google Maps en la propiedad');
-                        // Mostrar mapa por defecto para testing
-                        showGoogleMap('https://maps.app.goo.gl/eTgr7Rofa76tBGYc6');
-                    }
-                } else {
-                    console.log('ℹ️ No se encontraron datos específicos, usando valores por defecto');
-                    // Mostrar mapa por defecto para testing
-                    showGoogleMap('https://maps.app.goo.gl/eTgr7Rofa76tBGYc6');
-                }
-            } catch (error) {
-                console.log('⚠️ Error cargando datos, usando valores por defecto:', error);
-                // Mostrar mapa por defecto para testing
-                showGoogleMap('https://maps.app.goo.gl/eTgr7Rofa76tBGYc6');
+        
+        function showNoPropertyMessage() {
+            const mainContent = document.querySelector('.property-main');
+            if (mainContent) {
+                mainContent.innerHTML = `
+                    <div style="padding: 4rem; text-align: center;">
+                        <h2>⚠️ Propiedad no encontrada</h2>
+                        <p style="margin: 1rem 0;">No se especificó una propiedad válida.</p>
+                        <a href="index.html" style="display: inline-block; padding: 0.75rem 1.5rem; background: #333; color: white; text-decoration: none; border-radius: 6px;">
+                            Volver al inicio
+                        </a>
+                    </div>
+                `;
             }
+        }
+
+        // Esta función ya no es necesaria, el sistema dinámico maneja todo
+        async function loadPropertyDetailsInBackground(propertyId) {
+            console.log('📥 Esta función está deprecada, PropertyDetailDynamic maneja la carga de datos');
         }
 
         function updateGalleryWithRealImages(images) {
@@ -1483,11 +1374,28 @@
             propertyImages.push(...images);
             
             // Actualizar imagen principal
-            document.getElementById('mainImage').src = images[0];
-            currentImageIndex = 0;
+            const mainImage = document.getElementById('mainImage');
+            if (mainImage && images.length > 0) {
+                mainImage.src = images[0];
+                mainImage.style.display = '';
+                currentImageIndex = 0;
+            }
             
             // 🆕 Actualizar contador en botón
-            document.getElementById('photoCount').textContent = images.length;
+            const photoCount = document.getElementById('photoCount');
+            const viewBtn = document.getElementById('galleryViewBtn');
+            if (photoCount) {
+                photoCount.textContent = images.length;
+            }
+            if (viewBtn && images.length > 0) {
+                viewBtn.style.display = '';
+            }
+            
+            // Mostrar flechas si hay más de una imagen
+            const navButtons = document.querySelectorAll('.gallery-nav-btn');
+            if (images.length > 1) {
+                navButtons.forEach(btn => btn.style.display = '');
+            }
         }
 
         function showGoogleMap(mapsUrl) {
@@ -1606,6 +1514,12 @@
 
         function openGalleryModal() {
             console.log('🖼️ Abriendo modal de galería');
+            
+            // Verificar que hay imágenes
+            if (propertyImages.length === 0) {
+                console.warn('No hay imágenes para mostrar');
+                return;
+            }
             
             const modal = document.getElementById('galleryModal');
             modal.classList.add('active');
@@ -1910,17 +1824,23 @@
                 property = window.propertyDetailDynamic.property;
             }
 
-            const title = property?.title || 'Propiedad';
-            const price = property?.price || 0;
-            const bedrooms = property?.bedrooms || 0;
-            const bathrooms = property?.bathrooms || 0;
-            const area = property?.total_area || property?.built_area || 0;
+            if (!property) {
+                console.error('No hay datos de propiedad disponibles');
+                alert('Por favor espere a que se cargue la información de la propiedad');
+                return;
+            }
+
+            const title = property.title || 'Propiedad';
+            const price = property.price || 0;
+            const bedrooms = property.bedrooms || 0;
+            const bathrooms = property.bathrooms || 0;
+            const area = property.total_area || property.built_area || 0;
             const location = property ? 
                 `${property.commune || property.neighborhood || 'Ubicación'}, ${property.region || 'Región'}` : 
                 'Ubicación no especificada';
 
-            const operation = property?.property_type === 'arriendo' ? 'arrendar' : 'comprar';
-            const priceText = property?.currency === 'UF' ? 
+            const operation = property.property_type === 'arriendo' ? 'arrendar' : 'comprar';
+            const priceText = property.currency === 'UF' ? 
                 `${price} UF` : 
                 `$${price.toLocaleString('es-CL')}`;
 
@@ -1936,9 +1856,24 @@ Vi el tour virtual 360° y me interesa conocer más detalles.
 
 Saludos!`;
 
-            const phoneNumber = (property?.contact_phone || '+56948406684').replace(/[^0-9]/g, '');
-            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            // Usar el teléfono específico de esta propiedad
+            const phoneNumber = property.contact_phone ? 
+                property.contact_phone.replace(/[^0-9+]/g, '') : 
+                '+56948406684'; // Fallback solo si no hay teléfono
             
+            // Asegurar que el número tenga formato internacional
+            let formattedPhone = phoneNumber;
+            if (!formattedPhone.startsWith('+')) {
+                if (formattedPhone.startsWith('56')) {
+                    formattedPhone = '+' + formattedPhone;
+                } else {
+                    formattedPhone = '+56' + formattedPhone.replace(/^0+/, '');
+                }
+            }
+            
+            const whatsappURL = `https://wa.me/${formattedPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+            
+            console.log('📱 Abriendo WhatsApp con número:', formattedPhone);
             window.open(whatsappURL, '_blank');
         }
     </script>
