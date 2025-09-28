@@ -206,14 +206,6 @@ function getToursForSaving() {
     }));
 }
 
-function getVideosForSaving() {
-    return propertyVideos.map((video, index) => ({
-        file: video.file,
-        video_order: index + 1,
-        video_title: video.name || `Video ${index + 1}`
-    }));
-}
-
 // ======================
 // FUNCIONES PARA IMÁGENES
 // ======================
@@ -781,7 +773,7 @@ function renderExistingImages(images) {
                 <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage('${img.id || ''}', -1)">↑ Subir</button>
                 <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage('${img.id || ''}', 1)">↓ Bajar</button>
                 <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="setImageAsMain('${img.id || ''}')">📌 Principal</button>
-                <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, '${img.id || 'null'}', '${encodeURIComponent(img.image_url || '')}')">×</button>
+                <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, '${img.id || ''}', '${encodeURIComponent(img.image_url)}')">×</button>
             </div>
         </div>
     `).join('');

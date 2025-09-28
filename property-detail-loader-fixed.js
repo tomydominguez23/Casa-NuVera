@@ -414,15 +414,6 @@ class PropertyDetailLoader {
                         <span class="feature-label">m² totales</span>
                     </div>
                 </div>
-                ${this.property.built_area ? `
-                <div class="feature-item">
-                    <div class="feature-icon">🏠</div>
-                    <div class="feature-text">
-                        <span class="feature-number">${this.property.built_area}</span>
-                        <span class="feature-label">m² construidos</span>
-                    </div>
-                </div>
-                ` : ''}
                 <div class="feature-item">
                     <div class="feature-icon">🚗</div>
                     <div class="feature-text">

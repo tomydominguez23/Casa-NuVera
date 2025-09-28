@@ -422,15 +422,11 @@ class PropertyHandler {
                 throw new Error('Parámetros inválidos para eliminar imagen');
             }
 
-            console.log(`🔍 Buscando imagen para eliminar - PropertyId: ${propertyId}, ImageId: ${imageId}, ImageUrl: ${imageUrl}`);
-
             // Buscar el registro exacto de la imagen
             let imageRow = null;
             let fetchError = null;
-            
             try {
-                if (imageId && imageId !== 'null' && imageId !== '') {
-                    console.log(`🔍 Buscando por ID: ${imageId}`);
+                if (imageId) {
                     const byId = await window.supabase
                         .from('property_images')
                         .select('id, image_url, is_main')
@@ -439,9 +435,7 @@ class PropertyHandler {
                         .maybeSingle();
                     imageRow = byId.data;
                     fetchError = byId.error;
-                    console.log(`📋 Resultado búsqueda por ID:`, { imageRow, fetchError });
-                } else if (imageUrl) {
-                    console.log(`🔍 Buscando por URL: ${imageUrl}`);
+                } else {
                     const exact = await window.supabase
                         .from('property_images')
                         .select('id, image_url, is_main')
@@ -450,16 +444,13 @@ class PropertyHandler {
                         .maybeSingle();
                     imageRow = exact.data;
                     fetchError = exact.error;
-                    console.log(`📋 Resultado búsqueda por URL:`, { imageRow, fetchError });
                 }
             } catch (e) {
                 fetchError = e;
-                console.error('❌ Error en búsqueda inicial:', e);
             }
 
             // Fallback: intentar buscar por el nombre del archivo/path si no se encontró
             if (!imageRow && imageUrl) {
-                console.log(`🔄 Intentando búsqueda alternativa...`);
                 try {
                     let pathTail = null;
                     if (imageUrl.includes('/storage/v1/object/public/property-images/')) {
@@ -470,13 +461,11 @@ class PropertyHandler {
                     }
                     const fileName = imageUrl.split('/').pop()?.split('?')[0] || null;
 
-                    console.log(`🔍 PathTail: ${pathTail}, FileName: ${fileName}`);
-
-                    // Intentar múltiples estrategias de búsqueda
                     let altQuery = window.supabase
                         .from('property_images')
                         .select('id, image_url, is_main')
-                        .eq('property_id', propertyId);
+                        .eq('property_id', propertyId)
+                        .limit(1);
 
                     if (pathTail) {
                         altQuery = altQuery.ilike('image_url', `%${pathTail}`);
@@ -485,29 +474,11 @@ class PropertyHandler {
                     }
 
                     const { data: altData, error: altErr } = await altQuery;
-                    console.log(`📋 Resultado búsqueda alternativa:`, { altData, altErr });
-                    
                     if (!altErr && altData && altData.length > 0) {
                         imageRow = altData[0];
-                        console.log(`✅ Imagen encontrada en búsqueda alternativa:`, imageRow);
-                    } else {
-                        // Último intento: buscar todas las imágenes de la propiedad
-                        console.log(`🔄 Último intento: buscando todas las imágenes de la propiedad...`);
-                        const { data: allImages, error: allErr } = await window.supabase
-                            .from('property_images')
-                            .select('id, image_url, is_main')
-                            .eq('property_id', propertyId);
-                        
-                        console.log(`📋 Todas las imágenes de la propiedad:`, { allImages, allErr });
-                        
-                        if (!allErr && allImages && allImages.length > 0) {
-                            // Si hay imágenes pero no encontramos la específica, usar la primera
-                            console.log(`⚠️ Usando la primera imagen disponible como fallback`);
-                            imageRow = allImages[0];
-                        }
                     }
                 } catch (e) {
-                    console.error('❌ Error en búsqueda alternativa:', e);
+                    // ignore
                 }
             }
 
