@@ -5,6 +5,18 @@
     --green-accent: #333333; /* Cambio de verde a gris oscuro */
     --black-accent: #000000;
     --dark-gray: #333333;
+    --red-accent: #dc3545; /* Color rojo para texto que debe ser rojo */
+}
+
+/* REGLA PARA CAMBIAR TEXTO BLANCO A ROJO */
+.text-white-to-red,
+.white-text-red {
+    color: var(--red-accent) !important;
+}
+
+/* Regla específica para texto entre imagen y contenido */
+.image-text-red {
+    color: var(--red-accent) !important;
 }
 
 /* Properties Grid - Diseño compacto y oscuro */

@@ -41,6 +41,9 @@
             --charcoal: #36454F;
             --light-gray-accent: #D3D3D3;
             --dark-gray: #2F2F2F;
+            
+            /* Color rojo para texto que debe ser rojo */
+            --red-accent: #dc3545;
         }
 
         /* Toggle de navegación (oculto por defecto en desktop) */
@@ -1479,6 +1482,23 @@
         /* Refuerzo en móviles: deshabilitar parallax fijo */
         @media (max-width: 768px) {
             .parallax { background-attachment: scroll !important; }
+        }
+
+        /* REGLAS PARA CAMBIAR TEXTO BLANCO A ROJO */
+        .text-white-to-red,
+        .white-text-red {
+            color: var(--red-accent) !important;
+        }
+
+        /* Regla específica para texto entre imagen y contenido */
+        .image-text-red {
+            color: var(--red-accent) !important;
+        }
+
+        /* Regla para texto que debe ser rojo como el fondo de despacho y soporte 24/7 */
+        .despacho-soporte-text {
+            color: var(--red-accent) !important;
+            font-weight: 600;
         }
     </style>
 </head>
