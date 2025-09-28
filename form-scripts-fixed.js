@@ -27,7 +27,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Arranque robusto: si el DOM ya está listo y Supabase existe, inicializar inmediatamente (evita carreras)
+if (document.readyState !== 'loading' && typeof window !== 'undefined' && window.supabase) {
+    try { initializeApp(); } catch (e) { console.error('Init inmediato falló:', e); }
+}
+
 function initializeApp() {
+    // Evitar doble inicialización si llegan múltiples eventos
+    if (window.__formAppInitialized) {
+        return;
+    }
+    window.__formAppInitialized = true;
     console.log('🚀 Inicializando aplicación...');
     
     if (!window.supabase) {
@@ -581,7 +591,8 @@ function validateForm() {
         }
     });
     
-    if (propertyImages.length === 0) {
+    // En creación se exige al menos una imagen nueva; en edición puede no haber nuevas imágenes
+    if (!editMode && propertyImages.length === 0) {
         alert('Debe subir al menos una imagen de la propiedad');
         isValid = false;
     }
@@ -772,10 +783,10 @@ function renderExistingImages(images) {
             <img src="${img.image_url}" alt="Imagen existente ${index + 1}">
             <div class="file-name">${img.is_main ? '📌 Principal' : 'Imagen ' + (index + 1)}</div>
             <div style="display:flex; gap:0.5rem; margin-top:0.5rem; justify-content:center;">
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage(${img.id || 'null'}, -1)">↑ Subir</button>
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage(${img.id || 'null'}, 1)">↓ Bajar</button>
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="setImageAsMain(${img.id || 'null'})">📌 Principal</button>
-                <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, ${img.id || 'null'}, '${encodeURIComponent(img.image_url)}')">×</button>
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage('${img.id || ''}', -1)">↑ Subir</button>
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage('${img.id || ''}', 1)">↓ Bajar</button>
+                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="setImageAsMain('${img.id || ''}')">📌 Principal</button>
+                <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, '${img.id || ''}', '${encodeURIComponent(img.image_url)}')">×</button>
             </div>
         </div>
     `).join('');
@@ -1028,8 +1039,8 @@ async function deleteExistingImage(buttonEl, imageId, encodedUrl) {
 
         // Recargar la lista de imágenes desde la BD
         const { data: updatedImages, error } = await window.supabase
-            .from('property_images')
-            .select('image_url, image_order, is_main')
+        .from('property_images')
+        .select('id, image_url, image_order, is_main')
             .eq('property_id', editingPropertyId)
             .order('image_order', { ascending: true });
         if (error) {
