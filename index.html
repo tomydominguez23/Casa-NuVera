@@ -629,7 +629,7 @@
 
         .search-filters {
             display: grid !important;
-            grid-template-columns: repeat(6, 1fr) !important;
+            grid-template-columns: repeat(7, 1fr) !important;
             gap: 1rem !important;
             align-items: end !important;
             background: transparent !important;
@@ -1627,7 +1627,66 @@
                         </select>
                     </div>
                     <div class="search-group">
-                        <input type="text" class="search-input" placeholder="Ingresa comuna o ciudad" id="location-filter">
+                        <select class="search-select" id="comuna-filter">
+                            <option value="">Selecciona comuna</option>
+                            <option value="Cerrillos">Cerrillos</option>
+                            <option value="Cerro Navia">Cerro Navia</option>
+                            <option value="Conchalí">Conchalí</option>
+                            <option value="El Bosque">El Bosque</option>
+                            <option value="Estación Central">Estación Central</option>
+                            <option value="Huechuraba">Huechuraba</option>
+                            <option value="Independencia">Independencia</option>
+                            <option value="La Cisterna">La Cisterna</option>
+                            <option value="La Florida">La Florida</option>
+                            <option value="La Granja">La Granja</option>
+                            <option value="La Pintana">La Pintana</option>
+                            <option value="La Reina">La Reina</option>
+                            <option value="Las Condes">Las Condes</option>
+                            <option value="Lo Barnechea">Lo Barnechea</option>
+                            <option value="Lo Espejo">Lo Espejo</option>
+                            <option value="Lo Prado">Lo Prado</option>
+                            <option value="Macul">Macul</option>
+                            <option value="Maipú">Maipú</option>
+                            <option value="Ñuñoa">Ñuñoa</option>
+                            <option value="Pedro Aguirre Cerda">Pedro Aguirre Cerda</option>
+                            <option value="Peñalolén">Peñalolén</option>
+                            <option value="Providencia">Providencia</option>
+                            <option value="Pudahuel">Pudahuel</option>
+                            <option value="Quilicura">Quilicura</option>
+                            <option value="Quinta Normal">Quinta Normal</option>
+                            <option value="Recoleta">Recoleta</option>
+                            <option value="Renca">Renca</option>
+                            <option value="San Joaquín">San Joaquín</option>
+                            <option value="San Miguel">San Miguel</option>
+                            <option value="San Ramón">San Ramón</option>
+                            <option value="Santiago">Santiago</option>
+                            <option value="Vitacura">Vitacura</option>
+                        </select>
+                    </div>
+                    <div class="search-group">
+                        <select class="search-select" id="ciudad-filter">
+                            <option value="">Selecciona ciudad</option>
+                            <option value="Santiago">Santiago</option>
+                            <option value="Valparaíso">Valparaíso</option>
+                            <option value="Concepción">Concepción</option>
+                            <option value="La Serena">La Serena</option>
+                            <option value="Antofagasta">Antofagasta</option>
+                            <option value="Temuco">Temuco</option>
+                            <option value="Rancagua">Rancagua</option>
+                            <option value="Talca">Talca</option>
+                            <option value="Arica">Arica</option>
+                            <option value="Chillán">Chillán</option>
+                            <option value="Iquique">Iquique</option>
+                            <option value="Los Ángeles">Los Ángeles</option>
+                            <option value="Puerto Montt">Puerto Montt</option>
+                            <option value="Valdivia">Valdivia</option>
+                            <option value="Osorno">Osorno</option>
+                            <option value="Quilpué">Quilpué</option>
+                            <option value="Calama">Calama</option>
+                            <option value="Copiapó">Copiapó</option>
+                            <option value="Curicó">Curicó</option>
+                            <option value="Villa Alemana">Villa Alemana</option>
+                        </select>
                     </div>
                     <div class="search-group">
                         <div class="search-checkbox-group">
@@ -1886,17 +1945,19 @@
         function searchProperties() {
             const operation = document.getElementById('operation-filter').value;
             const type = document.getElementById('type-filter').value;
-            const location = document.getElementById('location-filter').value;
+            const comuna = document.getElementById('comuna-filter').value;
+            const ciudad = document.getElementById('ciudad-filter').value;
             const projects = document.getElementById('projects-filter').checked;
             
-            console.log('🔍 Filtros de búsqueda aplicados:', { operation, type, location, projects });
+            console.log('🔍 Filtros de búsqueda aplicados:', { operation, type, comuna, ciudad, projects });
             
             // Usar el PropertyLoader real para aplicar filtros
             if (window.propertyLoader) {
                 window.propertyLoader.applySearchFilters({
                     operation,
                     type,
-                    location,
+                    comuna,
+                    ciudad,
                     projects
                 });
             } else {
@@ -1932,13 +1993,15 @@
         function searchInMap() {
             const operation = document.getElementById('operation-filter').value;
             const type = document.getElementById('type-filter').value;
-            const location = document.getElementById('location-filter').value;
+            const comuna = document.getElementById('comuna-filter').value;
+            const ciudad = document.getElementById('ciudad-filter').value;
             
             // Construir URL con parámetros para la página de mapa
             const params = new URLSearchParams();
             if (operation) params.append('operation', operation);
             if (type) params.append('type', type);
-            if (location) params.append('location', location);
+            if (comuna) params.append('comuna', comuna);
+            if (ciudad) params.append('ciudad', ciudad);
             
             const mapUrl = `mapa.html?${params.toString()}`;
             console.log('🗺️ Redirigiendo a mapa con filtros:', mapUrl);
@@ -2044,22 +2107,27 @@
 
         // 🔍 CONFIGURAR BÚSQUEDA EN TIEMPO REAL
         function setupRealTimeSearch() {
-            const locationInput = document.getElementById('location-filter');
+            const comunaSelect = document.getElementById('comuna-filter');
+            const ciudadSelect = document.getElementById('ciudad-filter');
             const typeSelect = document.getElementById('type-filter');
             const operationSelect = document.getElementById('operation-filter');
             const projectsCheckbox = document.getElementById('projects-filter');
             
-            let searchTimeout;
+            // Búsqueda automática al cambiar comuna
+            if (comunaSelect) {
+                comunaSelect.addEventListener('change', () => {
+                    if (window.propertyLoader) {
+                        searchProperties();
+                    }
+                });
+            }
             
-            // Búsqueda automática al escribir en ubicación (con debounce)
-            if (locationInput) {
-                locationInput.addEventListener('input', () => {
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        if (window.propertyLoader) {
-                            searchProperties();
-                        }
-                    }, 500); // Esperar 500ms después de que el usuario deje de escribir
+            // Búsqueda automática al cambiar ciudad
+            if (ciudadSelect) {
+                ciudadSelect.addEventListener('change', () => {
+                    if (window.propertyLoader) {
+                        searchProperties();
+                    }
                 });
             }
             
