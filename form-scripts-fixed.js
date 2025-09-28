@@ -774,14 +774,30 @@ function renderExistingImages(images) {
     }
     section.style.display = 'block';
     list.innerHTML = images.map((img, index) => `
-        <div class="file-item" data-image-url="${img.image_url || ''}">
-            <img src="${img.image_url}" alt="Imagen existente ${index + 1}">
-            <div class="file-name">${img.is_main ? '📌 Principal' : 'Imagen ' + (index + 1)}</div>
-            <div style="display:flex; gap:0.5rem; margin-top:0.5rem; justify-content:center;">
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage('${encodeURIComponent(img.image_url || '')}', -1)">↑ Subir</button>
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingImage('${encodeURIComponent(img.image_url || '')}', 1)">↓ Bajar</button>
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="setImageAsMain('${encodeURIComponent(img.image_url || '')}')">📌 Principal</button>
-                <button class="remove-file" title="Eliminar imagen" onclick="deleteExistingImage(this, 'null', '${encodeURIComponent(img.image_url || '')}')">×</button>
+        <div class="file-item optimized-image-card" data-image-url="${img.image_url || ''}">
+            <div class="image-container">
+                <img src="${img.image_url}" alt="Imagen existente ${index + 1}">
+                <div class="image-overlay">
+                    <div class="image-toolbar">
+                        <button class="toolbar-btn move-up" onclick="moveExistingImage('${encodeURIComponent(img.image_url || '')}', -1)" title="Mover hacia arriba">
+                            <span class="icon">↑</span>
+                        </button>
+                        <button class="toolbar-btn move-down" onclick="moveExistingImage('${encodeURIComponent(img.image_url || '')}', 1)" title="Mover hacia abajo">
+                            <span class="icon">↓</span>
+                        </button>
+                        <button class="toolbar-btn set-main" onclick="setImageAsMain('${encodeURIComponent(img.image_url || '')}')" title="Marcar como principal">
+                            <span class="icon">⭐</span>
+                        </button>
+                        <button class="toolbar-btn delete" onclick="deleteExistingImage(this, 'null', '${encodeURIComponent(img.image_url || '')}')" title="Eliminar imagen">
+                            <span class="icon">🗑️</span>
+                        </button>
+                    </div>
+                </div>
+                ${img.is_main ? '<div class="main-badge">PRINCIPAL</div>' : ''}
+            </div>
+            <div class="image-info">
+                <div class="image-name">${img.is_main ? '📌 Imagen Principal' : 'Imagen ' + (index + 1)}</div>
+                <div class="image-order">Orden: ${index + 1}</div>
             </div>
         </div>
     `).join('');
@@ -1011,16 +1027,26 @@ function renderExistingVideos(videos) {
     }
     section.style.display = 'block';
     list.innerHTML = videos.map((v, index) => `
-        <div class="video-item" data-video-id="${v.id || ''}">
-            <div class="video-wrapper">
+        <div class="video-item optimized-video-card" data-video-id="${v.id || ''}">
+            <div class="video-container">
                 <video src="${v.video_url}" controls muted preload="metadata"></video>
+                <div class="video-overlay">
+                    <div class="video-toolbar">
+                        <button class="toolbar-btn move-up" onclick="moveExistingVideo(${v.id || 'null'}, -1)" title="Mover hacia arriba">
+                            <span class="icon">↑</span>
+                        </button>
+                        <button class="toolbar-btn move-down" onclick="moveExistingVideo(${v.id || 'null'}, 1)" title="Mover hacia abajo">
+                            <span class="icon">↓</span>
+                        </button>
+                        <button class="toolbar-btn delete" onclick="deleteExistingVideo(${v.id || 'null'}, '${encodeURIComponent(v.video_url)}')" title="Eliminar video">
+                            <span class="icon">🗑️</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="video-name">${v.video_title || `Video ${index + 1}`}</div>
-            <div class="video-info">Orden: <strong>${(typeof v.video_order === 'number' ? v.video_order : index + 1)}</strong></div>
-            <div style="display:flex; gap:0.5rem; margin-top:0.5rem; justify-content:center;">
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingVideo(${v.id || 'null'}, -1)">↑ Subir</button>
-                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem;" onclick="moveExistingVideo(${v.id || 'null'}, 1)">↓ Bajar</button>
-                <button class="remove-file" title="Eliminar video" onclick="deleteExistingVideo(${v.id || 'null'}, '${encodeURIComponent(v.video_url)}')">×</button>
+            <div class="video-info">
+                <div class="video-name">${v.video_title || `Video ${index + 1}`}</div>
+                <div class="video-order">Orden: ${(typeof v.video_order === 'number' ? v.video_order : index + 1)}</div>
             </div>
         </div>
     `).join('');
