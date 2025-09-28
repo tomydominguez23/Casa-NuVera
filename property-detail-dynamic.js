@@ -33,18 +33,13 @@ class PropertyDetailDynamic {
             await this.loadPropertyTours(propertyId);
             await this.loadPropertyVideos(propertyId);
 
-        // Actualizar la página con los datos reales
-        this.updatePropertyData();
-        
-        // Disparar evento para indicar que los datos están listos
-        window.dispatchEvent(new Event('propertyDataLoaded'));
-        console.log('✅ Datos de propiedad cargados y evento disparado');
-        
-    } catch (error) {
-        console.error('💥 Error al inicializar PropertyDetailDynamic:', error);
-        // Mostrar mensaje de error al usuario
-        this.showErrorMessage();
-    }
+            // Actualizar la página con los datos reales
+            this.updatePropertyData();
+            
+        } catch (error) {
+            console.error('💥 Error al inicializar PropertyDetailDynamic:', error);
+            // No mostrar error al usuario, mantener datos por defecto
+        }
     }
 
     getPropertyIdFromURL() {
@@ -103,8 +98,6 @@ class PropertyDetailDynamic {
             }
 
             this.property = data;
-            // También actualizar la variable global para compatibilidad
-            window.currentProperty = data;
             console.log('✅ Propiedad cargada:', this.property.title);
             
         } catch (error) {
@@ -199,7 +192,6 @@ class PropertyDetailDynamic {
         const titleElement = document.getElementById('propertyTitle');
         if (titleElement) {
             titleElement.textContent = this.property.title;
-            titleElement.style.display = '';
         }
 
         // Actualizar badge de tipo de propiedad
@@ -207,16 +199,13 @@ class PropertyDetailDynamic {
         if (badgeElement) {
             const typeText = this.property.property_type === 'arriendo' ? 'En Arriendo' : 'En Venta';
             badgeElement.textContent = `${this.property.category || 'Propiedad'} ${typeText}`;
-            badgeElement.style.display = '';
         }
 
         // Actualizar ubicación
-        const locationContainer = document.querySelector('.property-location');
         const locationElement = document.querySelector('.property-location span');
         if (locationElement) {
             const location = this.formatLocation(this.property);
             locationElement.textContent = location;
-            if (locationContainer) locationContainer.style.display = '';
         }
 
         // Actualizar características
@@ -302,30 +291,18 @@ class PropertyDetailDynamic {
                 <span>${bathrooms} baño${bathrooms !== 1 ? 's' : ''}</span>
             </div>
         `;
-        featuresContainer.style.display = '';
     }
 
     updatePropertyDescription() {
-        const descriptionContainer = document.querySelector('.property-description');
         const descriptionElement = document.getElementById('propertyDescription');
         if (!descriptionElement || !this.property) return;
 
         const description = this.property.description || 'No hay descripción disponible para esta propiedad.';
         descriptionElement.innerHTML = `<p>${description}</p>`;
-        if (descriptionContainer) descriptionContainer.style.display = '';
     }
 
     updatePropertyGallery() {
-        if (this.propertyImages.length === 0) {
-            // Si no hay imágenes, usar placeholder
-            const mainImage = document.getElementById('mainImage');
-            if (mainImage) {
-                mainImage.src = 'https://via.placeholder.com/800x600/f8f9fa/666?text=Sin+imagen';
-                mainImage.alt = 'Sin imagen disponible';
-                mainImage.style.display = '';
-            }
-            return;
-        }
+        if (this.propertyImages.length === 0) return;
 
         // Actualizar imagen principal
         const mainImage = document.getElementById('mainImage');
@@ -333,7 +310,6 @@ class PropertyDetailDynamic {
             const firstImage = this.propertyImages.find(img => img.is_main) || this.propertyImages[0];
             mainImage.src = firstImage.image_url;
             mainImage.alt = this.property.title;
-            mainImage.style.display = '';
             // Reiniciar índice de la galería principal
             if (typeof window.currentImageIndex !== 'undefined') {
                 window.currentImageIndex = 0;
@@ -342,26 +318,14 @@ class PropertyDetailDynamic {
 
         // Actualizar contador de fotos
         const photoCountElement = document.getElementById('photoCount');
-        const viewBtn = document.getElementById('galleryViewBtn');
         if (photoCountElement) {
             photoCountElement.textContent = this.propertyImages.length;
-        }
-        if (viewBtn && this.propertyImages.length > 0) {
-            viewBtn.style.display = '';
         }
 
         // Actualizar array de imágenes para el modal
         if (window.propertyImages) {
             window.propertyImages.length = 0;
             window.propertyImages.push(...this.propertyImages.map(img => img.image_url));
-        }
-        
-        // Mostrar las flechas de navegación si hay más de una imagen
-        const navButtons = document.querySelectorAll('.gallery-nav-btn');
-        if (this.propertyImages.length > 1) {
-            navButtons.forEach(btn => btn.style.display = '');
-        } else {
-            navButtons.forEach(btn => btn.style.display = 'none');
         }
     }
 
@@ -522,65 +486,36 @@ class PropertyDetailDynamic {
     updateContactInfo() {
         if (!this.property) return;
 
-        // Actualizar botones de contacto
-        const whatsappBtn = document.getElementById('whatsappBtn');
-        const emailBtn = document.getElementById('emailBtn');
-        const phoneBtn = document.getElementById('phoneBtn');
-        const stickyWhatsappBtn = document.getElementById('stickyWhatsappBtn');
-        const stickyPhoneBtn = document.getElementById('stickyPhoneBtn');
-        
-        // Actualizar botón de WhatsApp
-        if (whatsappBtn && this.property.contact_phone) {
-            // Ya tiene el onclick correcto que llama a contactViaWhatsApp()
-        }
-        
-        // Actualizar botón de email
-        if (emailBtn && this.property.contact_email) {
-            emailBtn.href = `mailto:${this.property.contact_email}`;
-        }
-        
-        // Actualizar botón de teléfono
-        if (phoneBtn && this.property.contact_phone) {
-            phoneBtn.href = `tel:${this.property.contact_phone}`;
-        }
-        
-        // Actualizar botones sticky en móvil
-        if (stickyPhoneBtn && this.property.contact_phone) {
-            stickyPhoneBtn.href = `tel:${this.property.contact_phone}`;
-        }
-
         // Actualizar información de contacto en sidebar
-        const contactInfoContainer = document.querySelector('.contact-info');
-        const phoneInfo = document.getElementById('phoneInfo');
-        const emailInfo = document.getElementById('emailInfo');
-        const agentInfo = document.getElementById('agentInfo');
-        
-        if (phoneInfo && this.property.contact_phone) {
-            const phoneSpan = phoneInfo.querySelector('span:last-child');
-            if (phoneSpan) phoneSpan.textContent = this.property.contact_phone;
-        }
-        
-        if (emailInfo && this.property.contact_email) {
-            const emailSpan = emailInfo.querySelector('span:last-child');
-            if (emailSpan) emailSpan.textContent = this.property.contact_email;
-        }
-        
-        if (agentInfo && this.property.contact_name) {
-            const agentSpan = agentInfo.querySelector('span:last-child');
-            if (agentSpan) agentSpan.textContent = this.property.contact_name;
-        }
-        
-        // Mostrar el contenedor de información de contacto
-        if (contactInfoContainer && (this.property.contact_phone || this.property.contact_email || this.property.contact_name)) {
-            contactInfoContainer.style.display = '';
+        const contactItems = document.querySelectorAll('.contact-item');
+        if (contactItems.length >= 3) {
+            // Teléfono
+            const phoneItem = contactItems[0];
+            const phoneLink = phoneItem.querySelector('a');
+            if (phoneLink && this.property.contact_phone) {
+                phoneLink.href = `tel:${this.property.contact_phone}`;
+                phoneLink.textContent = this.property.contact_phone;
+            }
+
+            // Email
+            const emailItem = contactItems[1];
+            const emailLink = emailItem.querySelector('a');
+            if (emailLink && this.property.contact_email) {
+                emailLink.href = `mailto:${this.property.contact_email}`;
+                emailLink.textContent = this.property.contact_email;
+            }
+
+            // Nombre del agente
+            const agentItem = contactItems[2];
+            if (agentItem && this.property.contact_name) {
+                agentItem.querySelector('span').textContent = this.property.contact_name;
+            }
         }
     }
 
     updatePriceInfo() {
         if (!this.property) return;
 
-        const priceSection = document.querySelector('.price-section');
-        
         // Actualizar tipo de propiedad en sidebar
         const typeElement = document.querySelector('.property-type');
         if (typeElement) {
@@ -607,11 +542,6 @@ class PropertyDetailDynamic {
             } else {
                 priceSubtitle.textContent = ''; // No mostrar subtítulo para CLP
             }
-        }
-        
-        // Mostrar la sección de precio
-        if (priceSection) {
-            priceSection.style.display = '';
         }
     }
 
@@ -640,9 +570,6 @@ class PropertyDetailDynamic {
                 <span class="sidebar-feature-value">${bathrooms}</span>
             </div>
         `;
-        
-        // Mostrar las características del sidebar
-        sidebarFeatures.style.display = '';
 
         console.log('✅ Características del sidebar actualizadas');
     }
@@ -693,33 +620,16 @@ class PropertyDetailDynamic {
                 return `$${numPrice.toLocaleString('es-CL')}`;
         }
     }
-    
-    showErrorMessage() {
-        const mainContent = document.querySelector('.property-main');
-        if (mainContent) {
-            mainContent.innerHTML = `
-                <div style="padding: 4rem; text-align: center;">
-                    <h2>⚠️ Error al cargar la propiedad</h2>
-                    <p style="margin: 1rem 0;">No se pudo cargar la información de esta propiedad.</p>
-                    <button onclick="location.reload()" style="padding: 0.75rem 1.5rem; background: #333; color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 1rem;">
-                        Reintentar
-                    </button>
-                    <a href="index.html" style="display: inline-block; padding: 0.75rem 1.5rem; background: #666; color: white; text-decoration: none; border-radius: 6px;">
-                        Volver al inicio
-                    </a>
-                </div>
-            `;
-        }
-    }
 }
 
 // Inicialización global
+let propertyDetailDynamic;
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🏠 Iniciando PropertyDetailDynamic...');
     
-    // Crear instancia y hacerla disponible globalmente
-    window.propertyDetailDynamic = new PropertyDetailDynamic();
-    
-    // También guardar referencia a la propiedad actual para compatibilidad
-    window.currentProperty = null;
+    propertyDetailDynamic = new PropertyDetailDynamic();
 });
+
+// Hacer disponible globalmente
+window.propertyDetailDynamic = propertyDetailDynamic;
