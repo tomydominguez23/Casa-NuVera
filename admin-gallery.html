@@ -833,7 +833,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <script src="admin-scripts.js"></script>
-    <script src="gallery-sync.js"></script>
     
     <script>
         class GalleryManager {
@@ -911,11 +910,14 @@
                 try {
                     console.log('📋 Cargando slides de la galería...');
                     
-                    // Usar el sistema de sincronización
-                    if (window.gallerySync && window.gallerySync.getGalleryData()) {
-                        this.gallerySlides = window.gallerySync.getGalleryData();
+                    // Verificar si hay datos guardados en localStorage
+                    const savedData = localStorage.getItem('casaNuveraGalleryData');
+                    
+                    if (savedData) {
+                        this.gallerySlides = JSON.parse(savedData);
+                        console.log('✅ Datos de galería cargados desde localStorage:', this.gallerySlides.length, 'slides');
                     } else {
-                        // Datos de ejemplo si no hay sincronización disponible
+                        // Datos de ejemplo por defecto
                         this.gallerySlides = [
                             {
                                 id: 1,
@@ -962,6 +964,7 @@
                                 slug: "casa-familiar-nunoa"
                             }
                         ];
+                        console.log('ℹ️ Usando datos de ejemplo por defecto');
                     }
 
                     this.renderPreviewCarousel();
@@ -1228,10 +1231,7 @@
                         this.showSuccess('Slide agregado exitosamente');
                     }
 
-                    // Guardar cambios usando el sistema de sincronización
-                    if (window.gallerySync) {
-                        await window.gallerySync.saveGalleryChanges(this.gallerySlides);
-                    }
+                    // Los cambios se guardan automáticamente en la instancia local
 
                     // Actualizar vistas
                     this.renderPreviewCarousel();
@@ -1251,10 +1251,7 @@
                 if (slide) {
                     slide.active = !slide.active;
                     
-                    // Guardar cambios usando el sistema de sincronización
-                    if (window.gallerySync) {
-                        await window.gallerySync.saveGalleryChanges(this.gallerySlides);
-                    }
+                    // Los cambios se guardan automáticamente en la instancia local
                     
                     this.renderPreviewCarousel();
                     this.renderSlidesGrid();
@@ -1271,10 +1268,7 @@
                 if (slideIndex !== -1) {
                     this.gallerySlides.splice(slideIndex, 1);
                     
-                    // Guardar cambios usando el sistema de sincronización
-                    if (window.gallerySync) {
-                        await window.gallerySync.saveGalleryChanges(this.gallerySlides);
-                    }
+                    // Los cambios se guardan automáticamente en la instancia local
                     
                     this.renderPreviewCarousel();
                     this.renderSlidesGrid();
@@ -1316,6 +1310,42 @@
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 if (loadingOverlay) {
                     loadingOverlay.style.display = 'none';
+                }
+            }
+
+            async syncWithWebsite() {
+                try {
+                    console.log('🔄 Sincronizando con el sitio web...');
+                    
+                    // Guardar datos en localStorage para que el sitio web los pueda leer
+                    localStorage.setItem('casaNuveraGalleryData', JSON.stringify(this.gallerySlides));
+                    
+                    // También guardar en sessionStorage para acceso inmediato
+                    sessionStorage.setItem('casaNuveraGalleryData', JSON.stringify(this.gallerySlides));
+                    
+                    // Mostrar mensaje de éxito
+                    this.showSuccess('Galería sincronizada con el sitio web exitosamente');
+                    
+                    // Opcional: abrir el sitio web en una nueva pestaña
+                    const openSite = confirm('¿Deseas abrir el sitio web para ver los cambios?');
+                    if (openSite) {
+                        const siteWindow = window.open('index.html', '_blank');
+                        
+                        // Si se abre la ventana, intentar recargar la galería después de un momento
+                        if (siteWindow) {
+                            setTimeout(() => {
+                                try {
+                                    siteWindow.reloadGalleryFromAdmin();
+                                } catch (e) {
+                                    console.log('No se pudo recargar automáticamente, pero los datos están guardados');
+                                }
+                            }, 2000);
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error sincronizando:', error);
+                    this.showError('Error al sincronizar con el sitio web');
                 }
             }
         }

@@ -25,7 +25,7 @@ Sistema completo para gestionar las imágenes y videos que aparecen en la galer�
 ### Nuevos Archivos
 
 1. **`admin-gallery.html`** - Panel de administración para gestionar la galería
-2. **`gallery-sync.js`** - Sistema de sincronización entre admin y sitio web
+2. **`test-gallery-sync.html`** - Página de prueba para verificar la sincronización
 3. **`README-GALERIA-ADMIN.md`** - Esta documentación
 
 ### Archivos Modificados
@@ -69,7 +69,14 @@ Sistema completo para gestionar las imágenes y videos que aparecen en la galer�
 1. Haz clic en "🗑️ Eliminar"
 2. Confirma la eliminación
 
-### 3. Vista Previa
+### 3. Sincronizar con el Sitio Web
+
+1. Haz clic en "🔄 Sincronizar con Sitio Web"
+2. Los datos se guardan automáticamente en localStorage
+3. Elige si quieres abrir el sitio web para ver los cambios
+4. Los cambios se reflejan automáticamente en la galería del sitio
+
+### 4. Vista Previa
 
 - La sección "Vista Previa de la Galería" muestra cómo se verá en el sitio web
 - Usa los controles de navegación para probar el carrusel
@@ -199,6 +206,24 @@ Los estilos están en la sección `<style>` de `admin-gallery.html`:
 - [ ] **SEO**: Optimización automática para motores de búsqueda
 - [ ] **Mobile**: App móvil para gestión desde dispositivos móviles
 
+## Página de Prueba
+
+### `test-gallery-sync.html`
+
+Esta página te permite probar la sincronización entre el panel de administración y el sitio web:
+
+1. **Cargar Datos**: Verifica qué datos de galería están guardados
+2. **Guardar Datos de Prueba**: Crea datos de ejemplo para probar
+3. **Abrir Panel Admin**: Acceso directo al panel de administración
+4. **Abrir Sitio Web**: Acceso directo al sitio web para ver los cambios
+
+**Cómo usar:**
+1. Ve a `test-gallery-sync.html` en tu navegador
+2. Haz clic en "Guardar Datos de Prueba" para crear datos de ejemplo
+3. Haz clic en "Abrir Panel Admin" para gestionar la galería
+4. Haz clic en "Sincronizar con Sitio Web" en el panel admin
+5. Haz clic en "Abrir Sitio Web" para ver los cambios reflejados
+
 ## Soporte
 
 Para soporte técnico o preguntas sobre la implementación:
@@ -206,6 +231,7 @@ Para soporte técnico o preguntas sobre la implementación:
 1. Revisa la consola del navegador para errores
 2. Verifica la documentación de Supabase
 3. Consulta los logs del servidor si aplica
+4. Usa `test-gallery-sync.html` para diagnosticar problemas de sincronización
 
 ---
 
