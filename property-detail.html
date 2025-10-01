@@ -694,47 +694,62 @@
             color: #555 !important;
         }
 
-        /* Google Maps Section */
+        /* Google Maps Section - ESTILOS UNIFICADOS CON SUBIR-PROPIEDADES */
         .property-map-section {
             margin: 2rem 0 !important;
-            padding: 2.5rem !important;
-            background: #f8f9fa !important;
             border: 2px solid #e9ecef !important;
             border-radius: 12px !important;
-            color: #333 !important;
-            position: relative !important;
             overflow: hidden !important;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+            background: white !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
             transition: all 0.3s ease !important;
         }
 
         .property-map-section:hover {
-            border-color: #333 !important;
             box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
             transform: translateY(-2px) !important;
         }
 
-        .property-map-section h3 {
-            font-size: 1.8rem !important;
-            margin-bottom: 1.5rem !important;
+        /* Header del mapa con gradiente igual que en subir-propiedades */
+        .property-map-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            padding: 1rem 1.5rem !important;
+            border-bottom: 1px solid #e9ecef !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            color: white !important;
+        }
+
+        .property-map-header h3 {
+            margin: 0 !important;
+            font-size: 1rem !important;
+            color: white !important;
             font-weight: 600 !important;
-            color: #333 !important;
             display: flex !important;
             align-items: center !important;
-            gap: 0.75rem !important;
+            gap: 0.5rem !important;
+        }
+
+        .property-map-header h3::before {
+            content: "🗺️" !important;
+            font-size: 1.2em !important;
         }
 
         .map-container {
-            height: 400px !important;
-            border-radius: 8px !important;
-            overflow: hidden !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+            height: 350px !important;
+            position: relative !important;
+            background: #f8f9fa !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
 
         .map-container iframe {
             width: 100% !important;
             height: 100% !important;
             border: none !important;
+            border-radius: 0 0 10px 10px !important;
         }
 
         /* Leaflet overrides to fit container */
@@ -1271,7 +1286,9 @@
 
                         <!-- Google Maps Section -->
                         <div class="property-map-section" id="propertyMapSection" style="display: none;">
-                            <h3>📍 Ubicación</h3>
+                            <div class="property-map-header">
+                                <h3>Vista Previa del Mapa</h3>
+                            </div>
                             <div class="map-container" id="propertyMapContainer">
                                 <!-- El iframe del mapa se insertará aquí -->
                             </div>
@@ -1413,6 +1430,8 @@
     <!-- Scripts -->
     <!-- Leaflet CSS/JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Unified Map Styles -->
+    <link rel="stylesheet" href="unified-map-styles.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="supabase.js"></script>
     <script src="property-detail-dynamic.js"></script>
@@ -1712,7 +1731,7 @@
         }
 
         function showGoogleMap(mapsUrl) {
-            console.log('🗺️ Mostrando mapa (Leaflet/OSM):', mapsUrl);
+            console.log('🗺️ Mostrando mapa con estilo unificado:', mapsUrl);
 
             const mapSection = document.getElementById('propertyMapSection');
             const mapContainer = document.getElementById('propertyMapContainer');
@@ -1722,28 +1741,50 @@
                 return;
             }
 
-            // Intentar extraer coordenadas desde la URL (Google Maps comparte @lat,lng o !3d lat !4d lng)
-            const coords = extractLatLng(mapsUrl);
-            const center = coords || { lat: -33.4489, lng: -70.6693 }; // Santiago fallback
-
             // Limpiar contenedor
             mapContainer.innerHTML = '';
 
-            // Crear div interno para Leaflet
-            const leafletDiv = document.createElement('div');
-            leafletDiv.id = 'leafletMap';
-            leafletDiv.style.width = '100%';
-            leafletDiv.style.height = '100%';
-            mapContainer.appendChild(leafletDiv);
+            // Convertir URL a embed si es necesario (igual que en subir-propiedades)
+            const embedUrl = convertToEmbedUrl(mapsUrl);
+            
+            if (embedUrl) {
+                // Usar iframe de Google Maps (igual que en subir-propiedades)
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.width = '100%';
+                iframe.height = '100%';
+                iframe.frameBorder = '0';
+                iframe.style.border = 'none';
+                iframe.setAttribute('loading', 'lazy');
+                iframe.allowFullscreen = true;
+                iframe.referrerPolicy = 'no-referrer-when-downgrade';
+                
+                mapContainer.appendChild(iframe);
+                console.log('✅ Mapa de Google Maps mostrado con iframe');
+            } else {
+                // Fallback a Leaflet si no se puede convertir
+                console.log('⚠️ Usando fallback a Leaflet');
+                
+                // Intentar extraer coordenadas desde la URL
+                const coords = extractLatLng(mapsUrl);
+                const center = coords || { lat: -33.4489, lng: -70.6693 }; // Santiago fallback
 
-            // Inicializar Leaflet
-            const map = L.map('leafletMap');
-            map.setView([center.lat, center.lng], 15);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(map);
-            L.marker([center.lat, center.lng]).addTo(map);
+                // Crear div interno para Leaflet
+                const leafletDiv = document.createElement('div');
+                leafletDiv.id = 'leafletMap';
+                leafletDiv.style.width = '100%';
+                leafletDiv.style.height = '100%';
+                mapContainer.appendChild(leafletDiv);
+
+                // Inicializar Leaflet
+                const map = L.map('leafletMap');
+                map.setView([center.lat, center.lng], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap'
+                }).addTo(map);
+                L.marker([center.lat, center.lng]).addTo(map);
+            }
 
             mapSection.style.display = 'block';
         }
