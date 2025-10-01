@@ -1,0 +1,96 @@
+name: Deploy to Staging Environment
+
+on:
+  push:
+    branches: [ develop, staging ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  staging-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup staging environment
+      run: |
+        echo "🚀 Configurando entorno de staging..."
+        echo "Branch: ${{ github.ref_name }}"
+        echo "Commit: ${{ github.sha }}"
+        
+    - name: Prepare staging files
+      run: |
+        mkdir -p staging-deploy
+        
+        # Copiar archivos principales
+        cp *.html staging-deploy/ 2>/dev/null || true
+        cp *.css staging-deploy/ 2>/dev/null || true
+        cp *.js staging-deploy/ 2>/dev/null || true
+        
+        # Copiar carpetas
+        if [ -d "css" ]; then cp -r css staging-deploy/; fi
+        if [ -d "js" ]; then cp -r js staging-deploy/; fi
+        
+        # Limpiar archivos de desarrollo
+        find staging-deploy -name "test-*" -delete
+        find staging-deploy -name "debug-*" -delete
+        find staging-deploy -name "diagnostico-*" -delete
+        find staging-deploy -name "verificar-*" -delete
+        find staging-deploy -name "fix-*" -delete
+        find staging-deploy -name "improved-*" -delete
+        find staging-deploy -name "lead-*" -delete
+        find staging-deploy -name "database-*" -delete
+        find staging-deploy -name "compras-loader-*" -delete
+        find staging-deploy -name "form-scripts*" -delete
+        find staging-deploy -name "google-maps-*" -delete
+        find staging-deploy -name "property-detail-*" -delete
+        find staging-deploy -name "property-loader*" -delete
+        find staging-deploy -name "property-handler*" -delete
+        find staging-deploy -name "whatsapp-widget-intelligent*" -delete
+        
+        echo "📦 Archivos para staging preparados:"
+        find staging-deploy -type f | sort
+        
+    - name: Deploy to staging
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.BLUEHOST_FTP_SERVER }}
+        username: ${{ secrets.BLUEHOST_FTP_USERNAME }}
+        password: ${{ secrets.BLUEHOST_FTP_PASSWORD }}
+        local-dir: ./staging-deploy/
+        server-dir: /public_html/staging/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/.github/**
+          **/*.md
+          **/*.sql
+          
+    - name: Staging verification
+      run: |
+        echo "✅ Staging deploy completado!"
+        echo "🧪 Staging URL: https://casanuvera.cl/staging/"
+        echo "🌿 Branch: ${{ github.ref_name }}"
+        echo "📅 Timestamp: $(date)"
+        
+    - name: Comment on PR (if applicable)
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `🚀 **Staging Deploy Completado**
+            
+            ✅ Cambios desplegados en staging
+            🌐 URL: https://casanuvera.cl/staging/
+            🌿 Branch: \`${{ github.ref_name }}\`
+            📅 Deploy: \`${new Date().toLocaleString()}\`
+            
+            Por favor, revisa los cambios antes de hacer merge a main.`
+          })
