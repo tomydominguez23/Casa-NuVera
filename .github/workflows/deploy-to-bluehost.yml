@@ -1,0 +1,112 @@
+name: Deploy Casa Nuvera to Bluehost
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: # Permite ejecutar manualmente
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js (for any build tools if needed)
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Filter files for deployment
+      run: |
+        # Crear directorio de deploy
+        mkdir -p deploy
+        
+        # Copiar archivos HTML principales
+        cp *.html deploy/ 2>/dev/null || true
+        
+        # Copiar archivos CSS y JS principales
+        cp *.css deploy/ 2>/dev/null || true
+        cp *.js deploy/ 2>/dev/null || true
+        
+        # Copiar carpetas css y js si existen
+        if [ -d "css" ]; then
+          cp -r css deploy/
+        fi
+        
+        if [ -d "js" ]; then
+          cp -r js deploy/
+        fi
+        
+        # Excluir archivos de desarrollo y prueba
+        find deploy -name "test-*" -delete
+        find deploy -name "debug-*" -delete
+        find deploy -name "diagnostico-*" -delete
+        find deploy -name "verificar-*" -delete
+        find deploy -name "fix-*" -delete
+        find deploy -name "improved-*" -delete
+        find deploy -name "lead-*" -delete
+        find deploy -name "database-*" -delete
+        find deploy -name "compras-loader-*" -delete
+        find deploy -name "form-scripts*" -delete
+        find deploy -name "google-maps-*" -delete
+        find deploy -name "property-detail-*" -delete
+        find deploy -name "property-loader*" -delete
+        find deploy -name "property-handler*" -delete
+        find deploy -name "whatsapp-widget-intelligent*" -delete
+        
+        # Mostrar archivos que se van a subir
+        echo "📁 Archivos listos para deploy:"
+        find deploy -type f | sort
+        
+    - name: Deploy to Bluehost via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.BLUEHOST_FTP_SERVER }}
+        username: ${{ secrets.BLUEHOST_FTP_USERNAME }}
+        password: ${{ secrets.BLUEHOST_FTP_PASSWORD }}
+        local-dir: ./deploy/
+        server-dir: /public_html/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/.github/**
+          **/*.md
+          **/*.sql
+          **/*.tar.gz
+          **/*.zip
+          **/test-*
+          **/debug-*
+          **/diagnostico-*
+          **/verificar-*
+          **/fix-*
+          **/improved-*
+          **/lead-*
+          **/database-*
+          **/compras-loader-*
+          **/form-scripts*
+          **/google-maps-*
+          **/property-detail-*
+          **/property-loader*
+          **/property-handler*
+          **/whatsapp-widget-intelligent*
+          
+    - name: Verify deployment
+      run: |
+        echo "✅ Deploy completado!"
+        echo "🌐 Sitio disponible en: https://casanuvera.cl"
+        echo "📅 Fecha: $(date)"
+        echo "🔄 Commit: ${{ github.sha }}"
+        
+    - name: Notify deployment status
+      if: always()
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "🎉 Deploy exitoso a casanuvera.cl"
+        else
+          echo "❌ Deploy falló"
+        fi

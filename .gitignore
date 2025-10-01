@@ -1,0 +1,63 @@
+# Archivos de desarrollo y testing
+test-*
+debug-*
+diagnostico-*
+verificar-*
+fix-*
+improved-*
+lead-*
+database-*
+compras-loader-*
+form-scripts*
+google-maps-*
+property-detail-*
+property-loader*
+property-handler*
+whatsapp-widget-intelligent*
+
+# Archivos temporales
+*.tmp
+*.temp
+*.log
+*.cache
+
+# Archivos de documentación
+*.md
+README-*
+CHANGELOG-*
+INSTRUCCIONES_*
+SOLUCION-*
+PULL-REQUEST-*
+
+# Archivos SQL
+*.sql
+
+# Archivos comprimidos
+*.tar.gz
+*.zip
+*.rar
+
+# Archivos de configuración local
+.env
+.env.local
+.env.development
+.env.production
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de backup
+*.bak
+*.backup
+
+# Archivos de deploy
+deploy/
+deploy-package/
+staging-deploy/

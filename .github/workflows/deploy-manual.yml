@@ -1,0 +1,123 @@
+name: Manual Deploy to Bluehost
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
+        type: string
+
+jobs:
+  manual-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.branch }}
+        
+    - name: Validate deployment files
+      run: |
+        echo "🔍 Validando archivos para deploy..."
+        
+        # Verificar que index.html existe
+        if [ ! -f "index.html" ]; then
+          echo "❌ Error: index.html no encontrado"
+          exit 1
+        fi
+        
+        # Verificar archivos principales
+        required_files=("supabase.js" "property-handler.js" "property-loader-fixed.js" "whatsapp-widget.js")
+        for file in "${required_files[@]}"; do
+          if [ ! -f "$file" ]; then
+            echo "⚠️ Advertencia: $file no encontrado"
+          else
+            echo "✅ $file encontrado"
+          fi
+        done
+        
+        echo "📊 Resumen de archivos:"
+        echo "HTML files: $(find . -name "*.html" | wc -l)"
+        echo "CSS files: $(find . -name "*.css" | wc -l)"
+        echo "JS files: $(find . -name "*.js" | wc -l)"
+        
+    - name: Prepare deployment package
+      run: |
+        # Crear directorio limpio para deploy
+        mkdir -p deploy-package
+        
+        # Copiar archivos principales
+        cp *.html deploy-package/ 2>/dev/null || true
+        cp *.css deploy-package/ 2>/dev/null || true
+        cp *.js deploy-package/ 2>/dev/null || true
+        
+        # Copiar carpetas
+        if [ -d "css" ]; then cp -r css deploy-package/; fi
+        if [ -d "js" ]; then cp -r js deploy-package/; fi
+        
+        # Limpiar archivos de desarrollo
+        find deploy-package -name "test-*" -delete
+        find deploy-package -name "debug-*" -delete
+        find deploy-package -name "diagnostico-*" -delete
+        find deploy-package -name "verificar-*" -delete
+        find deploy-package -name "fix-*" -delete
+        find deploy-package -name "improved-*" -delete
+        find deploy-package -name "lead-*" -delete
+        find deploy-package -name "database-*" -delete
+        find deploy-package -name "compras-loader-*" -delete
+        find deploy-package -name "form-scripts*" -delete
+        find deploy-package -name "google-maps-*" -delete
+        find deploy-package -name "property-detail-*" -delete
+        find deploy-package -name "property-loader*" -delete
+        find deploy-package -name "property-handler*" -delete
+        find deploy-package -name "whatsapp-widget-intelligent*" -delete
+        
+        # Mostrar contenido final
+        echo "📦 Paquete de deploy preparado:"
+        find deploy-package -type f | sort
+        echo "📊 Total archivos: $(find deploy-package -type f | wc -l)"
+        
+    - name: Deploy to Bluehost
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.BLUEHOST_FTP_SERVER }}
+        username: ${{ secrets.BLUEHOST_FTP_USERNAME }}
+        password: ${{ secrets.BLUEHOST_FTP_PASSWORD }}
+        local-dir: ./deploy-package/
+        server-dir: /public_html/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/.github/**
+          **/*.md
+          **/*.sql
+          
+    - name: Post-deployment verification
+      run: |
+        echo "🎉 Deploy manual completado!"
+        echo "🌐 Sitio: https://casanuvera.cl"
+        echo "🌿 Branch: ${{ github.event.inputs.branch }}"
+        echo "🏷️ Environment: ${{ github.event.inputs.environment }}"
+        echo "📅 Timestamp: $(date)"
+        echo "🔄 Commit: ${{ github.sha }}"
+        
+        # Sugerir próximos pasos
+        echo ""
+        echo "📋 Próximos pasos recomendados:"
+        echo "1. Verificar que https://casanuvera.cl carga correctamente"
+        echo "2. Probar la funcionalidad de búsqueda de propiedades"
+        echo "3. Verificar la integración con Supabase"
+        echo "4. Probar el widget de WhatsApp"
+        echo "5. Verificar el diseño responsivo en móviles"
