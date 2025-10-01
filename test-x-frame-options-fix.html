@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test X-Frame-Options Fix - Casa Nuvera</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .test-section h3 {
+            margin: 0 0 1rem 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .url-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .test-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .test-btn:hover {
+            background: #000;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .map-container {
+            margin-top: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 350px;
+            border: none;
+        }
+
+        .examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .example-item {
+            padding: 1rem;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+        }
+
+        .example-item h5 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
+
+        .example-item code {
+            background: #f8f9fa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            word-break: break-all;
+        }
+
+        .example-item button {
+            margin-top: 0.5rem;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .example-item button:hover {
+            background: #218838;
+        }
+
+        .debug-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ Test X-Frame-Options Fix</h1>
+            <p>Prueba la solución para el error "Refused to display 'https://www.google.com/' in a frame because it set 'X-Frame-Options' to 'sameorigin'"</p>
+        </div>
+
+        <div class="content">
+            <!-- Test 1: URL Personalizada -->
+            <div class="test-section">
+                <h3>📍 Test 1: URL Personalizada</h3>
+                <p>Pega aquí cualquier URL de Google Maps para probar la solución:</p>
+                <input type="url" id="customUrl" class="url-input" 
+                       placeholder="Pega aquí tu URL de Google Maps (maps.app.goo.gl, goo.gl/maps, maps.google.com, etc.)">
+                <button class="test-btn" onclick="testCustomUrl()">Probar URL Personalizada</button>
+                <button class="test-btn" onclick="clearMap()">Limpiar Mapa</button>
+                <div id="status1" class="status" style="display:none;"></div>
+                <div class="map-container" id="map1"></div>
+            </div>
+
+            <!-- Test 2: URLs de Ejemplo -->
+            <div class="test-section">
+                <h3>📍 Test 2: URLs de Ejemplo</h3>
+                <p>Prueba estos tipos de URLs de Google Maps:</p>
+                
+                <div class="examples">
+                    <div class="example-item">
+                        <h5>maps.app.goo.gl (Recomendado)</h5>
+                        <code>https://maps.app.goo.gl/eTgr7Rofa76tBGYc6</code>
+                        <br>
+                        <button onclick="testUrl('https://maps.app.goo.gl/eTgr7Rofa76tBGYc6')">Probar</button>
+                    </div>
+
+                    <div class="example-item">
+                        <h5>goo.gl/maps</h5>
+                        <code>https://goo.gl/maps/eTgr7Rofa76tBGYc6</code>
+                        <br>
+                        <button onclick="testUrl('https://goo.gl/maps/eTgr7Rofa76tBGYc6')">Probar</button>
+                    </div>
+
+                    <div class="example-item">
+                        <h5>maps.google.com con coordenadas</h5>
+                        <code>https://maps.google.com/maps?q=Santiago+Chile</code>
+                        <br>
+                        <button onclick="testUrl('https://maps.google.com/maps?q=Santiago+Chile')">Probar</button>
+                    </div>
+
+                    <div class="example-item">
+                        <h5>URL de embed (ya formateado)</h5>
+                        <code>https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl</code>
+                        <br>
+                        <button onclick="testUrl('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl')">Probar</button>
+                    </div>
+                </div>
+
+                <div id="status2" class="status" style="display:none;"></div>
+                <div class="map-container" id="map2"></div>
+            </div>
+
+            <!-- Debug Info -->
+            <div class="test-section">
+                <h3>🔍 Información de Debug</h3>
+                <div id="debugInfo" class="debug-info">
+                    Cargando información de debug...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cargar la solución -->
+    <script src="google-maps-embed-fix.js"></script>
+
+    <script>
+        // Variables globales
+        let currentMapContainer = null;
+
+        // Función para probar URL personalizada
+        function testCustomUrl() {
+            const url = document.getElementById('customUrl').value.trim();
+            if (!url) {
+                showStatus('status1', 'Por favor, ingresa una URL de Google Maps', 'error');
+                return;
+            }
+            
+            testUrl(url, 'map1', 'status1');
+        }
+
+        // Función para probar URL específica
+        function testUrl(url, mapId = 'map2', statusId = 'status2') {
+            console.log('🧪 Probando URL:', url);
+            
+            // Mostrar estado de carga
+            showStatus(statusId, '🔄 Cargando mapa...', 'info');
+            
+            // Limpiar mapa anterior
+            clearMap(mapId);
+            
+            // Simular el comportamiento de property-detail.html
+            currentMapContainer = document.getElementById(mapId);
+            
+            try {
+                // Usar la nueva solución
+                if (window.googleMapsEmbedFix) {
+                    console.log('✅ Usando Google Maps Embed Fix');
+                    window.googleMapsEmbedFix.showGoogleMap(url);
+                    
+                    // Simular el comportamiento del iframe
+                    setTimeout(() => {
+                        if (currentMapContainer && currentMapContainer.innerHTML.includes('iframe')) {
+                            showStatus(statusId, '✅ Mapa cargado exitosamente sin errores X-Frame-Options', 'success');
+                        } else {
+                            showStatus(statusId, '⚠️ Mapa no se pudo cargar - posible error X-Frame-Options', 'error');
+                        }
+                    }, 2000);
+                } else {
+                    showStatus(statusId, '❌ Google Maps Embed Fix no está disponible', 'error');
+                }
+            } catch (error) {
+                console.error('❌ Error probando URL:', error);
+                showStatus(statusId, `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para limpiar mapa
+        function clearMap(mapId = 'map1') {
+            const container = document.getElementById(mapId);
+            if (container) {
+                container.innerHTML = '';
+            }
+            
+            // También limpiar el otro mapa si se especifica
+            if (mapId === 'map1') {
+                const container2 = document.getElementById('map2');
+                if (container2) {
+                    container2.innerHTML = '';
+                }
+            }
+        }
+
+        // Función para mostrar estado
+        function showStatus(statusId, message, type) {
+            const status = document.getElementById(statusId);
+            if (status) {
+                status.textContent = message;
+                status.className = `status ${type}`;
+                status.style.display = 'block';
+            }
+        }
+
+        // Función para actualizar información de debug
+        function updateDebugInfo() {
+            const debugInfo = document.getElementById('debugInfo');
+            if (!debugInfo) return;
+
+            const info = {
+                timestamp: new Date().toLocaleString(),
+                userAgent: navigator.userAgent,
+                googleMapsEmbedFix: !!window.googleMapsEmbedFix,
+                isInitialized: window.googleMapsEmbedFix ? window.googleMapsEmbedFix.isInitialized : false,
+                cacheSize: window.googleMapsEmbedFix ? window.googleMapsEmbedFix.cache.size : 0,
+                currentUrl: window.location.href,
+                hasIframe: !!document.querySelector('iframe')
+            };
+
+            debugInfo.innerHTML = `
+                <strong>Información de Debug:</strong><br>
+                • Timestamp: ${info.timestamp}<br>
+                • Google Maps Embed Fix: ${info.googleMapsEmbedFix ? '✅ Disponible' : '❌ No disponible'}<br>
+                • Inicializado: ${info.isInitialized ? '✅ Sí' : '❌ No'}<br>
+                • Cache Size: ${info.cacheSize}<br>
+                • URL Actual: ${info.currentUrl}<br>
+                • Iframe Presente: ${info.hasIframe ? '✅ Sí' : '❌ No'}<br>
+                <br>
+                <strong>Consola del Navegador:</strong><br>
+                Abre las herramientas de desarrollador (F12) y revisa la consola para ver los logs detallados.
+            `;
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Iniciando test de X-Frame-Options Fix');
+            
+            // Actualizar información de debug
+            updateDebugInfo();
+            
+            // Actualizar cada 5 segundos
+            setInterval(updateDebugInfo, 5000);
+            
+            // Probar con URL por defecto
+            setTimeout(() => {
+                testUrl('https://maps.app.goo.gl/eTgr7Rofa76tBGYc6', 'map2', 'status2');
+            }, 1000);
+        });
+
+        // Función global para limpiar todo
+        window.clearAllMaps = function() {
+            clearMap('map1');
+            clearMap('map2');
+            showStatus('status1', 'Mapas limpiados', 'info');
+            showStatus('status2', 'Mapas limpiados', 'info');
+        };
+    </script>
+</body>
+</html>
