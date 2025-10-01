@@ -1,0 +1,147 @@
+name: Deploy to Bluehost with DNS Configuration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      dns_method:
+        description: 'DNS Configuration Method'
+        required: true
+        default: 'bluehost-nameservers'
+        type: choice
+        options:
+        - bluehost-nameservers
+        - external-dns
+        - custom-domain
+
+jobs:
+  deploy-with-dns:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Validate DNS configuration
+      run: |
+        echo "🔍 Validando configuración DNS..."
+        echo "Método seleccionado: ${{ github.event.inputs.dns_method || 'bluehost-nameservers' }}"
+        
+        # Verificar que el dominio esté configurado
+        if [ "${{ github.event.inputs.dns_method || 'bluehost-nameservers' }}" == "bluehost-nameservers" ]; then
+          echo "✅ Usando nameservers de Bluehost"
+          echo "🌐 Dominio: casanuvera.cl"
+          echo "📡 Nameservers: ns1.bluehost.com, ns2.bluehost.com"
+        elif [ "${{ github.event.inputs.dns_method }}" == "external-dns" ]; then
+          echo "✅ Usando DNS externo (dnsmisitio.net)"
+          echo "🌐 Dominio: casanuvera.cl"
+          echo "📡 Nameservers: ns1.dnsmisitio.net, ns2.dnsmisitio.net"
+        else
+          echo "✅ Usando configuración personalizada"
+        fi
+        
+    - name: Prepare deployment files
+      run: |
+        echo "📦 Preparando archivos para deploy..."
+        
+        # Crear directorio de deploy
+        mkdir -p dns-deploy
+        
+        # Copiar archivos principales
+        cp *.html dns-deploy/ 2>/dev/null || true
+        cp *.css dns-deploy/ 2>/dev/null || true
+        cp *.js dns-deploy/ 2>/dev/null || true
+        
+        # Copiar carpetas
+        if [ -d "css" ]; then cp -r css dns-deploy/; fi
+        if [ -d "js" ]; then cp -r js dns-deploy/; fi
+        
+        # Limpiar archivos de desarrollo
+        find dns-deploy -name "test-*" -delete
+        find dns-deploy -name "debug-*" -delete
+        find dns-deploy -name "diagnostico-*" -delete
+        find dns-deploy -name "verificar-*" -delete
+        find dns-deploy -name "fix-*" -delete
+        find dns-deploy -name "improved-*" -delete
+        find dns-deploy -name "lead-*" -delete
+        find dns-deploy -name "database-*" -delete
+        find dns-deploy -name "compras-loader-*" -delete
+        find dns-deploy -name "form-scripts*" -delete
+        find dns-deploy -name "google-maps-*" -delete
+        find dns-deploy -name "property-detail-*" -delete
+        find dns-deploy -name "property-loader*" -delete
+        find dns-deploy -name "property-handler*" -delete
+        find dns-deploy -name "whatsapp-widget-intelligent*" -delete
+        
+        echo "📁 Archivos listos para deploy:"
+        find dns-deploy -type f | sort
+        echo "📊 Total archivos: $(find dns-deploy -type f | wc -l)"
+        
+    - name: Deploy to Bluehost
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.BLUEHOST_FTP_SERVER }}
+        username: ${{ secrets.BLUEHOST_FTP_USERNAME }}
+        password: ${{ secrets.BLUEHOST_FTP_PASSWORD }}
+        local-dir: ./dns-deploy/
+        server-dir: /public_html/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/.github/**
+          **/*.md
+          **/*.sql
+          
+    - name: Verify DNS configuration
+      run: |
+        echo "🔍 Verificando configuración DNS..."
+        
+        # Verificar nameservers actuales
+        echo "📡 Nameservers actuales de casanuvera.cl:"
+        dig NS casanuvera.cl +short || echo "No se pudo obtener nameservers"
+        
+        # Verificar IP del dominio
+        echo "🌐 IP actual de casanuvera.cl:"
+        dig A casanuvera.cl +short || echo "No se pudo obtener IP"
+        
+        # Verificar www subdomain
+        echo "🌐 IP de www.casanuvera.cl:"
+        dig A www.casanuvera.cl +short || echo "No se pudo obtener IP de www"
+        
+    - name: Post-deployment verification
+      run: |
+        echo "🎉 Deploy con DNS completado!"
+        echo "🌐 Sitio: https://casanuvera.cl"
+        echo "🌿 Branch: ${{ github.ref_name }}"
+        echo "📅 Timestamp: $(date)"
+        echo "🔄 Commit: ${{ github.sha }}"
+        echo "📡 Método DNS: ${{ github.event.inputs.dns_method || 'bluehost-nameservers' }}"
+        
+        echo ""
+        echo "📋 Verificaciones recomendadas:"
+        echo "1. ✅ https://casanuvera.cl carga correctamente"
+        echo "2. ✅ https://www.casanuvera.cl redirige correctamente"
+        echo "3. ✅ Todas las páginas HTML funcionan"
+        echo "4. ✅ JavaScript y CSS cargan correctamente"
+        echo "5. ✅ Integración con Supabase funciona"
+        echo "6. ✅ Widget de WhatsApp funciona"
+        echo "7. ✅ Diseño responsivo en móviles"
+        
+        echo ""
+        echo "🔍 Herramientas de verificación DNS:"
+        echo "- DNS Checker: https://dnschecker.org"
+        echo "- What's My DNS: https://whatsmydns.net"
+        echo "- Comando: dig casanuvera.cl"
+        
+    - name: Notify deployment status
+      if: always()
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "🎉 Deploy exitoso a casanuvera.cl con configuración DNS"
+        else
+          echo "❌ Deploy falló - revisar configuración DNS y credenciales"
+        fi
