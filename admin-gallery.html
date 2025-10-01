@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Galería - Casa Nuvera</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <style>
+        /* Estilos específicos para gestión de galería */
+        .gallery-admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .connection-status {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .status-connected {
+            background: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724;
+        }
+
+        .status-error {
+            background: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24;
+        }
+
+        .gallery-preview-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .preview-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preview-carousel {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+            background: #000;
+        }
+
+        .preview-slides-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .preview-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-slide.active {
+            opacity: 1;
+        }
+
+        .preview-slide img,
+        .preview-slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .preview-slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 2rem;
+            text-align: left;
+        }
+
+        .preview-slide-overlay h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .preview-slide-overlay p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .preview-controls {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #2c3e50;
+            font-size: 1.5rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .preview-controls:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .preview-prev {
+            left: 1rem;
+        }
+
+        .preview-next {
+            right: 1rem;
+        }
+
+        .preview-indicators {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .preview-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .preview-indicator.active {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-management-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .management-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .slide-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .slide-card:hover {
+            border-color: #3498db;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .slide-card.active {
+            border-color: #27ae60;
+            background: #e8f5e8;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .slide-card.active .slide-number {
+            background: #27ae60;
+        }
+
+        .slide-preview {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .slide-info {
+            margin-bottom: 1rem;
+        }
+
+        .slide-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-type {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .slide-type.image {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .slide-type.video {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .slide-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .slide-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #2980b9;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .btn-toggle {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-toggle:hover {
+            background: #e67e22;
+        }
+
+        .add-slide-section {
+            background: #f8f9fa;
+            border: 2px dashed #3498db;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .add-slide-section:hover {
+            border-color: #2c3e50;
+            background: #ecf0f1;
+        }
+
+        .add-slide-icon {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+
+        .add-slide-text {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .add-slide-subtext {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .add-slide-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .add-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .add-btn:hover {
+            background: #2980b9;
+        }
+
+        .add-btn.video {
+            background: #9b59b6;
+        }
+
+        .add-btn.video:hover {
+            background: #8e44ad;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #7f8c8d;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .file-input-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 1rem;
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+
+        .file-input-label:hover {
+            border-color: #2c3e50;
+            background: #ecf0f1;
+        }
+
+        .file-input-label.has-file {
+            border-color: #27ae60;
+            background: #e8f5e8;
+            color: #27ae60;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .modal-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .success-message, .error-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #27ae60;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #e74c3c;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #ecf0f1;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .gallery-admin-container {
+                padding: 1rem;
+            }
+            
+            .slides-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .add-slide-buttons {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                margin: 2% auto;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Casa Nuvera</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span>☰</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="admin-dashboard.html" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="admin-properties.html" class="menu-item">
+                <span class="menu-icon">🏘️</span>
+                <span class="menu-text">Propiedades</span>
+            </a>
+            <a href="subir-propiedades.html" class="menu-item">
+                <span class="menu-icon">➕</span>
+                <span class="menu-text">Nueva Propiedad</span>
+            </a>
+            <a href="admin-images.html" class="menu-item">
+                <span class="menu-icon">🖼️</span>
+                <span class="menu-text">Gestión de Imágenes</span>
+            </a>
+            <a href="admin-gallery.html" class="menu-item active">
+                <span class="menu-icon">🎬</span>
+                <span class="menu-text">Galería del Sitio</span>
+            </a>
+            <a href="admin-contacts.html" class="menu-item">
+                <span class="menu-icon">📧</span>
+                <span class="menu-text">Contactos</span>
+            </a>
+            <a href="admin-analytics.html" class="menu-item">
+                <span class="menu-icon">📈</span>
+                <span class="menu-text">Análisis</span>
+            </a>
+            <a href="admin-settings.html" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-text">Configuración</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="index.html" class="menu-item">
+                <span class="menu-icon">🌐</span>
+                <span class="menu-text">Ver Sitio Web</span>
+            </a>
+            <a href="#" class="menu-item" onclick="logoutAdmin()">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">Cerrar Sesión</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <button class="mobile-sidebar-toggle" id="mobileSidebarToggle" aria-label="Abrir menú">
+                        ☰
+                    </button>
+                    <h1>Gestión de Galería del Sitio</h1>
+                </div>
+                <p>Gestiona las imágenes y videos que aparecen en la galería principal del sitio web</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-name" id="userName">Administrador</span>
+                    <span class="user-role">Casa Nuvera</span>
+                </div>
+                <div class="user-avatar">👨‍💼</div>
+            </div>
+        </header>
+
+        <!-- Auth Warning -->
+        <div class="auth-warning" id="authWarning" style="display: none;">
+            <h2>🔐 Acceso Restringido</h2>
+            <p>Esta página requiere autenticación de administrador.</p>
+            <a href="admin-login.html" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
+
+        <!-- Gallery Admin Content -->
+        <div class="gallery-admin-container" id="galleryContent">
+            <!-- Connection Status -->
+            <div class="connection-status" id="connectionStatus">
+                🔄 Verificando conexión con Supabase...
+            </div>
+
+            <!-- Messages -->
+            <div class="success-message" id="successMessage"></div>
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Gallery Preview Section -->
+            <div class="gallery-preview-section">
+                <h2 class="preview-title">
+                    🎬 Vista Previa de la Galería
+                </h2>
+                <div class="preview-carousel" id="previewCarousel">
+                    <div class="preview-slides-container" id="previewSlidesContainer">
+                        <!-- Slides se cargan dinámicamente -->
+                    </div>
+                    
+                    <!-- Controles de navegación -->
+                    <button class="preview-controls preview-prev" id="previewPrev">‹</button>
+                    <button class="preview-controls preview-next" id="previewNext">›</button>
+                    
+                    <!-- Indicadores -->
+                    <div class="preview-indicators" id="previewIndicators">
+                        <!-- Indicadores se cargan dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Management Section -->
+            <div class="gallery-management-section">
+                <h2 class="management-title">
+                    ⚙️ Gestión de Slides
+                </h2>
+
+                <!-- Add New Slide Section -->
+                <div class="add-slide-section">
+                    <div class="add-slide-icon">➕</div>
+                    <div class="add-slide-text">Agregar Nuevo Slide</div>
+                    <div class="add-slide-subtext">Añade imágenes o videos a la galería principal</div>
+                    <div class="add-slide-buttons">
+                        <button class="add-btn" onclick="galleryManager.openAddSlideModal('image')">
+                            🖼️ Agregar Imagen
+                        </button>
+                        <button class="add-btn video" onclick="galleryManager.openAddSlideModal('video')">
+                            🎥 Agregar Video
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Slides Grid -->
+                <div class="slides-grid" id="slidesGrid">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para agregar/editar slides -->
+    <div class="modal" id="slideModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Agregar Slide</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            
+            <form id="slideForm">
+                <div class="form-group">
+                    <label class="form-label" for="slideTitle">Título del Slide</label>
+                    <input type="text" class="form-input" id="slideTitle" placeholder="Ej: Espacios que Inspiran" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="slideDescription">Descripción</label>
+                    <textarea class="form-textarea" id="slideDescription" placeholder="Ej: Cada propiedad cuenta una historia única"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="slideType">Tipo de Contenido</label>
+                    <select class="form-select" id="slideType" required>
+                        <option value="image">Imagen</option>
+                        <option value="video">Video</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="slideFile">Archivo</label>
+                    <div class="file-input-container">
+                        <input type="file" class="file-input" id="slideFile" accept="image/*,video/*" required>
+                        <label for="slideFile" class="file-input-label" id="fileInputLabel">
+                            📁 Seleccionar archivo
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="slideOrder">Orden en la Galería</label>
+                    <select class="form-select" id="slideOrder" required>
+                        <option value="1">1 - Primero</option>
+                        <option value="2">2 - Segundo</option>
+                        <option value="3">3 - Tercero</option>
+                        <option value="4">4 - Cuarto</option>
+                        <option value="5">5 - Quinto</option>
+                    </select>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn btn-secondary" id="cancelBtn">Cancelar</button>
+                    <button type="submit" class="modal-btn btn-primary" id="saveBtn">Guardar Slide</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Cargando gestión de galería...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="admin-scripts.js"></script>
+    <script src="gallery-sync.js"></script>
+    
+    <script>
+        class GalleryManager {
+            constructor() {
+                this.isInitialized = false;
+                this.gallerySlides = [];
+                this.currentPreviewSlide = 0;
+                this.bucketName = 'imagenes-sitio';
+                this.connectionStatus = 'checking';
+                this.editingSlideId = null;
+                
+                this.init();
+            }
+
+            async init() {
+                console.log('🎬 Inicializando Gestión de Galería - Casa Nuvera...');
+                
+                // Verificar autenticación
+                if (!window.checkAdminSession || !window.checkAdminSession()) {
+                    this.showAuthWarning();
+                    return;
+                }
+
+                // Inicializar eventos
+                this.initializeEvents();
+                
+                // Esperar a que Supabase esté listo
+                this.waitForSupabase();
+            }
+
+            async waitForSupabase() {
+                const maxRetries = 100;
+                let retries = 0;
+
+                const checkSupabase = async () => {
+                    if (window.supabaseClient) {
+                        console.log('✅ Supabase disponible');
+                        this.updateConnectionStatus('connected', '✅ Conectado a Supabase');
+                        await this.loadGallerySlides();
+                        this.hideLoading();
+                        this.isInitialized = true;
+                        return;
+                    }
+
+                    retries++;
+                    if (retries < maxRetries) {
+                        console.log(`⏳ Esperando Supabase... (${retries}/${maxRetries})`);
+                        setTimeout(checkSupabase, 100);
+                    } else {
+                        console.error('❌ Tiempo agotado esperando Supabase');
+                        this.updateConnectionStatus('error', '❌ Error de conexión. Recarga la página.');
+                        this.hideLoading();
+                    }
+                };
+
+                window.addEventListener('supabaseReady', async () => {
+                    console.log('📡 Evento supabaseReady recibido');
+                    this.updateConnectionStatus('connected', '✅ Conectado a Supabase');
+                    await this.loadGallerySlides();
+                    this.hideLoading();
+                    this.isInitialized = true;
+                });
+
+                checkSupabase();
+            }
+
+            updateConnectionStatus(status, message) {
+                const statusDiv = document.getElementById('connectionStatus');
+                statusDiv.textContent = message;
+                statusDiv.className = `connection-status status-${status}`;
+                this.connectionStatus = status;
+            }
+
+            async loadGallerySlides() {
+                try {
+                    console.log('📋 Cargando slides de la galería...');
+                    
+                    // Usar el sistema de sincronización
+                    if (window.gallerySync && window.gallerySync.getGalleryData()) {
+                        this.gallerySlides = window.gallerySync.getGalleryData();
+                    } else {
+                        // Datos de ejemplo si no hay sincronización disponible
+                        this.gallerySlides = [
+                            {
+                                id: 1,
+                                title: "Espacios que Inspiran",
+                                description: "Cada propiedad cuenta una historia única",
+                                type: "image",
+                                url: "https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg",
+                                order: 1,
+                                active: true,
+                                propertyId: 1,
+                                slug: "departamento-los-llanes"
+                            },
+                            {
+                                id: 2,
+                                title: "Tour Virtual Inmersivo",
+                                description: "Recorre propiedades desde la comodidad de tu hogar",
+                                type: "video",
+                                url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                                order: 2,
+                                active: true,
+                                propertyId: 2,
+                                slug: "casa-moderna-providencia"
+                            },
+                            {
+                                id: 3,
+                                title: "Calidad en Cada Detalle",
+                                description: "Propiedades seleccionadas con los más altos estándares",
+                                type: "image",
+                                url: "https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150948654_0.jpeg",
+                                order: 3,
+                                active: true,
+                                propertyId: 3,
+                                slug: "oficina-vitacura"
+                            },
+                            {
+                                id: 4,
+                                title: "Tecnología de Vanguardia",
+                                description: "Innovación aplicada al sector inmobiliario",
+                                type: "video",
+                                url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                                order: 4,
+                                active: true,
+                                propertyId: 4,
+                                slug: "casa-familiar-nunoa"
+                            }
+                        ];
+                    }
+
+                    this.renderPreviewCarousel();
+                    this.renderSlidesGrid();
+                    
+                } catch (error) {
+                    console.error('❌ Error cargando slides:', error);
+                    this.showError('Error al cargar los slides de la galería');
+                }
+            }
+
+            renderPreviewCarousel() {
+                const slidesContainer = document.getElementById('previewSlidesContainer');
+                const indicatorsContainer = document.getElementById('previewIndicators');
+                
+                const activeSlides = this.gallerySlides.filter(slide => slide.active);
+                
+                // Renderizar slides
+                slidesContainer.innerHTML = activeSlides.map((slide, index) => {
+                    const isActive = index === 0 ? 'active' : '';
+                    const content = slide.type === 'image' 
+                        ? `<img src="${slide.url}" alt="${slide.title}">`
+                        : `<video autoplay muted loop><source src="${slide.url}" type="video/mp4"></video>`;
+                    
+                    return `
+                        <div class="preview-slide ${isActive}" data-slide="${index}">
+                            ${content}
+                            <div class="preview-slide-overlay">
+                                <h3>${slide.title}</h3>
+                                <p>${slide.description}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Renderizar indicadores
+                indicatorsContainer.innerHTML = activeSlides.map((_, index) => {
+                    const isActive = index === 0 ? 'active' : '';
+                    return `<span class="preview-indicator ${isActive}" data-slide="${index}"></span>`;
+                }).join('');
+
+                // Configurar eventos de los indicadores
+                indicatorsContainer.querySelectorAll('.preview-indicator').forEach(indicator => {
+                    indicator.addEventListener('click', () => {
+                        const slideIndex = parseInt(indicator.dataset.slide);
+                        this.showPreviewSlide(slideIndex);
+                    });
+                });
+            }
+
+            renderSlidesGrid() {
+                const slidesGrid = document.getElementById('slidesGrid');
+                
+                if (this.gallerySlides.length === 0) {
+                    slidesGrid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #7f8c8d;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;">🎬</div>
+                            <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">No hay slides en la galería</div>
+                            <div style="font-size: 0.9rem;">Agrega tu primer slide usando los botones de arriba</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Ordenar slides por orden
+                const sortedSlides = [...this.gallerySlides].sort((a, b) => a.order - b.order);
+                
+                slidesGrid.innerHTML = sortedSlides.map(slide => {
+                    const isActive = slide.active ? 'active' : '';
+                    const typeClass = slide.type === 'image' ? 'image' : 'video';
+                    
+                    return `
+                        <div class="slide-card ${isActive}" data-slide-id="${slide.id}">
+                            <div class="slide-number">${slide.order}</div>
+                            <div class="slide-preview">
+                                ${slide.type === 'image' 
+                                    ? `<img src="${slide.url}" alt="${slide.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`
+                                    : `<video style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" muted><source src="${slide.url}" type="video/mp4"></video>`
+                                }
+                            </div>
+                            <div class="slide-info">
+                                <div class="slide-title">${slide.title}</div>
+                                <div class="slide-description">${slide.description}</div>
+                                <span class="slide-type ${typeClass}">${slide.type === 'image' ? '🖼️ Imagen' : '🎥 Video'}</span>
+                            </div>
+                            <div class="slide-actions">
+                                <button class="slide-btn btn-edit" onclick="galleryManager.editSlide(${slide.id})">
+                                    ✏️ Editar
+                                </button>
+                                <button class="slide-btn btn-toggle" onclick="galleryManager.toggleSlide(${slide.id})">
+                                    ${slide.active ? '👁️ Ocultar' : '👁️ Mostrar'}
+                                </button>
+                                <button class="slide-btn btn-delete" onclick="galleryManager.deleteSlide(${slide.id})">
+                                    🗑️ Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            showPreviewSlide(index) {
+                const slides = document.querySelectorAll('.preview-slide');
+                const indicators = document.querySelectorAll('.preview-indicator');
+                
+                // Remover active de todos
+                slides.forEach(slide => slide.classList.remove('active'));
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                // Activar slide e indicador actual
+                if (slides[index]) slides[index].classList.add('active');
+                if (indicators[index]) indicators[index].classList.add('active');
+                
+                this.currentPreviewSlide = index;
+            }
+
+            initializeEvents() {
+                // Controles del carrusel de vista previa
+                document.getElementById('previewPrev').addEventListener('click', () => {
+                    const activeSlides = this.gallerySlides.filter(slide => slide.active);
+                    const prevIndex = (this.currentPreviewSlide - 1 + activeSlides.length) % activeSlides.length;
+                    this.showPreviewSlide(prevIndex);
+                });
+
+                document.getElementById('previewNext').addEventListener('click', () => {
+                    const activeSlides = this.gallerySlides.filter(slide => slide.active);
+                    const nextIndex = (this.currentPreviewSlide + 1) % activeSlides.length;
+                    this.showPreviewSlide(nextIndex);
+                });
+
+                // Modal events
+                const modal = document.getElementById('slideModal');
+                const closeModal = document.getElementById('closeModal');
+                const cancelBtn = document.getElementById('cancelBtn');
+
+                closeModal.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+
+                cancelBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+
+                // File input change
+                document.getElementById('slideFile').addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    const label = document.getElementById('fileInputLabel');
+                    
+                    if (file) {
+                        label.textContent = `📁 ${file.name}`;
+                        label.classList.add('has-file');
+                    } else {
+                        label.textContent = '📁 Seleccionar archivo';
+                        label.classList.remove('has-file');
+                    }
+                });
+
+                // Form submit
+                document.getElementById('slideForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveSlide();
+                });
+
+                // Slide type change
+                document.getElementById('slideType').addEventListener('change', (e) => {
+                    const fileInput = document.getElementById('slideFile');
+                    const accept = e.target.value === 'image' ? 'image/*' : 'video/*';
+                    fileInput.accept = accept;
+                });
+            }
+
+            openAddSlideModal(type = 'image') {
+                this.editingSlideId = null;
+                document.getElementById('modalTitle').textContent = 'Agregar Nuevo Slide';
+                document.getElementById('slideType').value = type;
+                document.getElementById('slideFile').accept = type === 'image' ? 'image/*' : 'video/*';
+                document.getElementById('slideForm').reset();
+                document.getElementById('fileInputLabel').textContent = '📁 Seleccionar archivo';
+                document.getElementById('fileInputLabel').classList.remove('has-file');
+                document.getElementById('slideModal').style.display = 'block';
+            }
+
+            editSlide(slideId) {
+                const slide = this.gallerySlides.find(s => s.id === slideId);
+                if (!slide) return;
+
+                this.editingSlideId = slideId;
+                document.getElementById('modalTitle').textContent = 'Editar Slide';
+                document.getElementById('slideTitle').value = slide.title;
+                document.getElementById('slideDescription').value = slide.description;
+                document.getElementById('slideType').value = slide.type;
+                document.getElementById('slideOrder').value = slide.order;
+                document.getElementById('slideFile').accept = slide.type === 'image' ? 'image/*' : 'video/*';
+                document.getElementById('fileInputLabel').textContent = '📁 Archivo actual (sin cambios)';
+                document.getElementById('fileInputLabel').classList.add('has-file');
+                document.getElementById('slideModal').style.display = 'block';
+            }
+
+            async saveSlide() {
+                const title = document.getElementById('slideTitle').value;
+                const description = document.getElementById('slideDescription').value;
+                const type = document.getElementById('slideType').value;
+                const order = parseInt(document.getElementById('slideOrder').value);
+                const file = document.getElementById('slideFile').files[0];
+
+                if (!title.trim()) {
+                    this.showError('El título es requerido');
+                    return;
+                }
+
+                try {
+                    let fileUrl = null;
+
+                    // Si hay un archivo nuevo, subirlo
+                    if (file) {
+                        const fileName = `gallery_${Date.now()}_${file.name}`;
+                        
+                        const { data, error } = await window.supabaseClient.storage
+                            .from(this.bucketName)
+                            .upload(fileName, file);
+
+                        if (error) throw error;
+
+                        const { data: urlData } = window.supabaseClient.storage
+                            .from(this.bucketName)
+                            .getPublicUrl(fileName);
+
+                        fileUrl = urlData.publicUrl;
+                    }
+
+                    if (this.editingSlideId) {
+                        // Editar slide existente
+                        const slideIndex = this.gallerySlides.findIndex(s => s.id === this.editingSlideId);
+                        if (slideIndex !== -1) {
+                            this.gallerySlides[slideIndex].title = title;
+                            this.gallerySlides[slideIndex].description = description;
+                            this.gallerySlides[slideIndex].type = type;
+                            this.gallerySlides[slideIndex].order = order;
+                            if (fileUrl) {
+                                this.gallerySlides[slideIndex].url = fileUrl;
+                            }
+                        }
+                        this.showSuccess('Slide actualizado exitosamente');
+                    } else {
+                        // Crear nuevo slide
+                        const newSlide = {
+                            id: Date.now(),
+                            title,
+                            description,
+                            type,
+                            url: fileUrl || (type === 'image' ? 'https://via.placeholder.com/800x600' : 'https://via.placeholder.com/800x600.mp4'),
+                            order,
+                            active: true,
+                            propertyId: Date.now(),
+                            slug: `slide-${Date.now()}`
+                        };
+                        this.gallerySlides.push(newSlide);
+                        this.showSuccess('Slide agregado exitosamente');
+                    }
+
+                    // Guardar cambios usando el sistema de sincronización
+                    if (window.gallerySync) {
+                        await window.gallerySync.saveGalleryChanges(this.gallerySlides);
+                    }
+
+                    // Actualizar vistas
+                    this.renderPreviewCarousel();
+                    this.renderSlidesGrid();
+                    
+                    // Cerrar modal
+                    document.getElementById('slideModal').style.display = 'none';
+
+                } catch (error) {
+                    console.error('❌ Error guardando slide:', error);
+                    this.showError(`Error al guardar el slide: ${error.message}`);
+                }
+            }
+
+            async toggleSlide(slideId) {
+                const slide = this.gallerySlides.find(s => s.id === slideId);
+                if (slide) {
+                    slide.active = !slide.active;
+                    
+                    // Guardar cambios usando el sistema de sincronización
+                    if (window.gallerySync) {
+                        await window.gallerySync.saveGalleryChanges(this.gallerySlides);
+                    }
+                    
+                    this.renderPreviewCarousel();
+                    this.renderSlidesGrid();
+                    this.showSuccess(`Slide ${slide.active ? 'activado' : 'desactivado'} exitosamente`);
+                }
+            }
+
+            async deleteSlide(slideId) {
+                if (!confirm('¿Estás seguro de que quieres eliminar este slide?')) {
+                    return;
+                }
+
+                const slideIndex = this.gallerySlides.findIndex(s => s.id === slideId);
+                if (slideIndex !== -1) {
+                    this.gallerySlides.splice(slideIndex, 1);
+                    
+                    // Guardar cambios usando el sistema de sincronización
+                    if (window.gallerySync) {
+                        await window.gallerySync.saveGalleryChanges(this.gallerySlides);
+                    }
+                    
+                    this.renderPreviewCarousel();
+                    this.renderSlidesGrid();
+                    this.showSuccess('Slide eliminado exitosamente');
+                }
+            }
+
+            showAuthWarning() {
+                document.getElementById('authWarning').style.display = 'block';
+                document.getElementById('galleryContent').style.display = 'none';
+                this.hideLoading();
+            }
+
+            showSuccess(message) {
+                const successDiv = document.getElementById('successMessage');
+                successDiv.textContent = `✅ ${message}`;
+                successDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    successDiv.style.display = 'none';
+                }, 5000);
+                
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+
+            showError(message) {
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = `❌ ${message}`;
+                errorDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 10000);
+                
+                document.getElementById('successMessage').style.display = 'none';
+            }
+
+            hideLoading() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
+            }
+        }
+
+        // Crear instancia global
+        let galleryManager;
+
+        // Inicializar cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🏠 Casa Nuvera - Gestión de Galería iniciando...');
+            galleryManager = new GalleryManager();
+        });
+    </script>
+</body>
+</html>

@@ -1847,6 +1847,7 @@
     <script src="property-handler.js"></script>
     <script src="property-loader-fixed.js"></script>
     <script src="whatsapp-widget.js"></script>
+    <script src="gallery-sync.js"></script>
 
     <script>
         // 🔥 FUNCIÓN FAVORITOS UNIFICADA - IMAGEN 1
@@ -2084,7 +2085,7 @@
         // 🚨 SOLO MANEJO DE EVENTOS - SIN CARGA DE PROPIEDADES MOCKUP
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🏠 Página cargada - PropertyLoader real se iniciará automáticamente');
-            console.log('⚡ Scripts cargados: supabase.js, property-handler.js, property-loader-fixed.js');
+            console.log('⚡ Scripts cargados: supabase.js, property-handler.js, property-loader-fixed.js, gallery-sync.js');
             
             // INICIALIZAR CARRUSEL
             // Configurar indicadores ya tienen onclick en HTML
@@ -2101,6 +2102,13 @@
             
             // 🔍 CONFIGURAR BÚSQUEDA AUTOMÁTICA EN TIEMPO REAL
             setupRealTimeSearch();
+            
+            // 🎬 ACTUALIZAR GALERÍA CON DATOS MÁS RECIENTES
+            setTimeout(() => {
+                if (window.gallerySync) {
+                    window.gallerySync.updateIndexGallery();
+                }
+            }, 2000); // Esperar 2 segundos para que todo esté cargado
             
             // El property-loader-fixed.js se encarga de cargar las propiedades reales
         });
