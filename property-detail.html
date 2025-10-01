@@ -1435,6 +1435,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="supabase.js"></script>
     <script src="property-detail-dynamic.js"></script>
+    <script src="google-maps-embed-fix.js"></script>
 
     <script>
         // Variables globales
@@ -1731,7 +1732,17 @@
         }
 
         function showGoogleMap(mapsUrl) {
-            console.log('🗺️ Mostrando mapa con estilo unificado:', mapsUrl);
+            // Usar la nueva solución que corrige el error X-Frame-Options
+            if (window.googleMapsEmbedFix) {
+                window.googleMapsEmbedFix.showGoogleMap(mapsUrl);
+            } else {
+                console.log('⚠️ Google Maps Embed Fix no está disponible, usando fallback');
+                showGoogleMapFallback(mapsUrl);
+            }
+        }
+
+        function showGoogleMapFallback(mapsUrl) {
+            console.log('🗺️ Mostrando mapa con fallback:', mapsUrl);
 
             const mapSection = document.getElementById('propertyMapSection');
             const mapContainer = document.getElementById('propertyMapContainer');
@@ -1744,40 +1755,50 @@
             // Limpiar contenedor
             mapContainer.innerHTML = '';
 
-            // Convertir URL a embed si es necesario (igual que en subir-propiedades)
-            const embedUrl = convertToEmbedUrl(mapsUrl);
-            
-            if (embedUrl) {
-                // Usar iframe de Google Maps (igual que en subir-propiedades)
-                const iframe = document.createElement('iframe');
-                iframe.src = embedUrl;
-                iframe.width = '100%';
-                iframe.height = '100%';
-                iframe.frameBorder = '0';
-                iframe.style.border = 'none';
-                iframe.setAttribute('loading', 'lazy');
-                iframe.allowFullscreen = true;
-                iframe.referrerPolicy = 'no-referrer-when-downgrade';
+            // SOLUCIÓN SIMPLE: Para URLs de maps.app.goo.gl y goo.gl/maps, usar directamente
+            if (mapsUrl.includes('maps.app.goo.gl') || mapsUrl.includes('goo.gl/maps')) {
+                console.log('✅ URL compatible con iframe, usando directamente');
                 
-                mapContainer.appendChild(iframe);
-                console.log('✅ Mapa de Google Maps mostrado con iframe');
-            } else {
-                // SOLUCIÓN: Siempre usar Google Maps, nunca OpenStreetMap
-                console.log('⚠️ No se pudo convertir URL, usando Google Maps con URL original');
-                
-                // Usar la URL original directamente en un iframe
                 const iframe = document.createElement('iframe');
                 iframe.src = mapsUrl;
                 iframe.width = '100%';
                 iframe.height = '100%';
                 iframe.frameBorder = '0';
                 iframe.style.border = 'none';
+                iframe.style.borderRadius = '0 0 10px 10px';
                 iframe.setAttribute('loading', 'lazy');
                 iframe.allowFullscreen = true;
                 iframe.referrerPolicy = 'no-referrer-when-downgrade';
                 
                 mapContainer.appendChild(iframe);
-                console.log('✅ Mapa de Google Maps mostrado con URL original');
+                console.log('✅ Mapa mostrado directamente');
+            } else {
+                // Para otros URLs, mostrar mensaje de error
+                console.log('❌ URL no compatible con iframe');
+                mapContainer.innerHTML = `
+                    <div style="
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        height: 350px;
+                        background: #f8f9fa;
+                        border-radius: 0 0 10px 10px;
+                        color: #666;
+                        text-align: center;
+                        padding: 2rem;
+                    ">
+                        <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;">⚠️</div>
+                        <div>
+                            <strong>Error: URL no compatible con iframe</strong><br>
+                            <small>Esta URL de Google Maps no se puede mostrar en un iframe</small>
+                        </div>
+                        <div style="margin-top: 1rem; font-size: 0.9rem; color: #999;">
+                            <strong>💡 Solución:</strong><br>
+                            Usa URLs de maps.app.goo.gl o goo.gl/maps
+                        </div>
+                    </div>
+                `;
             }
 
             mapSection.style.display = 'block';
