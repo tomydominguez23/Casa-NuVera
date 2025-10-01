@@ -416,33 +416,22 @@ class PropertyDetailDynamic {
             mapContainer.appendChild(iframe);
             console.log('✅ Mapa de Google Maps mostrado con iframe');
         } else {
-            // Fallback a Leaflet si no se puede convertir
-            console.log('⚠️ Usando fallback a Leaflet');
+            // SOLUCIÓN: Siempre usar Google Maps, nunca OpenStreetMap
+            console.log('⚠️ No se pudo convertir URL, usando Google Maps con URL original');
             
-            // Intentar extraer coordenadas desde la URL
-            const coords = this.extractLatLng(this.property.google_maps_url);
-            const center = coords || { lat: -33.4489, lng: -70.6693 }; // Santiago fallback
-
-            // Crear div interno para Leaflet
-            const leafletDiv = document.createElement('div');
-            leafletDiv.id = 'leafletMapDynamic';
-            leafletDiv.style.width = '100%';
-            leafletDiv.style.height = '100%';
-            mapContainer.appendChild(leafletDiv);
-
-            // Inicializar Leaflet
-            try {
-                const map = L.map('leafletMapDynamic');
-                map.setView([center.lat, center.lng], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '&copy; OpenStreetMap'
-                }).addTo(map);
-                L.marker([center.lat, center.lng]).addTo(map);
-            } catch (e) {
-                console.warn('⚠️ Leaflet no disponible:', e);
-                mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">Mapa no disponible</div>';
-            }
+            // Usar la URL original directamente en un iframe
+            const iframe = document.createElement('iframe');
+            iframe.src = this.property.google_maps_url;
+            iframe.width = '100%';
+            iframe.height = '100%';
+            iframe.frameBorder = '0';
+            iframe.style.border = 'none';
+            iframe.setAttribute('loading', 'lazy');
+            iframe.allowFullscreen = true;
+            iframe.referrerPolicy = 'no-referrer-when-downgrade';
+            
+            mapContainer.appendChild(iframe);
+            console.log('✅ Mapa de Google Maps mostrado con URL original');
         }
 
         mapSection.style.display = 'block';

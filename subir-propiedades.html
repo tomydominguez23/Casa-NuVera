@@ -1708,44 +1708,51 @@
         
         // Función para mostrar el mapa (copiada de property-detail.html)
         function showGoogleMapPreview(mapsUrl) {
-            console.log('🗺️ Mostrando vista previa con Leaflet/OSM:', mapsUrl);
+            console.log('🗺️ Mostrando vista previa con Google Maps:', mapsUrl);
             const mapContainer = document.getElementById('mapPreviewContainer');
             const mapPreview = document.getElementById('mapPreview');
             if (!mapContainer || !mapPreview) return;
 
-            const coords = extractLatLng(mapsUrl) || { lat: -33.4489, lng: -70.6693 };
+            // Limpiar contenedor
             mapPreview.innerHTML = '';
-            const inner = document.createElement('div');
-            inner.id = 'leafletUploadPreview';
-            inner.style.width = '100%';
-            inner.style.height = '100%';
-            mapPreview.appendChild(inner);
 
-            try {
-                const map = L.map('leafletUploadPreview');
-                map.setView([coords.lat, coords.lng], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
-                let marker = L.marker([coords.lat, coords.lng], { draggable: true }).addTo(map);
-                marker.on('dragend', () => syncUrlFromMarker(marker.getLatLng()));
-                map.on('click', (e) => { marker.setLatLng(e.latlng); syncUrlFromMarker(e.latlng); });
-                mapContainer.style.display = 'block';
-            } catch (e) {
-                console.warn('⚠️ Leaflet no disponible, usando iframe fallback', e);
-                // Fallback previo con iframe
-                const embedUrl = convertToEmbedUrl(mapsUrl);
-                if (embedUrl) {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = embedUrl;
-                    iframe.width = '100%';
-                    iframe.height = '100%';
-                    iframe.frameBorder = '0';
-                    iframe.style.border = 'none';
-                    iframe.setAttribute('loading', 'lazy');
-                    mapPreview.innerHTML = '';
-                    mapPreview.appendChild(iframe);
-                    mapContainer.style.display = 'block';
-                }
+            // Convertir URL a embed si es necesario
+            const embedUrl = convertToEmbedUrl(mapsUrl);
+            
+            if (embedUrl) {
+                // Usar iframe de Google Maps
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.width = '100%';
+                iframe.height = '100%';
+                iframe.frameBorder = '0';
+                iframe.style.border = 'none';
+                iframe.setAttribute('loading', 'lazy');
+                iframe.allowFullscreen = true;
+                iframe.referrerPolicy = 'no-referrer-when-downgrade';
+                
+                mapPreview.appendChild(iframe);
+                console.log('✅ Vista previa de Google Maps mostrada con iframe');
+            } else {
+                // SOLUCIÓN: Siempre usar Google Maps, nunca OpenStreetMap
+                console.log('⚠️ No se pudo convertir URL, usando Google Maps con URL original');
+                
+                // Usar la URL original directamente en un iframe
+                const iframe = document.createElement('iframe');
+                iframe.src = mapsUrl;
+                iframe.width = '100%';
+                iframe.height = '100%';
+                iframe.frameBorder = '0';
+                iframe.style.border = 'none';
+                iframe.setAttribute('loading', 'lazy');
+                iframe.allowFullscreen = true;
+                iframe.referrerPolicy = 'no-referrer-when-downgrade';
+                
+                mapPreview.appendChild(iframe);
+                console.log('✅ Vista previa de Google Maps mostrada con URL original');
             }
+
+            mapContainer.style.display = 'block';
         }
         
         // Reemplazar la función del sistema anterior
@@ -2189,11 +2196,11 @@
         function syncUrlFromMarker(latlng) {
             const input = document.getElementById('googleMapsUrl');
             if (!input) return;
-            // Generar un enlace OSM tipo https://www.openstreetmap.org/?mlat=lat&mlon=lng#map=15/lat/lng
+            // Generar un enlace de Google Maps tipo https://maps.google.com/?q=lat,lng
             const lat = latlng.lat.toFixed(6);
             const lng = latlng.lng.toFixed(6);
-            const osmUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`;
-            input.value = osmUrl;
+            const googleMapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
+            input.value = googleMapsUrl;
         }
 
         function showMapError(message = 'URL de mapa no válida') {
@@ -2260,10 +2267,10 @@
         }
 
         function getGoogleMapsUrl() {
-            // Devolver siempre el valor del input, que ahora puede ser OSM o Google.
+            // Devolver siempre el valor del input, que ahora siempre será Google Maps.
             const mapsUrl = (document.getElementById('googleMapsUrl').value || '').trim();
             if (!mapsUrl) return null;
-            // Si el usuario pegó Google, lo guardamos tal cual; si seleccionó en el mapa, ya generamos URL OSM.
+            // Si el usuario pegó Google, lo guardamos tal cual; si seleccionó en el mapa, ya generamos URL de Google Maps.
             return mapsUrl;
         }
 
