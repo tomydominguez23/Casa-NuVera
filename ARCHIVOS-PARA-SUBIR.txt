@@ -1,0 +1,64 @@
+# 📁 Lista de Archivos para Subir a Bluehost
+
+## 🎯 Archivos Principales (OBLIGATORIOS)
+
+### Páginas HTML Principales:
+- index.html (PÁGINA PRINCIPAL)
+- compras.html
+- arriendos-nuevo.html
+- contacto.html
+- nosotros.html
+- servicios.html
+- blog.html
+- propiedad.html
+- property-detail.html
+
+### Páginas de Administración:
+- admin-login.html
+- admin-dashboard.html
+- admin-properties.html
+- admin-contacts.html
+- admin-analytics.html
+- admin-images.html
+- admin-settings.html
+- subir-propiedades.html
+- subir-imagenes.html
+
+### Archivos JavaScript Principales:
+- supabase.js (CONFIGURACIÓN DE BASE DE DATOS)
+- property-handler.js
+- property-loader-fixed.js
+- whatsapp-widget.js
+- whatsapp-widget.css
+- property-styles.css
+
+### Carpetas:
+- css/ (con todos sus archivos)
+- js/ (con todos sus archivos)
+
+## 📋 Instrucciones de Subida:
+
+1. **Accede a tu panel de Bluehost**
+2. **Ve a "Administrador de Archivos"**
+3. **Navega a la carpeta `public_html/`**
+4. **Sube TODOS los archivos listados arriba**
+5. **Asegúrate de que `index.html` esté en la raíz de `public_html/`**
+
+## ⚠️ Archivos que NO necesitas subir:
+- Archivos de prueba (test-*)
+- Archivos de debug (debug-*)
+- Archivos de diagnóstico (diagnostico-*)
+- Archivos de documentación (*.md)
+- Archivos SQL (*.sql)
+- Archivos temporales
+
+## ✅ Verificación:
+Después de subir, verifica que:
+- https://casanuvera.cl carga correctamente
+- Todas las páginas funcionan
+- Las imágenes se muestran
+- El JavaScript funciona
+- La integración con Supabase está activa
+
+---
+**¡Tu sitio Casa Nuvera estará listo! 🏠✨**
