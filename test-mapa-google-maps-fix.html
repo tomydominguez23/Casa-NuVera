@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Mapa Google Maps Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+        }
+        .test-title {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        .map-container {
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+        .url-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        .test-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test - Mapa Google Maps Fix</h1>
+        <p>Esta página prueba que el mapa en la vista de propiedad individual ahora use Google Maps en lugar de OpenStreetMap.</p>
+
+        <div class="test-section">
+            <h2 class="test-title">📍 Test 1: URL de Google Maps</h2>
+            <input type="url" id="testUrl1" class="url-input" 
+                   placeholder="Pega aquí una URL de Google Maps"
+                   value="https://maps.app.goo.gl/eTgr7Rofa76tBGYc6">
+            <button class="test-btn" onclick="testGoogleMaps('testUrl1', 'map1')">Probar Mapa</button>
+            <div id="status1" class="status" style="display:none;"></div>
+            <div class="map-container" id="map1"></div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="test-title">📍 Test 2: URL de Google Maps Completa</h2>
+            <input type="url" id="testUrl2" class="url-input" 
+                   placeholder="Pega aquí una URL completa de Google Maps"
+                   value="https://www.google.com/maps/place/Santiago,+Región+Metropolitana/@-33.4489,-70.6693,15z">
+            <button class="test-btn" onclick="testGoogleMaps('testUrl2', 'map2')">Probar Mapa</button>
+            <div id="status2" class="status" style="display:none;"></div>
+            <div class="map-container" id="map2"></div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="test-title">📍 Test 3: URL de Embed Directo</h2>
+            <input type="url" id="testUrl3" class="url-input" 
+                   placeholder="Pega aquí una URL de embed de Google Maps"
+                   value="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl">
+            <button class="test-btn" onclick="testGoogleMaps('testUrl3', 'map3')">Probar Mapa</button>
+            <div id="status3" class="status" style="display:none;"></div>
+            <div class="map-container" id="map3"></div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="test-title">📋 Resultados del Test</h2>
+            <div id="testResults" class="status info">
+                Ejecuta los tests para ver los resultados aquí...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función convertToEmbedUrl mejorada (copiada de property-detail-dynamic.js)
+        function convertToEmbedUrl(url) {
+            try {
+                console.log('🔄 Convirtiendo URL de mapa:', url);
+                
+                // Si ya es una URL de embed válida, devolverla
+                if (url.includes('maps/embed')) {
+                    console.log('✅ URL ya es de embed');
+                    return url;
+                }
+                
+                // SOLUCIÓN MEJORADA: Usar el URL real del usuario para mantener la ubicación correcta
+                if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps') || url.includes('maps.google.com')) {
+                    console.log('✅ Detectada URL de Google Maps - manteniendo ubicación real');
+                    
+                    // Si ya es un URL de embed, usarlo directamente
+                    if (url.includes('/maps/embed')) {
+                        console.log('✅ URL ya es de embed, usando directamente');
+                        return url;
+                    }
+                    
+                    // Convertir URL compartido a embed manteniendo la ubicación original
+                    let embedUrl = url.replace(/^https:\/\/(www\.)?(maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.com)/, 'https://www.google.com/maps/embed');
+                    
+                    // Si no se pudo convertir con el reemplazo simple, usar el método de búsqueda
+                    if (embedUrl === url) {
+                        embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${encodeURIComponent(url)}`;
+                    }
+                    
+                    console.log('✅ URL de embed generada con ubicación real:', embedUrl);
+                    return embedUrl;
+                }
+                
+                console.log('❌ URL no reconocida como Google Maps');
+                return null;
+            } catch (error) {
+                console.error('❌ Error convirtiendo URL de mapa:', error);
+                return null;
+            }
+        }
+
+        function testGoogleMaps(inputId, mapId) {
+            const url = document.getElementById(inputId).value.trim();
+            const mapContainer = document.getElementById(mapId);
+            const statusElement = document.getElementById('status' + mapId.slice(-1));
+            
+            if (!url) {
+                showStatus(statusElement, 'error', '❌ Por favor ingresa una URL');
+                return;
+            }
+
+            showStatus(statusElement, 'info', '🔄 Procesando URL...');
+            
+            // Limpiar contenedor
+            mapContainer.innerHTML = '';
+
+            // Convertir URL a embed
+            const embedUrl = convertToEmbedUrl(url);
+            
+            if (embedUrl) {
+                // Crear iframe de Google Maps
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.width = '100%';
+                iframe.height = '100%';
+                iframe.frameBorder = '0';
+                iframe.style.border = 'none';
+                iframe.setAttribute('loading', 'lazy');
+                iframe.allowFullscreen = true;
+                iframe.referrerPolicy = 'no-referrer-when-downgrade';
+                
+                mapContainer.appendChild(iframe);
+                showStatus(statusElement, 'success', '✅ Mapa de Google Maps cargado correctamente');
+                
+                // Actualizar resultados del test
+                updateTestResults('✅', `Test ${mapId.slice(-1)}: Google Maps iframe cargado`);
+            } else {
+                mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">❌ URL no válida para Google Maps</div>';
+                showStatus(statusElement, 'error', '❌ URL no reconocida como Google Maps');
+                updateTestResults('❌', `Test ${mapId.slice(-1)}: URL no válida`);
+            }
+        }
+
+        function showStatus(element, type, message) {
+            element.className = `status ${type}`;
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        function updateTestResults(icon, message) {
+            const resultsElement = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            resultsElement.innerHTML += `<br>${icon} ${message} (${timestamp})`;
+        }
+
+        // Auto-probar con URLs por defecto al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Página de test cargada');
+            
+            // Auto-ejecutar tests después de 1 segundo
+            setTimeout(() => {
+                testGoogleMaps('testUrl1', 'map1');
+                setTimeout(() => testGoogleMaps('testUrl2', 'map2'), 500);
+                setTimeout(() => testGoogleMaps('testUrl3', 'map3'), 1000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
