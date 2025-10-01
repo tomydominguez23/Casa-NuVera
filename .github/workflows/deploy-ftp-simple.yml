@@ -65,7 +65,7 @@ jobs:
         username: ${{ secrets.BLUEHOST_FTP_USERNAME }}
         password: ${{ secrets.BLUEHOST_FTP_PASSWORD }}
         local-dir: ./ftp-deploy/
-        server-dir: /public_html/
+        server-dir: /public_html/casanuvera.cl/
         exclude: |
           **/.git*
           **/.git*/**
