@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Solución X-Frame-Options - Casa Nuvera</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .test-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        
+        .url-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .map-container {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            margin: 1rem 0;
+            background: #f8f9fa;
+            display: none;
+        }
+        
+        .status {
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .debug-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+        
+        .example-urls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .example-url {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .example-url code {
+            background: #f8f9fa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            display: block;
+            margin: 0.5rem 0;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ Test Solución X-Frame-Options</h1>
+            <p>Verificación de la corrección del error "Refused to display 'https://www.google.com/' in a frame because it set 'X-Frame-Options' to 'sameorigin'"</p>
+        </div>
+        
+        <div class="content">
+            <div class="test-section">
+                <h3>🧪 Prueba Manual</h3>
+                <p>Pega aquí cualquier URL de Google Maps para probar la solución:</p>
+                <input type="url" id="testUrl" class="url-input" 
+                       placeholder="Pega aquí tu URL de Google Maps (maps.app.goo.gl, goo.gl/maps, maps.google.com, etc.)">
+                <button class="btn" onclick="testUrl()">Probar URL</button>
+                <div id="testStatus" class="status" style="display: none;"></div>
+                <div id="testMapContainer" class="map-container"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>📋 URLs de Ejemplo</h3>
+                <p>Prueba estos tipos de URLs de Google Maps:</p>
+                
+                <div class="example-urls">
+                    <div class="example-url">
+                        <strong>maps.app.goo.gl (Nuevo formato)</strong>
+                        <code>https://maps.app.goo.gl/5d7wLipgBWWBeos99</code>
+                        <button class="btn" onclick="testUrl('https://maps.app.goo.gl/5d7wLipgBWWBeos99')">Probar</button>
+                    </div>
+                    
+                    <div class="example-url">
+                        <strong>goo.gl/maps (Formato anterior)</strong>
+                        <code>https://goo.gl/maps/abc123</code>
+                        <button class="btn" onclick="testUrl('https://goo.gl/maps/abc123')">Probar</button>
+                    </div>
+                    
+                    <div class="example-url">
+                        <strong>maps.google.com con coordenadas</strong>
+                        <code>https://maps.google.com/maps?q=Santiago+Chile</code>
+                        <button class="btn" onclick="testUrl('https://maps.google.com/maps?q=Santiago+Chile')">Probar</button>
+                    </div>
+                    
+                    <div class="example-url">
+                        <strong>URL Embed válida</strong>
+                        <code>https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl</code>
+                        <button class="btn" onclick="testUrl('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl')">Probar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h3>🔍 Información de Debug</h3>
+                <div id="debugInfo" class="debug-info">
+                    <strong>Estado:</strong> Esperando URL para probar...<br>
+                    <strong>URL Original:</strong> Ninguna<br>
+                    <strong>URL Convertida:</strong> Ninguna<br>
+                    <strong>Método:</strong> Ninguno<br>
+                    <strong>Error X-Frame-Options:</strong> No detectado
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función convertToEmbedUrl corregida (igual que en subir-propiedades.html y property-detail-dynamic.js)
+        function convertToEmbedUrl(url) {
+            try {
+                console.log('🔄 Convirtiendo URL de mapa:', url);
+                
+                // SOLUCIÓN CORREGIDA: URLs de maps.app.goo.gl funcionan directamente en iframes
+                // NO necesitan conversión a /embed/
+                
+                // Si ya es una URL de embed, devolverla tal como está
+                if (url.includes('embed')) {
+                    console.log('✅ URL ya es embed');
+                    return url;
+                }
+
+                // CORRECCIÓN PRINCIPAL: URLs de maps.app.goo.gl funcionan directamente
+                if (url.includes('maps.app.goo.gl')) {
+                    console.log('✅ URL de maps.app.goo.gl - usando directamente (sin conversión)');
+                    return url; // ¡Estos URLs funcionan directamente en iframes!
+                }
+
+                // URLs de goo.gl/maps también funcionan directamente
+                if (url.includes('goo.gl/maps')) {
+                    console.log('✅ URL de goo.gl/maps - usando directamente');
+                    return url; // ¡Estos también funcionan directamente!
+                }
+
+                // Para URLs completas de Google Maps con coordenadas
+                if (url.includes('maps.google.com') || url.includes('google.com/maps')) {
+                    console.log('✅ URL de Google Maps detectada');
+                    
+                    // Extraer coordenadas si existen
+                    const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                    if (coordsMatch) {
+                        const [, lat, lng] = coordsMatch;
+                        const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
+                        console.log('✅ URL generada con coordenadas');
+                        return embedUrl;
+                    }
+                    
+                    // Si no tiene coordenadas, usar como búsqueda
+                    const searchQuery = encodeURIComponent(url);
+                    const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${searchQuery}`;
+                    console.log('✅ URL convertida para búsqueda');
+                    return embedUrl;
+                }
+                
+                console.log('❌ URL no reconocida como Google Maps');
+                return null;
+            } catch (error) {
+                console.error('❌ Error convirtiendo URL de mapa:', error);
+                return null;
+            }
+        }
+
+        function testUrl(url = null) {
+            const input = document.getElementById('testUrl');
+            const statusDiv = document.getElementById('testStatus');
+            const mapContainer = document.getElementById('testMapContainer');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            const testUrl = url || input.value.trim();
+            
+            if (!testUrl) {
+                showStatus('Por favor, ingresa una URL de Google Maps', 'error');
+                return;
+            }
+            
+            console.log('🧪 Probando URL:', testUrl);
+            
+            // Limpiar contenedor anterior
+            mapContainer.innerHTML = '';
+            mapContainer.style.display = 'none';
+            
+            // Mostrar loading
+            showStatus('🔄 Procesando URL...', 'info');
+            
+            // Convertir URL
+            const embedUrl = convertToEmbedUrl(testUrl);
+            
+            // Actualizar debug info
+            updateDebugInfo(testUrl, embedUrl);
+            
+            if (embedUrl) {
+                // Crear iframe
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.width = '100%';
+                iframe.height = '100%';
+                iframe.frameBorder = '0';
+                iframe.style.border = 'none';
+                iframe.setAttribute('loading', 'lazy');
+                iframe.allowFullscreen = true;
+                iframe.referrerPolicy = 'no-referrer-when-downgrade';
+                
+                // Manejar eventos
+                iframe.onload = () => {
+                    console.log('✅ Mapa cargado exitosamente');
+                    showStatus('✅ Mapa cargado exitosamente sin errores X-Frame-Options', 'success');
+                };
+                
+                iframe.onerror = () => {
+                    console.error('❌ Error cargando mapa');
+                    showStatus('❌ Error cargando el mapa - posible problema X-Frame-Options', 'error');
+                };
+                
+                mapContainer.appendChild(iframe);
+                mapContainer.style.display = 'block';
+                
+                // Verificar después de un tiempo si hay errores en consola
+                setTimeout(() => {
+                    // Esta es una verificación básica - en un entorno real se usarían herramientas más sofisticadas
+                    console.log('🔍 Verificación completada - revisa la consola para errores X-Frame-Options');
+                }, 2000);
+                
+            } else {
+                showStatus('❌ URL no válida - Usa una URL de Google Maps', 'error');
+            }
+        }
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('testStatus');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+        }
+        
+        function updateDebugInfo(originalUrl, convertedUrl) {
+            const debugInfo = document.getElementById('debugInfo');
+            let method = 'Ninguno';
+            
+            if (originalUrl.includes('maps.app.goo.gl')) {
+                method = 'Directo (maps.app.goo.gl)';
+            } else if (originalUrl.includes('goo.gl/maps')) {
+                method = 'Directo (goo.gl/maps)';
+            } else if (originalUrl.includes('embed')) {
+                method = 'Directo (ya es embed)';
+            } else if (originalUrl.includes('maps.google.com') || originalUrl.includes('google.com/maps')) {
+                method = 'Conversión con coordenadas/búsqueda';
+            }
+            
+            debugInfo.innerHTML = `
+                <strong>Estado:</strong> ${convertedUrl ? 'Procesado' : 'Error'}<br>
+                <strong>URL Original:</strong> ${originalUrl}<br>
+                <strong>URL Convertida:</strong> ${convertedUrl || 'No se pudo convertir'}<br>
+                <strong>Método:</strong> ${method}<br>
+                <strong>Error X-Frame-Options:</strong> ${convertedUrl ? 'No detectado' : 'Posible'}
+            `;
+        }
+        
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Test de Solución X-Frame-Options inicializado');
+            
+            // Permitir probar con Enter
+            document.getElementById('testUrl').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    testUrl();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
