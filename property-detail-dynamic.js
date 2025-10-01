@@ -222,7 +222,7 @@ class PropertyDetailDynamic {
         this.updatePropertyVideos();
             this.updatePropertyVideos();
 
-        // Actualizar mapa (Leaflet/OSM)
+        // Actualizar mapa (Google Maps)
         this.updateGoogleMaps();
 
         // Actualizar información de contacto
@@ -386,7 +386,7 @@ class PropertyDetailDynamic {
             return;
         }
 
-        console.log('🗺️ Mostrando mapa (Leaflet/OSM):', this.property.google_maps_url);
+        console.log('🗺️ Mostrando mapa con Google Maps (iframe embed):', this.property.google_maps_url);
 
         const mapSection = document.getElementById('propertyMapSection');
         const mapContainer = document.getElementById('propertyMapContainer');
@@ -395,71 +395,95 @@ class PropertyDetailDynamic {
             return;
         }
 
-        // Extraer coordenadas desde URL de Google si existen
-        const coords = this.extractLatLng(this.property.google_maps_url) || { lat: -33.4489, lng: -70.6693 };
-
-        // Limpiar contenedor y crear div para Leaflet
+        // Limpiar contenedor
         mapContainer.innerHTML = '';
-        const inner = document.createElement('div');
-        inner.id = 'leafletMapDynamic';
-        inner.style.width = '100%';
-        inner.style.height = '100%';
-        mapContainer.appendChild(inner);
 
-        try {
-            const map = L.map('leafletMapDynamic');
-            map.setView([coords.lat, coords.lng], 15);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(map);
-            L.marker([coords.lat, coords.lng]).addTo(map);
-            mapSection.style.display = 'block';
-        } catch (e) {
-            console.warn('⚠️ Leaflet no disponible, usando fallback de iframe si es posible', e);
-            // Fallback: intentar iframe embed si el CSS/JS de Leaflet no se cargó aún
-            const embedUrl = this.convertToEmbedUrl(this.property.google_maps_url);
-            if (embedUrl) {
-                mapContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-                mapSection.style.display = 'block';
+        // Convertir URL a embed si es necesario (igual que en subir-propiedades)
+        const embedUrl = this.convertToEmbedUrl(this.property.google_maps_url);
+        
+        if (embedUrl) {
+            // Usar iframe de Google Maps (igual que en subir-propiedades)
+            const iframe = document.createElement('iframe');
+            iframe.src = embedUrl;
+            iframe.width = '100%';
+            iframe.height = '100%';
+            iframe.frameBorder = '0';
+            iframe.style.border = 'none';
+            iframe.setAttribute('loading', 'lazy');
+            iframe.allowFullscreen = true;
+            iframe.referrerPolicy = 'no-referrer-when-downgrade';
+            
+            mapContainer.appendChild(iframe);
+            console.log('✅ Mapa de Google Maps mostrado con iframe');
+        } else {
+            // Fallback a Leaflet si no se puede convertir
+            console.log('⚠️ Usando fallback a Leaflet');
+            
+            // Intentar extraer coordenadas desde la URL
+            const coords = this.extractLatLng(this.property.google_maps_url);
+            const center = coords || { lat: -33.4489, lng: -70.6693 }; // Santiago fallback
+
+            // Crear div interno para Leaflet
+            const leafletDiv = document.createElement('div');
+            leafletDiv.id = 'leafletMapDynamic';
+            leafletDiv.style.width = '100%';
+            leafletDiv.style.height = '100%';
+            mapContainer.appendChild(leafletDiv);
+
+            // Inicializar Leaflet
+            try {
+                const map = L.map('leafletMapDynamic');
+                map.setView([center.lat, center.lng], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap'
+                }).addTo(map);
+                L.marker([center.lat, center.lng]).addTo(map);
+            } catch (e) {
+                console.warn('⚠️ Leaflet no disponible:', e);
+                mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">Mapa no disponible</div>';
             }
         }
+
+        mapSection.style.display = 'block';
     }
 
     convertToEmbedUrl(url) {
         try {
-            // Si ya es una URL de embed, devolverla tal como está
-            if (url.includes('embed')) {
+            console.log('🔄 Convirtiendo URL de mapa:', url);
+            
+            // Si ya es una URL de embed válida, devolverla
+            if (url.includes('maps/embed')) {
+                console.log('✅ URL ya es de embed');
                 return url;
             }
-
-            // Convertir URL de Google Maps a embed
-            if (url.includes('maps.google.com') || url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
-                // Para URLs de compartir, usar directamente
-                if (url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
-                    return url; // Usar la URL original
+            
+            // SOLUCIÓN MEJORADA: Usar el URL real del usuario para mantener la ubicación correcta
+            if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps') || url.includes('maps.google.com')) {
+                console.log('✅ Detectada URL de Google Maps - manteniendo ubicación real');
+                
+                // Si ya es un URL de embed, usarlo directamente
+                if (url.includes('/maps/embed')) {
+                    console.log('✅ URL ya es de embed, usando directamente');
+                    return url;
                 }
                 
-                // Si es una URL completa de Google Maps
-                if (url.includes('maps.google.com')) {
-                    // Convertir a formato embed básico
-                    if (url.includes('@')) {
-                        // URL con coordenadas
-                        const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-                        if (coordsMatch) {
-                            const lat = coordsMatch[1];
-                            const lng = coordsMatch[2];
-                            return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
-                        }
-                    }
+                // Convertir URL compartido a embed manteniendo la ubicación original
+                let embedUrl = url.replace(/^https:\/\/(www\.)?(maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.com)/, 'https://www.google.com/maps/embed');
+                
+                // Si no se pudo convertir con el reemplazo simple, usar el método de búsqueda
+                if (embedUrl === url) {
+                    embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${encodeURIComponent(url)}`;
                 }
                 
-                return url; // Fallback a la URL original
+                console.log('✅ URL de embed generada con ubicación real:', embedUrl);
+                return embedUrl;
             }
             
+            console.log('❌ URL no reconocida como Google Maps');
             return null;
         } catch (error) {
-            console.error('Error convirtiendo URL de mapa:', error);
+            console.error('❌ Error convirtiendo URL de mapa:', error);
             return null;
         }
     }
