@@ -441,31 +441,44 @@ class PropertyDetailDynamic {
         try {
             console.log('🔄 Convirtiendo URL de mapa:', url);
             
-            // Si ya es una URL de embed válida, devolverla
-            if (url.includes('maps/embed')) {
-                console.log('✅ URL ya es de embed');
+            // SOLUCIÓN CORREGIDA: URLs de maps.app.goo.gl funcionan directamente en iframes
+            // NO necesitan conversión a /embed/
+            
+            // Si ya es una URL de embed, devolverla tal como está
+            if (url.includes('embed')) {
+                console.log('✅ URL ya es embed');
                 return url;
             }
-            
-            // SOLUCIÓN MEJORADA: Usar el URL real del usuario para mantener la ubicación correcta
-            if (url.includes('maps.app.goo.gl') || url.includes('goo.gl/maps') || url.includes('maps.google.com')) {
-                console.log('✅ Detectada URL de Google Maps - manteniendo ubicación real');
+
+            // CORRECCIÓN PRINCIPAL: URLs de maps.app.goo.gl funcionan directamente
+            if (url.includes('maps.app.goo.gl')) {
+                console.log('✅ URL de maps.app.goo.gl - usando directamente (sin conversión)');
+                return url; // ¡Estos URLs funcionan directamente en iframes!
+            }
+
+            // URLs de goo.gl/maps también funcionan directamente
+            if (url.includes('goo.gl/maps')) {
+                console.log('✅ URL de goo.gl/maps - usando directamente');
+                return url; // ¡Estos también funcionan directamente!
+            }
+
+            // Para URLs completas de Google Maps con coordenadas
+            if (url.includes('maps.google.com') || url.includes('google.com/maps')) {
+                console.log('✅ URL de Google Maps detectada');
                 
-                // Si ya es un URL de embed, usarlo directamente
-                if (url.includes('/maps/embed')) {
-                    console.log('✅ URL ya es de embed, usando directamente');
-                    return url;
+                // Extraer coordenadas si existen
+                const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (coordsMatch) {
+                    const [, lat, lng] = coordsMatch;
+                    const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM${lat}%2C${lng}!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl`;
+                    console.log('✅ URL generada con coordenadas');
+                    return embedUrl;
                 }
                 
-                // Convertir URL compartido a embed manteniendo la ubicación original
-                let embedUrl = url.replace(/^https:\/\/(www\.)?(maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.com)/, 'https://www.google.com/maps/embed');
-                
-                // Si no se pudo convertir con el reemplazo simple, usar el método de búsqueda
-                if (embedUrl === url) {
-                    embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${encodeURIComponent(url)}`;
-                }
-                
-                console.log('✅ URL de embed generada con ubicación real:', embedUrl);
+                // Si no tiene coordenadas, usar como búsqueda
+                const searchQuery = encodeURIComponent(url);
+                const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.2!2d-70.6693!3d-33.4489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDI2JzU2LjAiUyA3MMKwNDAnMDkuNSJX!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl&q=${searchQuery}`;
+                console.log('✅ URL convertida para búsqueda');
                 return embedUrl;
             }
             
