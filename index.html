@@ -2084,7 +2084,7 @@
         // 🚨 SOLO MANEJO DE EVENTOS - SIN CARGA DE PROPIEDADES MOCKUP
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🏠 Página cargada - PropertyLoader real se iniciará automáticamente');
-            console.log('⚡ Scripts cargados: supabase.js, property-handler.js, property-loader-fixed.js');
+            console.log('⚡ Scripts cargados: supabase.js, property-handler.js, property-loader-fixed.js, gallery-sync.js');
             
             // INICIALIZAR CARRUSEL
             // Configurar indicadores ya tienen onclick en HTML
@@ -2101,6 +2101,11 @@
             
             // 🔍 CONFIGURAR BÚSQUEDA AUTOMÁTICA EN TIEMPO REAL
             setupRealTimeSearch();
+            
+            // 🎬 ACTUALIZAR GALERÍA CON DATOS MÁS RECIENTES
+            setTimeout(() => {
+                updateGalleryFromAdmin();
+            }, 2000); // Esperar 2 segundos para que todo esté cargado
             
             // El property-loader-fixed.js se encarga de cargar las propiedades reales
         });
@@ -2221,6 +2226,99 @@
                 headerEl.classList.toggle('open');
             });
         }
+
+        // 🎬 FUNCIÓN PARA ACTUALIZAR GALERÍA DESDE ADMIN
+        function updateGalleryFromAdmin() {
+            try {
+                console.log('🎬 Verificando actualizaciones de galería desde admin...');
+                
+                // Verificar si hay datos de galería guardados en localStorage
+                const savedGalleryData = localStorage.getItem('casaNuveraGalleryData');
+                
+                if (savedGalleryData) {
+                    const galleryData = JSON.parse(savedGalleryData);
+                    console.log('📋 Datos de galería encontrados:', galleryData.length, 'slides');
+                    
+                    // Actualizar la galería con los datos del admin
+                    updateGallerySlides(galleryData);
+                } else {
+                    console.log('ℹ️ No hay datos de galería personalizados, usando configuración por defecto');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error actualizando galería:', error);
+            }
+        }
+
+        // 🎬 FUNCIÓN PARA ACTUALIZAR SLIDES DE LA GALERÍA
+        function updateGallerySlides(galleryData) {
+            try {
+                const activeSlides = galleryData
+                    .filter(slide => slide.active)
+                    .sort((a, b) => a.order - b.order);
+
+                console.log('🔄 Actualizando', activeSlides.length, 'slides activos');
+
+                // Actualizar cada slide existente
+                activeSlides.forEach((slide, index) => {
+                    const slideElement = document.querySelector(`.gallery-slide:nth-child(${index + 1})`);
+                    
+                    if (slideElement) {
+                        // Actualizar contenido del slide
+                        if (slide.type === 'image') {
+                            const img = slideElement.querySelector('img');
+                            if (img) {
+                                img.src = slide.url;
+                                img.alt = slide.title;
+                            }
+                        } else if (slide.type === 'video') {
+                            const video = slideElement.querySelector('video');
+                            if (video) {
+                                const source = video.querySelector('source');
+                                if (source) {
+                                    source.src = slide.url;
+                                }
+                            }
+                        }
+
+                        // Actualizar overlay
+                        const overlay = slideElement.querySelector('.slide-overlay');
+                        if (overlay) {
+                            const title = overlay.querySelector('h3');
+                            const description = overlay.querySelector('p');
+                            
+                            if (title) title.textContent = slide.title;
+                            if (description) description.textContent = slide.description;
+                        }
+
+                        // Actualizar atributos de datos
+                        slideElement.dataset.property = slide.propertyId || (index + 1);
+                        slideElement.dataset.slug = slide.slug || `slide-${index + 1}`;
+                    }
+                });
+
+                // Actualizar indicadores si es necesario
+                const indicators = document.querySelectorAll('.gallery-indicators .indicator');
+                indicators.forEach((indicator, index) => {
+                    if (index < activeSlides.length) {
+                        indicator.style.display = 'block';
+                    } else {
+                        indicator.style.display = 'none';
+                    }
+                });
+
+                console.log('✅ Galería actualizada exitosamente');
+                
+            } catch (error) {
+                console.error('❌ Error actualizando slides:', error);
+            }
+        }
+
+        // 🎬 FUNCIÓN PARA RECARGAR GALERÍA (llamada desde admin)
+        window.reloadGalleryFromAdmin = function() {
+            console.log('🔄 Recargando galería desde admin...');
+            updateGalleryFromAdmin();
+        };
     </script>
 </body>
 </html>

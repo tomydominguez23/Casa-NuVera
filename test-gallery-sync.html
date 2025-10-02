@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Sincronización de Galería</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .test-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .test-button.success {
+            background: #27ae60;
+        }
+        .test-button.success:hover {
+            background: #229954;
+        }
+        .test-result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .test-result.success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .test-result.error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .gallery-preview {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .gallery-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        .gallery-item img {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .gallery-item-info {
+            flex: 1;
+        }
+        .gallery-item-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .gallery-item-desc {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        .gallery-item-type {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .gallery-item-type.image {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .gallery-item-type.video {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🧪 Test de Sincronización de Galería</h1>
+        <p>Esta página te permite probar la sincronización entre el panel de administración y el sitio web.</p>
+        
+        <div>
+            <button class="test-button" onclick="testLoadData()">📋 Cargar Datos de Galería</button>
+            <button class="test-button" onclick="testSaveData()">💾 Guardar Datos de Prueba</button>
+            <button class="test-button success" onclick="openAdmin()">⚙️ Abrir Panel Admin</button>
+            <button class="test-button success" onclick="openWebsite()">🌐 Abrir Sitio Web</button>
+        </div>
+        
+        <div id="testResult" class="test-result" style="display: none;"></div>
+        
+        <div class="gallery-preview">
+            <h3>📋 Datos Actuales de la Galería</h3>
+            <div id="galleryData"></div>
+        </div>
+    </div>
+
+    <script>
+        function showResult(message, type = 'info') {
+            const resultDiv = document.getElementById('testResult');
+            resultDiv.textContent = message;
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                resultDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function testLoadData() {
+            try {
+                const savedData = localStorage.getItem('casaNuveraGalleryData');
+                
+                if (savedData) {
+                    const galleryData = JSON.parse(savedData);
+                    showResult(`✅ Datos cargados exitosamente: ${galleryData.length} slides encontrados`, 'success');
+                    displayGalleryData(galleryData);
+                } else {
+                    showResult('ℹ️ No hay datos de galería guardados en localStorage', 'info');
+                    displayGalleryData([]);
+                }
+            } catch (error) {
+                showResult(`❌ Error cargando datos: ${error.message}`, 'error');
+            }
+        }
+
+        function testSaveData() {
+            try {
+                const testData = [
+                    {
+                        id: 1,
+                        title: "Test Slide 1",
+                        description: "Este es un slide de prueba",
+                        type: "image",
+                        url: "https://via.placeholder.com/800x600/3498db/ffffff?text=Test+Image+1",
+                        order: 1,
+                        active: true,
+                        propertyId: 1,
+                        slug: "test-slide-1"
+                    },
+                    {
+                        id: 2,
+                        title: "Test Slide 2",
+                        description: "Este es otro slide de prueba",
+                        type: "video",
+                        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                        order: 2,
+                        active: true,
+                        propertyId: 2,
+                        slug: "test-slide-2"
+                    }
+                ];
+
+                localStorage.setItem('casaNuveraGalleryData', JSON.stringify(testData));
+                showResult('✅ Datos de prueba guardados exitosamente', 'success');
+                displayGalleryData(testData);
+            } catch (error) {
+                showResult(`❌ Error guardando datos: ${error.message}`, 'error');
+            }
+        }
+
+        function displayGalleryData(galleryData) {
+            const container = document.getElementById('galleryData');
+            
+            if (galleryData.length === 0) {
+                container.innerHTML = '<p style="color: #7f8c8d; font-style: italic;">No hay datos de galería</p>';
+                return;
+            }
+
+            const html = galleryData.map(slide => `
+                <div class="gallery-item">
+                    ${slide.type === 'image' 
+                        ? `<img src="${slide.url}" alt="${slide.title}" onerror="this.src='https://via.placeholder.com/60x40'">`
+                        : `<div style="width: 60px; height: 40px; background: #f0f0f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #666;">🎥</div>`
+                    }
+                    <div class="gallery-item-info">
+                        <div class="gallery-item-title">${slide.title}</div>
+                        <div class="gallery-item-desc">${slide.description}</div>
+                    </div>
+                    <div class="gallery-item-type ${slide.type}">
+                        ${slide.type === 'image' ? '🖼️ Imagen' : '🎥 Video'}
+                    </div>
+                    <div style="font-size: 0.8rem; color: #7f8c8d;">
+                        Orden: ${slide.order} | ${slide.active ? '✅ Activo' : '❌ Inactivo'}
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function openAdmin() {
+            window.open('admin-gallery.html', '_blank');
+        }
+
+        function openWebsite() {
+            window.open('index.html', '_blank');
+        }
+
+        // Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            testLoadData();
+        });
+    </script>
+</body>
+</html>
