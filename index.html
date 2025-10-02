@@ -1489,6 +1489,29 @@
         @media (max-width: 768px) {
             .parallax { background-attachment: scroll !important; }
         }
+
+        /* Animaciones para notificaciones */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2107,6 +2130,11 @@
                 updateGalleryFromAdmin();
             }, 2000); // Esperar 2 segundos para que todo esté cargado
             
+            // También verificar cambios cada 5 segundos
+            setInterval(() => {
+                updateGalleryFromAdmin();
+            }, 5000);
+            
             // El property-loader-fixed.js se encarga de cargar las propiedades reales
         });
 
@@ -2234,11 +2262,20 @@
                 
                 // Verificar si hay datos de galería guardados en localStorage
                 const savedGalleryData = localStorage.getItem('casaNuveraGalleryData');
+                const savedActiveData = localStorage.getItem('casaNuveraActiveGalleryData');
                 
-                if (savedGalleryData) {
-                    const galleryData = JSON.parse(savedGalleryData);
-                    console.log('📋 Datos de galería encontrados:', galleryData.length, 'slides');
-                    
+                // Priorizar datos activos si están disponibles
+                let galleryData = null;
+                if (savedActiveData) {
+                    galleryData = JSON.parse(savedActiveData);
+                    console.log('📋 Datos activos de galería encontrados:', galleryData.length, 'slides activos');
+                } else if (savedGalleryData) {
+                    const allData = JSON.parse(savedGalleryData);
+                    galleryData = allData.filter(slide => slide.active);
+                    console.log('📋 Datos de galería encontrados:', allData.length, 'slides totales,', galleryData.length, 'activos');
+                }
+                
+                if (galleryData && galleryData.length > 0) {
                     // Actualizar la galería con los datos del admin
                     updateGallerySlides(galleryData);
                 } else {
@@ -2253,61 +2290,64 @@
         // 🎬 FUNCIÓN PARA ACTUALIZAR SLIDES DE LA GALERÍA
         function updateGallerySlides(galleryData) {
             try {
-                const activeSlides = galleryData
-                    .filter(slide => slide.active)
-                    .sort((a, b) => a.order - b.order);
+                // Los datos ya vienen filtrados y ordenados desde updateGalleryFromAdmin
+                const activeSlides = galleryData.sort((a, b) => a.order - b.order);
 
                 console.log('🔄 Actualizando', activeSlides.length, 'slides activos');
 
-                // Actualizar cada slide existente
-                activeSlides.forEach((slide, index) => {
-                    const slideElement = document.querySelector(`.gallery-slide:nth-child(${index + 1})`);
+                // Limpiar slides existentes
+                const slidesContainer = document.querySelector('.gallery-slides-container');
+                const indicatorsContainer = document.querySelector('.gallery-indicators');
+                
+                if (!slidesContainer || !indicatorsContainer) {
+                    console.error('❌ No se encontraron contenedores de slides');
+                    return;
+                }
+
+                // Generar HTML para todos los slides
+                slidesContainer.innerHTML = activeSlides.map((slide, index) => {
+                    const isActive = index === 0 ? 'active' : '';
+                    const isVideo = slide.type === 'video';
+                    const videoClass = isVideo ? 'video-slide' : '';
                     
-                    if (slideElement) {
-                        // Actualizar contenido del slide
-                        if (slide.type === 'image') {
-                            const img = slideElement.querySelector('img');
-                            if (img) {
-                                img.src = slide.url;
-                                img.alt = slide.title;
-                            }
-                        } else if (slide.type === 'video') {
-                            const video = slideElement.querySelector('video');
-                            if (video) {
-                                const source = video.querySelector('source');
-                                if (source) {
-                                    source.src = slide.url;
-                                }
-                            }
-                        }
-
-                        // Actualizar overlay
-                        const overlay = slideElement.querySelector('.slide-overlay');
-                        if (overlay) {
-                            const title = overlay.querySelector('h3');
-                            const description = overlay.querySelector('p');
-                            
-                            if (title) title.textContent = slide.title;
-                            if (description) description.textContent = slide.description;
-                        }
-
-                        // Actualizar atributos de datos
-                        slideElement.dataset.property = slide.propertyId || (index + 1);
-                        slideElement.dataset.slug = slide.slug || `slide-${index + 1}`;
-                    }
-                });
-
-                // Actualizar indicadores si es necesario
-                const indicators = document.querySelectorAll('.gallery-indicators .indicator');
-                indicators.forEach((indicator, index) => {
-                    if (index < activeSlides.length) {
-                        indicator.style.display = 'block';
+                    let content = '';
+                    if (isVideo) {
+                        content = `
+                            <video autoplay muted loop>
+                                <source src="${slide.url}" type="video/mp4">
+                                Tu navegador no soporta videos HTML5.
+                            </video>
+                        `;
                     } else {
-                        indicator.style.display = 'none';
+                        content = `<img src="${slide.url}" alt="${slide.title}">`;
                     }
-                });
+                    
+                    return `
+                        <div class="gallery-slide ${isActive} ${videoClass}" data-property="${slide.propertyId || (index + 1)}" data-slug="${slide.slug || `slide-${index + 1}`}">
+                            ${content}
+                            <div class="slide-overlay">
+                                <h3>${slide.title}</h3>
+                                <p>${slide.description}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
 
-                console.log('✅ Galería actualizada exitosamente');
+                // Generar indicadores
+                indicatorsContainer.innerHTML = activeSlides.map((_, index) => {
+                    const isActive = index === 0 ? 'active' : '';
+                    return `<span class="indicator ${isActive}" data-slide="${index}" onclick="showSlide(${index}); event.stopPropagation();"></span>`;
+                }).join('');
+
+                // Actualizar variables globales
+                currentSlide = 0;
+                totalSlides = activeSlides.length;
+
+                // Reiniciar autoplay
+                stopAutoplay();
+                startAutoplay();
+
+                console.log('✅ Galería actualizada exitosamente con', activeSlides.length, 'slides');
                 
             } catch (error) {
                 console.error('❌ Error actualizando slides:', error);
@@ -2318,6 +2358,32 @@
         window.reloadGalleryFromAdmin = function() {
             console.log('🔄 Recargando galería desde admin...');
             updateGalleryFromAdmin();
+            
+            // También mostrar notificación visual
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #27ae60;
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 9999;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = '🎬 Galería actualizada desde admin';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
         };
     </script>
 </body>
