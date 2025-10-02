@@ -1157,6 +1157,11 @@
                 document.getElementById('modalTitle').textContent = 'Agregar Nuevo Slide';
                 document.getElementById('slideType').value = type;
                 document.getElementById('slideFile').accept = type === 'image' ? 'image/*' : 'video/*';
+                // En modo agregar, el archivo debe ser requerido
+                const fileInputAdd = document.getElementById('slideFile');
+                if (fileInputAdd) {
+                    fileInputAdd.required = true;
+                }
                 document.getElementById('slideForm').reset();
                 document.getElementById('fileInputLabel').textContent = '📁 Seleccionar archivo';
                 document.getElementById('fileInputLabel').classList.remove('has-file');
@@ -1174,6 +1179,11 @@
                 document.getElementById('slideType').value = slide.type;
                 document.getElementById('slideOrder').value = slide.order;
                 document.getElementById('slideFile').accept = slide.type === 'image' ? 'image/*' : 'video/*';
+                // En modo edición, no exigimos subir un archivo nuevo
+                const fileInputEdit = document.getElementById('slideFile');
+                if (fileInputEdit) {
+                    fileInputEdit.required = false;
+                }
                 document.getElementById('fileInputLabel').textContent = '📁 Archivo actual (sin cambios)';
                 document.getElementById('fileInputLabel').classList.add('has-file');
                 document.getElementById('slideModal').style.display = 'block';
