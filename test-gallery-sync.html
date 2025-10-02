@@ -3,240 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test - Sincronización de Galería</title>
+    <title>Test Galería Sync - Casa Nuvera</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
+            margin: 2rem;
             background: #f5f5f5;
         }
-        .test-container {
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
             background: white;
             padding: 2rem;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .test-section {
             margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
         }
-        .test-title {
-            font-size: 1.5rem;
-            font-weight: 600;
+        .test-section h3 {
+            margin-top: 0;
             color: #2c3e50;
-            margin-bottom: 1rem;
         }
-        .test-button {
+        button {
             background: #3498db;
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
             cursor: pointer;
             margin: 0.5rem;
-            transition: background 0.3s;
         }
-        .test-button:hover {
+        button:hover {
             background: #2980b9;
         }
-        .test-button.success {
+        .success {
             background: #27ae60;
         }
-        .test-button.success:hover {
+        .success:hover {
             background: #229954;
         }
-        .test-result {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
+        .error {
+            background: #e74c3c;
+        }
+        .error:hover {
+            background: #c0392b;
+        }
+        .log {
             background: #f8f9fa;
-            border: 1px solid #dee2e6;
-        }
-        .test-result.success {
-            background: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-        }
-        .test-result.error {
-            background: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
-        .gallery-preview {
-            margin-top: 2rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-        }
-        .gallery-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.5rem;
-            margin: 0.5rem 0;
-            background: white;
-            border-radius: 6px;
             border: 1px solid #e9ecef;
-        }
-        .gallery-item img {
-            width: 60px;
-            height: 40px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-        .gallery-item-info {
-            flex: 1;
-        }
-        .gallery-item-title {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        .gallery-item-desc {
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: monospace;
             font-size: 0.9rem;
-            color: #7f8c8d;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
         }
-        .gallery-item-type {
-            padding: 0.2rem 0.5rem;
+        .status {
+            padding: 0.5rem;
             border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 500;
+            margin: 0.5rem 0;
         }
-        .gallery-item-type.image {
-            background: #e3f2fd;
-            color: #1976d2;
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
-        .gallery-item-type.video {
-            background: #f3e5f5;
-            color: #7b1fa2;
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
         }
     </style>
 </head>
 <body>
-    <div class="test-container">
-        <h1 class="test-title">🧪 Test de Sincronización de Galería</h1>
-        <p>Esta página te permite probar la sincronización entre el panel de administración y el sitio web.</p>
-        
-        <div>
-            <button class="test-button" onclick="testLoadData()">📋 Cargar Datos de Galería</button>
-            <button class="test-button" onclick="testSaveData()">💾 Guardar Datos de Prueba</button>
-            <button class="test-button success" onclick="openAdmin()">⚙️ Abrir Panel Admin</button>
-            <button class="test-button success" onclick="openWebsite()">🌐 Abrir Sitio Web</button>
+    <div class="container">
+        <h1>🧪 Test de Sincronización de Galería</h1>
+        <p>Esta página te permite probar la sincronización entre el admin de galería y el sitio web principal.</p>
+
+        <div class="test-section">
+            <h3>📊 Estado Actual</h3>
+            <div id="currentStatus">
+                <div class="status info">Verificando datos de galería...</div>
+            </div>
+            <button onclick="checkGalleryData()">🔄 Verificar Datos</button>
         </div>
-        
-        <div id="testResult" class="test-result" style="display: none;"></div>
-        
-        <div class="gallery-preview">
-            <h3>📋 Datos Actuales de la Galería</h3>
-            <div id="galleryData"></div>
+
+        <div class="test-section">
+            <h3>🎬 Datos de Prueba</h3>
+            <p>Usa estos botones para simular datos de galería:</p>
+            <button onclick="setTestData()">📝 Establecer Datos de Prueba</button>
+            <button onclick="setVideoData()">🎥 Establecer Datos con Videos</button>
+            <button onclick="clearData()">🗑️ Limpiar Datos</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🚀 Sincronización</h3>
+            <p>Prueba la sincronización con el sitio web:</p>
+            <button onclick="simulateSync()" class="success">🔄 Simular Sincronización</button>
+            <button onclick="openIndex()">🌐 Abrir Index</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Log de Actividad</h3>
+            <div id="log" class="log">Esperando actividad...</div>
+            <button onclick="clearLog()">🧹 Limpiar Log</button>
         </div>
     </div>
 
     <script>
-        function showResult(message, type = 'info') {
-            const resultDiv = document.getElementById('testResult');
-            resultDiv.textContent = message;
-            resultDiv.className = `test-result ${type}`;
-            resultDiv.style.display = 'block';
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            logDiv.textContent += logEntry;
+            logDiv.scrollTop = logDiv.scrollHeight;
             
-            setTimeout(() => {
-                resultDiv.style.display = 'none';
-            }, 5000);
+            console.log(`[TEST] ${message}`);
         }
 
-        function testLoadData() {
-            try {
-                const savedData = localStorage.getItem('casaNuveraGalleryData');
-                
-                if (savedData) {
-                    const galleryData = JSON.parse(savedData);
-                    showResult(`✅ Datos cargados exitosamente: ${galleryData.length} slides encontrados`, 'success');
-                    displayGalleryData(galleryData);
-                } else {
-                    showResult('ℹ️ No hay datos de galería guardados en localStorage', 'info');
-                    displayGalleryData([]);
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('currentStatus');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function checkGalleryData() {
+            log('🔍 Verificando datos de galería...');
+            
+            const savedGalleryData = localStorage.getItem('casaNuveraGalleryData');
+            const savedActiveData = localStorage.getItem('casaNuveraActiveGalleryData');
+            
+            if (savedActiveData) {
+                try {
+                    const data = JSON.parse(savedActiveData);
+                    updateStatus(`✅ Datos activos encontrados: ${data.length} slides`, 'success');
+                    log(`📋 Slides activos: ${data.length}`);
+                    data.forEach((slide, index) => {
+                        log(`  ${index + 1}. ${slide.title} (${slide.type}) - ${slide.active ? 'Activo' : 'Inactivo'}`);
+                    });
+                } catch (e) {
+                    updateStatus('❌ Error parseando datos activos', 'error');
+                    log(`❌ Error: ${e.message}`);
                 }
-            } catch (error) {
-                showResult(`❌ Error cargando datos: ${error.message}`, 'error');
+            } else if (savedGalleryData) {
+                try {
+                    const data = JSON.parse(savedGalleryData);
+                    const activeSlides = data.filter(slide => slide.active);
+                    updateStatus(`ℹ️ Datos totales: ${data.length} slides, ${activeSlides.length} activos`, 'info');
+                    log(`📋 Total slides: ${data.length}, Activos: ${activeSlides.length}`);
+                } catch (e) {
+                    updateStatus('❌ Error parseando datos de galería', 'error');
+                    log(`❌ Error: ${e.message}`);
+                }
+            } else {
+                updateStatus('⚠️ No hay datos de galería guardados', 'error');
+                log('⚠️ No se encontraron datos de galería');
             }
         }
 
-        function testSaveData() {
-            try {
-                const testData = [
-                    {
-                        id: 1,
-                        title: "Test Slide 1",
-                        description: "Este es un slide de prueba",
-                        type: "image",
-                        url: "https://via.placeholder.com/800x600/3498db/ffffff?text=Test+Image+1",
-                        order: 1,
-                        active: true,
-                        propertyId: 1,
-                        slug: "test-slide-1"
-                    },
-                    {
-                        id: 2,
-                        title: "Test Slide 2",
-                        description: "Este es otro slide de prueba",
-                        type: "video",
-                        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                        order: 2,
-                        active: true,
-                        propertyId: 2,
-                        slug: "test-slide-2"
-                    }
-                ];
+        function setTestData() {
+            const testData = [
+                {
+                    id: 1,
+                    title: "Espacios que Inspiran",
+                    description: "Cada propiedad cuenta una historia única",
+                    type: "image",
+                    url: "https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg",
+                    order: 1,
+                    active: true,
+                    propertyId: 1,
+                    slug: "departamento-los-llanes"
+                },
+                {
+                    id: 2,
+                    title: "Calidad en Cada Detalle",
+                    description: "Propiedades seleccionadas con los más altos estándares",
+                    type: "image",
+                    url: "https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150948654_0.jpeg",
+                    order: 2,
+                    active: true,
+                    propertyId: 2,
+                    slug: "casa-moderna-providencia"
+                }
+            ];
 
-                localStorage.setItem('casaNuveraGalleryData', JSON.stringify(testData));
-                showResult('✅ Datos de prueba guardados exitosamente', 'success');
-                displayGalleryData(testData);
-            } catch (error) {
-                showResult(`❌ Error guardando datos: ${error.message}`, 'error');
-            }
-        }
-
-        function displayGalleryData(galleryData) {
-            const container = document.getElementById('galleryData');
+            localStorage.setItem('casaNuveraGalleryData', JSON.stringify(testData));
+            localStorage.setItem('casaNuveraActiveGalleryData', JSON.stringify(testData));
             
-            if (galleryData.length === 0) {
-                container.innerHTML = '<p style="color: #7f8c8d; font-style: italic;">No hay datos de galería</p>';
+            updateStatus('✅ Datos de prueba establecidos (2 slides)', 'success');
+            log('📝 Datos de prueba establecidos con 2 slides de imagen');
+        }
+
+        function setVideoData() {
+            const videoData = [
+                {
+                    id: 1,
+                    title: "Tour Virtual Inmersivo",
+                    description: "Recorre propiedades desde la comodidad de tu hogar",
+                    type: "video",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                    order: 1,
+                    active: true,
+                    propertyId: 1,
+                    slug: "video-tour-1"
+                },
+                {
+                    id: 2,
+                    title: "Tecnología de Vanguardia",
+                    description: "Innovación aplicada al sector inmobiliario",
+                    type: "video",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                    order: 2,
+                    active: true,
+                    propertyId: 2,
+                    slug: "video-tour-2"
+                },
+                {
+                    id: 3,
+                    title: "Espacios que Inspiran",
+                    description: "Cada propiedad cuenta una historia única",
+                    type: "image",
+                    url: "https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg",
+                    order: 3,
+                    active: true,
+                    propertyId: 3,
+                    slug: "departamento-los-llanes"
+                }
+            ];
+
+            localStorage.setItem('casaNuveraGalleryData', JSON.stringify(videoData));
+            localStorage.setItem('casaNuveraActiveGalleryData', JSON.stringify(videoData));
+            
+            updateStatus('✅ Datos con videos establecidos (3 slides)', 'success');
+            log('🎥 Datos con videos establecidos: 2 videos + 1 imagen');
+        }
+
+        function clearData() {
+            localStorage.removeItem('casaNuveraGalleryData');
+            localStorage.removeItem('casaNuveraActiveGalleryData');
+            
+            updateStatus('🗑️ Datos de galería eliminados', 'info');
+            log('🗑️ Datos de galería eliminados del localStorage');
+        }
+
+        function simulateSync() {
+            log('🔄 Simulando proceso de sincronización...');
+            
+            const savedActiveData = localStorage.getItem('casaNuveraActiveGalleryData');
+            if (!savedActiveData) {
+                updateStatus('❌ No hay datos para sincronizar', 'error');
+                log('❌ No se encontraron datos activos para sincronizar');
                 return;
             }
 
-            const html = galleryData.map(slide => `
-                <div class="gallery-item">
-                    ${slide.type === 'image' 
-                        ? `<img src="${slide.url}" alt="${slide.title}" onerror="this.src='https://via.placeholder.com/60x40'">`
-                        : `<div style="width: 60px; height: 40px; background: #f0f0f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #666;">🎥</div>`
+            try {
+                const data = JSON.parse(savedActiveData);
+                log(`✅ Sincronización simulada exitosa con ${data.length} slides`);
+                
+                // Simular el proceso que haría el admin
+                log('📤 Guardando datos en localStorage...');
+                log('📤 Guardando datos en sessionStorage...');
+                log('📤 Datos guardados correctamente');
+                
+                updateStatus(`✅ Sincronización simulada: ${data.length} slides listos`, 'success');
+                
+                // Mostrar detalles de los slides
+                data.forEach((slide, index) => {
+                    log(`  ${index + 1}. ${slide.title} (${slide.type}) - Orden: ${slide.order}`);
+                });
+                
+            } catch (e) {
+                updateStatus('❌ Error en sincronización simulada', 'error');
+                log(`❌ Error: ${e.message}`);
+            }
+        }
+
+        function openIndex() {
+            log('🌐 Abriendo index.html en nueva pestaña...');
+            const indexWindow = window.open('index.html', '_blank');
+            
+            if (indexWindow) {
+                log('✅ Index.html abierto correctamente');
+                updateStatus('🌐 Index.html abierto - Verifica la galería', 'info');
+                
+                // Intentar recargar la galería después de un momento
+                setTimeout(() => {
+                    try {
+                        if (indexWindow.reloadGalleryFromAdmin) {
+                            indexWindow.reloadGalleryFromAdmin();
+                            log('🔄 Función reloadGalleryFromAdmin ejecutada');
+                        } else {
+                            log('⚠️ Función reloadGalleryFromAdmin no disponible');
+                        }
+                    } catch (e) {
+                        log(`⚠️ Error ejecutando reloadGalleryFromAdmin: ${e.message}`);
                     }
-                    <div class="gallery-item-info">
-                        <div class="gallery-item-title">${slide.title}</div>
-                        <div class="gallery-item-desc">${slide.description}</div>
-                    </div>
-                    <div class="gallery-item-type ${slide.type}">
-                        ${slide.type === 'image' ? '🖼️ Imagen' : '🎥 Video'}
-                    </div>
-                    <div style="font-size: 0.8rem; color: #7f8c8d;">
-                        Orden: ${slide.order} | ${slide.active ? '✅ Activo' : '❌ Inactivo'}
-                    </div>
-                </div>
-            `).join('');
-
-            container.innerHTML = html;
+                }, 2000);
+            } else {
+                log('❌ No se pudo abrir index.html (posible bloqueador de pop-ups)');
+                updateStatus('❌ Error abriendo index.html', 'error');
+            }
         }
 
-        function openAdmin() {
-            window.open('admin-gallery.html', '_blank');
+        function clearLog() {
+            document.getElementById('log').textContent = 'Log limpiado...\n';
         }
 
-        function openWebsite() {
-            window.open('index.html', '_blank');
-        }
-
-        // Cargar datos al iniciar
+        // Verificar datos al cargar la página
         document.addEventListener('DOMContentLoaded', () => {
-            testLoadData();
+            log('🧪 Página de test cargada');
+            checkGalleryData();
         });
     </script>
 </body>

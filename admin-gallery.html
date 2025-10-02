@@ -759,6 +759,16 @@
                     </div>
                 </div>
 
+                <!-- Sync Section -->
+                <div class="sync-section" style="background: #e8f5e8; border: 2px solid #27ae60; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">🔄</div>
+                    <div style="font-size: 1.2rem; font-weight: 600; color: #27ae60; margin-bottom: 0.5rem;">Sincronizar con el Sitio Web</div>
+                    <div style="color: #666; margin-bottom: 1rem;">Aplica los cambios de la galería al sitio web principal</div>
+                    <button class="add-btn" onclick="galleryManager.syncWithWebsite()" style="background: #27ae60; color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background 0.3s;">
+                        🚀 Sincronizar Cambios
+                    </button>
+                </div>
+
                 <!-- Slides Grid -->
                 <div class="slides-grid" id="slidesGrid">
                     <div class="loading-spinner"></div>
@@ -1323,8 +1333,18 @@
                     // También guardar en sessionStorage para acceso inmediato
                     sessionStorage.setItem('casaNuveraGalleryData', JSON.stringify(this.gallerySlides));
                     
+                    // Guardar también en un formato específico para el index
+                    const activeSlides = this.gallerySlides.filter(slide => slide.active);
+                    localStorage.setItem('casaNuveraActiveGalleryData', JSON.stringify(activeSlides));
+                    
+                    console.log('✅ Datos guardados:', {
+                        totalSlides: this.gallerySlides.length,
+                        activeSlides: activeSlides.length,
+                        slides: activeSlides.map(s => ({ title: s.title, type: s.type, url: s.url }))
+                    });
+                    
                     // Mostrar mensaje de éxito
-                    this.showSuccess('Galería sincronizada con el sitio web exitosamente');
+                    this.showSuccess(`Galería sincronizada exitosamente. ${activeSlides.length} slides activos aplicados al sitio web.`);
                     
                     // Opcional: abrir el sitio web en una nueva pestaña
                     const openSite = confirm('¿Deseas abrir el sitio web para ver los cambios?');
@@ -1335,7 +1355,9 @@
                         if (siteWindow) {
                             setTimeout(() => {
                                 try {
-                                    siteWindow.reloadGalleryFromAdmin();
+                                    if (siteWindow.reloadGalleryFromAdmin) {
+                                        siteWindow.reloadGalleryFromAdmin();
+                                    }
                                 } catch (e) {
                                     console.log('No se pudo recargar automáticamente, pero los datos están guardados');
                                 }
