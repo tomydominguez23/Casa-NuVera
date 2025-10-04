@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Galería Responsiva</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .test-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .device-test {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .device-label {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        /* Copiar estilos de la galería principal */
+        .gallery-carousel {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .gallery-slides-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        .gallery-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-slide.active {
+            opacity: 1;
+        }
+
+        .gallery-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .gallery-slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            min-height: 100%;
+            display: block;
+        }
+
+        .video-slide {
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 2rem;
+            text-align: left;
+        }
+
+        .slide-overlay h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .slide-overlay p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .gallery-carousel {
+                border-radius: 16px;
+            }
+            
+            .gallery-slides-container {
+                height: clamp(300px, 60vh, 420px);
+            }
+            
+            .gallery-slide video {
+                min-height: 100%;
+                max-height: 100%;
+                object-fit: cover;
+                object-position: center;
+            }
+            
+            .video-slide {
+                min-height: 100%;
+                position: relative;
+            }
+            
+            .gallery-slide {
+                min-height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .gallery-slide img,
+            .gallery-slide video {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                object-position: center !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery-slides-container {
+                height: clamp(250px, 50vh, 350px);
+            }
+            
+            .gallery-slide video {
+                object-fit: cover;
+                object-position: center;
+            }
+        }
+
+        /* Mejoras específicas para videos en iOS Safari */
+        video {
+            -webkit-playsinline: true;
+            -webkit-media-controls: false;
+            -webkit-transform: translateZ(0);
+        }
+
+        .test-info {
+            background: #e8f5e8;
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .test-info h3 {
+            color: #27ae60;
+            margin-top: 0;
+        }
+
+        .test-info ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .test-info li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🧪 Test de Galería Responsiva</h1>
+        
+        <div class="test-info">
+            <h3>✅ Mejoras Implementadas:</h3>
+            <ul>
+                <li>Videos con atributos <code>playsinline</code> y <code>webkit-playsinline</code></li>
+                <li>Estilos CSS responsivos mejorados para móviles</li>
+                <li>Altura adaptativa con <code>clamp()</code> para diferentes dispositivos</li>
+                <li>Optimizaciones específicas para iOS Safari</li>
+                <li>Forzar <code>object-fit: cover</code> en móviles</li>
+            </ul>
+        </div>
+
+        <div class="device-test">
+            <div class="device-label">🖥️ Desktop (1200px+)</div>
+            <div class="gallery-carousel">
+                <div class="gallery-slides-container">
+                    <div class="gallery-slide active">
+                        <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg" alt="Imagen Desktop">
+                        <div class="slide-overlay">
+                            <h3>Imagen Desktop</h3>
+                            <p>Altura: 600px fija</p>
+                        </div>
+                    </div>
+                    <div class="gallery-slide video-slide">
+                        <video autoplay muted loop playsinline webkit-playsinline>
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+                        </video>
+                        <div class="slide-overlay">
+                            <h3>Video Desktop</h3>
+                            <p>Altura: 600px fija</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="device-test">
+            <div class="device-label">📱 Tablet/Mobile (768px-)</div>
+            <div class="gallery-carousel" style="max-width: 768px;">
+                <div class="gallery-slides-container">
+                    <div class="gallery-slide active">
+                        <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg" alt="Imagen Mobile">
+                        <div class="slide-overlay">
+                            <h3>Imagen Mobile</h3>
+                            <p>Altura: clamp(300px, 60vh, 420px)</p>
+                        </div>
+                    </div>
+                    <div class="gallery-slide video-slide">
+                        <video autoplay muted loop playsinline webkit-playsinline>
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                        </video>
+                        <div class="slide-overlay">
+                            <h3>Video Mobile</h3>
+                            <p>Altura: clamp(300px, 60vh, 420px)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="device-test">
+            <div class="device-label">📱 Mobile Pequeño (480px-)</div>
+            <div class="gallery-carousel" style="max-width: 480px;">
+                <div class="gallery-slides-container">
+                    <div class="gallery-slide active">
+                        <img src="https://otfbouzmhmmguvqbbwku.supabase.co/storage/v1/object/public/imagenes-sitio/imagen_1756150801258_0.jpeg" alt="Imagen Small Mobile">
+                        <div class="slide-overlay">
+                            <h3>Imagen Small Mobile</h3>
+                            <p>Altura: clamp(250px, 50vh, 350px)</p>
+                        </div>
+                    </div>
+                    <div class="gallery-slide video-slide">
+                        <video autoplay muted loop playsinline webkit-playsinline>
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+                        </video>
+                        <div class="slide-overlay">
+                            <h3>Video Small Mobile</h3>
+                            <p>Altura: clamp(250px, 50vh, 350px)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-info">
+            <h3>🔍 Instrucciones de Prueba:</h3>
+            <ul>
+                <li>Redimensiona la ventana del navegador para probar diferentes tamaños</li>
+                <li>Usa las herramientas de desarrollador para simular dispositivos móviles</li>
+                <li>Verifica que los videos se reproduzcan correctamente en móviles</li>
+                <li>Comprueba que las imágenes y videos mantengan sus proporciones</li>
+                <li>Prueba en diferentes navegadores (Chrome, Safari, Firefox)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Simular cambio de slides para probar la funcionalidad
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.gallery-slide');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            if (slides[index]) {
+                slides[index].classList.add('active');
+            }
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        // Cambiar slide cada 3 segundos
+        setInterval(nextSlide, 3000);
+        
+        console.log('🧪 Test de galería responsiva iniciado');
+        console.log('📱 Slides encontrados:', slides.length);
+    </script>
+</body>
+</html>
