@@ -60,6 +60,13 @@
         /* iOS/mobile safety: evitar cualquier desbordamiento horizontal */
         html { width: 100%; overflow-x: hidden; }
         img, video { max-width: 100%; height: auto; display: block; }
+        
+        /* Mejoras específicas para videos en iOS Safari */
+        video {
+            -webkit-playsinline: true;
+            -webkit-media-controls: false;
+            -webkit-transform: translateZ(0);
+        }
 
         /* Header flotante sobre imágenes */
         .header {
@@ -1023,10 +1030,17 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
+            /* Mejoras para responsividad */
+            min-height: 100%;
+            display: block;
         }
 
         .video-slide {
             background: #000; /* Fondo negro para videos */
+            /* Asegurar que el contenedor de video se adapte */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .slide-overlay {
@@ -1432,6 +1446,21 @@
                 height: clamp(300px, 60vh, 420px);
             }
             
+            /* Mejoras específicas para videos en móviles */
+            .gallery-slide video {
+                /* Asegurar que los videos se adapten correctamente en móviles */
+                min-height: 100%;
+                max-height: 100%;
+                object-fit: cover;
+                object-position: center;
+            }
+            
+            .video-slide {
+                /* Optimización específica para móviles */
+                min-height: 100%;
+                position: relative;
+            }
+            
             .gallery-nav-btn {
                 width: 44px;
                 height: 44px;
@@ -1488,6 +1517,37 @@
         /* Refuerzo en móviles: deshabilitar parallax fijo */
         @media (max-width: 768px) {
             .parallax { background-attachment: scroll !important; }
+            
+            /* Mejoras adicionales para la galería de videos en móviles */
+            .gallery-slide {
+                /* Asegurar que todos los slides tengan la misma altura */
+                min-height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .gallery-slide img,
+            .gallery-slide video {
+                /* Forzar que las imágenes y videos llenen completamente el contenedor */
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                object-position: center !important;
+            }
+        }
+        
+        /* Estilos específicos para dispositivos muy pequeños */
+        @media (max-width: 480px) {
+            .gallery-slides-container {
+                height: clamp(250px, 50vh, 350px);
+            }
+            
+            .gallery-slide video {
+                /* Optimización adicional para pantallas muy pequeñas */
+                object-fit: cover;
+                object-position: center;
+            }
         }
 
         /* Animaciones para notificaciones */
@@ -1758,7 +1818,7 @@
                     
                     <!-- 🆕 SLIDE 2: VIDEO CLICKEABLE → Propiedad 2 -->
                     <div class="gallery-slide video-slide" data-property="2" data-slug="casa-moderna-providencia">
-                        <video autoplay muted loop>
+                        <video autoplay muted loop playsinline webkit-playsinline>
                             <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
                             Tu navegador no soporta videos HTML5.
                         </video>
@@ -1779,7 +1839,7 @@
                     
                     <!-- 🆕 SLIDE 4: VIDEO CLICKEABLE → Propiedad 4 -->
                     <div class="gallery-slide video-slide" data-property="4" data-slug="casa-familiar-nunoa">
-                        <video autoplay muted loop>
+                        <video autoplay muted loop playsinline webkit-playsinline>
                             <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
                         </video>
                         <div class="slide-overlay">
@@ -2313,7 +2373,7 @@
                     let content = '';
                     if (isVideo) {
                         content = `
-                            <video autoplay muted loop>
+                            <video autoplay muted loop playsinline webkit-playsinline>
                                 <source src="${slide.url}" type="video/mp4">
                                 Tu navegador no soporta videos HTML5.
                             </video>
